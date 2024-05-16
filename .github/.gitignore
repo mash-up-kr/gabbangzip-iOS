@@ -137,6 +137,10 @@ xcuserdata
 /*.gcno
 **/xcshareddata/WorkspaceSettings.xcsettings
 
+### Projects ###
+*.xcodeproj
+*.xcworkspace
+
 ### Tuist derived files ###
 graph.dot
 Derived/
