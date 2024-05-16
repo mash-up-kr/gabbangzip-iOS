@@ -25,4 +25,3 @@ assignees: ''
  - Version [e.g. 22]
 
 ## 📝 Additional context
-Add any other context about the problem here.
