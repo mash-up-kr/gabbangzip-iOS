@@ -1,5 +1,3 @@
-#!/bin/sh
-
 set -e
 
 echo "=================================================================="
@@ -22,24 +20,44 @@ PROJECT_DIR="${WORKSPACE_DIR}"
 echo "- Project Directory: ${PROJECT_DIR}"
 echo "------------------------------------------------------------------"
 
+# Ruby 버전 최신으로 업데이트 및 설치
+echo "\n[1] > Updating and Installing latest Ruby version ...\n"
+if ! command -v rbenv &> /dev/null; then
+  echo "rbenv is not installed. Installing rbenv ..."
+  brew install rbenv
+  echo 'export PATH="$HOME/.rbenv/bin:$PATH"' >> ~/.zshrc
+  echo 'eval "$(rbenv init - zsh)"' >> ~/.zshrc
+  export PATH="$HOME/.rbenv/bin:$PATH"
+  eval "$(rbenv init - zsh)"
+fi
+
+LATEST_RUBY_VERSION=$(rbenv install -l | grep -v - | grep -v rc | tail -1)
+if ! rbenv versions | grep -q $LATEST_RUBY_VERSION; then
+  echo "Installing Ruby $LATEST_RUBY_VERSION ..."
+  rbenv install $LATEST_RUBY_VERSION
+fi
+
+rbenv global $LATEST_RUBY_VERSION
+echo "Ruby version: $(ruby -v)"
+
 # Ruby Bundler 설치
-echo "\n[1] > Installing Ruby Bundler ...\n"
+echo "\n[2] > Installing Ruby Bundler ...\n"
 gem install bundler
 
 # Bundle 업데이트(Fastlane 설치)
-echo "\n[2] > Updating Bundle(with Fastlane) ...\n"
+echo "\n[3] > Updating Bundle (with Fastlane) ...\n"
 BUNDLE_GEMFILE="${PROJECT_DIR}/Gemfile" bundle update
 
 # tuistenv tuist 제거
-echo "\n[3] > Uninstalling Tuist (tuistenv) ...\n"
+echo "\n[4] > Uninstalling Tuist (tuistenv) ...\n"
 curl -Ls https://uninstall.tuist.io | bash
 
 # mise 설치
-echo "\n[4] > Installing mise ...\n"
+echo "\n[5] > Installing mise ...\n"
 curl https://mise.run | sh
 
 # mise 활성화
-echo "\n[5] > Activating mise ...\n"
+echo "\n[6] > Activating mise ...\n"
 echo 'eval "$(~/.local/bin/mise activate zsh)"' >> ~/.zshrc
 
 echo "\n---------------------------------"
