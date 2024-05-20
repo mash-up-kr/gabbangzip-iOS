@@ -20,9 +20,15 @@ PROJECT_DIR="${WORKSPACE_DIR}"
 echo "- Project Directory: ${PROJECT_DIR}"
 echo "------------------------------------------------------------------"
 
-# Homebrew 업데이트
-echo "\n[0] > Updating Homebrew ...\n"
-brew update
+# Homebrew 설치 및 업데이트
+echo "\n[0] > Installing or Updating Homebrew ...\n"
+if ! command -v brew &> /dev/null; then
+  echo "Homebrew is not installed. Installing Homebrew ..."
+  /bin/bash -c "$(curl -fsSL https://raw.githubusercontent.com/Homebrew/install/HEAD/install.sh)"
+else
+  echo "Homebrew is already installed. Updating Homebrew ..."
+  brew update
+fi
 
 # Ruby 버전 최신으로 업데이트 및 설치
 echo "\n[1] > Updating and Installing latest Ruby version ...\n"
