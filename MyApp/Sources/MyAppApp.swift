@@ -1,3 +1,10 @@
+//
+//  MyAppApp.swift
+//  MyApp
+//
+//  Created by gabbangzip on 5/20/24.
+//
+
 import SwiftUI
 
 @main
