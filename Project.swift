@@ -17,6 +17,7 @@ let project = Project(
       resources: ["MyApp/Resources/**"],
       dependencies: [
         .external(name: "TCA"),
+        .external(name: "TCACoordinator"),
         .external(name: "Nuke"),
         .external(name: "Lottie"),
         .external(name: "Get")

@@ -7,6 +7,7 @@ import PackageDescription
   let packageSettings = PackageSettings(
     productTypes: [
       "TCA": .framework,
+      "TCACoordinators": .framework,
       "Nuke": .framework,
       "Lottie": .framework,
       "Get": .framework
@@ -17,7 +18,8 @@ import PackageDescription
 let package = Package(
   name: "MyApp",
   dependencies: [
-    .package(url: "https://github.com/pointfreeco/swift-composable-architecture.git", from: "1.10.0"),
+    .package(url: "https://github.com/pointfreeco/swift-composable-architecture.git", from: "1.8.0"),
+    .package(url: "https://github.com/johnpatrickmorgan/TCACoordinators", from: "0.10.0"),
     .package(url: "https://github.com/kean/Nuke.git", from: "12.0.0"),
     .package(url: "https://github.com/airbnb/lottie-ios.git", from: "4.4.3"),
     .package(url: "https://github.com/kean/Get.git", from: "2.2.0")
