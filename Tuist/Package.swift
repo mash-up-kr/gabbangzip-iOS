@@ -6,7 +6,7 @@ import PackageDescription
 
   let packageSettings = PackageSettings(
     productTypes: [
-      "TCA": .framework,
+      "ComposableArchitecture": .framework,
       "TCACoordinators": .framework,
       "Nuke": .framework,
       "Lottie": .framework,
