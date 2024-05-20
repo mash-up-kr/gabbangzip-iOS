@@ -16,7 +16,7 @@ import PackageDescription
 #endif
 
 let package = Package(
-  name: "MyApp",
+  name: "Gabbangzip",
   dependencies: [
     .package(url: "https://github.com/pointfreeco/swift-composable-architecture.git", from: "1.8.0"),
     .package(url: "https://github.com/johnpatrickmorgan/TCACoordinators", from: "0.10.0"),
