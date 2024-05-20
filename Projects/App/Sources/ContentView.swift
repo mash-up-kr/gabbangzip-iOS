@@ -1,6 +1,6 @@
 //
 //  ContentView.swift
-//  MyApp
+//  App
 //
 //  Created by gabbangzip on 5/20/24.
 //
