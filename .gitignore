@@ -147,5 +147,6 @@ Derived/
 
 ### Tuist managed dependencies ###
 Tuist/Dependencies
+Tuist/.build
 
 # End of https://www.toptal.com/developers/gitignore/api/macos,swift,swiftpackagemanager,xcode
