@@ -23,15 +23,5 @@ let project = Project(
         .external(name: "Get")
       ]
     ),
-    .target(
-      name: "MyAppTests",
-      destinations: .iOS,
-      product: .unitTests,
-      bundleId: "io.tuist.MyAppTests",
-      infoPlist: .default,
-      sources: ["MyApp/Tests/**"],
-      resources: [],
-      dependencies: [.target(name: "MyApp")]
-    ),
   ]
 )
