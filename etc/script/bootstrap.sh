@@ -20,6 +20,10 @@ PROJECT_DIR="${WORKSPACE_DIR}"
 echo "- Project Directory: ${PROJECT_DIR}"
 echo "------------------------------------------------------------------"
 
+# Homebrew 업데이트
+echo "\n[0] > Updating Homebrew ...\n"
+brew update
+
 # Ruby 버전 최신으로 업데이트 및 설치
 echo "\n[1] > Updating and Installing latest Ruby version ...\n"
 if ! command -v rbenv &> /dev/null; then
