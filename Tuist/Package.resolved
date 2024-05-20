@@ -10,6 +10,15 @@
       }
     },
     {
+      "identity" : "flowstacks",
+      "kind" : "remoteSourceControl",
+      "location" : "https://github.com/johnpatrickmorgan/FlowStacks",
+      "state" : {
+        "revision" : "a2b974b81612e1e8ee3ecd757d936a2919527356",
+        "version" : "0.4.1"
+      }
+    },
+    {
       "identity" : "get",
       "kind" : "remoteSourceControl",
       "location" : "https://github.com/kean/Get.git",
@@ -133,6 +142,15 @@
       "state" : {
         "revision" : "2ec6c3a15293efff6083966b38439a4004f25565",
         "version" : "1.3.0"
+      }
+    },
+    {
+      "identity" : "tcacoordinators",
+      "kind" : "remoteSourceControl",
+      "location" : "https://github.com/johnpatrickmorgan/TCACoordinators",
+      "state" : {
+        "revision" : "17a4ab7d8f832007bdbb7cb9f73a8dcf3421a972",
+        "version" : "0.10.0"
       }
     },
     {
