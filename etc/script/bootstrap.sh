@@ -30,8 +30,8 @@ else
   brew update
 fi
 
-# Ruby 버전 최신으로 업데이트 및 설치
-echo "\n[1] > Updating and Installing latest Ruby version ...\n"
+# Ruby 버전 고정 및 설치
+echo "\n[1] > Installing Ruby version from .ruby-version ...\n"
 if ! command -v rbenv &> /dev/null; then
   echo "rbenv is not installed. Installing rbenv ..."
   brew install rbenv
@@ -41,13 +41,13 @@ if ! command -v rbenv &> /dev/null; then
   eval "$(rbenv init - zsh)"
 fi
 
-LATEST_RUBY_VERSION=$(rbenv install -l | grep -v - | grep -v rc | tail -1)
-if ! rbenv versions | grep -q $LATEST_RUBY_VERSION; then
-  echo "Installing Ruby $LATEST_RUBY_VERSION ..."
-  rbenv install $LATEST_RUBY_VERSION
+RUBY_VERSION=$(cat "${PROJECT_DIR}/.ruby-version")
+if ! rbenv versions | grep -q $RUBY_VERSION; then
+  echo "Installing Ruby $RUBY_VERSION ..."
+  rbenv install $RUBY_VERSION
 fi
 
-rbenv global $LATEST_RUBY_VERSION
+rbenv global $RUBY_VERSION
 echo "Ruby version: $(ruby -v)"
 
 # Ruby Bundler 설치
