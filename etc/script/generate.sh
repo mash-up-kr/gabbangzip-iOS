@@ -24,18 +24,17 @@ PROJECT_DIR="${WORKSPACE_DIR}/${PROJECT_DIR_NAME}/${PROJECT_NAME}"
 echo "- Project Directory: ${PROJECT_DIR_NAME}/${PROJECT_NAME}"
 echo "------------------------------------------------------------------"
 
-echo "\n[1] > mise install and use tuist ...\n"
-mise install tuist@4.13.0
-mise use tuist@4.13.0
+echo -e "\n[1] > mise install and use tuist ...\n"
+mise install tuist
 
 # Tuist install 실행
-echo "\n[2] > Installing Tuist ...\n"
+echo -e "\n[2] > Installing Tuist ...\n"
 tuist install --path "${WORKSPACE_DIR}"
 
 # Tuist generate 실행 및 프로젝트 open
-echo "\n[3] > Generating Tuist ...\n"
+echo -e "\n[3] > Generating Tuist ...\n"
 TUIST_ROOT_DIR=$PWD tuist generate
 
-echo "\n----------------------------------"
+echo -e "\n----------------------------------"
 echo "::: Generate Script Finished :::"
-echo "----------------------------------\n"
+echo -e "----------------------------------\n"
