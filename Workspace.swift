@@ -3,8 +3,7 @@ import ProjectDescription
 let workspace = Workspace(
   name: "Gabbangzip",
   projects: [
-    "Projects/App",
-    "Projects/Core",
+    "Projects/App",ㄴ
     "Projects/DesignSystem",
     "Projects/Features/Scene",
     "Projects/Features/Coordinator",
