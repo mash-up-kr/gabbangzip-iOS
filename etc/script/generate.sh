@@ -26,12 +26,12 @@ echo "------------------------------------------------------------------"
 
 echo -e "\n[1] > mise install and use tuist ...\n"
 mise install tuist
-mise use use tuist@4.13.0
+mise use tuist@4.13.0
 
 # Tuist install 실행
 echo -e "\n[2] > Installing Tuist ...\n"
 tuist install --path "${WORKSPACE_DIR}"
-tuist 
+tuist use tuist@4.13.0
 
 # Tuist generate 실행 및 프로젝트 open
 echo -e "\n[3] > Generating Tuist ...\n"
