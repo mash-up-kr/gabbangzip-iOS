@@ -59,11 +59,11 @@ echo -e "\n[3] > Updating Bundle (with Fastlane) ...\n"
 BUNDLE_GEMFILE="${PROJECT_DIR}/Gemfile" bundle update
 
 # mise 설치
-echo -e "\n[5] > Installing mise ...\n"
+echo -e "\n[4] > Installing mise ...\n"
 curl https://mise.run | sh
 
 # mise 활성화
-echo -e "\n[6] > Activating mise ...\n"
+echo -e "\n[5] > Activating mise ...\n"
 echo 'eval "$(~/.local/bin/mise activate zsh)"' >> ~/.zshrc
 
 echo -e "\n---------------------------------"

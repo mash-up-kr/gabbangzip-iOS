@@ -19,9 +19,9 @@ WORKSPACE_DIR="$(dirname "$(dirname "${SCRIPT_DIR}")")"
 echo "- Workspace Directory: ${WORKSPACE_DIR}"
 
 PROJECT_DIR_NAME="Projects"
-PROJECT_NAME="Projects"
+PROJECT_NAME="App"
 PROJECT_DIR="${WORKSPACE_DIR}/${PROJECT_DIR_NAME}/${PROJECT_NAME}"
-echo "- Project Directory: ${PROJECT_DIR_NAME}/${PROJECT_NAME}"
+echo "- Project Directory: ${PROJECT_DIR}"
 echo "------------------------------------------------------------------"
 
 echo -e "\n[1] > mise install and use tuist ...\n"
