@@ -21,7 +21,7 @@ echo "- Project Directory: ${PROJECT_DIR}"
 echo "------------------------------------------------------------------"
 
 # Homebrew 설치 및 업데이트
-echo -e "\n[0] > Installing or Updating Homebrew ...\n"
+echo "\n[0] > Installing or Updating Homebrew ...\n"
 if ! command -v brew &> /dev/null; then
   echo "Homebrew is not installed. Installing Homebrew ..."
   /bin/bash -c "$(curl -fsSL https://raw.githubusercontent.com/Homebrew/install/HEAD/install.sh)"
@@ -31,7 +31,7 @@ else
 fi
 
 # Ruby 버전 고정 및 설치
-echo -e "\n[1] > Installing Ruby version from .ruby-version ...\n"
+echo "\n[1] > Installing Ruby version from .ruby-version ...\n"
 if ! command -v rbenv &> /dev/null; then
   echo "rbenv is not installed. Installing rbenv ..."
   brew install rbenv
@@ -51,21 +51,21 @@ rbenv global $RUBY_VERSION
 echo "Ruby version: $(ruby -v)"
 
 # Ruby Bundler 설치
-echo -e "\n[2] > Installing Ruby Bundler ...\n"
+echo "\n[2] > Installing Ruby Bundler ...\n"
 gem install bundler
 
 # Bundle 업데이트(Fastlane 설치)
-echo -e "\n[3] > Updating Bundle (with Fastlane) ...\n"
+echo "\n[3] > Updating Bundle (with Fastlane) ...\n"
 BUNDLE_GEMFILE="${PROJECT_DIR}/Gemfile" bundle update
 
 # mise 설치
-echo -e "\n[4] > Installing mise ...\n"
+echo "\n[4] > Installing mise ...\n"
 curl https://mise.run | sh
 
 # mise 활성화
-echo -e "\n[5] > Activating mise ...\n"
+echo "\n[5] > Activating mise ...\n"
 echo 'eval "$(~/.local/bin/mise activate zsh)"' >> ~/.zshrc
 
-echo -e "\n---------------------------------"
+echo "\n---------------------------------"
 echo "::: Bootstrap Script Finished :::"
-echo -e "---------------------------------\n"
+echo "---------------------------------\n"
