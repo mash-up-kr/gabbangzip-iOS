@@ -1,7 +1,7 @@
 .PHONY: bootstrap
 bootstrap:
-	bash ./etc/script/bootstrap.sh
+	sh ./etc/script/bootstrap.sh
 
 .PHONY: generate
 generate:
-	bash ./etc/script/generate.sh
+	sh ./etc/script/generate.sh
