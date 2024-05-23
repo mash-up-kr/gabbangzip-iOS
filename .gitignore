@@ -149,4 +149,8 @@ Derived/
 Tuist/Dependencies
 Tuist/.build
 
+# Node.js
+node_modules
+.grunt-env
+
 # End of https://www.toptal.com/developers/gitignore/api/macos,swift,swiftpackagemanager,xcode

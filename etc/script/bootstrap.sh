@@ -58,12 +58,31 @@ gem install bundler
 echo "\n[3] > Updating Bundle (with Fastlane) ...\n"
 BUNDLE_GEMFILE="${PROJECT_DIR}/Gemfile" bundle update
 
+# npm 설치
+if ! command -v npm &> /dev/null; then
+  echo "\n[4] > Installing npm ...\n"
+  brew install node
+fi
+
+# grunt-cli 설치
+cd "${PROJECT_DIR}"
+if ! command -v grunt &> /dev/null; then
+  echo "\n[5] > Installing grunt-cli ...\n"
+  npm install -g grunt-cli
+fi
+
+# 로컬 grunt 설치
+if [[ ! -d node_modules/grunt ]]; then
+  echo "\n[6] > Installing grunt ...\n"
+  npm install
+fi
+
 # mise 설치
-echo "\n[4] > Installing mise ...\n"
+echo "\n[7] > Installing mise ...\n"
 curl https://mise.run | sh
 
 # mise 활성화
-echo "\n[5] > Activating mise ...\n"
+echo "\n[8] > Activating mise ...\n"
 echo 'eval "$(~/.local/bin/mise activate zsh)"' >> ~/.zshrc
 
 echo "\n---------------------------------"
