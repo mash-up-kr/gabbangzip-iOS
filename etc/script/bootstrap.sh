@@ -87,7 +87,11 @@ fi
 
 # mise 활성화
 echo "\n[8] > Activating mise ...\n"
-echo 'eval "$(~/.local/bin/mise activate zsh)"' >> ~/.zshrc
+if ! grep -q 'eval "$(~/.local/bin/mise activate zsh)"' ~/.zshrc; then
+  echo 'eval "$(~/.local/bin/mise activate zsh)"' >> ~/.zshrc
+else
+  echo "mise is already activated in ~/.zshrc"
+fi
 
 echo "\n---------------------------------"
 echo "::: Bootstrap Script Finished :::"
