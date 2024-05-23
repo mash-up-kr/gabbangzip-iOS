@@ -78,8 +78,12 @@ if [[ ! -d node_modules/grunt ]]; then
 fi
 
 # mise 설치
-echo "\n[7] > Installing mise ...\n"
-curl https://mise.run | sh
+if ! command -v mise &> /dev/null; then
+  echo "\n[7] > Installing mise ...\n"
+  curl https://mise.run | sh
+else
+  echo "mise is already installed."
+fi
 
 # mise 활성화
 echo "\n[8] > Activating mise ...\n"
