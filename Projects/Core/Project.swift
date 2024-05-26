@@ -32,16 +32,6 @@ let project = Project.make(
 			]
 		),
 		.make(
-			name: "HomeAPIClient",
-			product: .staticLibrary,
-			bundleId: "com.mashup.gabbangzip.services.homeapiclient",
-			sources: ["Services/HomeAPIClient/**"],
-			dependencies: [
-				.external(externalDependency: .get),
-				.external(externalDependency: .composableArchitecture)
-			]
-		),
-		.make(
 			name: "GetHelpers",
 			product: .staticLibrary,
 			bundleId: "com.mashup.gabbangzip.services.gethelpers",
