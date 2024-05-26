@@ -10,8 +10,7 @@ let project = Project.make(
       bundleId: "com.mashup.gabbangzip.coreKit",
       sources: ["CoreKit/**"],
       dependencies: [
-        .target(name: "Models"),
-        .target(name: "Services")
+				.target(name: .models)
       ]
     ),
     .make(
@@ -21,16 +20,31 @@ let project = Project.make(
       sources: ["Models/**"],
       dependencies: []
     ),
-    .make(
-      name: "Services",
-      product: .staticLibrary,
-      bundleId: "com.mashup.gabbangzip.services",
-      sources: ["Services/**"],
-      dependencies: [
-        .target(name: "Models"),
-        .external(name: "ComposableArchitecture"),
-        .external(name: "Get")
-      ]
-    ),
+		.make(
+			name: "HomeAPIClient",
+			product: .staticLibrary,
+			bundleId: "com.mashup.gabbangzip.services.homeapiclient",
+			sources: ["Services/HomeAPIClient/**"],
+			dependencies: [
+				.external(externalDependency: .get),
+				.external(externalDependency: .composableArchitecture)
+			]
+		),
+		.make(
+			name: "GetHelpers",
+			product: .staticLibrary,
+			bundleId: "com.mashup.gabbangzip.services.gethelpers",
+			sources: ["Services/GetHelpers/**"],
+			dependencies: [
+				.external(externalDependency: .get)
+			]
+		),
+		.make(
+			name: "GabbangzipError",
+			product: .staticLibrary,
+			bundleId: "com.mashup.gabbangzip.services.gabbangziperror",
+			sources: ["Services/GabbangzipError/**"],
+			dependencies: []
+		)
   ]
 )

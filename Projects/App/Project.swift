@@ -12,10 +12,10 @@ let project = Project.make(
       sources: ["Sources/**"],
       resources: ["Resources/**"],
       dependencies: [
-        .project(target: "CoreKit", path: .relativeToRoot("Projects/Core")),
-        .project(target: "DesignSystem", path: .relativeToRoot("Projects/DesignSystem")),
-        .project(target: "AppCoordinator", path: .relativeToRoot("Projects/Features/Coordinator")),
-        .external(name: "ComposableArchitecture"),
+				.project(target: .coreKit, projectPath: .core),
+				.project(target: .designSystem, projectPath: .designSystem),
+				.project(target: .appCoordinator, projectPath: .coordinator),
+				.external(externalDependency: .composableArchitecture)
       ],
       settings: .settings(
         base: [
@@ -34,10 +34,10 @@ let project = Project.make(
       sources: ["Sources/**"],
       resources: ["Resources/**"],
       dependencies: [
-        .project(target: "CoreKit", path: .relativeToRoot("Projects/Core")),
-        .project(target: "DesignSystem", path: .relativeToRoot("Projects/DesignSystem")),
-        .project(target: "AppCoordinator", path: .relativeToRoot("Projects/Features/Coordinator")),
-        .external(name: "ComposableArchitecture"),
+				.project(target: .coreKit, projectPath: .core),
+				.project(target: .designSystem, projectPath: .designSystem),
+				.project(target: .appCoordinator, projectPath: .coordinator),
+				.external(externalDependency: .composableArchitecture)
       ],
       settings: .settings(
         base: [
