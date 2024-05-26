@@ -10,7 +10,8 @@ let project = Project.make(
       bundleId: "com.mashup.gabbangzip.coreKit",
       sources: ["CoreKit/**"],
       dependencies: [
-				.target(name: .models)
+				.target(name: .models),
+				.target(name: .services)
       ]
     ),
     .make(
@@ -20,6 +21,16 @@ let project = Project.make(
       sources: ["Models/**"],
       dependencies: []
     ),
+		.make(
+			name: "Services",
+			product: .staticLibrary,
+			bundleId: "com.mashup.gabbangzip.services",
+			sources: ["Services/*"],
+			dependencies: [
+				.target(name: .getHelpers),
+				.target(name: .gabbangzipError)
+			]
+		),
 		.make(
 			name: "HomeAPIClient",
 			product: .staticLibrary,
