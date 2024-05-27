@@ -25,27 +25,11 @@ let project = Project.make(
       name: "Services",
       product: .staticLibrary,
       bundleId: "com.mashup.gabbangzip.services",
-      sources: ["Services/*"],
+      sources: ["Services/**/*.*"],
       dependencies: [
-        .target(name: .getHelpers),
-        .target(name: .gabbangzipError)
+				.external(externalDependency: .get),
+				.external(externalDependency: .composableArchitecture)
       ]
-    ),
-    .make(
-      name: "GetHelpers",
-      product: .staticLibrary,
-      bundleId: "com.mashup.gabbangzip.services.gethelpers",
-      sources: ["Services/GetHelpers/**"],
-      dependencies: [
-        .external(externalDependency: .get)
-      ]
-    ),
-    .make(
-      name: "GabbangzipError",
-      product: .staticLibrary,
-      bundleId: "com.mashup.gabbangzip.services.gabbangziperror",
-      sources: ["Services/GabbangzipError/**"],
-      dependencies: []
-    ),
+    )
   ]
 )
