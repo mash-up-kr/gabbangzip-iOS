@@ -12,17 +12,17 @@ let project = Project.make(
       sources: ["Sources/**"],
       resources: ["Resources/**"],
       dependencies: [
-				.project(target: .coreKit, projectPath: .core),
-				.project(target: .designSystem, projectPath: .designSystem),
-				.project(target: .appCoordinator, projectPath: .coordinator),
-				.external(externalDependency: .composableArchitecture)
+        .project(target: .coreKit, projectPath: .core),
+        .project(target: .designSystem, projectPath: .designSystem),
+        .project(target: .appCoordinator, projectPath: .coordinator),
+        .external(externalDependency: .composableArchitecture)
       ],
       settings: .settings(
         base: [
-          "ASSETCATALOG_COMPILER_APPICON_NAME":"ProdAppIcon"
+          "ASSETCATALOG_COMPILER_APPICON_NAME": "ProdAppIcon"
         ],
         configurations: [
-          .release(name: .release, xcconfig: "./xcconfigs/Gabbangzip.release.xcconfig"),
+          .release(name: .release, xcconfig: "./xcconfigs/Gabbangzip.release.xcconfig")
         ]
       )
     ),
@@ -34,17 +34,17 @@ let project = Project.make(
       sources: ["Sources/**"],
       resources: ["Resources/**"],
       dependencies: [
-				.project(target: .coreKit, projectPath: .core),
-				.project(target: .designSystem, projectPath: .designSystem),
-				.project(target: .appCoordinator, projectPath: .coordinator),
-				.external(externalDependency: .composableArchitecture)
+        .project(target: .coreKit, projectPath: .core),
+        .project(target: .designSystem, projectPath: .designSystem),
+        .project(target: .appCoordinator, projectPath: .coordinator),
+        .external(externalDependency: .composableArchitecture)
       ],
       settings: .settings(
         base: [
-          "ASSETCATALOG_COMPILER_APPICON_NAME":"DevAppIcon"
+          "ASSETCATALOG_COMPILER_APPICON_NAME": "DevAppIcon"
         ],
         configurations: [
-          .debug(name: .debug, xcconfig: "./xcconfigs/Gabbangzip.debug.xcconfig"),
+          .debug(name: .debug, xcconfig: "./xcconfigs/Gabbangzip.debug.xcconfig")
         ]
       )
     ),
