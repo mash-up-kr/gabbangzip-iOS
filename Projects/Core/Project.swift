@@ -25,7 +25,7 @@ let project = Project.make(
       name: "Services",
       product: .staticLibrary,
       bundleId: "com.mashup.gabbangzip.services",
-      sources: ["Services/**/*.*"],
+      sources: ["Services/**"],
       dependencies: [
 				.external(externalDependency: .get),
 				.external(externalDependency: .composableArchitecture)
