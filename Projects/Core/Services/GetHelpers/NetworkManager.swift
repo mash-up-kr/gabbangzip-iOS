@@ -10,7 +10,9 @@ import Foundation
 import Get
 
 public struct NetworkManager {
-  public static let apiClient = APIClient(
+  private init() {}
+  
+  public static let shared = APIClient(
     configuration: .init(
       baseURL: URL(
         string: ""
