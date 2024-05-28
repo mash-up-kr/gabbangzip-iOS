@@ -39,6 +39,7 @@ public enum TargetName: String {
   case designSystem = "DesignSystem"
   case appCoordinator = "AppCoordinator"
   case mainCoordinator = "MainCoordinator"
+	case main = "Main"
 }
 
 public enum ExternalDependency: String {

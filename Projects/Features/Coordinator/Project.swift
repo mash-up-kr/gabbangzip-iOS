@@ -10,8 +10,8 @@ let project = Project.make(
       bundleId: "com.mashup.gabbangzip.appCoordinator",
       sources: ["AppCoordinator/**"],
       dependencies: [
-        .external(name: "ComposableArchitecture"),
-        .external(name: "TCACoordinators")
+				.external(externalDependency: .composableArchitecture),
+				.external(externalDependency: .tcaCoordinators)
       ]
     ),
     .make(
@@ -20,9 +20,9 @@ let project = Project.make(
       bundleId: "com.mashup.gabbangzip.mainCoordinator",
       sources: ["MainCoordinator/**"],
       dependencies: [
-        .project(target: "Main", path: .relativeToRoot("Projects/Features/Scene")),
-        .external(name: "ComposableArchitecture"),
-        .external(name: "TCACoordinators")
+				.project(target: .main, projectPath: .scene),
+				.external(externalDependency: .composableArchitecture),
+				.external(externalDependency: .tcaCoordinators)
       ]
     )
   ]
