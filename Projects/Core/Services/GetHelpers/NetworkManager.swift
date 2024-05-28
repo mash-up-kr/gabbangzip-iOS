@@ -12,6 +12,7 @@ import Get
 public struct NetworkManager {
   private init() {}
   
+  // !!!: Change the base URL before using
   public static let shared = APIClient(
     configuration: .init(
       baseURL: URL(
