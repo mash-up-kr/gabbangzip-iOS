@@ -10,8 +10,8 @@ let project = Project.make(
       bundleId: "com.mashup.gabbangzip.coreKit",
       sources: ["CoreKit/**"],
       dependencies: [
-        .target(name: "Models"),
-        .target(name: "Services")
+        .target(name: .models),
+        .target(name: .services)
       ]
     ),
     .make(
@@ -27,10 +27,9 @@ let project = Project.make(
       bundleId: "com.mashup.gabbangzip.services",
       sources: ["Services/**"],
       dependencies: [
-        .target(name: "Models"),
-        .external(name: "ComposableArchitecture"),
-        .external(name: "Get")
+				.external(externalDependency: .get),
+				.external(externalDependency: .composableArchitecture)
       ]
-    ),
+    )
   ]
 )
