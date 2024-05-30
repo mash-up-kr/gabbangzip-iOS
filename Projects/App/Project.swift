@@ -45,7 +45,7 @@ let project = Project.make(
       ],
       settings: .settings(
         base: [
-          "ASSETCATALOG_COMPILER_APPICON_NAME": "ProdAppIcon",
+          "ASSETCATALOG_COMPILER_APPICON_NAME": "DevAppIcon",
           "DEVELOPMENT_TEAM": "MYR6MP3VKX",
           "CODE_SIGN_STYLE": "Manual",
           "PROVISIONING_PROFILE_SPECIFIER": "match AppStore com.mashup.gabbangzip-dev",
