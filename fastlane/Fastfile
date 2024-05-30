@@ -31,7 +31,7 @@ platform :ios do
     update_and_build_app("Dev")
     upload_to_testflight(skip_waiting_for_build_processing: true)
     download_dsyms(
-      app_identifier: "com.mashup.gabbangzip.dev",
+      app_identifier: "com.mashup.gabbangzip-dev",
       output_directory: "./Projects/App/Outputs/Archives/DEV"
     )
 
@@ -103,29 +103,41 @@ end
 def update_and_build_app(scheme = "")
   case scheme
   when "Prod"
+    match(
+      type: "appstore",
+      app_identifier: "com.mashup.gabbangzip",
+      force_for_new_devices: true,
+      readonly: true
+    )
     update_app_identifier(
       xcodeproj: "./Projects/App/App.xcodeproj",
       plist_path: "Info.plist",
       app_identifier: "com.mashup.gabbangzip"
     )
-  build_app(
-    workspace: "Gabbangzip.xcworkspace",
-    output_directory: "./Projects/App/Outputs/Archives/PROD",
-    scheme: "#{scheme}-Gabbangzip",
-    xcargs: "-allowProvisioningUpdates"
-  )
+    build_app(
+      workspace: "Gabbangzip.xcworkspace",
+      output_directory: "./Projects/App/Outputs/Archives/PROD",
+      scheme: "#{scheme}-Gabbangzip",
+      xcargs: "-allowProvisioningUpdates"
+    )
   when "Dev"
+    match(
+      type: "appstore",
+      app_identifier: "com.mashup.gabbangzip-dev",
+      force_for_new_devices: true,
+      readonly: true
+    )
     update_app_identifier(
       xcodeproj: "./Projects/App/App.xcodeproj",
       plist_path: "Info.plist",
-      app_identifier: "com.mashup.gabbangzip.dev"
+      app_identifier: "com.mashup.gabbangzip-dev"
     )
-  build_app(
-    workspace: "Gabbangzip.xcworkspace",
-    output_directory: "./Projects/App/Outputs/Archives/DEV",
-    scheme: "#{scheme}-Gabbangzip",
-    xcargs: "-allowProvisioningUpdates"
-  )
+    build_app(
+      workspace: "Gabbangzip.xcworkspace",
+      output_directory: "./Projects/App/Outputs/Archives/DEV",
+      scheme: "#{scheme}-Gabbangzip",
+      xcargs: "-allowProvisioningUpdates"
+    )
   else
     throw
   end
