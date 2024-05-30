@@ -23,6 +23,7 @@ platform :ios do
 
     update_and_build_app("Prod")
     upload_to_testflight(
+      app_identifier: "com.mashup.gabbangzip",
       api_key_path: "fastlane/key.json",
       skip_waiting_for_build_processing: true
     )
@@ -33,6 +34,7 @@ platform :ios do
 
     update_and_build_app("Dev")
     upload_to_testflight(
+      app_identifier: "com.mashup.gabbangzip-dev",
       api_key_path: "fastlane/key.json",
       skip_waiting_for_build_processing: true
     )
@@ -52,6 +54,7 @@ platform :ios do
 
     update_and_build_app("Prod")
     upload_to_testflight(
+      app_identifier: "com.mashup.gabbangzip",
       api_key_path: "fastlane/key.json",
       skip_waiting_for_build_processing: true
     )
@@ -68,6 +71,7 @@ platform :ios do
 
     update_and_build_app("Dev")
     upload_to_testflight(
+      app_identifier: "com.mashup.gabbangzip-dev",
       api_key_path: "fastlane/key.json",
       skip_waiting_for_build_processing: true
     )
@@ -79,6 +83,17 @@ platform :ios do
 end
 
 def set_build_info(new_version_number, new_build_number)
+  marketing_version = get_xcconfig_value("MARKETING_VERSION", '../Projects/App/xcconfigs/Gabbangzip.shared.xcconfig')
+  build_number = get_xcconfig_value("CURRENT_PROJECT_VERSION", '../Projects/App/xcconfigs/Gabbangzip.shared.xcconfig')
+
+  if new_version_number.nil? || new_version_number.empty?
+    new_version_number = marketing_version
+  end
+
+  if new_build_number.nil? || new_build_number.empty?
+    new_build_number = build_number
+  end
+
   set_xcconfig_value("MARKETING_VERSION", new_version_number)
   increment_build_number(
     xcodeproj: './Projects/App/App.xcodeproj',
@@ -90,6 +105,18 @@ def create_tag(new_version_number, new_build_number)
   tag_name = "#{new_version_number}-#{new_build_number}"
   
   system( `git tag #{tag_name} && git push -u origin "#{tag_name}"` )
+end
+
+def get_xcconfig_value(targetKey, xcconfigs_file_path)
+  configs = {}
+ 
+  # read configs
+  File.open(xcconfigs_file_path, "r").each_line do |line|
+    value = line.split("=")
+    configs[value[0]] = value[1].strip
+  end
+
+  return configs[targetKey]
 end
 
 def set_xcconfig_value(targetKey, targetValue, xcconfigs_file_path = '../Projects/App/xcconfigs/Gabbangzip.shared.xcconfig')
