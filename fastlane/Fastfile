@@ -148,11 +148,6 @@ def update_and_build_app(scheme = "")
       force_for_new_devices: true,
       readonly: true
     )
-    update_app_identifier(
-      xcodeproj: "./Projects/App/App.xcodeproj",
-      plist_path: "Info.plist",
-      app_identifier: "com.mashup.gabbangzip"
-    )
     build_app(
       workspace: "Gabbangzip.xcworkspace",
       output_directory: "./Projects/App/Outputs/Archives/PROD",
@@ -165,11 +160,6 @@ def update_and_build_app(scheme = "")
       app_identifier: "com.mashup.gabbangzip-dev",
       force_for_new_devices: true,
       readonly: true
-    )
-    update_app_identifier(
-      xcodeproj: "./Projects/App/App.xcodeproj",
-      plist_path: "Info.plist",
-      app_identifier: "com.mashup.gabbangzip-dev"
     )
     build_app(
       workspace: "Gabbangzip.xcworkspace",
