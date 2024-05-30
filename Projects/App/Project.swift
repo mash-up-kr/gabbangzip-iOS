@@ -22,8 +22,8 @@ let project = Project.make(
           "ASSETCATALOG_COMPILER_APPICON_NAME": "ProdAppIcon",
           "DEVELOPMENT_TEAM": "MYR6MP3VKX",
           "CODE_SIGN_STYLE": "Manual",
-          "PROVISIONING_PROFILE_SPECIFIER": "match AppStore com.mashup.gabbangzip",
-          "CODE_SIGN_IDENTITY": "Apple Distribution: Hyerin Choe (MYR6MP3VKX)"
+          "PROVISIONING_PROFILE_SPECIFIER": "match Development com.mashup.gabbangzip",
+          "CODE_SIGN_IDENTITY": "Apple Development: Hyerin Choe (QKKN56KGD9)"
         ],
         configurations: [
           .release(name: .release, xcconfig: "./xcconfigs/Gabbangzip.release.xcconfig")
@@ -48,8 +48,8 @@ let project = Project.make(
           "ASSETCATALOG_COMPILER_APPICON_NAME": "DevAppIcon",
           "DEVELOPMENT_TEAM": "MYR6MP3VKX",
           "CODE_SIGN_STYLE": "Manual",
-          "PROVISIONING_PROFILE_SPECIFIER": "match AppStore com.mashup.gabbangzip-dev",
-          "CODE_SIGN_IDENTITY": "Apple Distribution: Hyerin Choe (MYR6MP3VKX)"
+          "PROVISIONING_PROFILE_SPECIFIER": "match Development com.mashup.gabbangzip-dev",
+          "CODE_SIGN_IDENTITY": "Apple Development: Hyerin Choe (QKKN56KGD9)"
         ],
         configurations: [
           .debug(name: .debug, xcconfig: "./xcconfigs/Gabbangzip.debug.xcconfig")
