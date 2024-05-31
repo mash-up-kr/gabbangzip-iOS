@@ -93,6 +93,11 @@ else
   echo "mise is already activated in ~/.zshrc"
 fi
 
+# fastlane match를 통한 development Cert, Provisioning 가져오기
+echo "\n[9] > Getting development Cert and Provisioning ...\n"
+fastlane match development --readonly
+fastlane match appstore --readonly
+
 echo "\n---------------------------------"
 echo "::: Bootstrap Script Finished :::"
 echo "---------------------------------\n"

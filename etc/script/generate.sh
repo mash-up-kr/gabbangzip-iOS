@@ -34,7 +34,11 @@ tuist install --path "${WORKSPACE_DIR}"
 
 # Tuist generate 실행 및 프로젝트 open
 echo "\n[3] > Generating Tuist ...\n"
-TUIST_ROOT_DIR=$PWD tuist generate
+if [ "$1" = "--no-open" ]; then
+    TUIST_ROOT_DIR=$PWD tuist generate --no-open
+else
+    TUIST_ROOT_DIR=$PWD tuist generate
+fi
 
 echo "\n----------------------------------"
 echo "::: Generate Script Finished :::"
