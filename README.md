@@ -22,18 +22,14 @@
     해당 터미널에 안내되는 스텝에 따라 진행하면 됩니다. (항상 develop branch가 배포됩니다.)
 - fastlane 배포 (beta - dev + prod)
 - 릴리즈 커밋 자동 생성 및 푸쉬
-- 빌드 버전 넘버 업데이트
+- 마케팅 버전 & 빌드 버전 넘버 업데이트 (빌드 넘버는 해당 시간 연월일시분으로 자동 계산)
 - 스텝 예시
 
-  1️⃣ Apple Developer 이메일을 입력해 주세요. (ex. humains@nate.com)
-
-  humains@nate.com
-
-  2️⃣ bump type (no, patch, minor, major) 또는 특정 버전(1.1.0)을 입력하세요. / 현재 버전은 1.0.0 입니다.
+  1️⃣ bump type (no, patch, minor, major) 또는 특정 버전(1.1.0)을 입력하세요. / 현재 버전은 1.0.0 입니다.
 
   patch
 
-  3️⃣ git reset --h 명령어가 실행됩니다. 커밋되지 않은 변경사항은 모두 삭제됩니다. (y/n)
+  2️⃣ git reset --h 명령어가 실행됩니다. 커밋되지 않은 변경사항은 모두 삭제됩니다. (y/n)
 
   y
 
