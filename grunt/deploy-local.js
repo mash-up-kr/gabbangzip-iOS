@@ -6,14 +6,14 @@ const semver = require("semver");
 module.exports = async function deployLocal() {
   const done = this.async();
 
-  const { appleID, newVersionNumber, newBuildNumber } = await fetchEnv();
+  const { newVersionNumber, newBuildNumber } = await fetchEnv();
 
   await checkoutBranch(newVersionNumber, newBuildNumber);
 
   await setBuildInfo(newVersionNumber, newBuildNumber);
   createReleaseCommit(newVersionNumber, newBuildNumber);
 
-  await deploy(appleID, newVersionNumber, newBuildNumber);
+  await deploy(newVersionNumber, newBuildNumber);
 
   done();
 };
@@ -42,8 +42,6 @@ function createReleaseCommit(newVersionNumber, newBuildNumber) {
 }
 
 async function fetchEnv() {
-  const appleID = await question(`🙏 Apple Developer 이메일을 입력해 주세요. (ex. humains@nate.com) \n> `);
-
   const currentVersion = fetchCurrentVersion();
   const bumpType = await question(
     `\n🙏 bump type (no, patch, minor, major) 또는, 특정 버전(1.1.0)을 입력하세요. / 현재 버전은, '${currentVersion}' 입니다. \n> `
@@ -53,23 +51,27 @@ async function fetchEnv() {
   const newVersionNumber = _newVersion(currentVersion, bumpType);
   const newBuildNumber = _newBuildNumber();
 
-  shell.echo(`\n===입력 정보 확인===\n🔑 Account: ${appleID}\n🎯 Version: '${newVersionNumber} - ${newBuildNumber}'\n`);
+  shell.echo(`\n===입력 정보 확인===\n🎯 Version: '${newVersionNumber} - ${newBuildNumber}'\n`);
 
   return {
-    appleID,
     newVersionNumber,
     newBuildNumber,
   };
 }
 
-async function deploy(appleID, newVersionNumber, newBuildNumber) {
+async function deploy(newVersionNumber, newBuildNumber) {
   const { execa } = await import("execa");
-  await execa("grunt", ["gp"]);
+  await execa(
+    "make",
+    ["generate-no-open"],
+    {
+      stdio: "inherit",
+    }
+  );
   await execa(
     "bundle",
     ["exec", "fastlane", "ios", "beta", `new_version_number:${newVersionNumber}`, `new_build_number:${newBuildNumber}`],
     {
-      env: { ...process.env, APPLE_ID: appleID },
       stdio: "inherit",
     }
   );
