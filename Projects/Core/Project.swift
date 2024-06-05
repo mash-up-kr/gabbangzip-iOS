@@ -11,7 +11,8 @@ let project = Project.make(
       sources: ["CoreKit/**"],
       dependencies: [
         .target(name: .models),
-        .target(name: .services)
+        .target(name: .services),
+        .target(name: .common)
       ]
     ),
     .make(
@@ -28,8 +29,15 @@ let project = Project.make(
       sources: ["Services/**"],
       dependencies: [
 				.external(externalDependency: .get),
-				.external(externalDependency: .composableArchitecture)
+				.external(externalDependency: .composableArchitecture),
       ]
+    ),
+    .make(
+      name: "Common",
+      product: .staticLibrary,
+      bundleId: "com.mashup.gabbangzip.common",
+      sources: ["Common/**"],
+      dependencies: []
     )
   ]
 )
