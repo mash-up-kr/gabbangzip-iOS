@@ -1,6 +1,6 @@
 //
 //  ActivityView.swift
-//  CoreKit
+//  Common
 //
 //  Created by GREEN on 6/5/24.
 //  Copyright © 2024 com.mashup.gabbangzip. All rights reserved.

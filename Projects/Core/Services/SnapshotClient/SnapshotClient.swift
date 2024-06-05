@@ -1,6 +1,6 @@
 //
 //  SnapshotClient.swift
-//  CoreKit
+//  Services
 //
 //  Created by GREEN on 6/5/24.
 //  Copyright © 2024 com.mashup.gabbangzip. All rights reserved.
@@ -11,11 +11,11 @@ import SwiftUI
 
 // MARK: - API Client Interface
 @DependencyClient
-struct SnapshotClient {
+public struct SnapshotClient {
   var takeSnapshot: @Sendable () async throws -> UIImage
 }
 
-extension DependencyValues {
+public extension DependencyValues {
   var snapshotClient: SnapshotClient {
     self[SnapshotClient.self]
   }
@@ -23,7 +23,7 @@ extension DependencyValues {
 
 // MARK: - API Client Implementation
 extension SnapshotClient: DependencyKey {
-  static let liveValue = SnapshotClient(
+  public static let liveValue = SnapshotClient(
     takeSnapshot: {
       try await MainActor.run {
         var totalImage: UIImage?
