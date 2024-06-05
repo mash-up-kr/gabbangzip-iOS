@@ -26,4 +26,23 @@ public extension View {
     
     completion(renderer.uiImage)
   }
+  
+  // MARK: - View cornerRadius
+  func cornerRadius(_ radius: CGFloat, corners: UIRectCorner) -> some View {
+    clipShape(RoundCorners(radius: radius, corners: corners))
+  }
+}
+
+fileprivate struct RoundCorners: Shape {
+  var radius: CGFloat = 10
+  var corners: UIRectCorner = .allCorners
+  
+  func path(in rect: CGRect) -> Path {
+    let path = UIBezierPath(
+      roundedRect: rect,
+      byRoundingCorners: corners,
+      cornerRadii: CGSize(width: radius, height: radius)
+    )
+    return Path(path.cgPath)
+  }
 }
