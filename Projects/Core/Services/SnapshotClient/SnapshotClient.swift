@@ -12,7 +12,7 @@ import SwiftUI
 // MARK: - API Client Interface
 @DependencyClient
 public struct SnapshotClient {
-  var takeSnapshot: @Sendable () async throws -> UIImage
+  public var takeSnapshot: @Sendable () async throws -> UIImage
 }
 
 public extension DependencyValues {
@@ -36,16 +36,14 @@ extension SnapshotClient: DependencyKey {
           throw SnapshotError(code: .failedToGetKeyWindowLayer)
         }
         
-        let currentScale = UIScreen.main.scale
-        UIGraphicsBeginImageContextWithOptions(currentLayer.frame.size, false, currentScale)
-        
-        guard let currentContext = UIGraphicsGetCurrentContext() else {
-          throw SnapshotError(code: .failedToGetCurrentContext)
+        let renderer = UIGraphicsImageRenderer(
+          size: currentLayer.frame.size,
+          format: UIGraphicsImageRendererFormat.default()
+        )
+        totalImage = renderer.image { context in
+          currentLayer.render(in: context.cgContext)
         }
-        currentLayer.render(in: currentContext)
         
-        totalImage = UIGraphicsGetImageFromCurrentImageContext()
-        UIGraphicsEndImageContext()
         return totalImage ?? UIImage()
       }
     }
