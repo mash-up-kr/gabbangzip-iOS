@@ -9,7 +9,10 @@ let project = Project.make(
       product: .framework,
       bundleId: "com.mashup.gabbangzip.designSystem",
       sources: ["Sources/**"],
-      resources: ["Resources/**"]
+      resources: ["Resources/**"],
+      dependencies: [
+        .external(externalDependency: .lottie)
+      ]
     )
   ],
   resourceSynthesizers: [
