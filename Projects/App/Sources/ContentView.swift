@@ -16,6 +16,9 @@ public struct ContentView: View {
       /// 이렇게 어떤 모듈에서든 편하게 사용할 수 있음
       LottieView(type: .confetti)
         .frame(width: 500, height: 500)
+      
+      LottieTestView(named: JSONFiles.Bookmark.name)
+        .frame(width: 500, height: 500)
     }
   }
 }
