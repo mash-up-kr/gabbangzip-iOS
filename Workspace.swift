@@ -13,7 +13,10 @@ let workspace = Workspace(
     .scheme(
       name: "Prod-Gabbangzip",
       buildAction: .buildAction(targets: [.project(path: "./Projects/App", target: "Prod-Gabbangzip")]),
-      runAction: .runAction(configuration: .release),
+      runAction: .runAction(
+        configuration: .release,
+        arguments: .arguments(environmentVariables: ["IDEPreferLogStreaming": "YES"])
+      ),
       archiveAction: .archiveAction(configuration: .release),
       profileAction: .profileAction(configuration: .release),
       analyzeAction: .analyzeAction(configuration: .release)
@@ -21,7 +24,10 @@ let workspace = Workspace(
     .scheme(
       name: "Dev-Gabbangzip",
       buildAction: .buildAction(targets: [.project(path: "./Projects/App", target: "Dev-Gabbangzip")]),
-      runAction: .runAction(configuration: .debug),
+      runAction: .runAction(
+        configuration: .debug,
+        arguments: .arguments(environmentVariables: ["IDEPreferLogStreaming": "YES"])
+      ),
       archiveAction: .archiveAction(configuration: .debug),
       profileAction: .profileAction(configuration: .debug),
       analyzeAction: .analyzeAction(configuration: .debug)
