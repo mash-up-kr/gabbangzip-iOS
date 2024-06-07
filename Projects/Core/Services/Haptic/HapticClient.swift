@@ -24,7 +24,6 @@ public extension DependencyValues {
   }
 }
 
-
 // MARK: - API Client Implementation
 extension HapticClient: DependencyKey {
   public static let liveValue = HapticClient(
