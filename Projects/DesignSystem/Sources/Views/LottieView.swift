@@ -13,21 +13,40 @@ public struct LottieView: UIViewRepresentable {
   public typealias CompletionBlock = LottieCompletionBlock?
   private let type: GabbangzipLottieAnimationType
   private let loopMode: LottieLoopMode
+  private let contentMode: UIView.ContentMode
+  private let backgroundBehavior: LottieBackgroundBehavior
+  @Binding private var isPlaying: Bool
   private let completion: CompletionBlock
   
   public init(
     type: GabbangzipLottieAnimationType,
     loopMode: LottieLoopMode = .loop,
+    contentMode: UIView.ContentMode = .scaleAspectFit,
+    backgroundBehavior: LottieBackgroundBehavior = .pauseAndRestore,
+    isPlaying: Binding<Bool> = .constant(true),
     completion: CompletionBlock = { _ in }
   ) {
     self.type = type
     self.loopMode = loopMode
+    self.contentMode = contentMode
+    self.backgroundBehavior = backgroundBehavior
+    self._isPlaying = isPlaying
     self.completion = completion
   }
   
   public func makeUIView(context: Context) -> some UIView {
     let view = UIView(frame: .zero)
-    let animationView = configureLottieAnimationView()
+    let animationView = LottieAnimationView()
+    
+    animationView.frame = view.bounds
+    animationView.animation = LottieAnimation.named(type.fileName, bundle: .module)
+    animationView.loopMode = self.loopMode
+    animationView.contentMode = self.contentMode
+    animationView.backgroundBehavior = self.backgroundBehavior
+    if isPlaying {
+      animationView.play(completion: self.completion)
+    }
+    animationView.translatesAutoresizingMaskIntoConstraints = false
     
     view.addSubview(animationView)
     
@@ -41,33 +60,20 @@ public struct LottieView: UIViewRepresentable {
     return view
   }
   
-  public func updateUIView(_ uiView: UIViewType, context: Context) { }
-  
-  private func configureLottieAnimationView() -> LottieAnimationView {
-    let animationView = LottieAnimationView()
-    
-    guard let path = DesignSystemResources.bundle.path(
-      forResource: type.name,
-      ofType: "json"
-    ) else {
-      return animationView
+  public func updateUIView(_ uiView: UIViewType, context: Context) {
+    guard let animationView = uiView.subviews.first as? LottieAnimationView else {
+      return
     }
     
-    do {
-      let data = try Data(contentsOf: URL(fileURLWithPath: path), options: .mappedIfSafe)
-      
-      let animation = try LottieAnimation.from(data: data)
-      animationView.animation = animation
-      animationView.contentMode = .scaleAspectFit
-      animationView.loopMode = self.loopMode
-      animationView.play(completion: self.completion)
-      animationView.backgroundBehavior = .pauseAndRestore
-      animationView.translatesAutoresizingMaskIntoConstraints = false
-    } catch {
-      print("Error loading Lottie animation: \(error)")
+    if isPlaying {
+      if !animationView.isAnimationPlaying {
+        animationView.play(completion: completion)
+      }
+    } else {
+      if animationView.isAnimationPlaying {
+        animationView.pause()
+      }
     }
-    
-    return animationView
   }
 }
 
@@ -84,9 +90,5 @@ public enum GabbangzipLottieAnimationType {
     case .bookmark:
       return JSONFiles.Bookmark.name
     }
-  }
-  
-  var name: String {
-    self.fileName.replacingOccurrences(of: ".json", with: "")
   }
 }

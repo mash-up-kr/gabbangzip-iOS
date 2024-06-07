@@ -17,7 +17,8 @@ public struct SnapshotClient {
 
 public extension DependencyValues {
   var snapshotClient: SnapshotClient {
-    self[SnapshotClient.self]
+    get { self[SnapshotClient.self] }
+    set { self[SnapshotClient.self] = newValue }
   }
 }
 
