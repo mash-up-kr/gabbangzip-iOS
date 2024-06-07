@@ -35,6 +35,7 @@ public enum ProjectPath: String {
 public enum TargetName: String {
   case models = "Models"
   case services = "Services"
+  case common = "Common"
   case coreKit = "CoreKit"
   case designSystem = "DesignSystem"
   case appCoordinator = "AppCoordinator"
