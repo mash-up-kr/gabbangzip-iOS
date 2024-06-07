@@ -15,7 +15,7 @@ public struct LottieView: UIViewRepresentable {
   private let loopMode: LottieLoopMode
   private let contentMode: UIView.ContentMode
   private let backgroundBehavior: LottieBackgroundBehavior
-  @Binding private var isPlaying: Bool
+  private var isPlaying: Bool
   private let completion: CompletionBlock
   
   public init(
@@ -23,14 +23,14 @@ public struct LottieView: UIViewRepresentable {
     loopMode: LottieLoopMode = .loop,
     contentMode: UIView.ContentMode = .scaleAspectFit,
     backgroundBehavior: LottieBackgroundBehavior = .pauseAndRestore,
-    isPlaying: Binding<Bool> = .constant(true),
+    isPlaying: Bool = true,
     completion: CompletionBlock = { _ in }
   ) {
     self.type = type
     self.loopMode = loopMode
     self.contentMode = contentMode
     self.backgroundBehavior = backgroundBehavior
-    self._isPlaying = isPlaying
+    self.isPlaying = isPlaying
     self.completion = completion
   }
   
