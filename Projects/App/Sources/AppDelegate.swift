@@ -10,10 +10,18 @@ import ComposableArchitecture
 import UIKit
 
 final class AppDelegate: NSObject, UIApplicationDelegate {
+  let store = StoreOf<AppDelegateReducer>.init(
+    initialState: .init(),
+    reducer: {
+      AppDelegateReducer()
+    }
+  )
+  
   func application(
     _ application: UIApplication,
     didFinishLaunchingWithOptions launchOptions: [UIApplication.LaunchOptionsKey: Any]? = nil
   ) -> Bool {
+    store.send(.didFinishLaunching)
     return true
   }
 }
