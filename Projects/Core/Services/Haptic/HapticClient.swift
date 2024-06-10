@@ -28,16 +28,12 @@ public extension DependencyValues {
 extension HapticClient: DependencyKey {
   public static let liveValue = HapticClient(
     triggerImpact: { style in
-      await MainActor.run {
-        let generator = UIImpactFeedbackGenerator(style: style)
-        generator.impactOccurred()
-      }
+      let generator = await UIImpactFeedbackGenerator(style: style)
+      await generator.impactOccurred()
     },
     triggerNotification: { type in
-      await MainActor.run {
-        let generator = UINotificationFeedbackGenerator()
-        generator.notificationOccurred(type)
-      }
+      let generator = await UINotificationFeedbackGenerator()
+      await generator.notificationOccurred(type)
     }
   )
 }
