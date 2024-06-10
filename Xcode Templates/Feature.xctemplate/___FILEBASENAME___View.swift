@@ -4,7 +4,7 @@ import ComposableArchitecture
 import SwiftUI
 
 public struct ___FILEBASENAMEASIDENTIFIER___: View {
-  @Bindable var store: StoreOf<___VARIABLE_productName:identifier___>
+  let store: StoreOf<___VARIABLE_productName:identifier___>
 
   public init(store: StoreOf<___VARIABLE_productName:identifier___>) {
     self.store = store
