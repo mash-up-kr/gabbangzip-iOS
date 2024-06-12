@@ -18,6 +18,7 @@ struct AppDelegateReducer {
   enum Action {
     case didFinishLaunching
     case userNotifications(UserNotificationClient.DelegateEvent)
+    case authorizationStatusResposne(Result<Void, Error>)
   }
   
   @Dependency(\.userNotificationClient) private var userNotificationClient
@@ -28,8 +29,10 @@ struct AppDelegateReducer {
       case .didFinishLaunching:
         return .run { @MainActor send in
           // TODO: 써드파티 SDK 초기화 및 설정
-          
-          self.userNotificationClient.requestAuthorization()
+          let authorizationStatus = await self.userNotificationClient.getAuthorizationStatus()
+          if authorizationStatus == .notDetermined {
+            await send(.authorizationStatusResposne(Result { try await self.userNotificationClient.requestAuthorization() }))
+          }
           
           for await event in self.userNotificationClient.delegate() {
             send(.userNotifications(event))
@@ -45,6 +48,12 @@ struct AppDelegateReducer {
         return .run { send in
           completionHandler([.banner, .badge, .sound])
         }
+        
+      case let .authorizationStatusResposne(.success(status)):
+        return .none
+        
+      case let .authorizationStatusResposne(.failure(error)):
+        return .none
       }
     }
   }
