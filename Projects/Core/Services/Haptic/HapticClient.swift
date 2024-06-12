@@ -10,6 +10,7 @@ import ComposableArchitecture
 import SwiftUI
 
 // MARK: - API Client Interface
+@DependencyClient
 public struct HapticClient {
   /// 사용자 인터랙션에 따른 햅틱 반응 (light || medium || heavy || soft || rigid)
   public var triggerImpact: @Sendable (UIImpactFeedbackGenerator.FeedbackStyle) async -> Void
