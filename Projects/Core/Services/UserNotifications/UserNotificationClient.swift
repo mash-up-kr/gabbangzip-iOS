@@ -38,7 +38,7 @@ extension UserNotificationClient: DependencyKey {
       },
       delegate: {
         AsyncStream { continuation in
-          let delegate = Delegate(continuation: continuation)
+          let delegate = NotificationCenterDelegate(continuation: continuation)
           UNUserNotificationCenter.current().delegate = delegate
           continuation.onTermination = { _ in
             _ = delegate
@@ -61,7 +61,7 @@ extension UserNotificationClient: DependencyKey {
 }
 
 extension UserNotificationClient {
-  final class Delegate: NSObject, UNUserNotificationCenterDelegate, Sendable {
+  final class NotificationCenterDelegate: NSObject, UNUserNotificationCenterDelegate, Sendable {
     let continuation: AsyncStream<DelegateEvent>.Continuation
     
     init(continuation: AsyncStream<DelegateEvent>.Continuation) {
