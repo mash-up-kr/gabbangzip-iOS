@@ -92,7 +92,6 @@ extension UserNotificationClient {
   }
 }
 
-
 public extension DependencyValues {
   var userNotificationClient: UserNotificationClient {
     get { self[UserNotificationClient.self] }
