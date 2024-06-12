@@ -9,9 +9,10 @@
 import ComposableArchitecture
 import UserNotifications
 
+@DependencyClient
 public struct UserNotificationClient {
-  public var getAuthorizationStatus: @Sendable () async -> UNAuthorizationStatus
-  public var delegate: @Sendable () -> AsyncStream<DelegateEvent>
+  public var getAuthorizationStatus: @Sendable () async -> UNAuthorizationStatus = { .notDetermined }
+  public var delegate: @Sendable () -> AsyncStream<DelegateEvent> = { .finished }
   public var requestAuthorization: @Sendable () async throws -> Void
   
   public enum DelegateEvent {
@@ -52,11 +53,7 @@ extension UserNotificationClient: DependencyKey {
   }
   
   public static var testValue: UserNotificationClient {
-    return UserNotificationClient(
-      getAuthorizationStatus: unimplemented("\(Self.self).getAuthorizationStatus"),
-      delegate: unimplemented("\(Self.self).delegate"),
-      requestAuthorization: unimplemented("\(Self.self).requestAuthorization")
-    )
+    return UserNotificationClient()
   }
 }
 
