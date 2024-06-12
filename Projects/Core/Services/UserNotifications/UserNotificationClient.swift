@@ -12,7 +12,7 @@ import UserNotifications
 public struct UserNotificationClient {
   public var getAuthorizationStatus: @Sendable () async -> UNAuthorizationStatus
   public var delegate: @Sendable () -> AsyncStream<DelegateEvent>
-  public var requestAuthorization: @Sendable () -> Void
+  public var requestAuthorization: @Sendable () async throws -> Void
   
   public enum DelegateEvent {
     case didReceiveResponse(
@@ -46,11 +46,7 @@ extension UserNotificationClient: DependencyKey {
         }
       },
       requestAuthorization: {
-        let authOptions: UNAuthorizationOptions = [.alert, .badge, .sound]
-        UNUserNotificationCenter.current().requestAuthorization(
-          options: authOptions,
-          completionHandler: { _, _ in }
-        )
+        try await UNUserNotificationCenter.current().requestAuthorization(options: [[.alert, .badge, .sound]])
       }
     )
   }
