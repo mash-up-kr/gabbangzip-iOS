@@ -30,7 +30,9 @@ extension HapticClient: DependencyKey {
       await generator.notificationOccurred(type)
     }
   )
-  
+}
+
+extension HapticClient: TestDependencyKey {
   public static let testValue = Self()
 }
 

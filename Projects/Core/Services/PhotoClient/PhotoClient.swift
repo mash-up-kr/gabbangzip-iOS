@@ -30,8 +30,6 @@ extension PhotoClient: DependencyKey {
     }
   )
   
-  public static let testValue = Self()
-  
   private static func handleStatus(_ status: PHAuthorizationStatus) async throws -> Bool {
     switch status {
     case .authorized, .limited:
@@ -40,6 +38,10 @@ extension PhotoClient: DependencyKey {
       throw PhotoClientError(code: .notAccessPhotoLibrary)
     }
   }
+}
+
+extension PhotoClient: TestDependencyKey {
+  public static let testValue = Self()
 }
 
 public extension DependencyValues {

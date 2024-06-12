@@ -42,7 +42,9 @@ extension SnapshotClient: DependencyKey {
       }
     }
   )
-  
+}
+
+extension SnapshotClient: TestDependencyKey {
   public static let testValue = Self()
 }
 
