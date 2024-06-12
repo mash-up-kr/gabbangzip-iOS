@@ -65,7 +65,7 @@ extension UserNotificationClient: DependencyKey {
 }
 
 extension UserNotificationClient {
-  fileprivate class Delegate: NSObject, UNUserNotificationCenterDelegate {
+  final class Delegate: NSObject, UNUserNotificationCenterDelegate, Sendable {
     let continuation: AsyncStream<DelegateEvent>.Continuation
     
     init(continuation: AsyncStream<DelegateEvent>.Continuation) {
