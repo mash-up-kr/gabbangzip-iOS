@@ -20,7 +20,7 @@ struct AppDelegateReducer {
     case userNotifications(UserNotificationClient.DelegateEvent)
   }
   
-  @Dependency(\.userNotificationClient) var userNotificationClient
+  @Dependency(\.userNotificationClient) private var userNotificationClient
 
   var body: some Reducer<State, Action> {
     Reduce { state, action in
