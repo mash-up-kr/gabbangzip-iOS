@@ -13,8 +13,8 @@ import SwiftUI
 // MARK: - API Client Interface
 @DependencyClient
 public struct PhotoClient {
-  public var checkPhotoLibraryAuthorization: @Sendable () async throws -> Result<Bool, Error>
-  public var requestPhotoLibraryAccess: @Sendable () async throws -> Result<Bool, Error>
+  public var checkPhotoLibraryAuthorization: @Sendable () async throws -> Bool
+  public var requestPhotoLibraryAccess: @Sendable () async throws -> Bool
 }
 
 // MARK: - API Client Implementation
@@ -35,12 +35,12 @@ extension PhotoClient: DependencyKey {
     requestPhotoLibraryAccess: unimplemented("\(Self.self).requestPhotoLibraryAccess")
   )
   
-  private static func handleStatus(_ status: PHAuthorizationStatus) async throws -> Result<Bool, Error> {
+  private static func handleStatus(_ status: PHAuthorizationStatus) async throws -> Bool {
     switch status {
     case .authorized, .limited:
-      return .success(true)
+      return true
     default:
-      return .failure(PhotoClientError(code: .notAccessPhotoLibrary))
+      throw PhotoClientError(code: .notAccessPhotoLibrary)
     }
   }
 }
