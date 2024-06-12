@@ -15,13 +15,6 @@ public struct SnapshotClient {
   public var takeSnapshot: @Sendable () async throws -> UIImage
 }
 
-public extension DependencyValues {
-  var snapshotClient: SnapshotClient {
-    get { self[SnapshotClient.self] }
-    set { self[SnapshotClient.self] = newValue }
-  }
-}
-
 // MARK: - API Client Implementation
 extension SnapshotClient: DependencyKey {
   public static let liveValue = SnapshotClient(
@@ -49,6 +42,17 @@ extension SnapshotClient: DependencyKey {
       }
     }
   )
+  
+  public static let testValue = SnapshotClient(
+    takeSnapshot: unimplemented("\(Self.self).takeSnapshot")
+  )
+}
+
+public extension DependencyValues {
+  var snapshotClient: SnapshotClient {
+    get { self[SnapshotClient.self] }
+    set { self[SnapshotClient.self] = newValue }
+  }
 }
 
 // MARK: - Snapshot Error

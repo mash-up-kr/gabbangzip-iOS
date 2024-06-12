@@ -17,13 +17,6 @@ public struct HapticClient {
   public var triggerNotification: @Sendable (UINotificationFeedbackGenerator.FeedbackType) async -> Void
 }
 
-public extension DependencyValues {
-  var hapticClient: HapticClient {
-    get { self[HapticClient.self] }
-    set { self[HapticClient.self] = newValue }
-  }
-}
-
 // MARK: - API Client Implementation
 extension HapticClient: DependencyKey {
   public static let liveValue = HapticClient(
@@ -36,4 +29,16 @@ extension HapticClient: DependencyKey {
       await generator.notificationOccurred(type)
     }
   )
+  
+  public static let testValue = HapticClient(
+    triggerImpact: unimplemented("\(Self.self).triggerImpact"),
+    triggerNotification: unimplemented("\(Self.self).triggerNotification")
+  )
+}
+
+public extension DependencyValues {
+  var hapticClient: HapticClient {
+    get { self[HapticClient.self] }
+    set { self[HapticClient.self] = newValue }
+  }
 }
