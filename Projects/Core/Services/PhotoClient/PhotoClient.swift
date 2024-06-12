@@ -30,10 +30,7 @@ extension PhotoClient: DependencyKey {
     }
   )
   
-  public static let testValue = PhotoClient(
-    checkPhotoLibraryAuthorization: unimplemented("\(Self.self).checkPhotoLibraryAuthorization"),
-    requestPhotoLibraryAccess: unimplemented("\(Self.self).requestPhotoLibraryAccess")
-  )
+  public static let testValue = Self()
   
   private static func handleStatus(_ status: PHAuthorizationStatus) async throws -> Bool {
     switch status {

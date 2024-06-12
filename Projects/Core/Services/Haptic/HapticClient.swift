@@ -30,10 +30,7 @@ extension HapticClient: DependencyKey {
     }
   )
   
-  public static let testValue = HapticClient(
-    triggerImpact: unimplemented("\(Self.self).triggerImpact"),
-    triggerNotification: unimplemented("\(Self.self).triggerNotification")
-  )
+  public static let testValue = Self()
 }
 
 public extension DependencyValues {

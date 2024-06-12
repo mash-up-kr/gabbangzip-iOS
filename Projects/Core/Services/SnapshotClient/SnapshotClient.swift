@@ -43,9 +43,7 @@ extension SnapshotClient: DependencyKey {
     }
   )
   
-  public static let testValue = SnapshotClient(
-    takeSnapshot: unimplemented("\(Self.self).takeSnapshot")
-  )
+  public static let testValue = Self()
 }
 
 public extension DependencyValues {
