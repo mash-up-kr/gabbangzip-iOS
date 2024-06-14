@@ -10,7 +10,7 @@ import PhotosUI
 import SwiftUI
 
 public struct GabbangzipPhotoPicker<Content: View>: View {
-  @State private var selectedPhotos: [PhotosPickerItem]
+  @State private var selectedPhotos: [PhotosPickerItem] = []
   @Binding private var selectedImages: [UIImage]
   @Binding private var isPresentedError: Bool
   private let maxSelectedCount: MaxSelectedCountType
@@ -25,7 +25,6 @@ public struct GabbangzipPhotoPicker<Content: View>: View {
   private let content: () -> Content
   
   public init(
-    selectedPhotos: [PhotosPickerItem] = [],
     selectedImages: Binding<[UIImage]>,
     isPresentedError: Binding<Bool> = .constant(false),
     maxSelectedCount: MaxSelectedCountType = .multiple,
@@ -33,7 +32,6 @@ public struct GabbangzipPhotoPicker<Content: View>: View {
     photoLibrary: PHPhotoLibrary = .shared(),
     content: @escaping () -> Content
   ) {
-    self.selectedPhotos = selectedPhotos
     self._selectedImages = selectedImages
     self._isPresentedError = isPresentedError
     self.maxSelectedCount = maxSelectedCount
