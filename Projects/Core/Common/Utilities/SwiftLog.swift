@@ -9,8 +9,11 @@
 import Foundation
 
 public class SwiftLog {
-  public let maxFileSize: UInt64 = 10240
-  public let maxFileCount = 8
+  public static let logger: SwiftLog = SwiftLog()
+  
+  public let maxFileSize: UInt64
+  public let maxFileCount: Int
+  public let printToConsole: Bool
   public var directory = SwiftLog.defaultDirectory() {
     didSet {
       directory = NSString(string: directory).expandingTildeInPath
@@ -32,14 +35,16 @@ public class SwiftLog {
   public var currentPath: String {
     return "\(directory)/\(logName(0))"
   }
-  public let name = "logfile"
-  public let printToConsole = false
+  private let name = "logfile"
   
-  public class var logger: SwiftLog {
-    struct Static {
-      static let instance: SwiftLog = SwiftLog()
-    }
-    return Static.instance
+  public init(
+    maxFileSize: UInt64 = 10240,
+    maxFileCount: Int = 8,
+    printToConsole: Bool = false
+  ) {
+    self.maxFileSize = maxFileSize
+    self.maxFileCount = maxFileCount
+    self.printToConsole = printToConsole
   }
   
   public func write(_ text: String) {
@@ -113,15 +118,9 @@ public class SwiftLog {
   static func defaultDirectory() -> String {
     var path = ""
     let fileManager = FileManager.default
-    #if os(iOS)
     let paths = NSSearchPathForDirectoriesInDomains(.documentDirectory, .userDomainMask, true)
     path = "\(paths[0])/Logs"
-    #elseif os(macOS)
-    let urls = fileManager.urls(for: .libraryDirectory, in: .userDomainMask)
-    if let url = urls.last {
-      path = "\(url.path)/Logs"
-    }
-    #endif
+    
     if !fileManager.fileExists(atPath: path) && !(path.isEmpty)  {
       do {
         try fileManager.createDirectory(atPath: path, withIntermediateDirectories: false, attributes: nil)

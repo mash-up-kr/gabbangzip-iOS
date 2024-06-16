@@ -13,7 +13,7 @@ public let logger = DebugLogger()
 public class DebugLogger {
   private static let fileLogQueue = DispatchQueue(label: "com.mashup.gabbangzip.file_log_queue")
   
-  public init() { }
+  public init() {}
   
   public func debug(
     _ message: String = "",
