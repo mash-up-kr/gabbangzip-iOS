@@ -10,18 +10,12 @@ import ComposableArchitecture
 import SwiftUI
 
 // MARK: - API Client Interface
+@DependencyClient
 public struct HapticClient {
   /// 사용자 인터랙션에 따른 햅틱 반응 (light || medium || heavy || soft || rigid)
   public var triggerImpact: @Sendable (UIImpactFeedbackGenerator.FeedbackStyle) async -> Void
   /// 작업 완료 여부에 따른 햅틱 반응 (success || warning || error)
   public var triggerNotification: @Sendable (UINotificationFeedbackGenerator.FeedbackType) async -> Void
-}
-
-public extension DependencyValues {
-  var hapticClient: HapticClient {
-    get { self[HapticClient.self] }
-    set { self[HapticClient.self] = newValue }
-  }
 }
 
 // MARK: - API Client Implementation
@@ -36,4 +30,15 @@ extension HapticClient: DependencyKey {
       await generator.notificationOccurred(type)
     }
   )
+}
+
+extension HapticClient: TestDependencyKey {
+  public static let testValue = Self()
+}
+
+public extension DependencyValues {
+  var hapticClient: HapticClient {
+    get { self[HapticClient.self] }
+    set { self[HapticClient.self] = newValue }
+  }
 }
