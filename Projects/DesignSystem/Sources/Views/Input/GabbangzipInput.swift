@@ -63,3 +63,11 @@ public enum InputType {
     }
   }
 }
+
+#Preview {
+  VStack {
+    GabbangzipInput(type: .constant(.active), text: .constant("test"), placeholderText: "placeholder", maxLength: 10)
+    
+    GabbangzipInput(type: .constant(.default), text: .constant("test"), placeholderText: "placeholder", maxLength: 10)
+  }
+}

@@ -79,3 +79,11 @@ public enum ButtonType {
     }
   }
 }
+
+#Preview {
+  VStack {
+    GabbangzipBottomButton(type: .constant(.active), title: "test", action: {})
+    GabbangzipBottomButton(type: .constant(.inactive), title: "test", action: {})
+    GabbangzipBottomButton(type: .constant(.secondary), title: "test", action: {})
+  }
+}
