@@ -10,7 +10,8 @@ import PackageDescription
       "TCACoordinators": .framework,
       "Nuke": .framework,
       "Lottie": .framework,
-      "Get": .framework
+      "Get": .framework,
+      "KakaoSDK": .framework
     ]
   )
 #endif
@@ -23,6 +24,7 @@ let package = Package(
 		.package(url: "https://github.com/kean/Nuke.git", from: "12.0.0"),
 		.package(url: "https://github.com/airbnb/lottie-ios.git", from: "4.4.3"),
 		.package(url: "https://github.com/kean/Get.git", from: "2.2.0"),
-		.package(url: "https://github.com/Kuniwak/MultipartFormDataKit.git", from: "1.0.1")
+		.package(url: "https://github.com/Kuniwak/MultipartFormDataKit.git", from: "1.0.1"),
+    .package(url: "https://github.com/kakao/kakao-ios-sdk", from: "2.22.2")
   ]
 )

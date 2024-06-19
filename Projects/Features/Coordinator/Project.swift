@@ -11,7 +11,8 @@ let project = Project.make(
       sources: ["AppCoordinator/**"],
       dependencies: [
 				.external(externalDependency: .composableArchitecture),
-				.external(externalDependency: .tcaCoordinators)
+				.external(externalDependency: .tcaCoordinators),
+        .external(externalDependency: .kakaoSDK)
       ]
     ),
     .make(
@@ -22,7 +23,8 @@ let project = Project.make(
       dependencies: [
 				.project(target: .main, projectPath: .scene),
 				.external(externalDependency: .composableArchitecture),
-				.external(externalDependency: .tcaCoordinators)
+				.external(externalDependency: .tcaCoordinators),
+        .external(externalDependency: .kakaoSDK)
       ]
     )
   ]
