@@ -10,7 +10,7 @@ import ComposableArchitecture
 import Services
 
 @Reducer
-struct AppDelegateReducer {
+struct AppDelegateCore {
   @ObservableState
   struct State: Equatable {
   }
