@@ -3,7 +3,7 @@
 import ComposableArchitecture
 
 @Reducer
-public struct ___VARIABLE_productName___ {
+public struct ___VARIABLE_productName:identifier___Core {
   public struct State: Equatable {
   }
 
