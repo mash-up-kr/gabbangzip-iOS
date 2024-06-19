@@ -6,6 +6,7 @@
 //
 
 import SwiftUI
+import ComposableArchitecture
 
 @main
 struct GabbangzipApp: App {
@@ -13,7 +14,7 @@ struct GabbangzipApp: App {
   
   var body: some Scene {
     WindowGroup {
-      ContentView()
+      ContentView(store: .init(initialState: GabbangzipCore.State(), reducer: { GabbangzipCore() }))
     }
   }
 }
