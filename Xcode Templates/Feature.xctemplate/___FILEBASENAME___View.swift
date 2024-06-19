@@ -14,3 +14,11 @@ public struct ___FILEBASENAMEASIDENTIFIER___: View {
     Text("Hello, World!")
   }
 }
+
+#Preview {
+  ___FILEBASENAMEASIDENTIFIER___(
+    store: Store(initialState: .init()) {
+      ___VARIABLE_productName:identifier___Core()
+    }
+  )
+}
