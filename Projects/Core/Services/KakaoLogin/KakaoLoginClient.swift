@@ -113,6 +113,5 @@ public struct KakaoLoginClientError: GabbangzipError {
     case noTokenAndUser
     case failToLoginWithKakaoTalk
     case failToLoginWithKakaoAccount
-    case failToLogout
   }
 }
