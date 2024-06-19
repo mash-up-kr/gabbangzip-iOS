@@ -6,7 +6,7 @@ let project = Project.make(
   targets: [
     .make(
       name: "Main",
-      product: .framework,
+      product: .staticFramework,
       bundleId: "com.mashup.gabbangzip.main.main",
       sources: ["MainScene/Main/**"],
       dependencies: [
