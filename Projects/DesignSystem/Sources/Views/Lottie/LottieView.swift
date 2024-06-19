@@ -92,3 +92,7 @@ public enum GabbangzipLottieAnimationType {
     }
   }
 }
+
+#Preview {
+  LottieView(type: .bookmark)
+}
