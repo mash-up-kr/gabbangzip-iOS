@@ -43,11 +43,11 @@ extension KakaoLoginClient: DependencyKey {
         try await withCheckedThrowingContinuation { continuation in
           UserApi.shared.me() { user, error in
             if let error {
-              continuation.resume(throwing: error)
+              continuation.resume(throwing: KakaoLoginClientError(code: .failToGetMe))
             } else if let user {
               continuation.resume(returning: user)
             } else {
-              continuation.resume(throwing: KakaoLoginClientError(code: .noTokenAndUser))
+              continuation.resume(throwing: KakaoLoginClientError(code: .failToGetUserInformation))
             }
           }
         }
@@ -56,7 +56,7 @@ extension KakaoLoginClient: DependencyKey {
         try await withCheckedThrowingContinuation { continuation in
           UserApi.shared.loginWithKakaoTalk {(oauthToken, error) in
             if let error {
-              continuation.resume(throwing: error)
+              continuation.resume(throwing: KakaoLoginClientError(code: .failToGetOauthToken))
             } else if let oauthToken {
               continuation.resume(returning: oauthToken.accessToken)
             } else {
@@ -72,7 +72,7 @@ extension KakaoLoginClient: DependencyKey {
           
           UserApi.shared.loginWithKakaoAccount(scopes: scopes) { oauthToken, error in
             if let error {
-              continuation.resume(throwing: error)
+              continuation.resume(throwing: KakaoLoginClientError(code: .failToGetOauthToken))
             } else if let oauthToken {
               continuation.resume(returning: oauthToken.accessToken)
             } else {
@@ -85,7 +85,7 @@ extension KakaoLoginClient: DependencyKey {
         try await withCheckedThrowingContinuation { continuation in
           UserApi.shared.logout { error in
             if let error {
-              continuation.resume(throwing: error)
+              continuation.resume(throwing: KakaoLoginClientError(code: .failToLogout))
             } else {
               continuation.resume(returning: ())
             }
@@ -110,8 +110,11 @@ public struct KakaoLoginClientError: GabbangzipError {
   public var underlying: Error?
   
   public enum Code: Int {
-    case noTokenAndUser
+    case failToGetMe
+    case failToGetUserInformation
+    case failToGetOauthToken
     case failToLoginWithKakaoTalk
     case failToLoginWithKakaoAccount
+    case failToLogout
   }
 }
