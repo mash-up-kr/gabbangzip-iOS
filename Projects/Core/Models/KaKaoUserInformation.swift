@@ -8,7 +8,7 @@
 
 import Foundation
 
-public struct KaKaoUserInformation: Codable {
+public struct KaKaoUserInformation: Decodable {
   public let idToken: String?
   public let nickName: String?
   public let profileImageUrl: URL?
