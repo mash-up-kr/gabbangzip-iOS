@@ -9,7 +9,6 @@
 import ComposableArchitecture
 import Foundation
 import Services
-import KakaoSDKUser
 
 @Reducer
 public struct RootCore {

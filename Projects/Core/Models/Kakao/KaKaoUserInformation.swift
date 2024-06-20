@@ -10,6 +10,6 @@ import Foundation
 
 public struct KaKaoUserInformation: Decodable {
   public let idToken: String?
-  public let nickName: String?
+  public let nickname: String?
   public let profileImageUrl: URL?
 }
