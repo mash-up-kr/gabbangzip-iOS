@@ -14,10 +14,10 @@ struct GabbangzipApp: App {
   
   var body: some Scene {
     WindowGroup {
-      ContentView(
+      RootView(
         store: Store(
-          initialState: GabbangzipCore.State(),
-          reducer: { GabbangzipCore() }
+          initialState: RootCore.State(),
+          reducer: { RootCore() }
         )
       )
     }

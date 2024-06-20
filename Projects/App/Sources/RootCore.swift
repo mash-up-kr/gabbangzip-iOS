@@ -12,7 +12,7 @@ import Services
 import KakaoSDKUser
 
 @Reducer
-public struct GabbangzipCore {
+public struct RootCore {
   public struct State: Equatable {
 
     public init() {}

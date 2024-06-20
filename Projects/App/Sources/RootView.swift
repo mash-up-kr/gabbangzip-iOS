@@ -9,10 +9,10 @@ import DesignSystem
 import SwiftUI
 import ComposableArchitecture
 
-public struct ContentView: View {
-  public let store: StoreOf<GabbangzipCore>
+public struct RootView: View {
+  public let store: StoreOf<RootCore>
   
-  public init(store: StoreOf<GabbangzipCore>) {
+  public init(store: StoreOf<RootCore>) {
     self.store = store
   }
   
@@ -28,10 +28,10 @@ public struct ContentView: View {
 }
 
 #Preview {
-  ContentView(
+  RootView(
     store: Store(
-      initialState: GabbangzipCore.State(),
-      reducer: { GabbangzipCore() }
+      initialState: RootCore.State(),
+      reducer: { RootCore() }
     )
   )
 }
