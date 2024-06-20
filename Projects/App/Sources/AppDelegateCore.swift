@@ -23,6 +23,7 @@ struct AppDelegateCore {
   }
   
   @Dependency(\.userNotificationClient) private var userNotificationClient
+  @Dependency(\.bundleClient) private var bundleClient
   @Dependency(\.kakaoLoginClient) private var kakaoLoginClient
 
   var body: some Reducer<State, Action> {
@@ -40,7 +41,9 @@ struct AppDelegateCore {
             send(.userNotifications(event))
           }
           
-          await kakaoLoginClient.initSDK(appKey: APIKey.kakao.value)
+          let appKey = try bundleClient.getValue(key: "KakaoNativeAppKey") as? String ?? ""
+          
+          await kakaoLoginClient.initSDK(appKey: appKey)
         }
         
       case let .userNotifications(.didReceiveResponse(response, completionHandler)):
