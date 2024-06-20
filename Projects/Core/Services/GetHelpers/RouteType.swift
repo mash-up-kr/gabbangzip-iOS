@@ -1,6 +1,6 @@
 //
 //  RouteType.swift
-//  Core
+//  Services
 //
 //  Created by YangJoonHyeok on 5/26/24.
 //  Copyright © 2024 com.mashup.gabbangzip. All rights reserved.

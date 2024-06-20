@@ -1,6 +1,6 @@
 //
 //  KakaoLoginClient.swift
-//  CoreKit
+//  Services
 //
 //  Created by Hyun A Song on 6/13/24.
 //  Copyright © 2024 com.mashup.gabbangzip. All rights reserved.
