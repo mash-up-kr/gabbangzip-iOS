@@ -1,5 +1,5 @@
 //
-//  GabbangzipCore.swift
+//  RootCore.swift
 //  App
 //
 //  Created by Hyun A Song on 6/19/24.

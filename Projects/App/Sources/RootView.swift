@@ -1,13 +1,13 @@
 //
-//  ContentView.swift
+//  RootView.swift
 //  App
 //
 //  Created by gabbangzip on 5/20/24.
 //
 
+import ComposableArchitecture
 import DesignSystem
 import SwiftUI
-import ComposableArchitecture
 
 public struct RootView: View {
   public let store: StoreOf<RootCore>
