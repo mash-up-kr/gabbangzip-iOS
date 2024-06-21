@@ -28,8 +28,8 @@ let project = Project.make(
       bundleId: "com.mashup.gabbangzip.services",
       sources: ["Services/**"],
       dependencies: [
-				.external(externalDependency: .get),
-				.external(externalDependency: .composableArchitecture),
+        .external(externalDependency: .get),
+        .external(externalDependency: .composableArchitecture),
         .external(externalDependency: .kakaoSDK)
       ]
     ),

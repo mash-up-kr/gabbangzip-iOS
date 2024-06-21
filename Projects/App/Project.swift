@@ -15,8 +15,7 @@ let project = Project.make(
         .project(target: .coreKit, projectPath: .core),
         .project(target: .designSystem, projectPath: .designSystem),
         .project(target: .appCoordinator, projectPath: .coordinator),
-        .external(externalDependency: .composableArchitecture),
-        .external(externalDependency: .kakaoSDK)
+        .external(externalDependency: .composableArchitecture)
       ],
       settings: .settings(
         base: [
@@ -42,8 +41,7 @@ let project = Project.make(
         .project(target: .coreKit, projectPath: .core),
         .project(target: .designSystem, projectPath: .designSystem),
         .project(target: .appCoordinator, projectPath: .coordinator),
-        .external(externalDependency: .composableArchitecture),
-        .external(externalDependency: .kakaoSDK)
+        .external(externalDependency: .composableArchitecture)
       ],
       settings: .settings(
         base: [
