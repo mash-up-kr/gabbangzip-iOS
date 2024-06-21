@@ -1,6 +1,6 @@
 //
 //  NetworkManager.swift
-//  CoreKit
+//  Services
 //
 //  Created by YangJoonHyeok on 5/27/24.
 //  Copyright © 2024 com.mashup.gabbangzip. All rights reserved.

@@ -1,6 +1,15 @@
 {
   "pins" : [
     {
+      "identity" : "alamofire",
+      "kind" : "remoteSourceControl",
+      "location" : "https://github.com/Alamofire/Alamofire.git",
+      "state" : {
+        "revision" : "f455c2975872ccd2d9c81594c658af65716e9b9a",
+        "version" : "5.9.1"
+      }
+    },
+    {
       "identity" : "combine-schedulers",
       "kind" : "remoteSourceControl",
       "location" : "https://github.com/pointfreeco/combine-schedulers",
@@ -25,6 +34,15 @@
       "state" : {
         "revision" : "74dba201ebe42e9c15c1db6ee1cc893025bbef94",
         "version" : "2.2.0"
+      }
+    },
+    {
+      "identity" : "kakao-ios-sdk",
+      "kind" : "remoteSourceControl",
+      "location" : "https://github.com/kakao/kakao-ios-sdk",
+      "state" : {
+        "revision" : "9f9b830dfd7ee66607c6fddcfeb1a6bc07e48714",
+        "version" : "2.22.2"
       }
     },
     {

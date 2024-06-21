@@ -5,6 +5,7 @@
 //  Created by gabbangzip on 5/20/24.
 //
 
+import ComposableArchitecture
 import SwiftUI
 
 @main
@@ -13,7 +14,12 @@ struct GabbangzipApp: App {
   
   var body: some Scene {
     WindowGroup {
-      ContentView()
+      RootView(
+        store: Store(
+          initialState: RootCore.State(),
+          reducer: { RootCore() }
+        )
+      )
     }
   }
 }

@@ -12,11 +12,11 @@ extension TargetDependency {
   public static func external(externalDependency: ExternalDependency) -> TargetDependency {
     return .external(name: externalDependency.rawValue)
   }
-
+  
   public static func target(name: TargetName) -> TargetDependency {
     return .target(name: name.rawValue)
   }
-
+  
   public static func project(target: TargetName, projectPath: ProjectPath) -> TargetDependency {
     return .project(
       target: target.rawValue,
@@ -40,7 +40,7 @@ public enum TargetName: String {
   case designSystem = "DesignSystem"
   case appCoordinator = "AppCoordinator"
   case mainCoordinator = "MainCoordinator"
-	case main = "Main"
+  case main = "Main"
 }
 
 public enum ExternalDependency: String {
@@ -49,4 +49,5 @@ public enum ExternalDependency: String {
   case tcaCoordinators = "TCACoordinators"
   case nuke = "Nuke"
   case lottie = "Lottie"
+  case kakaoSDK = "KakaoSDK"
 }

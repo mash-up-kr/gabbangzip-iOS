@@ -10,10 +10,10 @@ import ComposableArchitecture
 import UIKit
 
 final class AppDelegate: NSObject, UIApplicationDelegate {
-  let store = StoreOf<AppDelegateReducer>.init(
+  let store = StoreOf<AppDelegateCore>.init(
     initialState: .init(),
     reducer: {
-      AppDelegateReducer()
+      AppDelegateCore()
     }
   )
   

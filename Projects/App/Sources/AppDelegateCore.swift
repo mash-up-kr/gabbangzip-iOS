@@ -7,10 +7,11 @@
 //
 
 import ComposableArchitecture
+import Common
 import Services
 
 @Reducer
-struct AppDelegateReducer {
+struct AppDelegateCore {
   @ObservableState
   struct State: Equatable {
   }
@@ -22,6 +23,8 @@ struct AppDelegateReducer {
   }
   
   @Dependency(\.userNotificationClient) private var userNotificationClient
+  @Dependency(\.bundleClient) private var bundleClient
+  @Dependency(\.kakaoLoginClient) private var kakaoLoginClient
 
   var body: some Reducer<State, Action> {
     Reduce { state, action in
@@ -37,6 +40,10 @@ struct AppDelegateReducer {
           for await event in self.userNotificationClient.delegate() {
             send(.userNotifications(event))
           }
+          
+          let appKey = try bundleClient.getValue(key: "KakaoNativeAppKey") as? String ?? ""
+          
+          await kakaoLoginClient.initSDK(appKey: appKey)
         }
         
       case let .userNotifications(.didReceiveResponse(response, completionHandler)):
