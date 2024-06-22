@@ -11,10 +11,10 @@ import Foundation
 
 @DependencyClient
 public struct KeyChainClient {
-  public var create: @Sendable (_ key: Key,_ data: String) async throws -> Void
-  public var read: @Sendable (_ key: Key) async throws -> String?
-  public var update: @Sendable (_ key: Key,_ data: String) async throws -> Void
-  public var delete: @Sendable (_ key: Key) async throws -> Void
+  var create: @Sendable (_ key: Key, _ data: String) async throws -> Void
+  var read: @Sendable (_ key: Key) async throws -> String?
+  var update: @Sendable (_ key: Key, _ data: String) async throws -> Void
+  var delete: @Sendable (_ key: Key) async throws -> Void
 }
 
 extension KeyChainClient: DependencyKey {
