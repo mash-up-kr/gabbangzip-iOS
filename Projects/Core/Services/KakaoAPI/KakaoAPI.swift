@@ -1,6 +1,6 @@
 //
 //  KakaoAPI.swift
-//  Models
+//  Services
 //
 //  Created by Hyun A Song on 6/22/24.
 //  Copyright © 2024 com.mashup.gabbangzip. All rights reserved.
@@ -8,13 +8,14 @@
 
 import Common
 import Foundation
+import Models
 import Get
 
 public enum KakaoAPI {
   case login(_ idToken: String, _ provider: String, _ nickname: String, _ profileImage: String)
 }
 
-extension KakaoAPI {
+extension KakaoAPI: RouteType {
   public var url: URL {
     switch self {
     case .login:

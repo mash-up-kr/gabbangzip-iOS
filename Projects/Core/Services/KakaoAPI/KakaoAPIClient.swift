@@ -9,6 +9,7 @@
 import ComposableArchitecture
 import Foundation
 import Get
+import Models
 
 @DependencyClient
 public struct KakaoAPIClient {
@@ -16,7 +17,7 @@ public struct KakaoAPIClient {
     _ idToken: String,
     _ nickname: String,
     _ profileImage: String
-  ) async throws -> PICUserInformation
+  ) async throws -> KaKaoUserInformation
 }
 
 extension KakaoAPIClient: DependencyKey {
