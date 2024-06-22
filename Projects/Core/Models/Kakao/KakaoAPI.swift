@@ -6,6 +6,7 @@
 //  Copyright © 2024 com.mashup.gabbangzip. All rights reserved.
 //
 
+import Common
 import Foundation
 import Get
 
@@ -52,7 +53,7 @@ extension KakaoAPI {
     }
   }
   
-  public var headers: [String : String]? {
+  public var headers: [String: String]? {
     switch self {
     case .login:
       return nil

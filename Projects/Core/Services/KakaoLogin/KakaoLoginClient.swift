@@ -105,7 +105,7 @@ extension DependencyValues {
 
 // MARK: - KakaoLoginClientError
 public struct KakaoLoginClientError: GabbangzipError {
-  public var userInfo: [String : Any] = [:]
+  public var userInfo: [String: Any] = [:]
   public var code: Code
   public var underlying: Error?
   
