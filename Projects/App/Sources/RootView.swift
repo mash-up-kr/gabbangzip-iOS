@@ -19,6 +19,8 @@ public struct RootView: View {
   public var body: some View {
     ZStack {
       VStack {
+        Spacer()
+          .frame(height: 50)
         Image(uiImage: DesignSystem.Icons.Login.logoUIImage)
           .resizable()
           .scaledToFit()
@@ -26,12 +28,12 @@ public struct RootView: View {
         Spacer()
           .frame(height: 8)
         Text("우리가 픽! 하는\n우리끼리 네컷앨범")
-          .font(DesignSystemFontFamily.Pretendard.regular.font(size: 10))
+          .font(DesignSystemFontFamily.Pretendard.regular.font(size: 21))
           .multilineTextAlignment(.center)
           .foregroundStyle(DesignSystem.Colors.gray80)
           .padding()
         Spacer()
-          .frame(height: 400)
+          .frame(height: 450)
         Button(action: {}, label: {
           Image(uiImage: DesignSystem.Icons.Login.kakaoUIImage)
             .resizable()
