@@ -10,7 +10,7 @@ import ComposableArchitecture
 import Foundation
 
 @DependencyClient
-public struct KeyChainClient {
+struct KeyChainClient {
   var create: @Sendable (_ key: Key, _ data: String) async throws -> Void
   var read: @Sendable (_ key: Key) async throws -> String?
   var update: @Sendable (_ key: Key, _ data: String) async throws -> Void
@@ -109,7 +109,7 @@ extension KeyChainClient {
 }
 
 extension DependencyValues {
-  public var keyChainClient: KeyChainClient {
+  var keyChainClient: KeyChainClient {
     get { self[KeyChainClient.self] }
     set { self[KeyChainClient.self] = newValue }
   }
