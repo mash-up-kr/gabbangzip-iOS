@@ -17,7 +17,7 @@ let project = Project.make(
         .external(externalDependency: .lottie)
       ]
     ),
-    .make(
+	.make(
       name: "KakaoLogin",
       product: .framework,
       bundleId: "com.mashup.gabbangzip.kakaoLogin.kakaoLogin",
@@ -27,6 +27,21 @@ let project = Project.make(
         .project(target: .designSystem, projectPath: .designSystem),
         .external(externalDependency: .composableArchitecture),
         .external(externalDependency: .nuke),
+        .external(externalDependency: .lottie)
+      ]
+    ),
+    .make(
+      name: "GroupDetail",
+      product: .staticFramework,
+      bundleId: "com.mashup.gabbangzip.groupDetail",
+      sources: ["GroupDetailScene/**"],
+      dependencies: [
+		.project(target: .models, projectPath: .core),
+        .project(target: .coreKit, projectPath: .core),
+        .project(target: .designSystem, projectPath: .designSystem),
+        .external(externalDependency: .composableArchitecture),
+        .external(externalDependency: .nuke),
+        .external(externalDependency: .nukeUI),
         .external(externalDependency: .lottie)
       ]
     )
