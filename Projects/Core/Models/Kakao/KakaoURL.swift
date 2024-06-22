@@ -31,11 +31,4 @@ extension KakaoURL {
       return "/api/v1/auth/login"
     }
   }
-  
-  public var full: String {
-    switch self {
-    case .login:
-      return "http://3.39.133.214:8080/api/v1/auth/login"
-    }
-  }
 }
