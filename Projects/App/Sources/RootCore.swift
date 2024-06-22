@@ -12,6 +12,7 @@ import Services
 
 @Reducer
 public struct RootCore {
+  @ObservableState
   public struct State: Equatable {
 
     public init() {}
@@ -28,7 +29,7 @@ public struct RootCore {
       switch action {
       case let .onOpenURL(url):
         return .run { send in
-          kakaoLoginClient.openURL(url: url)
+          kakaoLoginClient.openURL(url)
         }
       }
     }

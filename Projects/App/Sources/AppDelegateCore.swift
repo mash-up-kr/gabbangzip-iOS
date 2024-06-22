@@ -41,9 +41,9 @@ struct AppDelegateCore {
             send(.userNotifications(event))
           }
           
-          let appKey = try bundleClient.getValue(key: "KakaoNativeAppKey") as? String ?? ""
+          let appKey = try bundleClient.getValue("KakaoNativeAppKey") as? String ?? ""
           
-          await kakaoLoginClient.initSDK(appKey: appKey)
+          await kakaoLoginClient.initSDK(appKey)
         }
         
       case let .userNotifications(.didReceiveResponse(response, completionHandler)):
