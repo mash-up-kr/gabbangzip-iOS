@@ -8,19 +8,20 @@
 
 public enum KakaoURL {
   case login
+  case authTest
 }
 
 extension KakaoURL {
   public var scheme: String {
     switch self {
-    case .login:
+    case .login, .authTest:
       return "http"
     }
   }
   
   public var host: String {
     switch self {
-    case .login:
+    case .login, .authTest:
       return "3.39.133.214:8080"
     }
   }
@@ -29,6 +30,8 @@ extension KakaoURL {
     switch self {
     case .login:
       return "/api/v1/auth/login"
+    case .authTest:
+      return "/api/v1/auth/me-test"
     }
   }
 }

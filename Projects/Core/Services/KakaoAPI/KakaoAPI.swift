@@ -13,6 +13,7 @@ import Get
 
 public enum KakaoAPI {
   case login(_ idToken: String, _ provider: String, _ nickname: String, _ profileImage: String)
+  case authTest(_ accessToken: String)
 }
 
 extension KakaoAPI: RouteType {
@@ -24,6 +25,12 @@ extension KakaoAPI: RouteType {
         host: KakaoURL.login.host,
         path: KakaoURL.login.path
       )
+    case .authTest:
+      return URLComponents.createURL(
+        scheme: KakaoURL.authTest.scheme,
+        host: KakaoURL.authTest.host,
+        path: KakaoURL.authTest.path
+      )
     }
   }
   
@@ -31,6 +38,8 @@ extension KakaoAPI: RouteType {
     switch self {
     case .login:
       return .post
+    case .authTest:
+      return .get
     }
   }
   
@@ -44,12 +53,16 @@ extension KakaoAPI: RouteType {
         ("profileImage", "\(profileImage)")
       ]
       return query
+    case .authTest:
+      return nil
     }
   }
   
   public var body: Encodable? {
     switch self {
     case .login:
+      return nil
+    case .authTest:
       return nil
     }
   }
@@ -58,12 +71,19 @@ extension KakaoAPI: RouteType {
     switch self {
     case .login:
       return nil
+    case let .authTest(accessToken):
+      let query: [String: String]? = [
+        "Authorization": "Bearer \(accessToken)"
+      ]
+      return query
     }
   }
   
   public var id: String? {
     switch self {
     case .login:
+      return nil
+    case .authTest:
       return nil
     }
   }
