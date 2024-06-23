@@ -18,6 +18,9 @@ public struct RootView: View {
   
   public var body: some View {
     ZStack {
+      LottieView(type: .login,
+                 loopMode: .repeat(1))
+        .frame(width: 600)
       VStack {
         Spacer()
           .frame(height: 50)
@@ -42,10 +45,12 @@ public struct RootView: View {
             .scaledToFit()
             .frame(width: 350)
         })
+        Button(action: {
+          store.send(.loginButtonTapped)
+        }) {
+          Text("")
+        }
       }
-      LottieView(type: .login,
-                 loopMode: .repeat(1))
-        .frame(width: 600)
     }
     .onOpenURL { url in
       store.send(.onOpenURL(url))
