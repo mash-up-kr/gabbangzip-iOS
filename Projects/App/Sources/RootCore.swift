@@ -16,6 +16,7 @@ import Models
 public struct RootCore {
   @ObservableState
   public struct State: Equatable {
+    var errorMessage: String?
     
     public init() {}
   }
@@ -28,6 +29,8 @@ public struct RootCore {
     case checkUserInformationResponse(Result<User, Error>)
     case loginResponse(Result<PICUserInformation, Error>)
     case saveInKeyChain(Result<String, Error>)
+    case showError(String)
+    case hideError
   }
   
   @Dependency(\.kakaoLoginClient) var kakaoLoginClient
@@ -85,6 +88,14 @@ public struct RootCore {
         return .none
         
       case .saveInKeyChain(_):
+        return .none
+        
+      case let .showError(message):
+        state.errorMessage = message
+        return .none
+        
+      case .hideError:
+        state.errorMessage = nil
         return .none
       }
     }

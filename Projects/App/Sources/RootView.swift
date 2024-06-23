@@ -20,7 +20,35 @@ public struct RootView: View {
     ZStack {
       LottieView(type: .login,
                  loopMode: .repeat(1))
-        .frame(width: 600)
+      .frame(width: 600)
+      LoginView(store: store)
+      
+      if let errorMessage = store.errorMessage {
+        VStack {
+          ToastView(message: "로그인이 안돼요")
+            .onAppear {
+              DispatchQueue.main.asyncAfter(deadline: .now() + 2) {
+                store.send(.hideError)
+              }
+            }
+          Spacer()
+        }
+      }
+    }
+    .onOpenURL { url in
+      store.send(.onOpenURL(url))
+    }
+  }
+}
+  
+  struct LoginView: View {
+    public let store: StoreOf<RootCore>
+    
+    public init(store: StoreOf<RootCore>) {
+      self.store = store
+    }
+    
+    var body: some View {
       VStack {
         Spacer()
           .frame(height: 50)
@@ -45,24 +73,28 @@ public struct RootView: View {
             .scaledToFit()
             .frame(width: 350)
         })
-        Button(action: {
-          store.send(.loginButtonTapped)
-        }) {
-          Text("")
-        }
       }
     }
-    .onOpenURL { url in
-      store.send(.onOpenURL(url))
+  }
+  
+  struct ToastView: View {
+    let message: String
+    
+    var body: some View {
+      Text(message)
+        .foregroundColor(.white)
+        .padding()
+        .background(DesignSystem.Colors.gray60)
+        .cornerRadius(40)
+        .padding()
     }
   }
-}
-
-#Preview {
-  RootView(
-    store: Store(
-      initialState: RootCore.State(),
-      reducer: { RootCore() }
+  
+  #Preview {
+    RootView(
+      store: Store(
+        initialState: RootCore.State(),
+        reducer: { RootCore() }
+      )
     )
-  )
-}
+  }
