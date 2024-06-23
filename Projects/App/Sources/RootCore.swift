@@ -13,17 +13,17 @@ import KakaoSDKUser
 import Models
 
 @Reducer
-public struct RootCore {
+struct RootCore {
   @ObservableState
-  public struct State: Equatable {
-    public var errorMessage: String?
-    public var kakaoUser: KaKaoUserInformation?
-    public var kakaoIdToken: KakaoToken?
+  struct State: Equatable {
+    var errorMessage: String?
+    var kakaoUser: KaKaoUserInformation?
+    var kakaoIdToken: KakaoToken?
     
-    public init() {}
+    init() {}
   }
   
-  public enum Action {
+  enum Action {
     case loginButtonTapped
     case onOpenURL(URL)
     case loginWithKakaoTalkResponse(Result<String, Error>)
@@ -36,11 +36,11 @@ public struct RootCore {
     case hideError
   }
   
-  @Dependency(\.kakaoLoginClient) var kakaoLoginClient
-  @Dependency(\.loginAPIClient) var loginAPIClient
-  @Dependency(\.keyChainClient) var keyChainClient
+  @Dependency(\.kakaoLoginClient) private var kakaoLoginClient
+  @Dependency(\.loginAPIClient) private var loginAPIClient
+  @Dependency(\.keyChainClient) private var keyChainClient
   
-  public var body: some Reducer<State, Action> {
+  var body: some Reducer<State, Action> {
     Reduce { state, action in
       switch action {
       case .loginButtonTapped:
@@ -49,7 +49,8 @@ public struct RootCore {
             await send(.loginWithKakaoTalkResponse(Result { try await
               self.kakaoLoginClient.loginWithKakaoTalk() }))
           } else {
-            await send(.loginWithKakaoAccountResponse(Result { try await self.kakaoLoginClient.loginWithKakaoAccount() }))
+            await send(.loginWithKakaoAccountResponse(Result { try await
+              self.kakaoLoginClient.loginWithKakaoAccount() }))
           }
         }
         
@@ -67,8 +68,9 @@ public struct RootCore {
         }
         
       case let .loginWithKakaoTalkResponse(.failure(error)):
-        state.errorMessage = "ℹ️ 로그인에 실패했어요."
-        return .none
+        return .run { send in
+          send(.showError("ℹ️ 로그인에 실패했어요."))
+        }
         
       case let .loginWithKakaoAccountResponse(.success(idToken)):
         state.kakaoIdToken?.idToken = idToken
@@ -79,8 +81,9 @@ public struct RootCore {
         }
         
       case let .loginWithKakaoAccountResponse(.failure(error)):
-        state.errorMessage = "ℹ️ 로그인에 실패했어요."
-        return .none
+        return .run { send in
+          send(.showError("ℹ️ 로그인에 실패했어요."))
+        }
         
       case let .checkUserInformationResponse(.success(user)):
         state.kakaoUser?.nickname = user.kakaoAccount?.profile?.nickname
@@ -97,8 +100,9 @@ public struct RootCore {
         }
         
       case let .checkUserInformationResponse(.failure(error)):
-        state.errorMessage = "ℹ️ 로그인에 실패했어요."
-        return .none
+        return .run { send in
+          send(.showError("ℹ️ 로그인에 실패했어요."))
+        }
         
       case let .loginResponse(.success(user)):
         return .run { send in
@@ -107,8 +111,9 @@ public struct RootCore {
         }
         
       case let .loginResponse(.failure(error)):
-        state.errorMessage = "ℹ️ 로그인에 실패했어요."
-        return .none
+        return .run { send in
+          send(.showError("ℹ️ 로그인에 실패했어요."))
+        }
         
       case let .saveAccessTokenInKeyChain(accessToken):
         return .run { send in
