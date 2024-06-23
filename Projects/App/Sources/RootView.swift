@@ -25,7 +25,7 @@ public struct RootView: View {
       
       if let errorMessage = store.errorMessage {
         VStack {
-          ToastView(message: "로그인이 안돼요")
+          ToastView(message: errorMessage)
             .onAppear {
               DispatchQueue.main.asyncAfter(deadline: .now() + 2) {
                 store.send(.hideError)
