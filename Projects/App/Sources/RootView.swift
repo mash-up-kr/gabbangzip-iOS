@@ -34,14 +34,17 @@ public struct RootView: View {
           .padding()
         Spacer()
           .frame(height: 450)
-        Button(action: {}, label: {
+        Button(action: {
+          store.send(.loginButtonTapped)
+        }, label: {
           Image(uiImage: DesignSystem.Icons.Login.kakaoUIImage)
             .resizable()
             .scaledToFit()
             .frame(width: 350)
         })
       }
-      LottieView(type: .login)
+      LottieView(type: .login,
+                 loopMode: .repeat(1))
         .frame(width: 600)
     }
     .onOpenURL { url in
