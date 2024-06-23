@@ -17,6 +17,8 @@ public struct RootCore {
   @ObservableState
   public struct State: Equatable {
     var errorMessage: String?
+    var kakaoUser: KaKaoUserInformation?
+    var kakaoIdToken: KakaoToken?
     
     public init() {}
   }
@@ -28,7 +30,8 @@ public struct RootCore {
     case loginWithKakaoAccountResponse(Result<String, Error>)
     case checkUserInformationResponse(Result<User, Error>)
     case loginResponse(Result<PICUserInformation, Error>)
-    case saveInKeyChain(Result<String, Error>)
+    case saveAccessTokenInKeyChain(String)
+    case saveRefreshTokenInKeyChain(String)
     case showError(String)
     case hideError
   }
@@ -55,40 +58,67 @@ public struct RootCore {
           kakaoLoginClient.openURL(url)
         }
         
-      case let .loginWithKakaoTalkResponse(.success(accessToken)):
+      case let .loginWithKakaoTalkResponse(.success(idToken)):
+        state.kakaoIdToken?.idToken = idToken
+        print(state.kakaoIdToken?.idToken)
         return .run { send in
-          await send(.checkUserInformationResponse(Result { try await 
+          await send(.checkUserInformationResponse(Result { try await
             self.kakaoLoginClient.checkUserInformation() }))
         }
         
       case let .loginWithKakaoTalkResponse(.failure(error)):
+        state.errorMessage = "ℹ️ 로그인에 실패했어요."
         return .none
         
-      case let .loginWithKakaoAccountResponse(.success(accessToken)):
+      case let .loginWithKakaoAccountResponse(.success(idToken)):
+        state.kakaoIdToken?.idToken = idToken
+        print(state.kakaoIdToken?.idToken)
         return .run { send in
-          await send(.checkUserInformationResponse(Result { try await 
+          await send(.checkUserInformationResponse(Result { try await
             self.kakaoLoginClient.checkUserInformation() }))
         }
         
       case let .loginWithKakaoAccountResponse(.failure(error)):
+        state.errorMessage = "ℹ️ 로그인에 실패했어요."
         return .none
         
       case let .checkUserInformationResponse(.success(user)):
+        state.kakaoUser?.nickname = user.kakaoAccount?.profile?.nickname
+        state.kakaoUser?.profileImageUrl = user.kakaoAccount?.profile?.profileImageUrl
+        print(state.kakaoUser)
         return .run { send in
-          //          self.loginAPIClient.login(user, token, image)
+          await send(.loginResponse(Result { try await
+            self.loginAPIClient.login(
+              idToken: state.kakaoIdToken?.idToken,
+              nickname: state.kakaoUser?.nickname,
+              profileImage: state.kakaoUser?.profileImageUrl
+            )
+          }))
         }
         
       case let .checkUserInformationResponse(.failure(error)):
+        state.errorMessage = "ℹ️ 로그인에 실패했어요."
         return .none
         
       case let .loginResponse(.success(user)):
-        return .none
+        return .run { send in
+          await send(.saveAccessTokenInKeyChain(user.accessToken))
+          await send(.saveRefreshTokenInKeyChain(user.refreshToken))
+        }
         
       case let .loginResponse(.failure(error)):
+        state.errorMessage = "ℹ️ 로그인에 실패했어요."
         return .none
         
-      case .saveInKeyChain(_):
-        return .none
+      case let .saveAccessTokenInKeyChain(accessToken):
+        return .run { send in
+          try await self.keyChainClient.create(key: .accessToken, data: accessToken)
+        }
+        
+      case let .saveRefreshTokenInKeyChain(refreshToken):
+        return .run { send in
+          try await self.keyChainClient.create(key: .refreshToken, data: refreshToken)
+        }
         
       case let .showError(message):
         state.errorMessage = message

@@ -10,6 +10,6 @@ import Foundation
 
 public struct KakaoResponse: Decodable {
   public let isSuccess: Bool
-  public let data: KaKaoUserInformation
+  public let data: PICUserInformation
   public let errorResponse: String
 }
