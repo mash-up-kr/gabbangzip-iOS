@@ -8,6 +8,8 @@
 
 import Foundation
 
-public struct KakaoToken: Decodable, Equatable {
+public struct KakaoToken: Equatable {
   public var idToken: String?
+  
+  public init() {}
 }

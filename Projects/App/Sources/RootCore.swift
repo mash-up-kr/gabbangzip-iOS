@@ -13,21 +13,21 @@ import Models
 import Services
 
 @Reducer
-struct RootCore {
+public struct RootCore {
   @ObservableState
-  struct State: Equatable {
-    var errorMessage: String?
-    var kakaoUser: KaKaoUserInformation?
-    var kakaoIdToken: KakaoToken?
+  public struct State: Equatable {
+    public var errorMessage: String?
+    public var kakaoUser: KaKaoUserInformation = KaKaoUserInformation()
+    public var kakaoIdToken: KakaoToken = KakaoToken()
     
     init() {}
   }
   
-  enum Action {
+  public enum Action {
     case loginButtonTapped
     case onOpenURL(URL)
-    case loginWithKakaoTalkResponse(Result<String, Error>)
-    case loginWithKakaoAccountResponse(Result<String, Error>)
+    case loginWithKakaoTalkResponse(Result<String?, Error>)
+    case loginWithKakaoAccountResponse(Result<String?, Error>)
     case checkUserInformationResponse(Result<User, Error>)
     case loginResponse(Result<PICUserInformation, Error>)
     case saveAccessTokenInKeyChain(String)
@@ -40,7 +40,7 @@ struct RootCore {
   @Dependency(\.loginAPIClient) private var loginAPIClient
   @Dependency(\.keyChainClient) private var keyChainClient
   
-  var body: some Reducer<State, Action> {
+  public var body: some Reducer<State, Action> {
     Reduce { state, action in
       switch action {
       case .loginButtonTapped:
@@ -62,7 +62,7 @@ struct RootCore {
         }
         
       case let .loginWithKakaoTalkResponse(.success(idToken)):
-        state.kakaoIdToken?.idToken = idToken
+        state.kakaoIdToken.idToken = idToken
         return .run { send in
           await send(.checkUserInformationResponse(Result { try await
             kakaoLoginClient.checkUserInformation()
@@ -75,7 +75,7 @@ struct RootCore {
         }
         
       case let .loginWithKakaoAccountResponse(.success(idToken)):
-        state.kakaoIdToken?.idToken = idToken
+        state.kakaoIdToken.idToken = idToken
         return .run { send in
           await send(.checkUserInformationResponse(Result { try await
             kakaoLoginClient.checkUserInformation()
@@ -88,12 +88,12 @@ struct RootCore {
         }
         
       case let .checkUserInformationResponse(.success(user)):
-        state.kakaoUser?.nickname = user.kakaoAccount?.profile?.nickname
-        state.kakaoUser?.profileImageUrl = user.kakaoAccount?.profile?.profileImageUrl
+        state.kakaoUser.nickname = user.kakaoAccount?.profile?.nickname
+        state.kakaoUser.profileImageUrl = user.kakaoAccount?.profile?.profileImageUrl
         return .run { [state] send in
-          let idToken = state.kakaoIdToken?.idToken ?? ""
-          let nickname = state.kakaoUser?.nickname ?? ""
-          let profileImageUrl = state.kakaoUser?.profileImageUrl?.absoluteString ?? ""
+          let idToken = state.kakaoIdToken.idToken ?? ""
+          let nickname = state.kakaoUser.nickname ?? ""
+          let profileImageUrl = state.kakaoUser.profileImageUrl?.absoluteString ?? ""
           await send(.loginResponse(Result { try await
             loginAPIClient.login(
               idToken,
