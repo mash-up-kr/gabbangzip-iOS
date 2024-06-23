@@ -64,7 +64,7 @@ public struct RootView: View {
           .foregroundStyle(DesignSystem.Colors.gray80)
           .padding()
         Spacer()
-          .frame(height: 450)
+          .frame(height: 400)
         Button(action: {
           store.send(.loginButtonTapped)
         }, label: {

@@ -82,7 +82,7 @@ extension KeyChainClient: DependencyKey {
         
         switch status {
         case noErr:
-          print("Keychain Update Success")
+          print("Keychain Delete Success")
         default:
           throw KeyChainClientError(code: .failToDelete)
         }

@@ -16,9 +16,9 @@ import Models
 public struct RootCore {
   @ObservableState
   public struct State: Equatable {
-    var errorMessage: String?
-    var kakaoUser: KaKaoUserInformation?
-    var kakaoIdToken: KakaoToken?
+    public var errorMessage: String?
+    public var kakaoUser: KaKaoUserInformation?
+    public var kakaoIdToken: KakaoToken?
     
     public init() {}
   }
