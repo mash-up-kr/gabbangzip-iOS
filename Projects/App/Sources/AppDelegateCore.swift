@@ -32,7 +32,10 @@ struct AppDelegateCore {
       case .didFinishLaunching:
         return .run { @MainActor send in
           // TODO: 써드파티 SDK 초기화 및 설정
+          let appKey = try bundleClient.getValue("KakaoNativeAppKey") as? String ?? ""
           let authorizationStatus = await self.userNotificationClient.getAuthorizationStatus()
+          await kakaoLoginClient.initSDK(appKey)
+          
           if authorizationStatus == .notDetermined {
             await send(.authorizationStatusResposne(Result { try await self.userNotificationClient.requestAuthorization() }))
           }
@@ -40,10 +43,6 @@ struct AppDelegateCore {
           for await event in self.userNotificationClient.delegate() {
             send(.userNotifications(event))
           }
-          
-          let appKey = try bundleClient.getValue("KakaoNativeAppKey") as? String ?? ""
-          
-          await kakaoLoginClient.initSDK(appKey)
         }
         
       case let .userNotifications(.didReceiveResponse(response, completionHandler)):
