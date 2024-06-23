@@ -18,8 +18,8 @@ public struct KakaoLoginClient {
   public var openURL: @Sendable (_ url: URL) -> Bool = { url in false }
   public var isKakaoTalkLoginAvailable: @Sendable () -> Bool = { false }
   public var checkUserInformation: @Sendable () async throws -> User
-  public var loginWithKakaoTalk: @Sendable () async throws -> String
-  public var loginWithKakaoAccount: @Sendable () async throws -> String
+  public var loginWithKakaoTalk: @Sendable () async throws -> String?
+  public var loginWithKakaoAccount: @Sendable () async throws -> String?
   public var logout: @Sendable () async throws -> Void
 }
 
@@ -58,7 +58,7 @@ extension KakaoLoginClient: DependencyKey {
             if let error {
               continuation.resume(throwing: KakaoLoginClientError(code: .failToGetOauthToken))
             } else if let oauthToken {
-              continuation.resume(returning: oauthToken.accessToken)
+              continuation.resume(returning: oauthToken.idToken)
             } else {
               continuation.resume(throwing: KakaoLoginClientError(code: .failToLoginWithKakaoTalk))
             }
@@ -74,7 +74,7 @@ extension KakaoLoginClient: DependencyKey {
             if let error {
               continuation.resume(throwing: KakaoLoginClientError(code: .failToGetOauthToken))
             } else if let oauthToken {
-              continuation.resume(returning: oauthToken.accessToken)
+              continuation.resume(returning: oauthToken.idToken)
             } else {
               continuation.resume(throwing: KakaoLoginClientError(code: .failToLoginWithKakaoAccount))
             }

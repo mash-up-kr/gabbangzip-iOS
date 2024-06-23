@@ -47,23 +47,21 @@ extension KakaoAPI: RouteType {
   
   public var query: [(String, String?)]? {
     switch self {
-    case let .login(idToken, provider, nickname, profileImage):
-      let query: [(String, String?)]? = [
-        ("idToken", "\(idToken)"),
-        ("provider", "\(provider)"),
-        ("nickname", "\(nickname)"),
-        ("profileImage", "\(profileImage)")
-      ]
-      return query
-    case .authTest:
+    case .login, .authTest:
       return nil
     }
   }
   
   public var body: Encodable? {
     switch self {
-    case .login:
-      return nil
+    case let .login(idToken, provider, nickname, profileImage):
+      let body = KakaoLoginRequestInformation(
+        idToken: idToken,
+        provider: provider,
+        nickname: nickname,
+        profileImage: profileImage
+      )
+      return body
     case .authTest:
       return nil
     }
@@ -72,7 +70,7 @@ extension KakaoAPI: RouteType {
   public var headers: [String: String]? {
     switch self {
     case .login:
-      return nil
+      return ["Content-Type": "application/json"]
     case let .authTest(accessToken):
       let query: [String: String]? = [
         "Authorization": "Bearer \(accessToken)"
