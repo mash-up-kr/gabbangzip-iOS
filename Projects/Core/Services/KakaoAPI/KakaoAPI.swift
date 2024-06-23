@@ -8,8 +8,8 @@
 
 import Common
 import Foundation
-import Models
 import Get
+import Models
 
 public enum KakaoAPI {
   case login(_ idToken: String, _ provider: String, _ nickname: String, _ profileImage: String)
@@ -23,13 +23,15 @@ extension KakaoAPI: RouteType {
       return URLComponents.createURL(
         scheme: KakaoURL.login.scheme,
         host: KakaoURL.login.host,
-        path: KakaoURL.login.path
+        path: KakaoURL.login.path,
+        port: KakaoURL.login.port
       )
     case .authTest:
       return URLComponents.createURL(
         scheme: KakaoURL.authTest.scheme,
         host: KakaoURL.authTest.host,
-        path: KakaoURL.authTest.path
+        path: KakaoURL.authTest.path,
+        port: KakaoURL.authTest.port
       )
     }
   }

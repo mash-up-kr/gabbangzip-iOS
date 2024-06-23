@@ -22,7 +22,7 @@ extension KakaoURL {
   public var host: String {
     switch self {
     case .login, .authTest:
-      return "3.39.133.214:8080"
+      return "3.39.133.214"
     }
   }
   
@@ -32,6 +32,13 @@ extension KakaoURL {
       return "/api/v1/auth/login"
     case .authTest:
       return "/api/v1/auth/me-test"
+    }
+  }
+  
+  public var port: Int? {
+    switch self {
+    case .login, .authTest:
+      return 8080
     }
   }
 }

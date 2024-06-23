@@ -9,10 +9,17 @@
 import Foundation
 
 public extension URLComponents {
-  static func createURL(scheme: String, host: String, path: String) -> URL {
+  static func createURL(scheme: String, host: String, path: String, port: Int? = nil) -> URL {
     var components = URLComponents()
     components.scheme = scheme
-    components.host = host
+    
+    if let port = port {
+        components.host = host
+        components.port = port
+    } else {
+        components.host = host
+    }
+    
     components.path = path
     
     guard let url = components.url else {
