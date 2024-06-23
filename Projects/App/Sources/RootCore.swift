@@ -8,9 +8,9 @@
 
 import ComposableArchitecture
 import Foundation
-import Services
 import KakaoSDKUser
 import Models
+import Services
 
 @Reducer
 struct RootCore {
@@ -45,12 +45,14 @@ struct RootCore {
       switch action {
       case .loginButtonTapped:
         return .run { send in
-          if self.kakaoLoginClient.isKakaoTalkLoginAvailable() {
+          if kakaoLoginClient.isKakaoTalkLoginAvailable() {
             await send(.loginWithKakaoTalkResponse(Result { try await
-              self.kakaoLoginClient.loginWithKakaoTalk() }))
+              self.kakaoLoginClient.loginWithKakaoTalk()
+            }))
           } else {
             await send(.loginWithKakaoAccountResponse(Result { try await
-              self.kakaoLoginClient.loginWithKakaoAccount() }))
+              self.kakaoLoginClient.loginWithKakaoAccount()
+            }))
           }
         }
         
@@ -61,47 +63,49 @@ struct RootCore {
         
       case let .loginWithKakaoTalkResponse(.success(idToken)):
         state.kakaoIdToken?.idToken = idToken
-        print(state.kakaoIdToken?.idToken)
         return .run { send in
           await send(.checkUserInformationResponse(Result { try await
-            self.kakaoLoginClient.checkUserInformation() }))
+            kakaoLoginClient.checkUserInformation()
+          }))
         }
         
       case let .loginWithKakaoTalkResponse(.failure(error)):
         return .run { send in
-          send(.showError("ℹ️ 로그인에 실패했어요."))
+          await send(.showError("ℹ️ 로그인에 실패했어요."))
         }
         
       case let .loginWithKakaoAccountResponse(.success(idToken)):
         state.kakaoIdToken?.idToken = idToken
-        print(state.kakaoIdToken?.idToken)
         return .run { send in
           await send(.checkUserInformationResponse(Result { try await
-            self.kakaoLoginClient.checkUserInformation() }))
+            kakaoLoginClient.checkUserInformation()
+          }))
         }
         
       case let .loginWithKakaoAccountResponse(.failure(error)):
         return .run { send in
-          send(.showError("ℹ️ 로그인에 실패했어요."))
+          await send(.showError("ℹ️ 로그인에 실패했어요."))
         }
         
       case let .checkUserInformationResponse(.success(user)):
         state.kakaoUser?.nickname = user.kakaoAccount?.profile?.nickname
         state.kakaoUser?.profileImageUrl = user.kakaoAccount?.profile?.profileImageUrl
-        print(state.kakaoUser)
-        return .run { send in
+        return .run { [state] send in
+          let idToken = state.kakaoIdToken?.idToken ?? ""
+          let nickname = state.kakaoUser?.nickname ?? ""
+          let profileImageUrl = state.kakaoUser?.profileImageUrl?.absoluteString ?? ""
           await send(.loginResponse(Result { try await
-            self.loginAPIClient.login(
-              idToken: state.kakaoIdToken?.idToken,
-              nickname: state.kakaoUser?.nickname,
-              profileImage: state.kakaoUser?.profileImageUrl
+            loginAPIClient.login(
+              idToken,
+              nickname,
+              profileImageUrl
             )
           }))
         }
         
       case let .checkUserInformationResponse(.failure(error)):
         return .run { send in
-          send(.showError("ℹ️ 로그인에 실패했어요."))
+          await send(.showError("ℹ️ 로그인에 실패했어요."))
         }
         
       case let .loginResponse(.success(user)):
@@ -112,17 +116,17 @@ struct RootCore {
         
       case let .loginResponse(.failure(error)):
         return .run { send in
-          send(.showError("ℹ️ 로그인에 실패했어요."))
+          await send(.showError("ℹ️ 로그인에 실패했어요."))
         }
         
       case let .saveAccessTokenInKeyChain(accessToken):
         return .run { send in
-          try await self.keyChainClient.create(key: .accessToken, data: accessToken)
+          try await keyChainClient.create(.accessToken, accessToken)
         }
         
       case let .saveRefreshTokenInKeyChain(refreshToken):
         return .run { send in
-          try await self.keyChainClient.create(key: .refreshToken, data: refreshToken)
+          try await keyChainClient.create(.refreshToken, refreshToken)
         }
         
       case let .showError(message):
