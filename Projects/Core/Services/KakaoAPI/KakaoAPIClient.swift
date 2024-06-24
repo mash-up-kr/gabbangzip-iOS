@@ -17,7 +17,7 @@ public struct KakaoAPIClient {
     _ idToken: String,
     _ nickname: String,
     _ profileImage: String
-  ) async throws -> PICUserInformation
+  ) async throws -> PICUserInformation?
 }
 
 extension KakaoAPIClient: DependencyKey {

@@ -6,10 +6,8 @@
 //  Copyright © 2024 com.mashup.gabbangzip. All rights reserved.
 //
 
-import Foundation
-
 public struct KakaoResponse: Decodable {
   public let isSuccess: Bool
-  public let data: PICUserInformation
-  public let errorResponse: String
+  public let data: PICUserInformation?
+  public let errorResponse: KakaoResponseError?
 }

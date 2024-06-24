@@ -29,7 +29,7 @@ public struct RootCore {
     case loginWithKakaoTalkResponse(Result<String?, Error>)
     case loginWithKakaoAccountResponse(Result<String?, Error>)
     case checkUserInformationResponse(Result<User, Error>)
-    case loginResponse(Result<PICUserInformation, Error>)
+    case loginResponse(Result<PICUserInformation?, Error>)
     case saveAccessTokenInKeyChain(String)
     case saveRefreshTokenInKeyChain(String)
     case showError(String)
@@ -110,12 +110,13 @@ public struct RootCore {
         
       case let .loginResponse(.success(user)):
         return .run { send in
-          await send(.saveAccessTokenInKeyChain(user.accessToken))
-          await send(.saveRefreshTokenInKeyChain(user.refreshToken))
+          await send(.saveAccessTokenInKeyChain(user?.accessToken ?? ""))
+          await send(.saveRefreshTokenInKeyChain(user?.refreshToken ?? ""))
         }
         
       case let .loginResponse(.failure(error)):
         return .run { send in
+          print("------------ResponseError\(error)")
           await send(.showError("ℹ️ 로그인에 실패했어요."))
         }
         
