@@ -71,7 +71,7 @@ public struct RootCore {
         
       case let .loginWithKakaoTalkResponse(.failure(error)):
         return .run { send in
-          await send(.showError("ℹ️ 로그인에 실패했어요."))
+          await send(.showError("로그인에 실패했어요."))
         }
         
       case let .loginWithKakaoAccountResponse(.success(idToken)):
@@ -84,7 +84,7 @@ public struct RootCore {
         
       case let .loginWithKakaoAccountResponse(.failure(error)):
         return .run { send in
-          await send(.showError("ℹ️ 로그인에 실패했어요."))
+          await send(.showError("로그인에 실패했어요."))
         }
         
       case let .checkUserInformationResponse(.success(user)):
@@ -105,7 +105,7 @@ public struct RootCore {
         
       case let .checkUserInformationResponse(.failure(error)):
         return .run { send in
-          await send(.showError("ℹ️ 로그인에 실패했어요."))
+          await send(.showError("로그인에 실패했어요."))
         }
         
       case let .loginResponse(.success(user)):
@@ -116,8 +116,7 @@ public struct RootCore {
         
       case let .loginResponse(.failure(error)):
         return .run { send in
-          print("------------ResponseError✅\(error)")
-          await send(.showError("ℹ️ 로그인에 실패했어요."))
+          await send(.showError("로그인에 실패했어요."))
         }
         
       case let .saveAccessTokenInKeyChain(accessToken):

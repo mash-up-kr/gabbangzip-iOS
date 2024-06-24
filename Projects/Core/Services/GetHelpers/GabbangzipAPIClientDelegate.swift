@@ -17,6 +17,8 @@ class GabbangzipAPIClientDelegate: APIClientDelegate {
     task: URLSessionTask
   ) throws {
     switch response.statusCode {
+    case 200...300:
+      break
     case 400..<500:
       throw NetworkManagerError(
         userInfo: [
