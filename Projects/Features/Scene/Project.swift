@@ -24,6 +24,7 @@ let project = Project.make(
       sources: ["KakaoLoginScene/KakaoLogin/**"],
       dependencies: [
         .project(target: .coreKit, projectPath: .core),
+        .project(target: .models, projectPath: .core),
         .project(target: .designSystem, projectPath: .designSystem),
         .external(externalDependency: .composableArchitecture),
         .external(externalDependency: .nuke),

@@ -42,6 +42,7 @@ public enum TargetName: String {
   case mainCoordinator = "MainCoordinator"
   case main = "Main"
   case kakaoLogin = "KakaoLogin"
+  case groupDetail = "GroupDetail"
 }
 
 public enum ExternalDependency: String {
