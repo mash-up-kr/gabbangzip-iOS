@@ -74,4 +74,24 @@ public enum CategoryType {
       return DesignSystem.Icons.exerciseInactive
     }
   }
+  
+  // 고유 카테고리 컬러
+  var color: Color {
+    switch self {
+    case .school:
+      return DesignSystem.Colors.manzBackground
+    case .club:
+      return DesignSystem.Colors.geraldineBackground
+    case .company:
+      return DesignSystem.Colors.mintGreenBackground
+    case .gathering:
+      return DesignSystem.Colors.perfumeBackground
+    case .community:
+      return DesignSystem.Colors.coralBackground
+    case .hobby:
+      return DesignSystem.Colors.malibuBackground
+    case .exercise:
+      return DesignSystem.Colors.classicRoseBackground
+    }
+  }
 }
