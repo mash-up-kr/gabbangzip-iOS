@@ -68,10 +68,16 @@ struct LoginView: View {
       Button(action: {
         store.send(.loginButtonTapped)
       }, label: {
-        Image(uiImage: DesignSystem.Icons.Login.kakaoUIImage)
-          .resizable()
-          .scaledToFit()
-          .frame(width: 350)
+        Image(uiImage: DesignSystem.Icons.Login.kakaoUIImage
+          .withPadding(.init(
+            top: 0,
+            left: 16,
+            bottom: 0,
+            right: 16)
+          ))
+        .resizable()
+        .scaledToFit()
+        .frame(width: UIScreen.main.bounds.size.width)
       })
     }
   }
@@ -81,20 +87,30 @@ struct ToastView: View {
   let message: String
   
   var body: some View {
-    Text(message)
-      .foregroundColor(.white)
-      .padding()
-      .background(DesignSystem.Colors.gray60)
-      .cornerRadius(40)
-      .padding()
+    HStack {
+      Image(uiImage: DesignSystem.Icons.Login.loginIconUIImage)
+        .resizable()
+        .frame(width: 20, height: 20)
+        .padding(.leading)
+      Text(message)
+        .foregroundColor(.white)
+        .padding(.trailing)
+    }
+    .padding()
+    .background(DesignSystem.Colors.gray60)
+    .cornerRadius(40)
   }
 }
 
 #Preview {
-  RootView(
-    store: Store(
-      initialState: RootCore.State(),
-      reducer: { RootCore() }
+  ZStack {
+    RootView(
+      store: Store(
+        initialState: RootCore.State(),
+        reducer: { RootCore() }
+      )
     )
-  )
+    ToastView(message: "로그인에 실패했어요.")
+    Spacer()
+  }
 }

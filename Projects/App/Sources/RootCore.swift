@@ -116,7 +116,7 @@ public struct RootCore {
         
       case let .loginResponse(.failure(error)):
         return .run { send in
-          print("------------ResponseError\(error)")
+          print("------------ResponseError✅\(error)")
           await send(.showError("ℹ️ 로그인에 실패했어요."))
         }
         
