@@ -8,7 +8,7 @@
 
 import SwiftUI
 
-// MARK: - 하단 버튼
+// MARK: - 팝업 버튼
 public struct SmallPopupButton: View {
   private var type: SmallPopupButtonType
   private var title: String
@@ -48,7 +48,7 @@ public struct SmallPopupButton: View {
   }
 }
 
-// MARK: - DS에 따른 하단 버튼 타입 종류
+// MARK: - DS에 따른 팝업 버튼 타입 종류
 public enum SmallPopupButtonType {
   case active
   case secondary
