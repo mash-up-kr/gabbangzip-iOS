@@ -31,6 +31,8 @@ extension KeyChainClient: DependencyKey {
         switch status {
         case errSecSuccess:
           print("Keychain Create Success")
+        case errSecDuplicateItem:
+            try updateKey(key, data)
         default:
           throw KeyChainClientError(code: .failToCreate)
         }
@@ -56,21 +58,7 @@ extension KeyChainClient: DependencyKey {
         }
       },
       update: { key, data in
-        let previousQuery: NSDictionary = [
-          kSecClass: kSecClassGenericPassword,
-          kSecAttrAccount: key.type,
-        ]
-        let updateQuery: NSDictionary = [
-          kSecValueData: data.data(using: .utf8) as Any
-        ]
-        let status = SecItemUpdate(previousQuery, updateQuery)
-        
-        switch status {
-        case errSecSuccess:
-          print("Keychain Update Success")
-        default:
-          throw KeyChainClientError(code: .failToUpdate)
-        }
+        try updateKey(key, data)
       },
       delete: { key in
         let query: NSDictionary = [
@@ -88,6 +76,26 @@ extension KeyChainClient: DependencyKey {
         }
       }
     )
+  }
+}
+
+extension KeyChainClient {
+  private static func updateKey(_ key: Key,_ data: String) throws {
+    let previousQuery: NSDictionary = [
+      kSecClass: kSecClassGenericPassword,
+      kSecAttrAccount: key.type,
+    ]
+    let updateQuery: NSDictionary = [
+      kSecValueData: data.data(using: .utf8) as Any
+    ]
+    let status = SecItemUpdate(previousQuery, updateQuery)
+    
+    switch status {
+    case errSecSuccess:
+      print("Keychain Update Success")
+    default:
+      throw KeyChainClientError(code: .failToUpdate)
+    }
   }
 }
 
