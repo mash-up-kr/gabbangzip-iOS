@@ -20,8 +20,8 @@ let project = Project.make(
     .make(
       name: "KakaoLogin",
       product: .staticFramework,
-      bundleId: "com.mashup.gabbangzip.main.kakaoLogin",
-      sources: ["MainScene/Main/**"],
+      bundleId: "com.mashup.gabbangzip.kakaoLogin.kakaoLogin",
+      sources: ["KakaoLoginScene/KakaoLogin/**"],
       dependencies: [
         .project(target: .coreKit, projectPath: .core),
         .project(target: .designSystem, projectPath: .designSystem),
