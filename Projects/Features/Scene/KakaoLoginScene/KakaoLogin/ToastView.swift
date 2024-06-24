@@ -10,10 +10,14 @@ import ComposableArchitecture
 import DesignSystem
 import SwiftUI
 
-struct ToastView: View {
-  let message: String
+public struct ToastView: View {
+  public let message: String
   
-  var body: some View {
+  public init(message: String) {
+    self.message = message
+  }
+  
+  public var body: some View {
     HStack {
       Image(uiImage: DesignSystem.Icons.Login.loginIconUIImage)
         .resizable()

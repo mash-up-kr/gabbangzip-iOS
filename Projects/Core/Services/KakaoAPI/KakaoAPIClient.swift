@@ -32,10 +32,8 @@ extension KakaoAPIClient: DependencyKey {
           profileImage
         )
         var request = Request<KakaoResponse>(route: route)
-        print("-----Request✅\(request)")
         do {
           let response = try await NetworkManager.shared.send(request)
-          print("-----Request✅\(response)")
           let user = try JSONDecoder().decode(KakaoResponse.self, from: response.data).data
           
           return user

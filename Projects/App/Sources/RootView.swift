@@ -19,22 +19,17 @@ struct RootView: View {
   
   var body: some View {
     ZStack {
-      LottieView(type: .login,
-                 loopMode: .repeat(1))
+      LottieView(
+        type: .login,
+        loopMode: .repeat(1)
+      )
       .frame(width: 600)
-      LoginView(store: store)
-      
-      if let errorMessage = store.errorMessage {
-        VStack {
-          ToastView(message: errorMessage)
-            .onAppear {
-              DispatchQueue.main.asyncAfter(deadline: .now() + 2) {
-                store.send(.hideError)
-              }
-            }
-          Spacer()
-        }
-      }
+      LoginView(
+        store: store.scope(
+          state: \.login,
+          action: \.login
+        )
+      )
     }
     .onOpenURL { url in
       store.send(.onOpenURL(url))

@@ -20,12 +20,11 @@ public struct LoginCore {
     public var kakaoUser: KaKaoUserInformation = KaKaoUserInformation()
     public var kakaoIdToken: KakaoToken = KakaoToken()
     
-    init() {}
+    public init() {}
   }
   
   public enum Action {
     case loginButtonTapped
-    case onOpenURL(URL)
     case loginWithKakaoTalkResponse(Result<String?, Error>)
     case loginWithKakaoAccountResponse(Result<String?, Error>)
     case checkUserInformationResponse(Result<User, Error>)
@@ -35,6 +34,8 @@ public struct LoginCore {
     case showError(String)
     case hideError
   }
+  
+  public init() {}
   
   @Dependency(\.kakaoLoginClient) private var kakaoLoginClient
   @Dependency(\.loginAPIClient) private var loginAPIClient
@@ -54,11 +55,6 @@ public struct LoginCore {
               self.kakaoLoginClient.loginWithKakaoAccount()
             }))
           }
-        }
-        
-      case let .onOpenURL(url):
-        return .run { send in
-          kakaoLoginClient.openURL(url)
         }
         
       case let .loginWithKakaoTalkResponse(.success(idToken)):
