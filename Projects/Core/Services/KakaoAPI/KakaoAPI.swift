@@ -61,7 +61,7 @@ extension KakaoAPI: RouteType {
         nickname: nickname,
         profileImage: profileImage
       )
-      return body
+      return try? JSONEncoder().encode(body)
     case .authTest:
       return nil
     }
@@ -70,7 +70,7 @@ extension KakaoAPI: RouteType {
   public var headers: [String: String]? {
     switch self {
     case .login:
-      return ["Content-Type": "application/json"]
+      return nil
     case let .authTest(accessToken):
       let query: [String: String]? = [
         "Authorization": "Bearer \(accessToken)"
