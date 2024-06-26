@@ -31,12 +31,11 @@ extension KakaoAPIClient: DependencyKey {
           nickname,
           profileImage
         )
-        var request = Request<KakaoResponse>(route: route)
+        let request = Request<KakaoResponse>(route: route)
         do {
           let response = try await NetworkManager.shared.send(request)
-          let user = try JSONDecoder().decode(KakaoResponse.self, from: response.data).data
           
-          return user
+          return response.value.data
         } catch {
           throw KakaoAPIClientError(
             code: .failToGetPICUserInformation,

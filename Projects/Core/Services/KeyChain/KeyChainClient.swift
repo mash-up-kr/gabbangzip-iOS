@@ -32,7 +32,7 @@ extension KeyChainClient: DependencyKey {
         case errSecSuccess:
           break
         case errSecDuplicateItem:
-            try updateKey(key, data)
+          try updateKey(key, data)
         default:
           throw KeyChainClientError(code: .failToCreate)
         }
@@ -50,8 +50,10 @@ extension KeyChainClient: DependencyKey {
         switch status {
         case errSecSuccess:
           guard let retrieveData = dataTypeReference as? Data else { return nil }
-          let value = String(data: retrieveData,
-                             encoding: String.Encoding.utf8)
+          let value = String(
+            data: retrieveData,
+            encoding: String.Encoding.utf8
+          )
           return value
         default:
           throw KeyChainClientError(code: .failToRead)
@@ -62,8 +64,8 @@ extension KeyChainClient: DependencyKey {
       },
       delete: { key in
         let query: NSDictionary = [
-            kSecClass: kSecClassGenericPassword,
-            kSecAttrAccount: key.rawValue
+          kSecClass: kSecClassGenericPassword,
+          kSecAttrAccount: key.rawValue
         ]
         
         let status = SecItemDelete(query)

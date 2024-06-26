@@ -17,10 +17,18 @@ public struct LoginCore {
   @ObservableState
   public struct State: Equatable {
     public var errorMessage: String?
-    public var kakaoUser: KaKaoUserInformation = KaKaoUserInformation()
-    public var kakaoIdToken: KakaoToken = KakaoToken()
+    public var kakaoUser: KaKaoUserInformation
+    public var kakaoIdToken: KakaoToken
     
-    public init() {}
+    public init(
+      errorMessage: String? = nil,
+      kakaoUser: KaKaoUserInformation = KaKaoUserInformation(),
+      kakaoIdToken: KakaoToken = KakaoToken()
+    ) {
+      self.errorMessage = errorMessage
+      self.kakaoUser = kakaoUser
+      self.kakaoIdToken = kakaoIdToken
+    }
   }
   
   public enum Action {
@@ -47,22 +55,16 @@ public struct LoginCore {
       case .loginButtonTapped:
         return .run { send in
           if kakaoLoginClient.isKakaoTalkLoginAvailable() {
-            await send(.loginWithKakaoTalkResponse(Result { try await
-              self.kakaoLoginClient.loginWithKakaoTalk()
-            }))
+            await send(.loginWithKakaoTalkResponse(Result { try await self.kakaoLoginClient.loginWithKakaoTalk() }))
           } else {
-            await send(.loginWithKakaoAccountResponse(Result { try await
-              self.kakaoLoginClient.loginWithKakaoAccount()
-            }))
+            await send(.loginWithKakaoAccountResponse(Result { try await self.kakaoLoginClient.loginWithKakaoAccount() }))
           }
         }
         
       case let .loginWithKakaoTalkResponse(.success(idToken)):
         state.kakaoIdToken.idToken = idToken
         return .run { send in
-          await send(.checkUserInformationResponse(Result { try await
-            kakaoLoginClient.checkUserInformation()
-          }))
+          await send(.checkUserInformationResponse(Result { try await kakaoLoginClient.checkUserInformation() }))
         }
         
       case .loginWithKakaoTalkResponse(.failure):
@@ -73,9 +75,7 @@ public struct LoginCore {
       case let .loginWithKakaoAccountResponse(.success(idToken)):
         state.kakaoIdToken.idToken = idToken
         return .run { send in
-          await send(.checkUserInformationResponse(Result { try await
-            kakaoLoginClient.checkUserInformation()
-          }))
+          await send(.checkUserInformationResponse(Result { try await kakaoLoginClient.checkUserInformation() }))
         }
         
       case .loginWithKakaoAccountResponse(.failure):
@@ -92,8 +92,8 @@ public struct LoginCore {
           let profileImageUrl = state.kakaoUser.profileImageUrl?.absoluteString ?? ""
           await send(
             .loginResponse(
-              Result { try await
-                kakaoAPIClient.login(
+              Result {
+                try await kakaoAPIClient.login(
                   idToken,
                   nickname,
                   profileImageUrl

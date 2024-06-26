@@ -58,7 +58,7 @@ extension KakaoAPI: RouteType {
         nickname: nickname,
         profileImage: profileImage
       )
-      return try? JSONEncoder().encode(body)
+      return body
     case .withdraw:
       return nil
     }
@@ -73,15 +73,6 @@ extension KakaoAPI: RouteType {
         "Authorization": "Bearer \(accessToken)"
       ]
       return headers
-    }
-  }
-  
-  public var id: String? {
-    switch self {
-    case .login:
-      return nil
-    case .withdraw:
-      return nil
     }
   }
 }
