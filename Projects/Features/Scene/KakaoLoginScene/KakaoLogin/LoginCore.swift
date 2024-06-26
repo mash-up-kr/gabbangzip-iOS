@@ -65,7 +65,7 @@ public struct LoginCore {
           }))
         }
         
-      case let .loginWithKakaoTalkResponse(.failure(error)):
+      case .loginWithKakaoTalkResponse(.failure):
         return .run { send in
           await send(.showError("로그인에 실패했어요."))
         }
@@ -78,7 +78,7 @@ public struct LoginCore {
           }))
         }
         
-      case let .loginWithKakaoAccountResponse(.failure(error)):
+      case .loginWithKakaoAccountResponse(.failure):
         return .run { send in
           await send(.showError("로그인에 실패했어요."))
         }
@@ -94,16 +94,16 @@ public struct LoginCore {
             .loginResponse(
               Result { try await
                 kakaoAPIClient.login(
-                  idToken: idToken,
-                  nickname: nickname,
-                  profileImage: profileImageUrl
+                  idToken,
+                  nickname,
+                  profileImageUrl
                 )
               }
             )
           )
         }
         
-      case let .checkUserInformationResponse(.failure(error)):
+      case .checkUserInformationResponse(.failure):
         return .run { send in
           await send(.showError("로그인에 실패했어요."))
         }
@@ -114,7 +114,7 @@ public struct LoginCore {
           await send(.saveRefreshTokenInKeyChain(user?.refreshToken ?? ""))
         }
         
-      case let .loginResponse(.failure(error)):
+      case .loginResponse(.failure):
         return .run { send in
           await send(.showError("로그인에 실패했어요."))
         }

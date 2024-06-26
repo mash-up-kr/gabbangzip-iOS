@@ -8,7 +8,7 @@
 
 import Foundation
 
-public struct KaKaoUserInformation {
+public struct KaKaoUserInformation: Equatable {
   public var nickname: String?
   public var profileImageUrl: URL?
   
