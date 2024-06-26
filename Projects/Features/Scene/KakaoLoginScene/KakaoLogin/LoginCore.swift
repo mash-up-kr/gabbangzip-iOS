@@ -90,13 +90,17 @@ public struct LoginCore {
           let idToken = state.kakaoIdToken.idToken ?? ""
           let nickname = state.kakaoUser.nickname ?? ""
           let profileImageUrl = state.kakaoUser.profileImageUrl?.absoluteString ?? ""
-          await send(.loginResponse(Result { try await
-            kakaoAPIClient.login(
-              idToken,
-              nickname,
-              profileImageUrl
+          await send(
+            .loginResponse(
+              Result { try await
+                kakaoAPIClient.login(
+                  idToken: idToken,
+                  nickname: nickname,
+                  profileImage: profileImageUrl
+                )
+              }
             )
-          }))
+          )
         }
         
       case let .checkUserInformationResponse(.failure(error)):

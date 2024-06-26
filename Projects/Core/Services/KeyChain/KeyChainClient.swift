@@ -80,7 +80,7 @@ extension KeyChainClient: DependencyKey {
 }
 
 extension KeyChainClient {
-  private static func updateKey(_ key: Key,_ data: String) throws {
+  private static func updateKey(_ key: Key, _ data: String) throws {
     let previousQuery: NSDictionary = [
       kSecClass: kSecClassGenericPassword,
       kSecAttrAccount: key.type,
@@ -92,7 +92,7 @@ extension KeyChainClient {
     
     switch status {
     case errSecSuccess:
-      print("Keychain Update Success")
+      break
     default:
       throw KeyChainClientError(code: .failToUpdate)
     }

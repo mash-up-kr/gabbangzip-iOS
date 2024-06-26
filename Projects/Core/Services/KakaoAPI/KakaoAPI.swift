@@ -12,7 +12,12 @@ import Get
 import Models
 
 public enum KakaoAPI {
-  case login(_ idToken: String, _ provider: String, _ nickname: String, _ profileImage: String)
+  case login(
+    _ idToken: String,
+    _ provider: String,
+    _ nickname: String,
+    _ profileImage: String
+  )
   case authTest(_ accessToken: String)
 }
 
@@ -55,7 +60,7 @@ extension KakaoAPI: RouteType {
   public var body: Encodable? {
     switch self {
     case let .login(idToken, provider, nickname, profileImage):
-      let body = KakaoLoginRequestInformation(
+      let body = KakaoLoginInformation(
         idToken: idToken,
         provider: provider,
         nickname: nickname,
