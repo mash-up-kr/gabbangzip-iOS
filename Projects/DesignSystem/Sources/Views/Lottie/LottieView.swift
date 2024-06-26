@@ -97,5 +97,5 @@ public enum GabbangzipLottieAnimationType {
 }
 
 #Preview {
-  LottieView(type: .bookmark)
+  LottieView(type: .bookmark, loopMode: .loop)
 }
