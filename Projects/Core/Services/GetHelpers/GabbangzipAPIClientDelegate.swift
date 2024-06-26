@@ -17,8 +17,6 @@ class GabbangzipAPIClientDelegate: APIClientDelegate {
     task: URLSessionTask
   ) throws {
     switch response.statusCode {
-    case 200...300:
-      break
     case 400..<500:
       throw NetworkManagerError(
         userInfo: [
@@ -38,13 +36,7 @@ class GabbangzipAPIClientDelegate: APIClientDelegate {
       )
       
     default:
-      throw NetworkManagerError(
-        userInfo: [
-          "response": response,
-          "message": String(data: data, encoding: .utf8) ?? "Decoding data to string failed"
-        ],
-        code: .unhandledStatusCode
-      )
+      break
     }
   }
   
