@@ -19,7 +19,7 @@ let project = Project.make(
     ),
     .make(
       name: "KakaoLogin",
-      product: .staticFramework,
+      product: .framework,
       bundleId: "com.mashup.gabbangzip.kakaoLogin.kakaoLogin",
       sources: ["KakaoLoginScene/KakaoLogin/**"],
       dependencies: [
