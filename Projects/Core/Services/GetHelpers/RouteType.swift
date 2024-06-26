@@ -11,7 +11,7 @@ import Get
 
 public protocol RouteType {
   /// The path to be appended to `baseURL` to form the full `URL`.
-  var url: URL { get }
+  var path: String { get }
   
   /// The query parameters to be appended to the URL as key-value pairs.
   /// Each tuple contains a key and an optional value.

@@ -11,7 +11,7 @@ import Get
 extension Request {
   public init(route: RouteType) {
     self.init(
-      url: route.url,
+      path: route.path,
       method: route.method,
       query: route.query,
       body: route.body,

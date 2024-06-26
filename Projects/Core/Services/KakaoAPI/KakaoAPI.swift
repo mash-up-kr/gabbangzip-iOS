@@ -18,26 +18,16 @@ public enum KakaoAPI {
     _ nickname: String,
     _ profileImage: String
   )
-  case authTest(_ accessToken: String)
+  case withdraw(_ accessToken: String)
 }
 
 extension KakaoAPI: RouteType {
-  public var url: URL {
+  public var path: String {
     switch self {
     case .login:
-      return URLComponents.createURL(
-        scheme: KakaoURL.login.scheme,
-        host: KakaoURL.login.host,
-        path: KakaoURL.login.path,
-        port: KakaoURL.login.port
-      )
-    case .authTest:
-      return URLComponents.createURL(
-        scheme: KakaoURL.authTest.scheme,
-        host: KakaoURL.authTest.host,
-        path: KakaoURL.authTest.path,
-        port: KakaoURL.authTest.port
-      )
+      return "/api/v1/auth/login"
+    case .withdraw:
+      return "/api/v1/auth/token"
     }
   }
   
@@ -45,14 +35,16 @@ extension KakaoAPI: RouteType {
     switch self {
     case .login:
       return .post
-    case .authTest:
-      return .get
+    case .withdraw:
+      return .delete
     }
   }
   
   public var query: [(String, String?)]? {
     switch self {
-    case .login, .authTest:
+    case .login:
+      return nil
+    case .withdraw:
       return nil
     }
   }
@@ -67,7 +59,7 @@ extension KakaoAPI: RouteType {
         profileImage: profileImage
       )
       return try? JSONEncoder().encode(body)
-    case .authTest:
+    case .withdraw:
       return nil
     }
   }
@@ -76,7 +68,7 @@ extension KakaoAPI: RouteType {
     switch self {
     case .login:
       return nil
-    case let .authTest(accessToken):
+    case let .withdraw(accessToken):
       let headers: [String: String]? = [
         "Authorization": "Bearer \(accessToken)"
       ]
@@ -88,7 +80,7 @@ extension KakaoAPI: RouteType {
     switch self {
     case .login:
       return nil
-    case .authTest:
+    case .withdraw:
       return nil
     }
   }
