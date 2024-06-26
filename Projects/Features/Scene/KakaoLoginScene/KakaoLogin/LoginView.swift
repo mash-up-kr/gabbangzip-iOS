@@ -19,6 +19,18 @@ public struct LoginView: View {
   
   public var body: some View {
     ZStack {
+      if let errorMessage = store.errorMessage {
+        VStack {
+          ToastView(message: errorMessage)
+            .onAppear {
+              DispatchQueue.main.asyncAfter(deadline: .now() + 2) {
+                store.send(.hideError)
+              }
+            }
+          Spacer()
+        }
+      }
+      
       ZStack {
         LottieView(
           type: .login,
@@ -53,18 +65,6 @@ public struct LoginView: View {
                 .frame(width: UIScreen.main.bounds.size.width)
             }
           )
-        }
-      }
-      
-      if let errorMessage = store.errorMessage {
-        VStack {
-          ToastView(message: errorMessage)
-            .onAppear {
-              DispatchQueue.main.asyncAfter(deadline: .now() + 2) {
-                store.send(.hideError)
-              }
-            }
-          Spacer()
         }
       }
     }
