@@ -30,7 +30,7 @@ extension KeyChainClient: DependencyKey {
         
         switch status {
         case errSecSuccess:
-          print("Keychain Create Success")
+          break
         case errSecDuplicateItem:
             try updateKey(key, data)
         default:
@@ -70,7 +70,7 @@ extension KeyChainClient: DependencyKey {
         
         switch status {
         case noErr:
-          print("Keychain Delete Success")
+          break
         default:
           throw KeyChainClientError(code: .failToDelete)
         }
