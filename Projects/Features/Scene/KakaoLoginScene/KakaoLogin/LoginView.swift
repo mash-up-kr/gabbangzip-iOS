@@ -39,13 +39,13 @@ public struct LoginView: View {
         .frame(maxWidth: .infinity)
         VStack {
           Spacer()
-            .frame(height: 50)
+            .frame(height: 80)
           DesignSystem.Icons.Login.logo
             .resizable()
             .scaledToFit()
             .frame(width: 100)
           Spacer()
-            .frame(height: 8)
+            .frame(height: 40)
           Text("우리가 픽! 하는\n우리끼리 네컷앨범")
             .font(.text22)
             .multilineTextAlignment(.center)
@@ -79,7 +79,7 @@ public struct LoginView: View {
         reducer: { LoginCore() }
       )
     )
-    ToastView(message: "로그인에 실패했어요.")
+//    ToastView(message: "로그인에 실패했어요.")
     Spacer()
   }
 }
