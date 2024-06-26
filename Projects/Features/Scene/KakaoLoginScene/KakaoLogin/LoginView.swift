@@ -44,13 +44,11 @@ public struct LoginView: View {
             .resizable()
             .scaledToFit()
             .frame(width: 100)
-          Spacer()
-            .frame(height: 40)
           Text("우리가 픽! 하는\n우리끼리 네컷앨범")
             .font(.text22)
             .multilineTextAlignment(.center)
             .foregroundStyle(DesignSystem.Colors.gray80)
-            .padding()
+            .padding(.top, 28)
           Spacer()
           Button(
             action: {
@@ -61,7 +59,7 @@ public struct LoginView: View {
                 .resizable()
                 .scaledToFit()
                 .padding(.horizontal, 16)
-                .padding(.bottom, 40)
+                .padding(.bottom, 60)
                 .frame(width: UIScreen.main.bounds.size.width)
             }
           )
@@ -79,7 +77,7 @@ public struct LoginView: View {
         reducer: { LoginCore() }
       )
     )
-//    ToastView(message: "로그인에 실패했어요.")
+    ToastView(message: "로그인에 실패했어요.")
     Spacer()
   }
 }
