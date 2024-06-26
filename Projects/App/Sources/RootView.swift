@@ -18,19 +18,12 @@ struct RootView: View {
   }
   
   var body: some View {
-    ZStack {
-      LottieView(
-        type: .login,
-        loopMode: .repeat(1)
-      )
-      .frame(width: 600)
       LoginView(
         store: store.scope(
           state: \.login,
           action: \.login
         )
       )
-    }
     .onOpenURL { url in
       store.send(.onOpenURL(url))
     }
