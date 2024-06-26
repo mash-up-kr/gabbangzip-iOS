@@ -14,25 +14,44 @@ import KakaoLogin
 public struct RootCore {
   @ObservableState
   public struct State: Equatable {
+    public var isLogin: Bool = false
     public var login: LoginCore.State = LoginCore.State()
   }
   
   public enum Action {
+    case checkAccessToken
+    case setLoginStatus(Bool)
     case login(LoginCore.Action)
     case onOpenURL(URL)
   }
   
   @Dependency(\.kakaoLoginClient) var kakaoLoginClient
+  @Dependency(\.keyChainClient) var keyChainClient
   
   public var body: some Reducer<State, Action> {
-    Scope(state: \.login,
-          action: \.login) {
+    Scope(
+      state: \.login,
+      action: \.login
+    ) {
       LoginCore()
     }
     
     Reduce { state, action in
       switch action {
-      case .login(_):
+      case .checkAccessToken:
+        return .run { send in
+          var tokenExists = true
+//          do {
+//            tokenExists = try await keyChainClient.read(.accessToken) != nil
+//          }
+          await send(.setLoginStatus(tokenExists))
+        }
+        
+      case let .setLoginStatus(isLogin):
+        state.isLogin = isLogin
+        return .none
+        
+      case .login:
         return .none
         
       case let .onOpenURL(url):

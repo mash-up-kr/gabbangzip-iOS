@@ -18,14 +18,23 @@ struct RootView: View {
   }
   
   var body: some View {
-      LoginView(
-        store: store.scope(
-          state: \.login,
-          action: \.login
+    Group {
+      if !store.isLogin {
+        LoginView(
+          store: store.scope(
+            state: \.login,
+            action: \.login
+          )
         )
-      )
-    .onOpenURL { url in
-      store.send(.onOpenURL(url))
+        .onOpenURL { url in
+          store.send(.onOpenURL(url))
+        }
+      } else {
+        Text("로그인이 되었습니다.")
+      }
+    }
+    .onAppear {
+      store.send(.checkAccessToken)
     }
   }
 }
