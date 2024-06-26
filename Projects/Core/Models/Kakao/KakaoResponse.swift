@@ -9,5 +9,5 @@
 public struct KakaoResponse: Decodable {
   public let isSuccess: Bool
   public let data: PICUserInformation?
-  public let errorResponse: KakaoResponseError?
+  public let errorResponse: KakaoErrorResponse?
 }
