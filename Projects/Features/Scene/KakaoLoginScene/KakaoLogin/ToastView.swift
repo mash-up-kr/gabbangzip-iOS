@@ -21,7 +21,10 @@ public struct ToastView: View {
     HStack {
       Image(uiImage: DesignSystem.Icons.Login.loginIconUIImage)
         .resizable()
-        .frame(width: 20, height: 20)
+        .frame(
+          width: 20,
+          height: 20
+        )
         .padding(.leading)
       Text(message)
         .font(.body16)

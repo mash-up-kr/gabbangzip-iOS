@@ -49,7 +49,7 @@ extension KakaoAPIClient: DependencyKey {
 }
 
 extension DependencyValues {
-  public var loginAPIClient: KakaoAPIClient {
+  public var kakaoAPIClient: KakaoAPIClient {
     get { self[KakaoAPIClient.self] }
     set { self[KakaoAPIClient.self] = newValue }
   }

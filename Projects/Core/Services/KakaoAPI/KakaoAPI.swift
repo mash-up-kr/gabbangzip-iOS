@@ -72,10 +72,10 @@ extension KakaoAPI: RouteType {
     case .login:
       return nil
     case let .authTest(accessToken):
-      let query: [String: String]? = [
+      let headers: [String: String]? = [
         "Authorization": "Bearer \(accessToken)"
       ]
-      return query
+      return headers
     }
   }
   
