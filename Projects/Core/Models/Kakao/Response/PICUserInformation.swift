@@ -8,10 +8,14 @@
 
 public struct PICUserInformation: Decodable {
   public let userID: Int
-  public let nickname, accessToken, refreshToken: String
+  public let nickname: String
+  public let accessToken: String
+  public let refreshToken: String
   
   public enum CodingKeys: String, CodingKey {
     case userID = "userId"
-    case nickname, accessToken, refreshToken
+    case nickname
+    case accessToken
+    case refreshToken
   }
 }
