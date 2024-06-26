@@ -6,22 +6,43 @@
 //  Copyright © 2024 com.mashup.gabbangzip. All rights reserved.
 //
 
+import UIKit
+
 import ComposableArchitecture
+
+import Models
 
 @Reducer
 public struct MemberListCore {
+  @ObservableState
   public struct State: Equatable {
-
-    public init() {
+    var memberList: MemberList
+    var inviteLink: String
+    
+    public init(
+      memberList: MemberList,
+      inviteLink: String
+    ) {
+      self.memberList = memberList
+      self.inviteLink = inviteLink
     }
   }
 
   public enum Action {
+    case copyLinkButtonDidTap
+    case backButtonDidTap
   }
 
   public var body: some Reducer<State, Action> {
     Reduce { state, action in
       switch action {
+      case .copyLinkButtonDidTap:
+        UIPasteboard.general.string = state.inviteLink
+        print("🔗 link copied: \(UIPasteboard.general.string)")
+        return .none
+      case .backButtonDidTap:
+        print("⏮️ back button didTap")
+        return .none
       }
     }
   }
