@@ -19,48 +19,53 @@ public struct LoginView: View {
   
   public var body: some View {
     ZStack {
-      VStack {
-        Spacer()
-          .frame(height: 50)
-        Image(uiImage: DesignSystem.Icons.Login.logoUIImage)
-          .resizable()
-          .scaledToFit()
-          .frame(width: 100)
-        Spacer()
-          .frame(height: 8)
-        Text("우리가 픽! 하는\n우리끼리 네컷앨범")
-          .font(DesignSystemFontFamily.Pretendard.regular.font(size: 21))
-          .multilineTextAlignment(.center)
-          .foregroundStyle(DesignSystem.Colors.gray80)
-          .padding()
-        Spacer()
-          .frame(height: 400)
-        Button(action: {
-          store.send(.loginButtonTapped)
-        }, label: {
-          Image(uiImage: DesignSystem.Icons.Login.kakaoUIImage
-            .withPadding(.init(
-              top: 0,
-              left: 16,
-              bottom: 0,
-              right: 16)
-            ))
-          .resizable()
-          .scaledToFit()
-          .frame(width: UIScreen.main.bounds.size.width)
-        })
-      }
-    }
-    
-    if let errorMessage = store.errorMessage {
-      VStack {
-        ToastView(message: errorMessage)
-          .onAppear {
-            DispatchQueue.main.asyncAfter(deadline: .now() + 2) {
-              store.send(.hideError)
+      ZStack {
+        LottieView(
+          type: .login,
+          loopMode: .repeat(1)
+        )
+        .frame(maxWidth: .infinity)
+        VStack {
+          Spacer()
+            .frame(height: 50)
+          DesignSystem.Icons.Login.logo
+            .resizable()
+            .scaledToFit()
+            .frame(width: 100)
+          Spacer()
+            .frame(height: 8)
+          Text("우리가 픽! 하는\n우리끼리 네컷앨범")
+            .font(.text22)
+            .multilineTextAlignment(.center)
+            .foregroundStyle(DesignSystem.Colors.gray80)
+            .padding()
+          Spacer()
+          Button(
+            action: {
+              store.send(.loginButtonTapped)
+            },
+            label: {
+              DesignSystem.Icons.Login.kakao
+                .resizable()
+                .scaledToFit()
+                .padding(.horizontal, 16)
+                .padding(.bottom, 40)
+                .frame(width: UIScreen.main.bounds.size.width)
             }
-          }
-        Spacer()
+          )
+        }
+      }
+      
+      if let errorMessage = store.errorMessage {
+        VStack {
+          ToastView(message: errorMessage)
+            .onAppear {
+              DispatchQueue.main.asyncAfter(deadline: .now() + 2) {
+                store.send(.hideError)
+              }
+            }
+          Spacer()
+        }
       }
     }
   }
