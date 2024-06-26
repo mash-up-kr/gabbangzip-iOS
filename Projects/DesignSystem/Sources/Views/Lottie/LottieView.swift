@@ -12,7 +12,7 @@ import SwiftUI
 public struct LottieView: UIViewRepresentable {
   public typealias CompletionBlock = LottieCompletionBlock?
   private let type: GabbangzipLottieAnimationType
-  private var loopMode: LottieLoopMode
+  private let loopMode: LottieLoopMode
   private let contentMode: UIView.ContentMode
   private let backgroundBehavior: LottieBackgroundBehavior
   private var isPlaying: Bool
@@ -20,7 +20,7 @@ public struct LottieView: UIViewRepresentable {
   
   public init(
     type: GabbangzipLottieAnimationType,
-    loopMode: LottieLoopMode = .loop,
+    loopMode: LottieLoopMode,
     contentMode: UIView.ContentMode = .scaleAspectFit,
     backgroundBehavior: LottieBackgroundBehavior = .pauseAndRestore,
     isPlaying: Bool = true,
