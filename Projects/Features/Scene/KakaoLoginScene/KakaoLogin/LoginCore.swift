@@ -38,7 +38,7 @@ public struct LoginCore {
   public init() {}
   
   @Dependency(\.kakaoLoginClient) private var kakaoLoginClient
-  @Dependency(\.loginAPIClient) private var loginAPIClient
+  @Dependency(\.kakaoAPIClient) private var kakaoAPIClient
   @Dependency(\.keyChainClient) private var keyChainClient
   
   public var body: some Reducer<State, Action> {
@@ -91,7 +91,7 @@ public struct LoginCore {
           let nickname = state.kakaoUser.nickname ?? ""
           let profileImageUrl = state.kakaoUser.profileImageUrl?.absoluteString ?? ""
           await send(.loginResponse(Result { try await
-            loginAPIClient.login(
+            kakaoAPIClient.login(
               idToken,
               nickname,
               profileImageUrl
