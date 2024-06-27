@@ -44,7 +44,7 @@ import SwiftUI
       fatalError("Unable to initialize font name: '\(name)', family: \(family), size: 22")
     }
     return Font(uiFont: font)
-
+  }
   {{accessModifier}} var _20: Font {
     guard let font = UIFont(font: self, size: 20) else {
       fatalError("Unable to initialize font name: '\(name)', family: \(family), size: 20")
