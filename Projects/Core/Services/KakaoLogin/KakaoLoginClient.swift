@@ -42,7 +42,7 @@ extension KakaoLoginClient: DependencyKey {
       checkUserInformation: {
         try await withCheckedThrowingContinuation { continuation in
           UserApi.shared.me() { user, error in
-            if let error {
+            if error != nil {
               continuation.resume(throwing: KakaoLoginClientError(code: .failToGetMe))
             } else if let user {
               continuation.resume(returning: user)
@@ -55,7 +55,7 @@ extension KakaoLoginClient: DependencyKey {
       loginWithKakaoTalk: { @MainActor in
         try await withCheckedThrowingContinuation { continuation in
           UserApi.shared.loginWithKakaoTalk {(oauthToken, error) in
-            if let error {
+            if error != nil {
               continuation.resume(throwing: KakaoLoginClientError(code: .failToGetOauthToken))
             } else if let oauthToken {
               continuation.resume(returning: oauthToken.idToken)
@@ -68,7 +68,7 @@ extension KakaoLoginClient: DependencyKey {
       loginWithKakaoAccount: { @MainActor in
         try await withCheckedThrowingContinuation { continuation in
           UserApi.shared.loginWithKakaoAccount { oauthToken, error in
-            if let error {
+            if error != nil {
               continuation.resume(throwing: KakaoLoginClientError(code: .failToGetOauthToken))
             } else if let oauthToken {
               continuation.resume(returning: oauthToken.idToken)
@@ -81,7 +81,7 @@ extension KakaoLoginClient: DependencyKey {
       logout: {
         try await withCheckedThrowingContinuation { continuation in
           UserApi.shared.logout { error in
-            if let error {
+            if error != nil {
               continuation.resume(throwing: KakaoLoginClientError(code: .failToLogout))
             } else {
               continuation.resume(returning: ())
