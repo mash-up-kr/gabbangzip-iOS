@@ -41,12 +41,14 @@ public struct LoginCore {
     case loginResponse(Result<PICUserInformation?, Error>)
     case saveTokenInKeyChain(Result<(KeyChainClient.Key, String), LoginCoreError>)
     case showError(String)
+    case checkDeadline(Double)
     case hideError
   }
   
   @Dependency(\.kakaoLoginClient) private var kakaoLoginClient
   @Dependency(\.kakaoAPIClient) private var kakaoAPIClient
   @Dependency(\.keyChainClient) private var keyChainClient
+  @Dependency(\.mainQueue) private var mainQueue
   
   public var body: some Reducer<State, Action> {
     Reduce { state, action in
@@ -161,6 +163,14 @@ public struct LoginCore {
       case let .showError(message):
         state.errorMessage = message
         return .none
+        
+      case let .checkDeadline(time):
+        return .run { @MainActor send in
+          await mainQueue.timer(interval: .seconds(time)).first { _ in
+            send(.hideError)
+            return true
+          }
+        }
         
       case .hideError:
         state.errorMessage = nil

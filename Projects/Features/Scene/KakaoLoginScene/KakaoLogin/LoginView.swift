@@ -23,9 +23,7 @@ public struct LoginView: View {
         VStack {
           ToastView(message: errorMessage)
             .onAppear {
-              DispatchQueue.main.asyncAfter(deadline: .now() + 2) {
-                store.send(.hideError)
-              }
+              store.send(.checkDeadline(2))
             }
           Spacer()
         }
