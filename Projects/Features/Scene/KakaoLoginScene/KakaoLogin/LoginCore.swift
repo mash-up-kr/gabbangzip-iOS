@@ -37,8 +37,7 @@ public struct LoginCore {
     case loginWithKakaoAccountResponse(Result<String?, Error>)
     case checkUserInformationResponse(Result<User, Error>)
     case loginResponse(Result<PICUserInformation?, Error>)
-    case saveAccessTokenInKeyChain(String)
-    case saveRefreshTokenInKeyChain(String)
+    case saveTokenInKeyChain(Result<(KeyChainClient.Key, String), LoginCoreError>)
     case showError(String)
     case hideError
   }
@@ -55,16 +54,34 @@ public struct LoginCore {
       case .loginButtonTapped:
         return .run { send in
           if kakaoLoginClient.isKakaoTalkLoginAvailable() {
-            await send(.loginWithKakaoTalkResponse(Result { try await self.kakaoLoginClient.loginWithKakaoTalk() }))
+            await send(
+              .loginWithKakaoTalkResponse(
+                Result {
+                  try await self.kakaoLoginClient.loginWithKakaoTalk()
+                }
+              )
+            )
           } else {
-            await send(.loginWithKakaoAccountResponse(Result { try await self.kakaoLoginClient.loginWithKakaoAccount() }))
+            await send(
+              .loginWithKakaoAccountResponse(
+                Result {
+                  try await self.kakaoLoginClient.loginWithKakaoAccount()
+                }
+              )
+            )
           }
         }
         
       case let .loginWithKakaoTalkResponse(.success(idToken)):
         state.kakaoIdToken.idToken = idToken
         return .run { send in
-          await send(.checkUserInformationResponse(Result { try await kakaoLoginClient.checkUserInformation() }))
+          await send(
+            .checkUserInformationResponse(
+              Result {
+                try await kakaoLoginClient.checkUserInformation()
+              }
+            )
+          )
         }
         
       case .loginWithKakaoTalkResponse(.failure):
@@ -75,7 +92,13 @@ public struct LoginCore {
       case let .loginWithKakaoAccountResponse(.success(idToken)):
         state.kakaoIdToken.idToken = idToken
         return .run { send in
-          await send(.checkUserInformationResponse(Result { try await kakaoLoginClient.checkUserInformation() }))
+          await send(
+            .checkUserInformationResponse(
+              Result {
+                try await kakaoLoginClient.checkUserInformation()
+              }
+            )
+          )
         }
         
       case .loginWithKakaoAccountResponse(.failure):
@@ -110,8 +133,16 @@ public struct LoginCore {
         
       case let .loginResponse(.success(user)):
         return .run { send in
-          await send(.saveAccessTokenInKeyChain(user?.accessToken ?? ""))
-          await send(.saveRefreshTokenInKeyChain(user?.refreshToken ?? ""))
+          if let accessToken = user?.accessToken {
+            await send(.saveTokenInKeyChain(.success((.accessToken, accessToken))))
+          } else {
+            await send(.saveTokenInKeyChain(.failure(LoginCoreError(code: .failToGetAccessToken))))
+          }
+          if let refreshToken = user?.refreshToken {
+            await send(.saveTokenInKeyChain(.success((.refreshToken, refreshToken))))
+          } else {
+            await send(.saveTokenInKeyChain(.failure(LoginCoreError(code: .failToGetRefreshToken))))
+          }
         }
         
       case .loginResponse(.failure):
@@ -119,15 +150,13 @@ public struct LoginCore {
           await send(.showError("로그인에 실패했어요."))
         }
         
-      case let .saveAccessTokenInKeyChain(accessToken):
+      case let .saveTokenInKeyChain(.success((tokenKey, token))):
         return .run { send in
-          try await keyChainClient.create(.accessToken, accessToken)
+          try await keyChainClient.create(tokenKey, token)
         }
         
-      case let .saveRefreshTokenInKeyChain(refreshToken):
-        return .run { send in
-          try await keyChainClient.create(.refreshToken, refreshToken)
-        }
+      case .saveTokenInKeyChain(.failure):
+        return .none
         
       case let .showError(message):
         state.errorMessage = message
@@ -138,5 +167,17 @@ public struct LoginCore {
         return .none
       }
     }
+  }
+}
+
+// MARK: - LoginCoreError
+public struct LoginCoreError: GabbangzipError {
+  public var userInfo: [String: Any] = [:]
+  public var code: Code
+  public var underlying: Error?
+  
+  public enum Code: Int {
+    case failToGetAccessToken
+    case failToGetRefreshToken
   }
 }
