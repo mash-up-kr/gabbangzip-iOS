@@ -40,12 +40,13 @@ public struct RootCore {
       case .checkAccessToken:
         return .run { send in
           var tokenExists = false
-          do {
-            let data = try await keyChainClient.read(.accessToken)
-            tokenExists = data != nil
-          } catch {
-            tokenExists = false
-          }
+            let data = await keyChainClient.read(.accessToken)
+            switch data {
+            case let .success(token):
+              tokenExists = token != nil
+            case .failure:
+              break
+            }
           await send(.setLoginStatus(tokenExists))
         }
         

@@ -12,7 +12,7 @@ import Foundation
 @DependencyClient
 public struct KeyChainClient {
   public var create: @Sendable (_ key: Key, _ data: String) async throws -> Void
-  public var read: @Sendable (_ key: Key) async throws -> Result<String?, Error>
+  public var read: @Sendable (_ key: Key) async -> Result<String?, KeyChainClientError> = { key in .failure(.init(code: .failToRead)) }
   public var update: @Sendable (_ key: Key, _ data: String) async throws -> Void
   public var delete: @Sendable (_ key: Key) async throws -> Void
 }
@@ -59,7 +59,7 @@ extension KeyChainClient: DependencyKey {
             return .failure(KeyChainClientError(code: .failToGetData)) 
           }
         default:
-          throw KeyChainClientError(code: .failToRead)
+            return .failure(KeyChainClientError(code: .failToRead))
         }
       },
       update: { key, data in
