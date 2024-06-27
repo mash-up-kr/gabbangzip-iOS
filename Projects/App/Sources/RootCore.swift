@@ -19,7 +19,7 @@ public struct RootCore {
   }
   
   public enum Action {
-    case checkAccessToken
+    case onAppear
     case setLoginStatus(Bool)
     case login(LoginCore.Action)
     case onOpenURL(URL)
@@ -38,7 +38,7 @@ public struct RootCore {
     
     Reduce { state, action in
       switch action {
-      case .checkAccessToken:
+      case .onAppear:
         return .run (
           operation: { send in
             let tokenData = try await keyChainClient.read(.accessToken)

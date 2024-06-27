@@ -34,7 +34,7 @@ struct RootView: View {
       }
     }
     .onAppear {
-      store.send(.checkAccessToken)
+      store.send(.onAppear)
     }
   }
 }
