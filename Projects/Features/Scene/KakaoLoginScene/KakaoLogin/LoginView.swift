@@ -40,7 +40,7 @@ public struct LoginView: View {
         VStack {
           Spacer()
             .frame(height: 80)
-          DesignSystem.Icons.Login.logo
+          DesignSystem.Icons.logo
             .resizable()
             .scaledToFit()
             .frame(width: 100)
@@ -55,7 +55,7 @@ public struct LoginView: View {
               store.send(.loginButtonTapped)
             },
             label: {
-              DesignSystem.Icons.Login.kakao
+              DesignSystem.Icons.kakao
                 .resizable()
                 .scaledToFit()
                 .padding(.horizontal, 16)
