@@ -14,6 +14,8 @@ import Services
 
 @Reducer
 public struct LoginCore {
+  public init() {}
+  
   @ObservableState
   public struct State: Equatable {
     public var errorMessage: String?
@@ -30,8 +32,6 @@ public struct LoginCore {
       self.kakaoIdToken = kakaoIdToken
     }
   }
-  
-  public init() {}
   
   public enum Action {
     case loginButtonTapped
