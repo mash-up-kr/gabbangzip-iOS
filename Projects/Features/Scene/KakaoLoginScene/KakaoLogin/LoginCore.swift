@@ -165,11 +165,9 @@ public struct LoginCore {
         return .none
         
       case let .checkDeadline(time):
-        return .run { @MainActor send in
-          await mainQueue.timer(interval: .seconds(time)).first { _ in
-            send(.hideError)
-            return true
-          }
+        return .run { send in
+          try await mainQueue.sleep(for: .seconds(time))
+          await send(.hideError)
         }
         
       case .hideError:
