@@ -42,7 +42,10 @@ public struct RootCore {
         return .run { send in
           var tokenExists = false
           do {
-            tokenExists = try await keyChainClient.read(.accessToken) != nil
+            try await keyChainClient.read(.accessToken)
+            tokenExists = true
+          } catch {
+            tokenExists = false
           }
           await send(.setLoginStatus(tokenExists))
         }

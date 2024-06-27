@@ -41,7 +41,13 @@ struct AppDelegateCore {
           
           let authorizationStatus = await self.userNotificationClient.getAuthorizationStatus()
           if authorizationStatus == .notDetermined {
-            await send(.authorizationStatusResposne(Result { try await self.userNotificationClient.requestAuthorization() }))
+            await send(
+              .authorizationStatusResposne(
+                Result {
+                  try await self.userNotificationClient.requestAuthorization()
+                }
+              )
+            )
           }
           
           for await event in self.userNotificationClient.delegate() {
@@ -65,7 +71,7 @@ struct AppDelegateCore {
       case let .authorizationStatusResposne(.failure(error)):
         return .none
         
-      case let .showError(error):
+      case .showError:
         return .none
       }
     }
