@@ -26,10 +26,10 @@ extension KakaoAPIClient: DependencyKey {
       login: { idToken, nickname, profileImage in
         let provider = "KAKAO"
         let route = KakaoAPI.login(
-          idToken,
-          provider,
-          nickname,
-          profileImage
+          idToken: idToken,
+          provider: provider,
+          nickname: nickname,
+          profileImage: profileImage
         )
         let request = Request<KakaoResponse>(route: route)
         do {

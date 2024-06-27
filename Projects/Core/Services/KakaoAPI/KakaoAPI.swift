@@ -13,10 +13,10 @@ import Models
 
 public enum KakaoAPI {
   case login(
-    _ idToken: String,
-    _ provider: String,
-    _ nickname: String,
-    _ profileImage: String
+    idToken: String,
+    provider: String,
+    nickname: String,
+    profileImage: String
   )
   case withdraw(_ accessToken: String)
 }
