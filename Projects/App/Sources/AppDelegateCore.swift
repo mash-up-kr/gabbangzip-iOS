@@ -20,6 +20,7 @@ struct AppDelegateCore {
     case didFinishLaunching
     case userNotifications(UserNotificationClient.DelegateEvent)
     case authorizationStatusResposne(Result<Void, Error>)
+    case showError(AppDelegateCoreError)
   }
   
   @Dependency(\.userNotificationClient) private var userNotificationClient
@@ -32,8 +33,11 @@ struct AppDelegateCore {
       case .didFinishLaunching:
         return .run { @MainActor send in
           // TODO: 써드파티 SDK 초기화 및 설정
-          let appKey = try bundleClient.getValue("KakaoNativeAppKey") as? String ?? ""
-          await kakaoLoginClient.initSDK(appKey)
+          if let appKey = try bundleClient.getValue("KakaoNativeAppKey") as? String {
+            await kakaoLoginClient.initSDK(appKey)
+          } else {
+            send(.showError(AppDelegateCoreError(code: .failToStringTypeCasting)))
+          }
           
           let authorizationStatus = await self.userNotificationClient.getAuthorizationStatus()
           if authorizationStatus == .notDetermined {
@@ -60,7 +64,21 @@ struct AppDelegateCore {
         
       case let .authorizationStatusResposne(.failure(error)):
         return .none
+        
+      case let .showError(error):
+        return .none
       }
     }
+  }
+}
+
+// MARK: - AppDelegateCoreError
+public struct AppDelegateCoreError: GabbangzipError {
+  public var userInfo: [String: Any] = [:]
+  public var code: Code
+  public var underlying: Error?
+  
+  public enum Code: Int {
+    case failToStringTypeCasting
   }
 }
