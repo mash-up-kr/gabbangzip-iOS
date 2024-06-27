@@ -31,10 +31,9 @@ public struct RootCore {
   public var body: some Reducer<State, Action> {
     Scope(
       state: \.login,
-      action: \.login
-    ) {
-      LoginCore()
-    }
+      action: \.login,
+      child: LoginCore.init
+    )
     
     Reduce { state, action in
       switch action {

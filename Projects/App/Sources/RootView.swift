@@ -43,7 +43,7 @@ struct RootView: View {
   RootView(
     store: Store(
       initialState: RootCore.State(),
-      reducer: { RootCore() }
+      reducer: RootCore.init
     )
   )
 }
