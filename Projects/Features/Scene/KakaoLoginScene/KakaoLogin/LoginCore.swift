@@ -31,6 +31,8 @@ public struct LoginCore {
     }
   }
   
+  public init() {}
+  
   public enum Action {
     case loginButtonTapped
     case loginWithKakaoTalkResponse(Result<String?, Error>)
@@ -41,8 +43,6 @@ public struct LoginCore {
     case showError(String)
     case hideError
   }
-  
-  public init() {}
   
   @Dependency(\.kakaoLoginClient) private var kakaoLoginClient
   @Dependency(\.kakaoAPIClient) private var kakaoAPIClient
