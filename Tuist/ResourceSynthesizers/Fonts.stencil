@@ -39,6 +39,12 @@ import SwiftUI
   {{accessModifier}} let name: String
   {{accessModifier}} let family: String
   {{accessModifier}} let path: String
+    {{accessModifier}} var _22: Font {
+    guard let font = UIFont(font: self, size: 22) else {
+      fatalError("Unable to initialize font name: '\(name)', family: \(family), size: 22")
+    }
+    return Font(uiFont: font)
+
   {{accessModifier}} var _20: Font {
     guard let font = UIFont(font: self, size: 20) else {
       fatalError("Unable to initialize font name: '\(name)', family: \(family), size: 20")
@@ -132,6 +138,9 @@ import SwiftUI
   }
   static var text14: Font {
     {{param.name}}FontFamily.{{family.name|swiftIdentifier:"pretty"|escapeReservedKeywords}}.regular._14
+  }
+    static var text22: Font {
+    {{param.name}}FontFamily.{{family.name|swiftIdentifier:"pretty"|escapeReservedKeywords}}.regular._22
   }
   static var caption12: Font {
     {{param.name}}FontFamily.{{family.name|swiftIdentifier:"pretty"|escapeReservedKeywords}}.medium._12
