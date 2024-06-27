@@ -67,10 +67,7 @@ extension KakaoLoginClient: DependencyKey {
       },
       loginWithKakaoAccount: { @MainActor in
         try await withCheckedThrowingContinuation { continuation in
-          var scopes = [String]()
-          scopes.append("openid")
-          
-          UserApi.shared.loginWithKakaoAccount(scopes: scopes) { oauthToken, error in
+          UserApi.shared.loginWithKakaoAccount { oauthToken, error in
             if let error {
               continuation.resume(throwing: KakaoLoginClientError(code: .failToGetOauthToken))
             } else if let oauthToken {
