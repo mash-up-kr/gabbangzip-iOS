@@ -23,6 +23,7 @@ public struct RootCore {
     case setLoginStatus(Bool)
     case login(LoginCore.Action)
     case onOpenURL(URL)
+    case showError(Error)
   }
   
   @Dependency(\.kakaoLoginClient) var kakaoLoginClient
@@ -38,17 +39,17 @@ public struct RootCore {
     Reduce { state, action in
       switch action {
       case .checkAccessToken:
-        return .run { send in
-          var tokenExists = false
-            let data = await keyChainClient.read(.accessToken)
-            switch data {
-            case let .success(token):
-              tokenExists = token != nil
-            case .failure:
-              break
-            }
-          await send(.setLoginStatus(tokenExists))
-        }
+        return .run (
+          operation: { send in
+            let tokenData = try await keyChainClient.read(.accessToken)
+            let tokenExists = !tokenData.isEmpty
+            await send(.setLoginStatus(tokenExists))
+          },
+          catch: { error, send in
+            await send(.setLoginStatus(false))
+            await send(.showError(error))
+          }
+        )
         
       case let .setLoginStatus(isLogin):
         state.isLogin = isLogin
@@ -61,6 +62,9 @@ public struct RootCore {
         return .run { send in
           kakaoLoginClient.openURL(url)
         }
+        
+      case .showError:
+        return .none
       }
     }
   }
