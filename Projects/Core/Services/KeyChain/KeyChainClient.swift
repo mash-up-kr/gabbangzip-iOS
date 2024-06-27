@@ -12,7 +12,7 @@ import Foundation
 @DependencyClient
 public struct KeyChainClient {
   public var create: @Sendable (_ key: Key, _ data: String) async throws -> Void
-  public var read: @Sendable (_ key: Key) async throws -> String?
+  public var read: @Sendable (_ key: Key) async throws -> Result<String?, Error>
   public var update: @Sendable (_ key: Key, _ data: String) async throws -> Void
   public var delete: @Sendable (_ key: Key) async throws -> Void
 }
@@ -49,12 +49,15 @@ extension KeyChainClient: DependencyKey {
         
         switch status {
         case errSecSuccess:
-          guard let retrieveData = dataTypeReference as? Data else { return nil }
-          let value = String(
-            data: retrieveData,
-            encoding: String.Encoding.utf8
-          )
-          return value
+          if let retrieveData = dataTypeReference as? Data {
+            let value = String(
+              data: retrieveData,
+              encoding: String.Encoding.utf8
+            )
+            return .success(value)
+          } else {
+            return .failure(KeyChainClientError(code: .failToGetData)) 
+          }
         default:
           throw KeyChainClientError(code: .failToRead)
         }
@@ -136,5 +139,6 @@ public struct KeyChainClientError: GabbangzipError {
     case failToRead
     case failToUpdate
     case failToDelete
+    case failToGetData
   }
 }
