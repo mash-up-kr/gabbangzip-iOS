@@ -18,6 +18,9 @@ public struct KakaoAPIClient {
     _ nickname: String,
     _ profileImage: String
   ) async throws -> PICUserInformation?
+  public var refreshToken: @Sendable (_ refreshToken: String) async throws -> TokenInformation?
+  public var testToken: @Sendable (_ accessToken: String) async throws -> TestInformation?
+  public var delete: @Sendable (_ accessToken: String) async throws -> DeleteUserInformation?
 }
 
 extension KakaoAPIClient: DependencyKey {
@@ -31,16 +34,46 @@ extension KakaoAPIClient: DependencyKey {
           nickname: nickname,
           profileImage: profileImage
         )
-        let request = Request<KakaoResponse>(route: route)
+        let request = Request<PICUserResponse>(route: route)
         do {
           let response = try await NetworkManager.shared.send(request)
           
           return response.value.data
         } catch {
-          throw KakaoAPIClientError(
-            code: .failToGetPICUserInformation,
-            underlying: error
-          )
+          throw KakaoAPIClientError(code: .failToGetPICUserInformation)
+        }
+      },
+      refreshToken: { refreshToken in
+        let route = KakaoAPI.refresh(refreshToken: refreshToken)
+        let request = Request<TokenResponse>(route: route)
+        do {
+          let response = try await NetworkManager.shared.send(request)
+          
+          return response.value.data
+        } catch {
+          throw KakaoAPIClientError(code: .failToGetTokenInformation)
+        }
+      },
+      testToken: { accessToken in
+        let route = KakaoAPI.refresh(refreshToken: refreshToken)
+        let request = Request<TestResponse>(route: route)
+        do {
+          let response = try await NetworkManager.shared.send(request)
+          
+          return response.value.data
+        } catch {
+          throw KakaoAPIClientError(code: .failToTest)
+        }
+      },
+      delete: { accessToken in
+        let route = KakaoAPI.refresh(refreshToken: refreshToken)
+        let request = Request<DeleteUserResponse>(route: route)
+        do {
+          let response = try await NetworkManager.shared.send(request)
+          
+          return response.value.data
+        } catch {
+          throw KakaoAPIClientError(code: .failToDeleteUserInformation)
         }
       }
     )
@@ -62,5 +95,8 @@ public struct KakaoAPIClientError: GabbangzipError {
 
   public enum APIResponseError: Int {
     case failToGetPICUserInformation
+    case failToGetTokenInformation
+    case failToTest
+    case failToDeleteUserInformation
   }
 }

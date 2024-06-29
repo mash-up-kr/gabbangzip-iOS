@@ -1,14 +1,14 @@
 //
-//  KakaoResponse.swift
+//  TestResponse.swift
 //  Models
 //
-//  Created by Hyun A Song on 6/22/24.
+//  Created by Hyun A Song on 6/30/24.
 //  Copyright © 2024 com.mashup.gabbangzip. All rights reserved.
 //
 
-public struct KakaoResponse: Decodable {
+public struct TestResponse: Decodable {
   public let isSuccess: Bool
-  public let data: PICUserInformation?
+  public let data: TestInformation?
   public let errorResponse: APIErrorResponse?
   
   public enum CodingKeys: String, CodingKey {

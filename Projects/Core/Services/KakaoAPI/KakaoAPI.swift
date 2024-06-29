@@ -18,9 +18,9 @@ public enum KakaoAPI {
     nickname: String,
     profileImage: String
   )
-  case refresh(_ refreshToken: String)
-  case testToken(_ accessToken: String)
-  case withdraw(_ accessToken: String)
+  case refresh(refreshToken: String)
+  case testToken(accessToken: String)
+  case delete(accessToken: String)
 }
 
 extension KakaoAPI: RouteType {
@@ -32,7 +32,7 @@ extension KakaoAPI: RouteType {
       return "/api/v1/auth/token"
     case .testToken:
       return "/api/test"
-    case .withdraw:
+    case .delete:
       return "/api/v1/user"
     }
   }
@@ -45,7 +45,7 @@ extension KakaoAPI: RouteType {
       return .post
     case .testToken:
       return .get
-    case .withdraw:
+    case .delete:
       return .delete
     }
   }
@@ -58,7 +58,7 @@ extension KakaoAPI: RouteType {
       return nil
     case .testToken:
       return nil
-    case .withdraw:
+    case .delete:
       return nil
     }
   }
@@ -77,7 +77,7 @@ extension KakaoAPI: RouteType {
       return KakaoRefreshRequest(refreshToken: refreshToken)
     case .testToken:
       return nil
-    case .withdraw:
+    case .delete:
       return nil
     }
   }
@@ -93,7 +93,7 @@ extension KakaoAPI: RouteType {
         "Authorization": "Bearer \(accessToken)"
       ]
       return headers
-    case let .withdraw(accessToken):
+    case let .delete(accessToken):
       let headers: [String: String]? = [
         "Authorization": "Bearer \(accessToken)"
       ]
