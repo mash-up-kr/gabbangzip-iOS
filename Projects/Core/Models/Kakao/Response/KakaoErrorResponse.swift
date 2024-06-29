@@ -6,7 +6,7 @@
 //  Copyright © 2024 com.mashup.gabbangzip. All rights reserved.
 //
 
-public struct KakaoErrorResponse: Decodable {
+public struct KakaoErrorResponse: APIErrorResponse {
   public let code: String
   public let message: String
 }
