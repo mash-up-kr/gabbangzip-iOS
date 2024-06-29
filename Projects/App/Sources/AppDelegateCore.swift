@@ -72,7 +72,7 @@ struct AppDelegateCore {
         return .none
         
       case let .showError(error):
-        logger.error("RootCore Error: \(String(describing: error))")
+        logger.error("AppDelegateCore Error: \(String(describing: error))")
         return .none
       }
     }
