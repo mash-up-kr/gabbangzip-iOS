@@ -6,7 +6,6 @@
 //  Copyright © 2024 com.mashup.gabbangzip. All rights reserved.
 //
 
-import ComposableArchitecture
 import SwiftUI
 
 import DesignSystem
@@ -16,23 +15,28 @@ import Nuke
 import NukeUI
 
 public struct EventContainerView: View {
-  let store: StoreOf<EventContainerCore>
-
-  public init(store: StoreOf<EventContainerCore>) {
-    self.store = store
+  let eventDetail: EventDetail
+  private var action: (EventState) -> Void
+  
+  public init(
+    eventDetail: EventDetail,
+    action: @escaping (EventState) -> Void
+  ) {
+    self.eventDetail = eventDetail
+    self.action = action
   }
-
+  
   public var body: some View {
-    switch store.eventDetail.state {
+    switch eventDetail.state {
     case .noEvent:
       // TODO: 그룹 목록 썸네일 뷰로 대체 필요
       Rectangle()
         .fill(.red)
     case .beforeRegisterMyPIC, .afterRegisterMyPIC, .beforeMyVote, .afterMyVote:
       EventProgressView(
-        eventDetail: store.eventDetail,
+        eventDetail: eventDetail,
         action: {
-          store.send(.buttonDidTap(store.eventDetail.state))
+          action(eventDetail.state)
         }
       )
     case .eventCompleted:
@@ -46,65 +50,30 @@ public struct EventContainerView: View {
 // 진행 중인 이벤트 없는 경우
 #Preview {
   EventContainerView(
-    store: Store(
-      initialState: .init(
-        eventDetail: EventDetail.mock(state: .noEvent)
-      )
-    ) {
-      EventContainerCore()
-    }
-  )
+    eventDetail: EventDetail.mock(state: .noEvent)) { _ in }
 }
 
 // 사진 등록 진행 중, 내 pic 등록 전
 #Preview {
   EventContainerView(
-    store: Store(
-      initialState: .init(
-        eventDetail: EventDetail.mock(state: .beforeRegisterMyPIC)
-        )
-    ) {
-      EventContainerCore()
-    }
-  )
+    eventDetail: EventDetail.mock(state: .beforeRegisterMyPIC)) { _ in }
 }
 
 
 // 사진 등록 진행 중, 내 pic 등록 후
 #Preview {
   EventContainerView(
-    store: Store(
-      initialState: .init(
-        eventDetail: EventDetail.mock(state: .afterRegisterMyPIC)
-        )
-    ) {
-      EventContainerCore()
-    }
-  )
+    eventDetail: EventDetail.mock(state: .afterRegisterMyPIC)) { _ in }
 }
 
 // 투표 진행 중, 투표 완료 전
 #Preview {
   EventContainerView(
-    store: Store(
-      initialState: .init(
-        eventDetail: EventDetail.mock(state: .beforeMyVote)
-        )
-    ) {
-      EventContainerCore()
-    }
-  )
+    eventDetail: EventDetail.mock(state: .beforeMyVote)) { _ in }
 }
 
 // 투표 진행 중, 투표 완료 후
 #Preview {
   EventContainerView(
-    store: Store(
-      initialState: .init(
-        eventDetail: EventDetail.mock(state: .afterMyVote)
-        )
-    ) {
-      EventContainerCore()
-    }
-  )
+    eventDetail: EventDetail.mock(state: .afterMyVote)) { _ in }
 }
