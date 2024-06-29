@@ -1,15 +1,17 @@
 {
   "images" : [
     {
-      "filename" : "loginIcon.png",
+      "filename" : "_Icon_popup.png",
       "idiom" : "universal",
       "scale" : "1x"
     },
     {
+      "filename" : "_Icon_popup-2.png",
       "idiom" : "universal",
       "scale" : "2x"
     },
     {
+      "filename" : "_Icon_popup-3.png",
       "idiom" : "universal",
       "scale" : "3x"
     }

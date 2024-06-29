@@ -53,6 +53,8 @@ public struct LoginView: View {
         )
         .padding(.horizontal, 40)
         
+        Spacer()
+        
         Button(
           action: {
             store.send(.loginButtonTapped)
