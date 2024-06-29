@@ -33,6 +33,6 @@ public struct ToastView: View {
     }
     .padding()
     .background(DesignSystem.Colors.gray60)
-    .cornerRadius(40)
+    .cornerRadius(30)
   }
 }

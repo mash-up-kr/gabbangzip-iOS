@@ -25,43 +25,47 @@ public struct LoginView: View {
             .onAppear {
               store.send(.checkDeadline(2))
             }
+          
           Spacer()
         }
       }
       
-      ZStack {
+      VStack {
+        Spacer()
+          .frame(height: 80)
+        
+        DesignSystem.Icons.logo
+          .resizable()
+          .scaledToFit()
+          .frame(width: 100)
+        
+        Text("우리가 픽! 하는\n우리끼리 네컷앨범")
+          .font(.text22)
+          .multilineTextAlignment(.center)
+          .foregroundStyle(DesignSystem.Colors.gray80)
+          .padding(.top, 28)
+        
+        Spacer()
+        
         LottieView(
           type: .login,
           loopMode: .repeat(1)
         )
-        .frame(maxWidth: .infinity)
-        VStack {
-          Spacer()
-            .frame(height: 80)
-          DesignSystem.Icons.logo
-            .resizable()
-            .scaledToFit()
-            .frame(width: 100)
-          Text("우리가 픽! 하는\n우리끼리 네컷앨범")
-            .font(.text22)
-            .multilineTextAlignment(.center)
-            .foregroundStyle(DesignSystem.Colors.gray80)
-            .padding(.top, 28)
-          Spacer()
-          Button(
-            action: {
-              store.send(.loginButtonTapped)
-            },
-            label: {
-              DesignSystem.Icons.kakao
-                .resizable()
-                .scaledToFit()
-                .padding(.horizontal, 16)
-                .padding(.bottom, 60)
-                .frame(width: UIScreen.main.bounds.size.width)
-            }
-          )
-        }
+        .padding(.horizontal, 40)
+        
+        Button(
+          action: {
+            store.send(.loginButtonTapped)
+          },
+          label: {
+            DesignSystem.Icons.kakao
+              .resizable()
+              .scaledToFit()
+              .padding(.horizontal, 16)
+              .padding(.bottom, 60)
+              .frame(width: UIScreen.main.bounds.size.width)
+          }
+        )
       }
     }
   }
