@@ -10,4 +10,10 @@ public struct KakaoResponse: Decodable {
   public let isSuccess: Bool
   public let data: PICUserInformation?
   public let errorResponse: APIErrorResponse?
+  
+  public enum CodingKeys: String, CodingKey {
+    case isSuccess = "is_success"
+    case data
+    case errorResponse = "error_response"
+  }
 }

@@ -43,6 +43,7 @@ public struct RootCore {
       case .onAppear:
         return .run (
           operation: { send in
+            try? await keyChainClient.delete(.accessToken)
             let tokenData = try await keyChainClient.read(.accessToken)
             let tokenExists = !tokenData.isEmpty
             await send(.setLoginStatus(tokenExists))

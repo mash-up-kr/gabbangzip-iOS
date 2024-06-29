@@ -23,4 +23,11 @@ public struct KakaoLoginRequestInformation: Encodable {
     self.nickname = nickname
     self.profileImage = profileImage
   }
+  
+  public enum CodingKeys: String, CodingKey {
+    case idToken = "id_token"
+    case provider
+    case nickname
+    case profileImage = "profile_image"
+  }
 }

@@ -13,9 +13,9 @@ public struct PICUserInformation: Decodable {
   public let refreshToken: String
   
   public enum CodingKeys: String, CodingKey {
-    case userID = "userId"
+    case userID = "user_id"
     case nickname
-    case accessToken
-    case refreshToken
+    case accessToken = "access_token"
+    case refreshToken = "refresh_token"
   }
 }

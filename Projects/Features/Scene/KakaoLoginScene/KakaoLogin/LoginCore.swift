@@ -6,6 +6,7 @@
 //  Copyright © 2024 com.mashup.gabbangzip. All rights reserved.
 //
 
+import Common
 import ComposableArchitecture
 import Foundation
 import KakaoSDKUser
@@ -157,7 +158,8 @@ public struct LoginCore {
           try await keyChainClient.create(tokenKey, token)
         }
         
-      case .saveTokenInKeyChain(.failure):
+      case let .saveTokenInKeyChain(.failure(error)):
+        logger.error("Fail to save Token in KeyChain \(error)")
         return .none
         
       case let .showError(message):
