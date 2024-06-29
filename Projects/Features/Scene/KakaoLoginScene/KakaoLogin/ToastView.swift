@@ -19,7 +19,7 @@ public struct ToastView: View {
   
   public var body: some View {
     HStack {
-      DesignSystem.Icons.loginIcon
+      DesignSystem.Icons.popupInfo
         .resizable()
         .frame(
           width: 20,
