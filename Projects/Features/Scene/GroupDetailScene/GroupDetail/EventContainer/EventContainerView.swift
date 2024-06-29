@@ -32,7 +32,7 @@ public struct EventContainerView: View {
       // TODO: 그룹 목록 썸네일 뷰로 대체 필요
       Rectangle()
         .fill(.red)
-    case .beforeRegisterMyPIC, .afterRegisterMyPIC, .beforeMyVote, .afterMyVote:
+    case .beforeMyUpload, .afterRegisterMyPIC, .beforeMyVote, .afterMyVote:
       EventProgressView(
         eventDetail: eventDetail,
         action: {
@@ -56,14 +56,14 @@ public struct EventContainerView: View {
 // 사진 등록 진행 중, 내 pic 등록 전
 #Preview {
   EventContainerView(
-    eventDetail: EventDetail.mock(state: .beforeRegisterMyPIC)) { _ in }
+    eventDetail: EventDetail.mock(state: .beforeMyUpload)) { _ in }
 }
 
 
 // 사진 등록 진행 중, 내 pic 등록 후
 #Preview {
   EventContainerView(
-    eventDetail: EventDetail.mock(state: .afterRegisterMyPIC)) { _ in }
+    eventDetail: EventDetail.mock(state: .afterMyUpload)) { _ in }
 }
 
 // 투표 진행 중, 투표 완료 전

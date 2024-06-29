@@ -96,11 +96,11 @@ struct EventProgressView: View {
     switch state {
     case .noEvent:
       return .generateEvent
-    case .beforeRegisterMyPIC:
+    case .beforeMyUpload:
       return .uploadPIC
     case .beforeMyVote:
       return .vote
-    case .afterRegisterMyPIC, .afterMyVote:
+    case .afterMyUpload, .afterMyVote:
       return .stabbing
     case .eventCompleted:
       return nil
@@ -110,7 +110,7 @@ struct EventProgressView: View {
 
 #Preview {
   EventProgressView(
-    eventDetail: EventDetail.mock(state: .afterRegisterMyPIC),
+    eventDetail: EventDetail.mock(state: .afterMyUpload),
     action: {
       print("tapped")
     }

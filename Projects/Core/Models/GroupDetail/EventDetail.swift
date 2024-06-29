@@ -45,20 +45,21 @@ public struct EventDetail: Equatable {
 }
 
 public enum EventState {
-  case noEvent
-  case beforeRegisterMyPIC
-  case afterRegisterMyPIC
+  case noPastAndCurrentEvent // 역대 x, 현재 o
+  case noCurrentEvent // 역대 o, 현재 x
+  case beforeMyUpload // -> beforeMyUpload
+  case afterMyUpload // -> afterMyUpload
   case beforeMyVote
   case afterMyVote
   case eventCompleted
   
   public func message(time: String) -> String? {
     switch self {
-    case .noEvent, .eventCompleted:
+    case .noPastAndCurrentEvent, .noCurrentEvent, .eventCompleted:
       return nil
-    case .beforeRegisterMyPIC:
+    case .beforeMyUpload:
       return "\(time)까지 내 PIC 등록을 완료해 주세요."
-    case .afterRegisterMyPIC:
+    case .afterMyUpload:
       return "아직 사진 추가를 하지 않은 친구가 있어요!"
     case .beforeMyVote:
       return "내 PIC을 고르고 네컷사진을 완성해 보세요."
