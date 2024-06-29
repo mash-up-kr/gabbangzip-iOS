@@ -41,7 +41,7 @@ public struct RootCore {
     Reduce { state, action in
       switch action {
       case .onAppear:
-        return .run (
+        return .run(
           operation: { send in
             let tokenData = try await keyChainClient.read(.accessToken)
             let tokenExists = !tokenData.isEmpty
