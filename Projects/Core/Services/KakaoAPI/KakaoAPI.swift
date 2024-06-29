@@ -52,7 +52,7 @@ extension KakaoAPI: RouteType {
   public var body: Encodable? {
     switch self {
     case let .login(idToken, provider, nickname, profileImage):
-      let body = KakaoLoginInformation(
+      let body = KakaoLoginRequestInformation(
         idToken: idToken,
         provider: provider,
         nickname: nickname,

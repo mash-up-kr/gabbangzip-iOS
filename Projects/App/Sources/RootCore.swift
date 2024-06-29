@@ -6,9 +6,11 @@
 //  Copyright © 2024 com.mashup.gabbangzip. All rights reserved.
 //
 
+import Common
 import ComposableArchitecture
 import Foundation
 import KakaoLogin
+import Services
 
 @Reducer
 public struct RootCore {
@@ -23,7 +25,7 @@ public struct RootCore {
     case setLoginStatus(Bool)
     case login(LoginCore.Action)
     case onOpenURL(URL)
-    case showError(Error)
+    case showError(RootCoreError)
   }
   
   @Dependency(\.kakaoLoginClient) var kakaoLoginClient
@@ -47,7 +49,7 @@ public struct RootCore {
           },
           catch: { error, send in
             await send(.setLoginStatus(false))
-            await send(.showError(error))
+            await send(.showError(RootCoreError(code: .failToGetToken)))
           }
         )
         
@@ -63,9 +65,22 @@ public struct RootCore {
           kakaoLoginClient.openURL(url)
         }
         
-      case .showError:
+      case let .showError(error):
+        logger.error("RootCore Error: \(String(describing: error))")
         return .none
       }
     }
   }
 }
+
+// MARK: - RootCoreError
+public struct RootCoreError: GabbangzipError {
+  public var userInfo: [String: Any] = [:]
+  public var code: Code
+  public var underlying: Error?
+  
+  public enum Code: Int {
+    case failToGetToken
+  }
+}
+
