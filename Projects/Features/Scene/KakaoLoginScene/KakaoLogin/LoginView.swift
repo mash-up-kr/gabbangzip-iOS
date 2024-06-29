@@ -11,7 +11,7 @@ import DesignSystem
 import SwiftUI
 
 public struct LoginView: View {
-  public let store: StoreOf<LoginCore>
+  @Bindable public var store: StoreOf<LoginCore>
   
   public init(store: StoreOf<LoginCore>) {
     self.store = store
@@ -19,16 +19,11 @@ public struct LoginView: View {
   
   public var body: some View {
     ZStack {
-      if let errorMessage = store.errorMessage {
-        VStack {
-          ToastView(message: errorMessage)
-            .onAppear {
-              store.send(.checkDeadline(2))
-            }
-          
-          Spacer()
-        }
-      }
+      Spacer()
+        .toast(
+          isPresented: $store.isPresented,
+          type: .textWithInfoIcon("로그인에 실패했어요.")
+        )
       
       VStack {
         Spacer()
@@ -74,14 +69,10 @@ public struct LoginView: View {
 }
 
 #Preview {
-  ZStack {
-    LoginView(
-      store: Store(
-        initialState: LoginCore.State(),
-        reducer: { LoginCore() }
-      )
+  LoginView(
+    store: Store(
+      initialState: LoginCore.State(),
+      reducer: { LoginCore() }
     )
-    ToastView(message: "로그인에 실패했어요.")
-    Spacer()
-  }
+  )
 }
