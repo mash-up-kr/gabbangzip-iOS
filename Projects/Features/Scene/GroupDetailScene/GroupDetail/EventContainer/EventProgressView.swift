@@ -94,7 +94,7 @@ struct EventProgressView: View {
     from state: EventState
   ) -> SmallButtonContentType? {
     switch state {
-    case .noEvent:
+    case .noCurrentEvent, .noPastAndCurrentEvent:
       return .generateEvent
     case .beforeMyUpload:
       return .uploadPIC

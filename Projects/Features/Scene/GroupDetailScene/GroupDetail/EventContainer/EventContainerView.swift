@@ -28,11 +28,11 @@ public struct EventContainerView: View {
   
   public var body: some View {
     switch eventDetail.state {
-    case .noEvent:
+    case .noCurrentEvent, .noPastAndCurrentEvent:
       // TODO: 그룹 목록 썸네일 뷰로 대체 필요
       Rectangle()
         .fill(.red)
-    case .beforeMyUpload, .afterRegisterMyPIC, .beforeMyVote, .afterMyVote:
+    case .beforeMyUpload, .afterMyUpload, .beforeMyVote, .afterMyVote:
       EventProgressView(
         eventDetail: eventDetail,
         action: {
@@ -50,7 +50,7 @@ public struct EventContainerView: View {
 // 진행 중인 이벤트 없는 경우
 #Preview {
   EventContainerView(
-    eventDetail: EventDetail.mock(state: .noEvent)) { _ in }
+    eventDetail: EventDetail.mock(state: .noCurrentEvent)) { _ in }
 }
 
 // 사진 등록 진행 중, 내 pic 등록 전
