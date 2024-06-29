@@ -71,7 +71,8 @@ struct AppDelegateCore {
       case let .authorizationStatusResposne(.failure(error)):
         return .none
         
-      case .showError:
+      case let .showError(error):
+        logger.error("RootCore Error: \(String(describing: error))")
         return .none
       }
     }
