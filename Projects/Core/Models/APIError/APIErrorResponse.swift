@@ -6,7 +6,7 @@
 //  Copyright © 2024 com.mashup.gabbangzip. All rights reserved.
 //
 
-public protocol APIErrorResponse: Decodable {
-  var code: String { get }
-  var message: String { get }
+public struct APIErrorResponse: Decodable {
+  public let code: String
+  public let message: String
 }
