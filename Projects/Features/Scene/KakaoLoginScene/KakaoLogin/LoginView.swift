@@ -34,7 +34,7 @@ public struct LoginView: View {
         Spacer()
           .frame(height: 80)
         
-        DesignSystem.Icons.logo
+        DesignSystem.Icons.picLogo
           .resizable()
           .scaledToFit()
           .frame(width: 100)
