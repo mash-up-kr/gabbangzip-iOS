@@ -18,8 +18,8 @@ public struct KakaoLoginClient {
   public var openURL: @Sendable (_ url: URL) -> Bool = { url in false }
   public var isKakaoTalkLoginAvailable: @Sendable () -> Bool = { false }
   public var checkUserInformation: @Sendable () async throws -> User
-  public var loginWithKakaoTalk: @Sendable () async throws -> String
-  public var loginWithKakaoAccount: @Sendable () async throws -> String
+  public var loginWithKakaoTalk: @Sendable () async throws -> String?
+  public var loginWithKakaoAccount: @Sendable () async throws -> String?
   public var logout: @Sendable () async throws -> Void
 }
 
@@ -42,7 +42,7 @@ extension KakaoLoginClient: DependencyKey {
       checkUserInformation: {
         try await withCheckedThrowingContinuation { continuation in
           UserApi.shared.me() { user, error in
-            if let error {
+            if error != nil {
               continuation.resume(throwing: KakaoLoginClientError(code: .failToGetMe))
             } else if let user {
               continuation.resume(returning: user)
@@ -55,10 +55,10 @@ extension KakaoLoginClient: DependencyKey {
       loginWithKakaoTalk: { @MainActor in
         try await withCheckedThrowingContinuation { continuation in
           UserApi.shared.loginWithKakaoTalk {(oauthToken, error) in
-            if let error {
+            if error != nil {
               continuation.resume(throwing: KakaoLoginClientError(code: .failToGetOauthToken))
             } else if let oauthToken {
-              continuation.resume(returning: oauthToken.accessToken)
+              continuation.resume(returning: oauthToken.idToken)
             } else {
               continuation.resume(throwing: KakaoLoginClientError(code: .failToLoginWithKakaoTalk))
             }
@@ -67,14 +67,11 @@ extension KakaoLoginClient: DependencyKey {
       },
       loginWithKakaoAccount: { @MainActor in
         try await withCheckedThrowingContinuation { continuation in
-          var scopes = [String]()
-          scopes.append("openid")
-          
-          UserApi.shared.loginWithKakaoAccount(scopes: scopes) { oauthToken, error in
-            if let error {
+          UserApi.shared.loginWithKakaoAccount { oauthToken, error in
+            if error != nil {
               continuation.resume(throwing: KakaoLoginClientError(code: .failToGetOauthToken))
             } else if let oauthToken {
-              continuation.resume(returning: oauthToken.accessToken)
+              continuation.resume(returning: oauthToken.idToken)
             } else {
               continuation.resume(throwing: KakaoLoginClientError(code: .failToLoginWithKakaoAccount))
             }
@@ -84,7 +81,7 @@ extension KakaoLoginClient: DependencyKey {
       logout: {
         try await withCheckedThrowingContinuation { continuation in
           UserApi.shared.logout { error in
-            if let error {
+            if error != nil {
               continuation.resume(throwing: KakaoLoginClientError(code: .failToLogout))
             } else {
               continuation.resume(returning: ())
@@ -105,7 +102,7 @@ extension DependencyValues {
 
 // MARK: - KakaoLoginClientError
 public struct KakaoLoginClientError: GabbangzipError {
-  public var userInfo: [String : Any] = [:]
+  public var userInfo: [String: Any] = [:]
   public var code: Code
   public var underlying: Error?
   

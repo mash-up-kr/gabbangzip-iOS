@@ -6,8 +6,8 @@
 //  Copyright © 2024 com.mashup.gabbangzip. All rights reserved.
 //
 
-import ComposableArchitecture
 import Common
+import ComposableArchitecture
 import Services
 
 @Reducer
@@ -20,6 +20,7 @@ struct AppDelegateCore {
     case didFinishLaunching
     case userNotifications(UserNotificationClient.DelegateEvent)
     case authorizationStatusResposne(Result<Void, Error>)
+    case showError(AppDelegateCoreError)
   }
   
   @Dependency(\.userNotificationClient) private var userNotificationClient
@@ -32,18 +33,26 @@ struct AppDelegateCore {
       case .didFinishLaunching:
         return .run { @MainActor send in
           // TODO: 써드파티 SDK 초기화 및 설정
+          if let appKey = try bundleClient.getValue("KakaoNativeAppKey") as? String {
+            await kakaoLoginClient.initSDK(appKey)
+          } else {
+            send(.showError(AppDelegateCoreError(code: .failToStringTypeCasting)))
+          }
+          
           let authorizationStatus = await self.userNotificationClient.getAuthorizationStatus()
           if authorizationStatus == .notDetermined {
-            await send(.authorizationStatusResposne(Result { try await self.userNotificationClient.requestAuthorization() }))
+            await send(
+              .authorizationStatusResposne(
+                Result {
+                  try await self.userNotificationClient.requestAuthorization()
+                }
+              )
+            )
           }
           
           for await event in self.userNotificationClient.delegate() {
             send(.userNotifications(event))
           }
-          
-          let appKey = try bundleClient.getValue(key: "KakaoNativeAppKey") as? String ?? ""
-          
-          await kakaoLoginClient.initSDK(appKey: appKey)
         }
         
       case let .userNotifications(.didReceiveResponse(response, completionHandler)):
@@ -61,7 +70,22 @@ struct AppDelegateCore {
         
       case let .authorizationStatusResposne(.failure(error)):
         return .none
+        
+      case let .showError(error):
+        logger.error("AppDelegateCore Error: \(String(describing: error))")
+        return .none
       }
     }
+  }
+}
+
+// MARK: - AppDelegateCoreError
+public struct AppDelegateCoreError: GabbangzipError {
+  public var userInfo: [String: Any] = [:]
+  public var code: Code
+  public var underlying: Error?
+  
+  public enum Code: Int {
+    case failToStringTypeCasting
   }
 }

@@ -36,13 +36,7 @@ class GabbangzipAPIClientDelegate: APIClientDelegate {
       )
       
     default:
-      throw NetworkManagerError(
-        userInfo: [
-          "response": response,
-          "message": String(data: data, encoding: .utf8) ?? "Decoding data to string failed"
-        ],
-        code: .unhandledStatusCode
-      )
+      break
     }
   }
   

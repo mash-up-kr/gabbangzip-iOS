@@ -12,11 +12,10 @@ import Get
 public struct NetworkManager {
   private init() {}
   
-  // !!!: Change the base URL before using
   public static let shared = APIClient(
     configuration: .init(
       baseURL: URL(
-        string: ""
+        string: "http://ec2-43-203-14-157.ap-northeast-2.compute.amazonaws.com"
       ),
       delegate: GabbangzipAPIClientDelegate()
     )

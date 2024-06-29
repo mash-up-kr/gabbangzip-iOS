@@ -7,22 +7,34 @@
 
 import ComposableArchitecture
 import DesignSystem
+import KakaoLogin
 import SwiftUI
 
-public struct RootView: View {
-  public let store: StoreOf<RootCore>
+struct RootView: View {
+  let store: StoreOf<RootCore>
   
-  public init(store: StoreOf<RootCore>) {
+  init(store: StoreOf<RootCore>) {
     self.store = store
   }
   
-  public var body: some View {
-    VStack {
-      LottieView(type: .confetti)
-        .frame(width: 500, height: 500)
+  var body: some View {
+    Group {
+      if !store.isLogin {
+        LoginView(
+          store: store.scope(
+            state: \.login,
+            action: \.login
+          )
+        )
+        .onOpenURL { url in
+          store.send(.onOpenURL(url))
+        }
+      } else {
+        Text("로그인이 되었습니다.")
+      }
     }
-    .onOpenURL { url in
-      store.send(.onOpenURL(url))
+    .onAppear {
+      store.send(.onAppear)
     }
   }
 }
@@ -31,7 +43,7 @@ public struct RootView: View {
   RootView(
     store: Store(
       initialState: RootCore.State(),
-      reducer: { RootCore() }
+      reducer: RootCore.init
     )
   )
 }

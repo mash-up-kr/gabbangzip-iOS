@@ -15,6 +15,7 @@ let project = Project.make(
         .project(target: .coreKit, projectPath: .core),
         .project(target: .designSystem, projectPath: .designSystem),
         .project(target: .appCoordinator, projectPath: .coordinator),
+        .project(target: .mainCoordinator, projectPath: .coordinator),
         .external(externalDependency: .composableArchitecture)
       ],
       settings: .settings(
@@ -41,6 +42,7 @@ let project = Project.make(
         .project(target: .coreKit, projectPath: .core),
         .project(target: .designSystem, projectPath: .designSystem),
         .project(target: .appCoordinator, projectPath: .coordinator),
+        .project(target: .mainCoordinator, projectPath: .coordinator),
         .external(externalDependency: .composableArchitecture)
       ],
       settings: .settings(

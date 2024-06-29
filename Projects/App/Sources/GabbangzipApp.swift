@@ -17,7 +17,7 @@ struct GabbangzipApp: App {
       RootView(
         store: Store(
           initialState: RootCore.State(),
-          reducer: { RootCore() }
+          reducer: RootCore.init
         )
       )
     }

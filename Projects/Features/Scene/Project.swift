@@ -16,6 +16,19 @@ let project = Project.make(
         .external(externalDependency: .nuke),
         .external(externalDependency: .lottie)
       ]
+    ),
+    .make(
+      name: "KakaoLogin",
+      product: .framework,
+      bundleId: "com.mashup.gabbangzip.kakaoLogin.kakaoLogin",
+      sources: ["KakaoLoginScene/KakaoLogin/**"],
+      dependencies: [
+        .project(target: .coreKit, projectPath: .core),
+        .project(target: .designSystem, projectPath: .designSystem),
+        .external(externalDependency: .composableArchitecture),
+        .external(externalDependency: .nuke),
+        .external(externalDependency: .lottie)
+      ]
     )
   ]
 )

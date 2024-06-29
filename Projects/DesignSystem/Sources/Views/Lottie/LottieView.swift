@@ -20,7 +20,7 @@ public struct LottieView: UIViewRepresentable {
   
   public init(
     type: GabbangzipLottieAnimationType,
-    loopMode: LottieLoopMode = .loop,
+    loopMode: LottieLoopMode,
     contentMode: UIView.ContentMode = .scaleAspectFit,
     backgroundBehavior: LottieBackgroundBehavior = .pauseAndRestore,
     isPlaying: Bool = true,
@@ -82,6 +82,7 @@ public enum GabbangzipLottieAnimationType {
   /// 임시 테스트용 로티 케이스로 추후 제거 필요
   case confetti
   case bookmark
+  case login
   
   var fileName: String {
     switch self {
@@ -89,10 +90,12 @@ public enum GabbangzipLottieAnimationType {
       return JSONFiles.Confetti.name
     case .bookmark:
       return JSONFiles.Bookmark.name
+    case .login:
+      return JSONFiles.Login.name
     }
   }
 }
 
 #Preview {
-  LottieView(type: .bookmark)
+  LottieView(type: .bookmark, loopMode: .loop)
 }
