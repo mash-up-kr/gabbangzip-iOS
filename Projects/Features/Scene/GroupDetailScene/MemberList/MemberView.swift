@@ -15,21 +15,21 @@ struct MemberView: View {
   let member: Member
   
   var body: some View {
-    HStack {
-      Spacer().frame(width: 16)
+    HStack(spacing: 0) {
       MemberProfileImageView(imageURL: member.imageURL)
+        .padding(
+          EdgeInsets(top: 0,
+          leading: 16,
+          bottom: 0,
+          trailing: 20)
+        )
       
-      Spacer().frame(width: 20)
-
       VStack(alignment: .leading, spacing: 8) {
+        Text(member.name)
+          .font(.body17)
         if member.isLeader {
-          Text(member.name)
-            .font(.body17)
           Text("그룹장")
             .font(.text14)
-        } else {
-          Text(member.name)
-            .font(.body17)
         }
       }
       

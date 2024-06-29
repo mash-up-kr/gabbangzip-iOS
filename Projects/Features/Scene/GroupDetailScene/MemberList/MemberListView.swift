@@ -20,35 +20,33 @@ public struct MemberListView: View {
   }
 
   public var body: some View {
-    VStack {
+    VStack(spacing: 0) {
       NavigationBar(
         type: .titleWithBackButton("그룹원"),
         backButtonAction: {
           store.send(.backButtonDidTap)
         }
       )
-      
-      Spacer().frame(height: 24)
+      .padding(.bottom, 24)
       
       ForEach(store.memberList) { member in
         MemberView(member: member)
           .padding(.bottom, 14)
       }
-      
-    // TODO: fixed height 수정 필요
-      Spacer().frame(height: 102)
-      
-      VStack {
+
+      VStack(spacing: 0) {
         Text("그룹원을 추가하고 싶으세요?")
           .font(.body14)
           .foregroundStyle(DesignSystem.Colors.gray50)
-        Spacer().frame(height: 12)
+          .padding(.bottom, 12)
+        
         SmallButton(
           type: .constant(.active),
           smallButtonContentType: .copyLink) {
             store.send(.copyLinkButtonDidTap)
           }
       }
+      .padding(.top, 102)
       
       Spacer()
     }
