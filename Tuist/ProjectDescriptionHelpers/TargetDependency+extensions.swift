@@ -50,6 +50,7 @@ public enum ExternalDependency: String {
   case composableArchitecture = "ComposableArchitecture"
   case tcaCoordinators = "TCACoordinators"
   case nuke = "Nuke"
+  case nukeUI = "NukeUI"
   case lottie = "Lottie"
   case kakaoSDK = "KakaoSDK"
 }

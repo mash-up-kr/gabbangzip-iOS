@@ -9,6 +9,7 @@ let packageSettings = PackageSettings(
     "ComposableArchitecture": .framework,
     "TCACoordinators": .framework,
     "Nuke": .framework,
+    "NukeUI": .framework,
     "Lottie": .framework,
     "Get": .framework,
     "KakaoSDK": .framework

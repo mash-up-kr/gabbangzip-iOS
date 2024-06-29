@@ -28,6 +28,7 @@ let project = Project.make(
         .project(target: .designSystem, projectPath: .designSystem),
         .external(externalDependency: .composableArchitecture),
         .external(externalDependency: .nuke),
+        .external(externalDependency: .nukeUI),
         .external(externalDependency: .lottie)
       ]
     ),
