@@ -163,7 +163,7 @@ public enum SmallButtonContentType {
   // 아이콘 포함 여부
   var withIcon: Bool {
     switch self {
-    case .changePicture, .uploadPIC, .gallery, .copyLink:
+    case .changePicture, .uploadPIC, .gallery, .copyLink, .stabbing, .vote:
       return true
     default:
       return false
@@ -198,9 +198,13 @@ public enum SmallButtonContentType {
   var icon: Image? {
     switch self {
     case .changePicture, .uploadPIC, .gallery:
-      return DesignSystem.Icons.gallery
+      return DesignSystem.Icons.galleryWhite
     case .copyLink:
       return DesignSystem.Icons.copy
+    case .stabbing:
+      return DesignSystem.Icons.noticeWhite
+    case .vote:
+      return DesignSystem.Icons.voteWhite
     default:
       return nil
     }

@@ -79,19 +79,19 @@ public enum CategoryType {
   var color: Color {
     switch self {
     case .school:
-      return DesignSystem.Colors.manzBackground
+      return DesignSystem.Colors.conifer30
     case .club:
-      return DesignSystem.Colors.geraldineBackground
+      return DesignSystem.Colors.mayaBlue30
     case .company:
-      return DesignSystem.Colors.mintGreenBackground
+      return DesignSystem.Colors.magentaPink30
     case .gathering:
-      return DesignSystem.Colors.perfumeBackground
+      return DesignSystem.Colors.lavender30
     case .community:
-      return DesignSystem.Colors.coralBackground
+      return DesignSystem.Colors.coral30
     case .hobby:
-      return DesignSystem.Colors.malibuBackground
+      return DesignSystem.Colors.malibu30
     case .exercise:
-      return DesignSystem.Colors.classicRoseBackground
+      return DesignSystem.Colors.dandelion30
     }
   }
 }
