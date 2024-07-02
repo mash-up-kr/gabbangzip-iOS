@@ -38,10 +38,8 @@ public struct MemberListCore {
       switch action {
       case .copyLinkButtonDidTap:
         UIPasteboard.general.string = state.inviteLink
-        print("🔗 link copied: \(UIPasteboard.general.string)")
         return .none
       case .backButtonDidTap:
-        print("⏮️ back button didTap")
         return .none
       }
     }
