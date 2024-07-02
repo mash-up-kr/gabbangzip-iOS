@@ -155,7 +155,7 @@ public struct LoginCore {
         
       case let .loginResponse(.failure(error)):
         return .run { send in
-          print("Fail to Login \(error)")
+          logger.error("Fail to Login \(error)")
           await send(.showError(true))
         }
         
@@ -166,7 +166,7 @@ public struct LoginCore {
         }
         
       case let .saveTokenInKeyChain(.failure(error)):
-        print("Fail to save Token in KeyChain \(error)")
+        logger.error("Fail to save Token in KeyChain \(error)")
         return .none
         
       case let .showError(isPresented):
