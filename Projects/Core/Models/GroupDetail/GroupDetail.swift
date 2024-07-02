@@ -12,22 +12,26 @@ public struct GroupDetail: Equatable {
   public let eventDetail: EventDetail
   public let groupName: String
   public let eventItems: [EventItemInfo]
+  public let category: GroupCategory
   
   public init(
     eventDetail: EventDetail,
     groupName: String,
-    eventItems: [EventItemInfo]
+    eventItems: [EventItemInfo],
+    category: GroupCategory
   ) {
     self.eventDetail = eventDetail
     self.groupName = groupName
     self.eventItems = eventItems
+    self.category = category
   }
   
   public static var emptyMock: GroupDetail {
     GroupDetail(
       eventDetail: EventDetail.mock(state: .beforeMyUpload),
       groupName: "뛰뛰빵빵 가빵집🍞",
-      eventItems: []
+      eventItems: [],
+      category: .club
     )
   }
   
@@ -46,7 +50,8 @@ public struct GroupDetail: Equatable {
         EventItemInfo.mock,
         EventItemInfo.mock,
         EventItemInfo.mock
-      ]
+      ],
+      category: .community
     )
   }
 }
