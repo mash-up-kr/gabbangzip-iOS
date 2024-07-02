@@ -14,27 +14,31 @@ public struct ToastModifier: ViewModifier {
   let time: CGFloat
   
   public func body(content: Content) -> some View {
-    content
-      .overlay(
-        content: {
-          VStack(spacing: 0) {
-            ToastView(type: type)
-              .padding(.top, 15)
-              .transition(.opacity)
-              .animation(.spring(), value: isPresented)
-            
-            Spacer()
-          }
-          .onAppear {
-            DispatchQueue.main.asyncAfter(deadline: .now() + time) {
-              withAnimation {
-                isPresented = false
+    if isPresented {
+      content
+        .overlay(
+          content: {
+            VStack(spacing: 0) {
+              ToastView(type: type)
+                .padding(.top, 15)
+                .transition(.opacity)
+                .animation(.spring(), value: isPresented)
+              
+              Spacer()
+            }
+            .onAppear {
+              DispatchQueue.main.asyncAfter(deadline: .now() + time) {
+                withAnimation {
+                  isPresented = false
+                }
               }
             }
+            .opacity(isPresented ? 1 : 0)
           }
-          .opacity(isPresented ? 1 : 0)
-        }
-      )
+        )
+    } else {
+      content
+    }
   }
 }
 
