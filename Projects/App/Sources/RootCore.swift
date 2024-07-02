@@ -25,7 +25,12 @@ public struct RootCore {
     case setLoginStatus(Bool)
     case login(LoginCore.Action)
     case onOpenURL(URL)
-    case showError(RootCoreError)
+    case readKeyChainValue(KeyChainClient.Key)
+    case checkAccessToken(String)
+    case checkAccessTokenValid(String)
+    case refreshToken(String)
+    case saveToken(String)
+    case logError(RootCoreError)
   }
   
   @Dependency(\.kakaoLoginClient) var kakaoLoginClient
@@ -65,7 +70,7 @@ public struct RootCore {
           kakaoLoginClient.openURL(url)
         }
         
-      case let .showError(error):
+      case let .logError(error):
         logger.error("RootCore Error: \(String(describing: error))")
         return .none
       }

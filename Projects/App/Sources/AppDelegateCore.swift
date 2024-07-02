@@ -20,7 +20,7 @@ struct AppDelegateCore {
     case didFinishLaunching
     case userNotifications(UserNotificationClient.DelegateEvent)
     case authorizationStatusResposne(Result<Void, Error>)
-    case showError(AppDelegateCoreError)
+    case logError(AppDelegateCoreError)
   }
   
   @Dependency(\.userNotificationClient) private var userNotificationClient
@@ -32,13 +32,14 @@ struct AppDelegateCore {
       switch action {
       case .didFinishLaunching:
         return .run { @MainActor send in
-          // TODO: 써드파티 SDK 초기화 및 설정
+          // MARK: - KakaoLoginSDK
           if let appKey = try bundleClient.getValue("KakaoNativeAppKey") as? String {
             await kakaoLoginClient.initSDK(appKey)
           } else {
-            send(.showError(AppDelegateCoreError(code: .failToStringTypeCasting)))
+            send(.logError(AppDelegateCoreError(code: .failToStringTypeCasting)))
           }
           
+          // MARK: - UserNotification
           let authorizationStatus = await self.userNotificationClient.getAuthorizationStatus()
           if authorizationStatus == .notDetermined {
             await send(
@@ -71,7 +72,7 @@ struct AppDelegateCore {
       case let .authorizationStatusResposne(.failure(error)):
         return .none
         
-      case let .showError(error):
+      case let .logError(error):
         logger.error("AppDelegateCore Error: \(String(describing: error))")
         return .none
       }

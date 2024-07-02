@@ -43,6 +43,11 @@ public struct LoginCore {
     case saveTokenInKeyChain(Result<(KeyChainClient.Key, String), LoginCoreError>)
     case showError(Bool)
     case binding(BindingAction<State>)
+    case delegate(Delegate)
+    
+    public enum Delegate {
+      case checkLogin(Bool)
+    }
   }
   
   @Dependency(\.kakaoLoginClient) private var kakaoLoginClient
@@ -150,13 +155,14 @@ public struct LoginCore {
         
       case let .loginResponse(.failure(error)):
         return .run { send in
-          logger.error("🌼---------\(error)")
+          logger.error("Fail to Login \(error)")
           await send(.showError(true))
         }
         
       case let .saveTokenInKeyChain(.success((tokenKey, token))):
         return .run { send in
           try await keyChainClient.create(tokenKey, token)
+          await send(.delegate(.checkLogin(true)))
         }
         
       case let .saveTokenInKeyChain(.failure(error)):
@@ -168,6 +174,9 @@ public struct LoginCore {
         return .none
         
       case .binding:
+        return .none
+        
+      case .delegate:
         return .none
       }
     }
