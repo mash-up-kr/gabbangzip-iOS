@@ -30,7 +30,10 @@ public struct MemberListView: View {
       .padding(.bottom, 24)
       
       ForEach(store.memberList) { member in
-        MemberView(member: member)
+        MemberView(
+          member: member,
+          groupCategory: .club
+        )
           .padding(.bottom, 14)
       }
 
@@ -58,7 +61,7 @@ public struct MemberListView: View {
     store: Store(
       initialState: 
         MemberListCore.State(
-          memberList: Member.mock,
+          memberList: Member.mockList,
           inviteLink: "링크테스트 ⭐️"
         )
     ) {

@@ -22,7 +22,21 @@ public struct Member: Equatable, Identifiable {
     self.isLeader = isLeader
   }
   
-  public static var mock: [Member] {
+  public static var leaderMock: Member {
+    Member(
+      name: "혜린",
+      isLeader: true
+    )
+  }
+  
+  public static var notLeaderMock: Member {
+    Member(
+      name: "혜린",
+      isLeader: false
+    )
+  }
+  
+  public static var mockList: [Member] {
     [
       Member(
         name: "혜린",

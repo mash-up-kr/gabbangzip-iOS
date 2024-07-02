@@ -13,6 +13,7 @@ import Models
 
 struct MemberView: View {
   let member: Member
+  let groupCategory: GroupCategory
   
   var body: some View {
     HStack(spacing: 0) {
@@ -33,17 +34,13 @@ struct MemberView: View {
 #Preview {
   Group {
     MemberView(
-      member: Member(
-        name: "혜린",
-        isLeader: true
-      )
+      member: Member.leaderMock,
+      groupCategory: .club
     )
     
     MemberView(
-      member: Member(
-        name: "혜린",
-        isLeader: false
-      )
+      member: Member.notLeaderMock,
+      groupCategory: .club
     )
   }
 }
