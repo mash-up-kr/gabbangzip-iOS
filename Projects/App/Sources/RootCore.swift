@@ -17,7 +17,7 @@ import Services
 public struct RootCore {
   @ObservableState
   public struct State: Equatable {
-    public var isLogin: Bool = false
+    public var isLogin: Bool = true
     public var login: LoginCore.State = LoginCore.State()
   }
   
