@@ -18,13 +18,16 @@ public struct MemberListCore {
   public struct State: Equatable {
     var memberList: MemberList
     var inviteLink: String
+    var groupCategory: GroupCategory
     
     public init(
       memberList: MemberList,
-      inviteLink: String
+      inviteLink: String,
+      groupCategory: GroupCategory
     ) {
       self.memberList = memberList
       self.inviteLink = inviteLink
+      self.groupCategory = groupCategory
     }
   }
 

@@ -9,7 +9,7 @@
 import SwiftUI
 
 // MARK: - 카테고리 타입 (학교, 동아리, 회사, 소모임, 친목, 취미, 운동)
-public enum CategoryType {
+public enum CategoryType: String {
   case school
   case club
   case company
@@ -37,7 +37,7 @@ public enum CategoryType {
     }
   }
   
-  var selectedImage: Image {
+  public var selectedImage: Image {
     switch self {
     case .school:
       return DesignSystem.Icons.schoolActive

@@ -27,14 +27,13 @@ public struct MemberListView: View {
           store.send(.backButtonDidTap)
         }
       )
-      .padding(.bottom, 24)
+      .padding(.bottom, 8)
       
       ForEach(store.memberList) { member in
         MemberView(
           member: member,
-          groupCategory: .club
+          groupCategory: store.groupCategory
         )
-          .padding(.bottom, 14)
       }
 
       VStack(spacing: 0) {
@@ -62,7 +61,8 @@ public struct MemberListView: View {
       initialState: 
         MemberListCore.State(
           memberList: Member.mockList,
-          inviteLink: "링크테스트 ⭐️"
+          inviteLink: "링크테스트 ⭐️",
+          groupCategory: .club
         )
     ) {
       MemberListCore()
