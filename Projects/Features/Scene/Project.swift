@@ -32,7 +32,7 @@ let project = Project.make(
     ),
     .make(
       name: "GroupDetail",
-      product: .staticFramework,
+      product: .framework,
       bundleId: "com.mashup.gabbangzip.groupDetail",
       sources: ["GroupDetailScene/**"],
       dependencies: [
