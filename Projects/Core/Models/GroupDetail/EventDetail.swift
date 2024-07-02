@@ -45,10 +45,12 @@ public struct EventDetail: Equatable {
 }
 
 public enum EventState {
-  case noPastAndCurrentEvent // 역대 x, 현재 o
-  case noCurrentEvent // 역대 o, 현재 x
-  case beforeMyUpload // -> beforeMyUpload
-  case afterMyUpload // -> afterMyUpload
+  // 역대 이벤트 x, 현재 이벤트 o
+  case noPastAndCurrentEvent
+  // 역대 이벤트 o, 현재 진행 중 이벤트 x
+  case noCurrentEvent
+  case beforeMyUpload
+  case afterMyUpload
   case beforeMyVote
   case afterMyVote
   case eventCompleted
