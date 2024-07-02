@@ -27,6 +27,7 @@ public struct RootCore {
     case readRefreshToken(Result<String, Error>)
     case checkAccessToken(Result<TestInformation?, Error>)
     case refreshToken(Result<TokenInformation?, Error>)
+    case updateToken(Result<(KeyChainClient.Key, String), RootCoreError>)
     case setLoginStatus(Bool)
     case login(LoginCore.Action)
     case onOpenURL(URL)
@@ -106,20 +107,33 @@ public struct RootCore {
         }
         
       case let .refreshToken(.success(tokenInformation)):
-        return .run(
-          operation: { send in
-            try await self.keyChainClient.update(.accessToken, tokenInformation.accessToken)
-            try await self.keyChainClient.update(.refreshToken, tokenInformation.refreshToken)
+        return .run { send in
+            if let accessToken = tokenInformation?.accessToken {
+              await send(.updateToken(.success((.accessToken, accessToken))))
+            } else {
+              await send(.updateToken(.failure(RootCoreError(code: .failToSaveToken))))
+            }
+            if let refreshToken = tokenInformation?.refreshToken {
+              await send(.updateToken(.success((.refreshToken, refreshToken))))
+            } else {
+              await send(.updateToken(.failure(RootCoreError(code: .failToSaveToken))))
+            }
             await send(.setLoginStatus(true))
-          },
-          catch: {
-            await send(.logError(RootCoreError(code: .failToSaveToken)))
           }
-        )
         
       case .refreshToken(.failure):
         return .run { send in
           await send(.setLoginStatus(false))
+        }
+        
+      case let .updateToken(.success((tokenKey, token))):
+        return .run { send in
+          try await keyChainClient.update(tokenKey, token)
+        }
+        
+      case let .updateToken(.failure(error)):
+        return .run { send in
+          await send(.logError(error))
         }
         
       case let .setLoginStatus(isLogin):
