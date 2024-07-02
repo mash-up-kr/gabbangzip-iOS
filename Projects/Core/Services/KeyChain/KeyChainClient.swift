@@ -136,9 +136,9 @@ public struct KeyChainClientError: GabbangzipError {
   
   public enum Code: Int {
     case failToCreate
+    case failToGetData
     case failToRead
     case failToUpdate
     case failToDelete
-    case failToGetData
   }
 }
