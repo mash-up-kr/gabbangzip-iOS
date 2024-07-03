@@ -18,9 +18,9 @@ public struct KakaoAPIClient {
     _ nickname: String,
     _ profileImage: String
   ) async throws -> PICUserInformation?
-  public var refreshToken: @Sendable (_ refreshToken: String) async throws -> TokenInformation?
-  public var testToken: @Sendable (_ accessToken: String) async throws -> TestInformation?
-  public var delete: @Sendable (_ accessToken: String) async throws -> DeleteUserInformation?
+  public var refreshToken: @Sendable (_ refreshToken: String) async throws -> TokenInfo?
+  public var testToken: @Sendable (_ accessToken: String) async throws -> TestInfo?
+  public var delete: @Sendable (_ accessToken: String) async throws -> DeleteUserInfo?
 }
 
 extension KakaoAPIClient: DependencyKey {
@@ -45,7 +45,7 @@ extension KakaoAPIClient: DependencyKey {
       },
       refreshToken: { refreshToken in
         let route = KakaoAPI.refresh(refreshToken: refreshToken)
-        let request = Request<BaseResponse<TokenInformation>>(route: route)
+        let request = Request<BaseResponse<TokenInfo>>(route: route)
         do {
           let response = try await NetworkManager.shared.send(request)
           
@@ -56,7 +56,7 @@ extension KakaoAPIClient: DependencyKey {
       },
       testToken: { accessToken in
         let route = KakaoAPI.testToken(accessToken: accessToken)
-        let request = Request<BaseResponse<TestInformation>>(route: route)
+        let request = Request<BaseResponse<TestInfo>>(route: route)
         do {
           let response = try await NetworkManager.shared.send(request)
           
@@ -67,7 +67,7 @@ extension KakaoAPIClient: DependencyKey {
       },
       delete: { accessToken in
         let route = KakaoAPI.delete(accessToken: accessToken)
-        let request = Request<BaseResponse<DeleteUserInformation>>(route: route)
+        let request = Request<BaseResponse<DeleteUserInfo>>(route: route)
         do {
           let response = try await NetworkManager.shared.send(request)
           
