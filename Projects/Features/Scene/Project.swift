@@ -40,7 +40,6 @@ let project = Project.make(
         .project(target: .coreKit, projectPath: .core),
         .project(target: .designSystem, projectPath: .designSystem),
         .external(externalDependency: .composableArchitecture),
-        .external(externalDependency: .nuke),
         .external(externalDependency: .nukeUI),
         .external(externalDependency: .lottie)
       ]
