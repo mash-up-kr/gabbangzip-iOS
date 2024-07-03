@@ -6,7 +6,7 @@ let project = Project.make(
   targets: [
     .make(
       name: "CoreKit",
-      product: .staticLibrary,
+      product: .framework,
       bundleId: "com.mashup.gabbangzip.coreKit",
       sources: ["CoreKit/**"],
       dependencies: [
@@ -17,14 +17,14 @@ let project = Project.make(
     ),
     .make(
       name: "Models",
-      product: .staticLibrary,
+      product: .framework,
       bundleId: "com.mashup.gabbangzip.models",
       sources: ["Models/**"],
       dependencies: []
     ),
     .make(
       name: "Services",
-      product: .staticLibrary,
+      product: .framework,
       bundleId: "com.mashup.gabbangzip.services",
       sources: ["Services/**"],
       dependencies: [
@@ -35,7 +35,7 @@ let project = Project.make(
     ),
     .make(
       name: "Common",
-      product: .staticLibrary,
+      product: .framework,
       bundleId: "com.mashup.gabbangzip.common",
       sources: ["Common/**"],
       dependencies: []

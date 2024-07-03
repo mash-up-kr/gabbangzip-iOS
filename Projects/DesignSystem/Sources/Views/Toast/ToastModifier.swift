@@ -36,6 +36,8 @@ public struct ToastModifier: ViewModifier {
             .opacity(isPresented ? 1 : 0)
           }
         )
+    } else {
+      content
     }
   }
 }

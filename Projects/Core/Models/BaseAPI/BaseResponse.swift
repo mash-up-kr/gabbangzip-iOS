@@ -1,15 +1,15 @@
 //
-//  KakaoResponse.swift
+//  BaseResponse.swift
 //  Models
 //
-//  Created by Hyun A Song on 6/22/24.
+//  Created by Hyun A Song on 7/3/24.
 //  Copyright © 2024 com.mashup.gabbangzip. All rights reserved.
 //
 
-public struct KakaoResponse: Decodable {
+public struct BaseResponse<T>: Decodable where T: Decodable {
   public let isSuccess: Bool
-  public let data: PICUserInformation?
-  public let errorResponse: APIErrorResponse?
+  public let data: T?
+  public let errorResponse: BaseErrorResponse?
   
   public enum CodingKeys: String, CodingKey {
     case isSuccess = "is_success"

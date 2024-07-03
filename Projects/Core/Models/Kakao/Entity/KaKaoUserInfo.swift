@@ -1,5 +1,5 @@
 //
-//  KaKaoUserInformation.swift
+//  KaKaoUserInfo.swift
 //  Models
 //
 //  Created by Hyun A Song on 6/19/24.
@@ -8,7 +8,7 @@
 
 import Foundation
 
-public struct KaKaoUserInformation: Equatable {
+public struct KaKaoUserInfo: Equatable {
   public var nickname: String?
   public var profileImageUrl: URL?
   
