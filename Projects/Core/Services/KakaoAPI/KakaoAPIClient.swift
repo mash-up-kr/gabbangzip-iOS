@@ -45,7 +45,7 @@ extension KakaoAPIClient: DependencyKey {
       },
       refreshToken: { refreshToken in
         let route = KakaoAPI.refresh(refreshToken: refreshToken)
-        let request = Request<TokenResponse>(route: route)
+        let request = Request<BaseResponse<TokenInformation>>(route: route)
         do {
           let response = try await NetworkManager.shared.send(request)
           
@@ -56,7 +56,7 @@ extension KakaoAPIClient: DependencyKey {
       },
       testToken: { accessToken in
         let route = KakaoAPI.testToken(accessToken: accessToken)
-        let request = Request<TestResponse>(route: route)
+        let request = Request<BaseResponse<TestInformation>>(route: route)
         do {
           let response = try await NetworkManager.shared.send(request)
           
@@ -67,7 +67,7 @@ extension KakaoAPIClient: DependencyKey {
       },
       delete: { accessToken in
         let route = KakaoAPI.delete(accessToken: accessToken)
-        let request = Request<DeleteUserResponse>(route: route)
+        let request = Request<BaseResponse<DeleteUserInformation>>(route: route)
         do {
           let response = try await NetworkManager.shared.send(request)
           

@@ -1,12 +1,12 @@
 //
-//  KakaoLoginRequestInformation.swift
+//  KakaoLoginReqDTO.swift
 //  Models
 //
 //  Created by Hyun A Song on 6/24/24.
 //  Copyright © 2024 com.mashup.gabbangzip. All rights reserved.
 //
 
-public struct KakaoLoginRequestInformation: Encodable {
+public struct KakaoLoginReqDTO: Encodable {
   public let idToken: String
   public let provider: String
   public let nickname: String
