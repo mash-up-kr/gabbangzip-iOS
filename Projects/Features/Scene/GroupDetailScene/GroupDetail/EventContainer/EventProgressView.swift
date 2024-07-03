@@ -11,7 +11,6 @@ import SwiftUI
 import DesignSystem
 import Models
 
-import Nuke
 import NukeUI
 
 struct EventProgressView: View {
@@ -44,32 +43,37 @@ struct EventProgressView: View {
         .padding(.bottom, 16)
 
       LazyImage(
-        url: eventDetail.imageURL) { state in
-          if let image = state.image {
-            image.resizable()
-              .aspectRatio(contentMode: .fit)
-              .padding(.horizontal, 72)
-          }
+        url: eventDetail.imageURL
+      ) { state in
+        if let image = state.image {
+          image.resizable()
+            .aspectRatio(contentMode: .fit)
+            .padding(.horizontal, 72)
         }
+      }
       
       if let message = eventDetail.state.message(time: eventDetail.dueTime) {
         Text(message)
           .font(.caption12)
           .foregroundStyle(DesignSystem.Colors.gray60)
           .padding(
-            EdgeInsets(top: 24,
-            leading: 0,
-            bottom: 8,
-            trailing: 0)
+            EdgeInsets(
+              top: 24,
+              leading: 0,
+              bottom: 8,
+              trailing: 0
+            )
           )
       }
       button
     }
     .padding(
-      EdgeInsets(top: 16,
-      leading: 0,
-      bottom: 24,
-      trailing: 0)
+      EdgeInsets(
+        top: 16,
+        leading: 0,
+        bottom: 24,
+        trailing: 0
+      )
     )
   }
   

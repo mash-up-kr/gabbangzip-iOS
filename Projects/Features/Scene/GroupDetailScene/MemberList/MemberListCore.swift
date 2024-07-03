@@ -40,6 +40,7 @@ public struct MemberListCore {
     Reduce { state, action in
       switch action {
       case .copyLinkButtonDidTap:
+        // TODO: Client로 분리할 예정 ...ㅎㅎ
         UIPasteboard.general.string = state.inviteLink
         return .none
       case .backButtonDidTap:

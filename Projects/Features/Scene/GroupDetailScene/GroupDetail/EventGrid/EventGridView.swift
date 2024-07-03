@@ -55,6 +55,7 @@ struct EventGridView: View {
     VStack(spacing: 0) {
       DesignSystem.Images.empty
         .padding(.bottom, 16)
+      
       Text("그룹 이벤트를 만들고\n우리끼리 PIC으로 인생 네컷을 모아보세요.")
         .multilineTextAlignment(.center)
         .foregroundStyle(DesignSystem.Colors.gray60)

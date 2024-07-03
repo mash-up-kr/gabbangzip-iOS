@@ -21,10 +21,7 @@ struct MemberView: View {
         category: groupCategory
       )
       .resizable()
-      .frame(
-        width: 24,
-        height: 24
-      )
+      .frame(width: 24, height: 24)
       .padding(
         EdgeInsets(
           top: 20,

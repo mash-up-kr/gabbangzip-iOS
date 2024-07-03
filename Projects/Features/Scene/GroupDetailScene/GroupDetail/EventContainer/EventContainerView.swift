@@ -11,7 +11,6 @@ import SwiftUI
 import DesignSystem
 import Models
 
-import Nuke
 import NukeUI
 
 public struct EventContainerView: View {

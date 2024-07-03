@@ -37,7 +37,7 @@ public struct GroupDetailView: View {
         EventContainerView(
           eventDetail: store.groupDetail.eventDetail
         ) { state in
-            store.send(.eventContainerViewButtonDidTap(state))
+          store.send(.eventContainerViewButtonDidTap(state))
         }
         
         dividerView
@@ -81,12 +81,14 @@ struct ViewGeometry: View {
       Color.clear
         .preference(
           key: ViewHeightKey.self,
+          // TODO: UIScreen 사용하지 않는 방향으로 개선 예정
           value: UIScreen.main.bounds.height - geometry.size.height - UIScreen.topSafeArea - UIScreen.bottomSafeArea
         )
     }
   }
 }
 
+// TODO: UIScreen 사용하지 않는 방향으로 개선 예정
 extension UIScreen {
     static var topSafeArea: CGFloat {
         let keyWindow = UIApplication.shared.connectedScenes

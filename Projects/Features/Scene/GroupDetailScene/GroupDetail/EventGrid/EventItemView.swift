@@ -11,14 +11,13 @@ import SwiftUI
 import DesignSystem
 import Models
 
-import Nuke
 import NukeUI
 
 struct EventItemView: View {
   var eventInfo: EventItemInfo
   
   var body: some View {
-    VStack(alignment: .leading ,spacing: 0) {
+    VStack(alignment: .leading, spacing: 0) {
       LazyImage(
         url: eventInfo.imageURL
       ) { state in
