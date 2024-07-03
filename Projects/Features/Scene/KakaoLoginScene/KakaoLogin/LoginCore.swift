@@ -20,12 +20,12 @@ public struct LoginCore {
   @ObservableState
   public struct State: Equatable {
     public var isPresented: Bool
-    public var kakaoUser: KaKaoUserInformation
+    public var kakaoUser: KaKaoUserInfo
     public var kakaoIdToken: KakaoToken
     
     public init(
       isPresented: Bool = false,
-      kakaoUser: KaKaoUserInformation = KaKaoUserInformation(),
+      kakaoUser: KaKaoUserInfo = KaKaoUserInfo(),
       kakaoIdToken: KakaoToken = KakaoToken()
     ) {
       self.isPresented = isPresented
