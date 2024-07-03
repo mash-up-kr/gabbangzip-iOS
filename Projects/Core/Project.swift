@@ -30,7 +30,8 @@ let project = Project.make(
       dependencies: [
         .external(externalDependency: .get),
         .external(externalDependency: .composableArchitecture),
-        .external(externalDependency: .kakaoSDK)
+        .external(externalDependency: .kakaoSDK),
+        .target(name: .models)
       ]
     ),
     .make(
