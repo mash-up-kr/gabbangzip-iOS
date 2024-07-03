@@ -25,8 +25,8 @@ public struct RootCore {
     case onAppear
     case readAccessToken(Result<String, Error>)
     case readRefreshToken(Result<String, Error>)
-    case checkAccessToken(Result<TestInformation?, Error>)
-    case refreshToken(Result<TokenInformation?, Error>)
+    case checkAccessToken(Result<TestInfo?, Error>)
+    case refreshToken(Result<TokenInfo?, Error>)
     case updateToken(Result<(KeyChainClient.Key, String), RootCoreError>)
     case setLoginStatus(Bool)
     case login(LoginCore.Action)

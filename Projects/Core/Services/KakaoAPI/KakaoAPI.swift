@@ -66,7 +66,7 @@ extension KakaoAPI: RouteType {
   public var body: Encodable? {
     switch self {
     case let .login(idToken, provider, nickname, profileImage):
-      let body = KakaoLoginReqDTO(
+      let body = KakaoLogin(
         idToken: idToken,
         provider: provider,
         nickname: nickname,
@@ -74,7 +74,7 @@ extension KakaoAPI: RouteType {
       )
       return body
     case let .refresh(refreshToken):
-      return KakaoRefreshReqDTO(refreshToken: refreshToken)
+      return KakaoRefresh(refreshToken: refreshToken)
     case .testToken:
       return nil
     case .delete:

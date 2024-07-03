@@ -39,7 +39,7 @@ public struct LoginCore {
     case loginWithKakaoTalkResponse(Result<String?, Error>)
     case loginWithKakaoAccountResponse(Result<String?, Error>)
     case checkUserInformationResponse(Result<User, Error>)
-    case loginResponse(Result<PICUserInformation?, Error>)
+    case loginResponse(Result<PICUserInfo?, Error>)
     case saveTokenInKeyChain(Result<(KeyChainClient.Key, String), LoginCoreError>)
     case showError(Bool)
     case binding(BindingAction<State>)

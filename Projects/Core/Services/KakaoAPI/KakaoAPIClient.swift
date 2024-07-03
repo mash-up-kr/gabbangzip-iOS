@@ -17,7 +17,7 @@ public struct KakaoAPIClient {
     _ idToken: String,
     _ nickname: String,
     _ profileImage: String
-  ) async throws -> PICUserInformation?
+  ) async throws -> PICUserInfo?
   public var refreshToken: @Sendable (_ refreshToken: String) async throws -> TokenInfo?
   public var testToken: @Sendable (_ accessToken: String) async throws -> TestInfo?
   public var delete: @Sendable (_ accessToken: String) async throws -> DeleteUserInfo?
@@ -34,7 +34,7 @@ extension KakaoAPIClient: DependencyKey {
           nickname: nickname,
           profileImage: profileImage
         )
-        let request = Request<PICUserResponse>(route: route)
+        let request = Request<BaseResponse<PICUserInfo>>(route: route)
         do {
           let response = try await NetworkManager.shared.send(request)
           
