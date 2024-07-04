@@ -22,47 +22,38 @@ public struct PhotoCard<Content: View>: View {
   
   public var body: some View {
     VStack(spacing: 0) {
-      HStack(spacing: 0) {
-        status.icon
-          .resizable()
-          .aspectRatio(contentMode: .fit)
-          .frame(width: 10, height: 10)
-        
-        Spacer()
-        
-        status.icon
-          .resizable()
-          .aspectRatio(contentMode: .fit)
-          .frame(width: 10, height: 10)
-      }
-      .padding(.horizontal, 22)
-      .padding(.top, 20)
+      horizontalIconBar
       
       content
       
-      HStack(spacing: 0) {
-        status.icon
-          .resizable()
-          .aspectRatio(contentMode: .fit)
-          .frame(width: 10, height: 10)
-        
-        Spacer()
-        
-        status.icon
-          .resizable()
-          .aspectRatio(contentMode: .fit)
-          .frame(width: 10, height: 10)
-      }
-      .padding(.horizontal, 22)
-      .padding(.bottom, 20)
+      horizontalIconBar
     }
+    .padding(.vertical, 20)
     .background(status.backgroundColor)
     .cornerRadius(20)
     .overlay {
       RoundedRectangle(cornerRadius: 20)
-        .strokeBorder(Color.white, lineWidth: 2)
+        .strokeBorder(DesignSystem.Colors.gray0, lineWidth: 2)
     }
     .shadow(color: DesignSystem.Colors.gray100.opacity(0.06), radius: 20, x: 0, y: 0)
+  }
+  
+  private var horizontalIconBar: some View {
+    HStack(spacing: 0) {
+      icon
+      
+      Spacer()
+      
+      icon
+    }
+    .padding(.horizontal, 22)
+  }
+  
+  private var icon: some View {
+    status.icon
+      .resizable()
+      .aspectRatio(contentMode: .fit)
+      .frame(width: 10, height: 10)
   }
 }
 
