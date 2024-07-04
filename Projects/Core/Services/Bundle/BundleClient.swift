@@ -10,7 +10,7 @@ import ComposableArchitecture
 import Foundation
 
 @DependencyClient
-public struct BundleClient {
+public struct BundleClient: Sendable {
   public var getValue: @Sendable (_ key: String) throws -> Any
 }
 

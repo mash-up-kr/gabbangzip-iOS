@@ -13,7 +13,7 @@ import KakaoSDKCommon
 import KakaoSDKUser
 
 @DependencyClient
-public struct KakaoLoginClient {
+public struct KakaoLoginClient: Sendable {
   public var initSDK: @Sendable (_ appKey: String) async -> Void
   public var openURL: @Sendable (_ url: URL) -> Bool = { url in false }
   public var isKakaoTalkLoginAvailable: @Sendable () -> Bool = { false }

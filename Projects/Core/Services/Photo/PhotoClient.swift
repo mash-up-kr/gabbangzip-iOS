@@ -12,7 +12,7 @@ import SwiftUI
 
 // MARK: - API Client Interface
 @DependencyClient
-public struct PhotoClient {
+public struct PhotoClient: Sendable {
   public var checkPhotoLibraryAuthorization: @Sendable () async throws -> Bool
   public var requestPhotoLibraryAccess: @Sendable () async throws -> Bool
 }

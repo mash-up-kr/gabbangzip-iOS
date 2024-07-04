@@ -11,7 +11,7 @@ import SwiftUI
 
 // MARK: - API Client Interface
 @DependencyClient
-public struct SnapshotClient {
+public struct SnapshotClient: Sendable {
   public var takeSnapshot: @Sendable () async throws -> UIImage
 }
 

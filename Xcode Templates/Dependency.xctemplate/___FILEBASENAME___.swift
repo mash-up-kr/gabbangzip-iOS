@@ -3,7 +3,7 @@
 import ComposableArchitecture
 
 @DependencyClient
-public struct ___FILEBASENAMEASIDENTIFIER___ {
+public struct ___FILEBASENAMEASIDENTIFIER___: Sendable {
   
 }
 

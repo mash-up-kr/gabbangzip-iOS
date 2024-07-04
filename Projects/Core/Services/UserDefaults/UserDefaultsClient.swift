@@ -10,7 +10,7 @@ import ComposableArchitecture
 import Foundation
 
 @DependencyClient
-public struct UserDefaultsClient {
+public struct UserDefaultsClient: Sendable {
   public var string: @Sendable (_ forKey: String) throws -> String
   public var integer: @Sendable (_ forKey: String) throws -> Int
   public var bool: @Sendable (_ forKey: String) throws -> Bool

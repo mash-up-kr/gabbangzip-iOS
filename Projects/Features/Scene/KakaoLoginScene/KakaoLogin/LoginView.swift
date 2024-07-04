@@ -68,7 +68,7 @@ public struct LoginView: View {
   LoginView(
     store: Store(
       initialState: LoginCore.State(),
-      reducer: { LoginCore() }
+      reducer: LoginCore.init
     )
   )
 }
