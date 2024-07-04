@@ -5,11 +5,11 @@ import SwiftUI
 
 public struct ___FILEBASENAMEASIDENTIFIER___: View {
   let store: StoreOf<___VARIABLE_productName:identifier___Core>
-
+  
   public init(store: StoreOf<___VARIABLE_productName:identifier___Core>) {
     self.store = store
   }
-
+  
   public var body: some View {
     Text("Hello, World!")
   }
@@ -17,8 +17,9 @@ public struct ___FILEBASENAMEASIDENTIFIER___: View {
 
 #Preview {
   ___FILEBASENAMEASIDENTIFIER___(
-    store: Store(initialState: .init()) {
-      ___VARIABLE_productName:identifier___Core()
-    }
+    store: Store(
+      initialState: .init(),
+      reducer: ___VARIABLE_productName:identifier___Core.init
+    )
   )
 }
