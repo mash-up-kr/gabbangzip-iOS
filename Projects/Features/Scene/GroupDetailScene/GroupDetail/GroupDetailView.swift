@@ -40,9 +40,9 @@ public struct GroupDetailView: View {
         
         dividerView
       }
-      .overlay(ViewGeometry())
+      .overlay(ViewHeightGeometry())
       .onPreferenceChange(ViewHeightKey.self) { height in
-        self.bottomSheetHeight = height
+        self.bottomSheetHeight = UIScreen.main.bounds.height - height - UIScreen.topSafeArea - UIScreen.bottomSafeArea
       }
     }
     .scrollIndicators(.hidden)
@@ -60,29 +60,6 @@ public struct GroupDetailView: View {
     Rectangle()
       .foregroundStyle(DesignSystem.Colors.gray20)
       .frame(height: 10)
-  }
-}
-
-struct ViewHeightKey: PreferenceKey {
-  static var defaultValue: CGFloat = .zero
-  static func reduce(
-    value: inout CGFloat,
-    nextValue: () -> CGFloat
-  ) {
-    value = nextValue()
-  }
-}
-
-struct ViewGeometry: View {
-  var body: some View {
-    GeometryReader { geometry in
-      Color.clear
-        .preference(
-          key: ViewHeightKey.self,
-          // TODO: UIScreen 사용하지 않는 방향으로 개선 예정
-          value: UIScreen.main.bounds.height - geometry.size.height - UIScreen.topSafeArea - UIScreen.bottomSafeArea
-        )
-    }
   }
 }
 
