@@ -121,21 +121,22 @@ public enum LargeChipType {
 #Preview {
   HStack {
     VStack {
-      LargeChip(type: .category(.club), isSelected: .constant(true), action: {})
-      LargeChip(type: .category(.community), isSelected: .constant(true), action: {})
+      LargeChip(type: .category(.crew), isSelected: .constant(true), action: {})
+      LargeChip(type: .time(.six))
+      LargeChip(type: .category(.network), isSelected: .constant(true), action: {})
       LargeChip(type: .category(.company), isSelected: .constant(true), action: {})
       LargeChip(type: .category(.exercise), isSelected: .constant(true), action: {})
-      LargeChip(type: .category(.gathering), isSelected: .constant(true), action: {})
+      LargeChip(type: .category(.littleMoim), isSelected: .constant(true), action: {})
       LargeChip(type: .category(.hobby), isSelected: .constant(true), action: {})
       LargeChip(type: .category(.school), isSelected: .constant(true), action: {})
     }
     
     VStack {
-      LargeChip(type: .category(.club), isSelected: .constant(false), action: {})
-      LargeChip(type: .category(.community), isSelected: .constant(false), action: {})
+      LargeChip(type: .category(.crew), isSelected: .constant(false), action: {})
+      LargeChip(type: .category(.network), isSelected: .constant(false), action: {})
       LargeChip(type: .category(.company), isSelected: .constant(false), action: {})
       LargeChip(type: .category(.exercise), isSelected: .constant(false), action: {})
-      LargeChip(type: .category(.gathering), isSelected: .constant(false), action: {})
+      LargeChip(type: .category(.littleMoim), isSelected: .constant(false), action: {})
       LargeChip(type: .category(.hobby), isSelected: .constant(false), action: {})
       LargeChip(type: .category(.school), isSelected: .constant(false), action: {})
     }

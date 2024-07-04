@@ -17,4 +17,10 @@ public extension DateFormatter {
     formatter.locale = Locale(identifier: "ko_KR")
     return formatter
   }()
+  
+  static let groupEvent: DateFormatter = {
+    let formatter = DateFormatter()
+    formatter.dateFormat = "yyyy.MM.dd"
+    return formatter
+  }()
 }

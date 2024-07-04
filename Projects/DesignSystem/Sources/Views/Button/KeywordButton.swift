@@ -62,21 +62,21 @@ public struct KeywordButton: View {
 #Preview {
   HStack {
     VStack {
-      KeywordButton(type: .club)
-      KeywordButton(type: .community)
+      KeywordButton(type: .crew)
+      KeywordButton(type: .network)
       KeywordButton(type: .company)
       KeywordButton(type: .exercise)
-      KeywordButton(type: .gathering)
+      KeywordButton(type: .littleMoim)
       KeywordButton(type: .hobby)
       KeywordButton(type: .school)
     }
     
     VStack {
-      KeywordButton(type: .club, isSelected: .constant(true))
-      KeywordButton(type: .community, isSelected: .constant(true))
+      KeywordButton(type: .crew, isSelected: .constant(true))
+      KeywordButton(type: .network, isSelected: .constant(true))
       KeywordButton(type: .company, isSelected: .constant(true))
       KeywordButton(type: .exercise, isSelected: .constant(true))
-      KeywordButton(type: .gathering, isSelected: .constant(true))
+      KeywordButton(type: .littleMoim, isSelected: .constant(true))
       KeywordButton(type: .hobby, isSelected: .constant(true))
       KeywordButton(type: .school, isSelected: .constant(true))
     }

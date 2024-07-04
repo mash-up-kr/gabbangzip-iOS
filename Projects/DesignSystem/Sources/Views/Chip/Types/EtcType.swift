@@ -8,7 +8,7 @@
 
 import Foundation
 
-// MARK: - 그 외 타입 (쉿, 투표중 / N일전 업데이트)
+// MARK: - 그 외 타입 (쉿, 투표중 / 최근 업데이트 N일전)
 public enum EtcType {
   case voting
   case update(Int)
@@ -18,7 +18,7 @@ public enum EtcType {
     case .voting:
       return "쉿, 투표중"
     case let .update(day):
-      return "\(day)일전 업데이트"
+      return "최근 업데이트 \(day)일전"
     }
   }
 }
