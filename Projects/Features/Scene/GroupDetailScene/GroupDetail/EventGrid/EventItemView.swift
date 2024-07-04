@@ -20,9 +20,7 @@ struct EventItemView: View {
   
   var body: some View {
     VStack(alignment: .leading, spacing: 0) {
-      LazyImage(
-        url: eventInfo.imageURL
-      ) { state in
+      LazyImage(url: eventInfo.imageURL) { state in
         if let image = state.image {
           image.resizable()
             .aspectRatio(contentMode: .fit)

@@ -24,19 +24,10 @@ struct MemberView: View {
   
   var body: some View {
     HStack(spacing: 0) {
-      logoImageFrom(
-        category: groupCategory
-      )
+      logoImageFrom(category: groupCategory)
       .resizable()
       .frame(width: 24, height: 24)
-      .padding(
-        EdgeInsets(
-          top: 20,
-          leading: 24,
-          bottom: 20,
-          trailing: 16
-        )
-      )
+      .padding(.init(top: 20, leading: 24, bottom: 20, trailing: 16))
       
       VStack(alignment: .leading, spacing: 6) {
         Text(member.name)

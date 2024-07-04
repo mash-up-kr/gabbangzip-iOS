@@ -36,20 +36,18 @@ struct EventGridView: View {
       Text("우리들의 인생네컷")
         .foregroundStyle(DesignSystem.Colors.gray80)
         .font(.head18)
+      
       Spacer()
     }
     .padding(.top, 16)
   }
   
   private var galleryView: some View {
-    LazyVGrid(
-      columns: columns,
-      spacing: 16
-    ) {
-        ForEach(events) { picInfo in
-          EventItemView(eventInfo: picInfo)
-        }
+    LazyVGrid(columns: columns, spacing: 16) {
+      ForEach(events) { picInfo in
+        EventItemView(eventInfo: picInfo)
       }
+    }
     .padding(.top, 17)
   }
   

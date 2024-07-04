@@ -40,9 +40,7 @@ struct EventProgressView: View {
         .foregroundStyle(DesignSystem.Colors.gray80)
         .padding(.bottom, 16)
 
-      LazyImage(
-        url: eventDetail.imageURL
-      ) { state in
+      LazyImage(url: eventDetail.imageURL) { state in
         if let image = state.image {
           image.resizable()
             .aspectRatio(contentMode: .fit)
@@ -54,37 +52,22 @@ struct EventProgressView: View {
         Text(message)
           .font(.caption12)
           .foregroundStyle(DesignSystem.Colors.gray60)
-          .padding(
-            EdgeInsets(
-              top: 24,
-              leading: 0,
-              bottom: 8,
-              trailing: 0
-            )
-          )
+          .padding(.init(top: 24, leading: 0, bottom: 8, trailing: 0))
       }
       button
     }
-    .padding(
-      EdgeInsets(
-        top: 16,
-        leading: 0,
-        bottom: 24,
-        trailing: 0
-      )
-    )
+    .padding(.init(top: 16, leading: 0, bottom: 24, trailing: 0))
   }
   
   @ViewBuilder
   var button: some View {
-    if let smallButtonContentType = convertToButtonType(
-      from: eventDetail.state
-    ) {
+    if let smallButtonContentType = convertToButtonType(from: eventDetail.state) {
       SmallButton(
         type: .constant(.active),
-        smallButtonContentType: smallButtonContentType) {
-          action()
-        }
+        smallButtonContentType: smallButtonContentType
+      ) {
+        action()
+      }
     } else {
       ShareButton {
         action()

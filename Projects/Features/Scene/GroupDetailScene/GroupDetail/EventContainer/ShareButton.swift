@@ -12,9 +12,7 @@ import SwiftUI
 struct ShareButton: View {
   private var action: () -> Void
   
-  init(
-    action: @escaping () -> Void = {}
-  ) {
+  init(action: @escaping () -> Void = {}) {
     self.action = action
   }
   

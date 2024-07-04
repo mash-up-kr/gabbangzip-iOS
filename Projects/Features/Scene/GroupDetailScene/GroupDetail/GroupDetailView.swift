@@ -33,9 +33,7 @@ public struct GroupDetailView: View {
           }
         )
         
-        EventContainerView(
-          eventDetail: store.groupDetail.eventDetail
-        ) { state in
+        EventContainerView(eventDetail: store.groupDetail.eventDetail) { state in
           store.send(.eventContainerViewButtonDidTap(state))
         }
         

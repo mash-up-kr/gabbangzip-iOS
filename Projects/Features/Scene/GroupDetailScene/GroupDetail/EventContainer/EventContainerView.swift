@@ -46,31 +46,26 @@ struct EventContainerView: View {
 
 // 진행 중인 이벤트 없는 경우
 #Preview {
-  EventContainerView(
-    eventDetail: EventDetail.mock(state: .noCurrentEvent)) { _ in }
+  EventContainerView(eventDetail: .mock(state: .noCurrentEvent)) { _ in }
 }
 
 // 사진 등록 진행 중, 내 pic 등록 전
 #Preview {
-  EventContainerView(
-    eventDetail: EventDetail.mock(state: .beforeMyUpload)) { _ in }
+  EventContainerView(eventDetail: .mock(state: .beforeMyUpload)) { _ in }
 }
 
 
 // 사진 등록 진행 중, 내 pic 등록 후
 #Preview {
-  EventContainerView(
-    eventDetail: EventDetail.mock(state: .afterMyUpload)) { _ in }
+  EventContainerView(eventDetail: .mock(state: .afterMyUpload)) { _ in }
 }
 
 // 투표 진행 중, 투표 완료 전
 #Preview {
-  EventContainerView(
-    eventDetail: EventDetail.mock(state: .beforeMyVote)) { _ in }
+  EventContainerView(eventDetail: .mock(state: .beforeMyVote)) { _ in }
 }
 
 // 투표 진행 중, 투표 완료 후
 #Preview {
-  EventContainerView(
-    eventDetail: EventDetail.mock(state: .afterMyVote)) { _ in }
+  EventContainerView(eventDetail: .mock(state: .afterMyVote)) { _ in }
 }
