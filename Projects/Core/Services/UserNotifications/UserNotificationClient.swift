@@ -10,7 +10,7 @@ import ComposableArchitecture
 import UserNotifications
 
 @DependencyClient
-public struct UserNotificationClient {
+public struct UserNotificationClient: Sendable {
   public var getAuthorizationStatus: @Sendable () async -> UNAuthorizationStatus = { .notDetermined }
   public var delegate: @Sendable () -> AsyncStream<DelegateEvent> = { .finished }
   public var requestAuthorization: @Sendable () async throws -> Void

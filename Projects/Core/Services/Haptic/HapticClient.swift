@@ -11,7 +11,7 @@ import SwiftUI
 
 // MARK: - API Client Interface
 @DependencyClient
-public struct HapticClient {
+public struct HapticClient: Sendable {
   /// 사용자 인터랙션에 따른 햅틱 반응 (light || medium || heavy || soft || rigid)
   public var triggerImpact: @Sendable (UIImpactFeedbackGenerator.FeedbackStyle) async -> Void
   /// 작업 완료 여부에 따른 햅틱 반응 (success || warning || error)

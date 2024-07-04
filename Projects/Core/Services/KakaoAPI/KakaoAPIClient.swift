@@ -12,7 +12,7 @@ import Get
 import Models
 
 @DependencyClient
-public struct KakaoAPIClient {
+public struct KakaoAPIClient: Sendable {
   public var login: @Sendable (
     _ idToken: String,
     _ nickname: String,

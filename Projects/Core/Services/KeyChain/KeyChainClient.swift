@@ -10,7 +10,7 @@ import ComposableArchitecture
 import Foundation
 
 @DependencyClient
-public struct KeyChainClient {
+public struct KeyChainClient: Sendable {
   public var create: @Sendable (_ key: Key, _ data: String) async throws -> Void
   public var read: @Sendable (_ key: Key) async throws -> String
   public var update: @Sendable (_ key: Key, _ data: String) async throws -> Void
