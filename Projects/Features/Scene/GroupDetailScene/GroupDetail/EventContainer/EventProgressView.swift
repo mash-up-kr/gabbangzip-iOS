@@ -6,12 +6,10 @@
 //  Copyright © 2024 com.mashup.gabbangzip. All rights reserved.
 //
 
-import SwiftUI
-
 import DesignSystem
 import Models
-
 import NukeUI
+import SwiftUI
 
 struct EventProgressView: View {
   let eventDetail: EventDetail

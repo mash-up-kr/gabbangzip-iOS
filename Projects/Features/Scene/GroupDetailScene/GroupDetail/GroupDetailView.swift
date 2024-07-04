@@ -7,10 +7,9 @@
 //
 
 import ComposableArchitecture
-import SwiftUI
-
 import DesignSystem
 import Models
+import SwiftUI
 
 public struct GroupDetailView: View {
   @State private var showSheet = true

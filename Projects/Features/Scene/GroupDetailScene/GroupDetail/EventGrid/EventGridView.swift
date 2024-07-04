@@ -6,10 +6,9 @@
 //  Copyright © 2024 com.mashup.gabbangzip. All rights reserved.
 //
 
-import SwiftUI
-
 import DesignSystem
 import Models
+import SwiftUI
 
 struct EventGridView: View {
   var events: [EventItemInfo]

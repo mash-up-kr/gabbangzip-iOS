@@ -6,11 +6,9 @@
 //  Copyright © 2024 com.mashup.gabbangzip. All rights reserved.
 //
 
-import UIKit
-
 import ComposableArchitecture
-
 import Models
+import UIKit
 
 @Reducer
 public struct MemberListCore {
