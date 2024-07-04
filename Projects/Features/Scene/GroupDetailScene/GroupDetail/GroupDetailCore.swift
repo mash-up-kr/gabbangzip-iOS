@@ -35,7 +35,7 @@ public struct GroupDetailCore {
         return .none
       case .memberListButtonTapped:
         return .none
-      case let .eventContainerViewButtonTapped(state):
+      case let .eventContainerViewButtonTapped(eventState):
         return .none
       }
     }

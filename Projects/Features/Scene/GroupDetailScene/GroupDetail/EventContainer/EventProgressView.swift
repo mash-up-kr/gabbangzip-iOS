@@ -44,7 +44,7 @@ struct EventProgressView: View {
         if let image = state.image {
           image.resizable()
             .aspectRatio(contentMode: .fit)
-            .padding(.horizontal, 72)
+            .padding(.horizontal, 76)
         }
       }
       

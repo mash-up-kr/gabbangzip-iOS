@@ -6,8 +6,6 @@
 //  Copyright © 2024 com.mashup.gabbangzip. All rights reserved.
 //
 
-import Foundation
-
 public enum GroupCategory: String {
   case school
   case club
