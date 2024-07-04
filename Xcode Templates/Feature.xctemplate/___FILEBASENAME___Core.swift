@@ -4,6 +4,9 @@ import ComposableArchitecture
 
 @Reducer
 public struct ___VARIABLE_productName:identifier___Core {
+  public init() {}
+
+  @ObservableState
   public struct State: Equatable {
 
     public init() {
