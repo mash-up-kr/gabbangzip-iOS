@@ -54,25 +54,13 @@ struct EventProgressView: View {
           .foregroundStyle(DesignSystem.Colors.gray60)
           .padding(.init(top: 24, leading: 0, bottom: 8, trailing: 0))
       }
-      button
+      
+      EventControlButton(
+        buttonType: convertToButtonType(from: eventDetail.state),
+        action: action
+      )
     }
     .padding(.init(top: 16, leading: 0, bottom: 24, trailing: 0))
-  }
-  
-  @ViewBuilder
-  var button: some View {
-    if let smallButtonContentType = convertToButtonType(from: eventDetail.state) {
-      SmallButton(
-        type: .constant(.active),
-        smallButtonContentType: smallButtonContentType
-      ) {
-        action()
-      }
-    } else {
-      ShareButton {
-        action()
-      }
-    }
   }
   
   private func convertToButtonType(
