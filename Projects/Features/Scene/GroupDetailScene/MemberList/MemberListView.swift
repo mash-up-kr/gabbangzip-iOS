@@ -58,14 +58,12 @@ struct MemberListView: View {
 #Preview {
   MemberListView(
     store: Store(
-      initialState: 
-        MemberListCore.State(
-          memberList: Member.mockList,
-          inviteLink: "링크테스트 ⭐️",
-          groupCategory: .club
-        )
-    ) {
-      MemberListCore()
-    }
+      initialState: .init(
+        memberList: Member.mockList,
+        inviteLink: "링크",
+        groupCategory: .club
+      ),
+      reducer: MemberListCore.init
+    )
   )
 }

@@ -68,9 +68,7 @@ public struct GroupDetailView: View {
   GroupDetailView(
     store: Store(
       initialState: .init(groupDetail: GroupDetail.emptyMock),
-      reducer: {
-        GroupDetailCore()
-      }
+      reducer: GroupDetailCore.init
     )
   )
 }
@@ -80,9 +78,7 @@ public struct GroupDetailView: View {
   GroupDetailView(
     store: Store(
       initialState: .init(groupDetail: GroupDetail.mock),
-      reducer: {
-        GroupDetailCore()
-      }
+      reducer: GroupDetailCore.init
     )
   )
 }
