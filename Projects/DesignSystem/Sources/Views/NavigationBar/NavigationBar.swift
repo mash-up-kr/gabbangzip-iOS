@@ -140,9 +140,10 @@ fileprivate struct LogoAndIconView: View {
   
   fileprivate var body: some View {
     HStack(spacing: 12) {
-      DesignSystem.Icons.logo
+      DesignSystem.Icons.picLogo
         .resizable()
-        .frame(width: 34, height: 34)
+        .aspectRatio(contentMode: .fit)
+        .frame(height: 26)
         .padding(.leading, 17.5)
       
       Spacer()
