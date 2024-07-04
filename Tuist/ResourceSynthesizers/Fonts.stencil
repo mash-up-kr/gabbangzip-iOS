@@ -39,6 +39,12 @@ import SwiftUI
   {{accessModifier}} let name: String
   {{accessModifier}} let family: String
   {{accessModifier}} let path: String
+  {{accessModifier}} var _24: Font {
+    guard let font = UIFont(font: self, size: 24) else {
+      fatalError("Unable to initialize font name: '\(name)', family: \(family), size: 24")
+    }
+    return Font(uiFont: font)
+  }
   {{accessModifier}} var _22: Font {
     guard let font = UIFont(font: self, size: 22) else {
       fatalError("Unable to initialize font name: '\(name)', family: \(family), size: 22")
@@ -112,6 +118,9 @@ import SwiftUI
 }
 {{accessModifier}} extension SwiftUI.Font {
   {% for family in families %}
+  static var head24: Font {
+    {{param.name}}FontFamily.{{family.name|swiftIdentifier:"pretty"|escapeReservedKeywords}}.bold._24
+  }
   static var head20: Font {
     {{param.name}}FontFamily.{{family.name|swiftIdentifier:"pretty"|escapeReservedKeywords}}.bold._20
   }
