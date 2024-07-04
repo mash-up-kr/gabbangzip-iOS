@@ -13,9 +13,8 @@ import Models
 import SwiftUI
 
 public struct GroupDetailView: View {
-  @State private var showSheet = true
   @State private var bottomSheetHeight: CGFloat = 0
-  private let store: StoreOf<GroupDetailCore>
+  @Bindable var store: StoreOf<GroupDetailCore>
 
   public init(store: StoreOf<GroupDetailCore>) {
     self.store = store
@@ -46,7 +45,7 @@ public struct GroupDetailView: View {
       }
     }
     .scrollIndicators(.hidden)
-    .sheet(isPresented: $showSheet) {
+    .sheet(isPresented: $store.showSheet) {
       EventGridView(events: store.groupDetail.eventItems)
         .presentationDetents([.height(bottomSheetHeight), .large])
         .interactiveDismissDisabled()

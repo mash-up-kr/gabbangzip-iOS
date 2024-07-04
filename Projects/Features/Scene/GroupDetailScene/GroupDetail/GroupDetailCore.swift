@@ -14,21 +14,27 @@ public struct GroupDetailCore {
   @ObservableState
   public struct State: Equatable {
     var groupDetail: GroupDetail
+    var showSheet: Bool
 
     public init(
-      groupDetail: GroupDetail
+      groupDetail: GroupDetail,
+      showSheet: Bool = true
     ) {
       self.groupDetail = groupDetail
+      self.showSheet = showSheet
     }
   }
 
-  public enum Action {
+  public enum Action: BindableAction {
+    case binding(BindingAction<State>)
     case backButtonTapped
     case memberListButtonTapped
     case eventContainerViewButtonTapped(EventState)
   }
 
   public var body: some Reducer<State, Action> {
+    BindingReducer()
+    
     Reduce { state, action in
       switch action {
       case .backButtonTapped:
@@ -36,6 +42,8 @@ public struct GroupDetailCore {
       case .memberListButtonTapped:
         return .none
       case let .eventContainerViewButtonTapped(eventState):
+        return .none
+      case .binding:
         return .none
       }
     }
