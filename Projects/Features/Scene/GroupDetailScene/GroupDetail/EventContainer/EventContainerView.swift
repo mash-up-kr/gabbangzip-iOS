@@ -54,7 +54,6 @@ struct EventContainerView: View {
   EventContainerView(eventDetail: .mock(state: .beforeMyUpload)) { _ in }
 }
 
-
 // 사진 등록 진행 중, 내 pic 등록 후
 #Preview {
   EventContainerView(eventDetail: .mock(state: .afterMyUpload)) { _ in }

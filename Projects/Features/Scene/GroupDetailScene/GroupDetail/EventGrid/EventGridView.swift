@@ -1,5 +1,5 @@
 //
-//  PICListView.swift
+//  EventGridView.swift
 //  GroupDetail
 //
 //  Created by 최혜린 on 6/29/24.

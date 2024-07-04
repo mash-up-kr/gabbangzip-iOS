@@ -21,6 +21,9 @@ struct ShareButton: View {
       .frame(width: 48, height: 48)
       .background(DesignSystem.Colors.gray80)
       .cornerRadius(14)
+      .onTapGesture {
+        action()
+      }
   }
 }
 

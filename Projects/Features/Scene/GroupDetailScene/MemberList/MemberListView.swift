@@ -38,7 +38,7 @@ struct MemberListView: View {
       VStack(spacing: 0) {
         Text("그룹원을 추가하고 싶으세요?")
           .font(.body14)
-          .foregroundStyle(DesignSystem.Colors.gray50)
+          .foregroundStyle(DesignSystem.Colors.gray60)
           .padding(.bottom, 12)
         
         SmallButton(

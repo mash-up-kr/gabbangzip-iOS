@@ -32,6 +32,7 @@ struct MemberView: View {
       VStack(alignment: .leading, spacing: 6) {
         Text(member.name)
           .font(.head16)
+        
         if member.isLeader {
           Text("그룹장")
             .font(.text14)
@@ -42,9 +43,7 @@ struct MemberView: View {
     }
   }
   
-  private func logoImageFrom(
-    category: GroupCategory
-  ) -> Image {
+  private func logoImageFrom(category: GroupCategory) -> Image {
     if let categoryType = CategoryType(rawValue: category.rawValue) {
       return categoryType.selectedImage
     } else {

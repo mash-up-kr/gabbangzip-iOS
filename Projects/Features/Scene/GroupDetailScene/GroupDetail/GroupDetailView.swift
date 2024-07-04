@@ -55,7 +55,7 @@ public struct GroupDetailView: View {
      }
   }
   
-  var dividerView: some View {
+  private var dividerView: some View {
     Rectangle()
       .foregroundStyle(DesignSystem.Colors.gray20)
       .frame(height: 10)
