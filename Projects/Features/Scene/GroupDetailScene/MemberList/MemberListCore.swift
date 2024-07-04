@@ -30,18 +30,18 @@ public struct MemberListCore {
   }
 
   public enum Action {
-    case copyLinkButtonDidTap
-    case backButtonDidTap
+    case copyLinkButtonTapped
+    case backButtonTapped
   }
 
   public var body: some Reducer<State, Action> {
     Reduce { state, action in
       switch action {
-      case .copyLinkButtonDidTap:
+      case .copyLinkButtonTapped:
         // TODO: Client로 분리할 예정 ...ㅎㅎ
         UIPasteboard.general.string = state.inviteLink
         return .none
-      case .backButtonDidTap:
+      case .backButtonTapped:
         return .none
       }
     }

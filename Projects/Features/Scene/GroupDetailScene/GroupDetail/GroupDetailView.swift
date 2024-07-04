@@ -26,15 +26,15 @@ public struct GroupDetailView: View {
         NavigationBar(
           type: .titleWithBackButtonAndIcon(store.groupDetail.groupName, DesignSystem.Icons.group),
           backButtonAction: {
-            store.send(.backButtonDidTap)
+            store.send(.backButtonTapped)
           },
           rightIconAction: {
-            store.send(.memberListButtonDidTap)
+            store.send(.memberListButtonTapped)
           }
         )
         
         EventContainerView(eventDetail: store.groupDetail.eventDetail) { state in
-          store.send(.eventContainerViewButtonDidTap(state))
+          store.send(.eventContainerViewButtonTapped(state))
         }
         
         dividerView

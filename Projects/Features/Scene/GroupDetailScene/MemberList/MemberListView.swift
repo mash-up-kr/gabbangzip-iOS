@@ -23,7 +23,7 @@ struct MemberListView: View {
       NavigationBar(
         type: .titleWithBackButton("그룹원"),
         backButtonAction: {
-          store.send(.backButtonDidTap)
+          store.send(.backButtonTapped)
         }
       )
       .padding(.bottom, 8)
@@ -45,7 +45,7 @@ struct MemberListView: View {
           type: .constant(.active),
           smallButtonContentType: .copyLink
         ) {
-          store.send(.copyLinkButtonDidTap)
+          store.send(.copyLinkButtonTapped)
         }
       }
       .padding(.top, 102)

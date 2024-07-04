@@ -23,19 +23,19 @@ public struct GroupDetailCore {
   }
 
   public enum Action {
-    case backButtonDidTap
-    case memberListButtonDidTap
-    case eventContainerViewButtonDidTap(EventState)
+    case backButtonTapped
+    case memberListButtonTapped
+    case eventContainerViewButtonTapped(EventState)
   }
 
   public var body: some Reducer<State, Action> {
     Reduce { state, action in
       switch action {
-      case .backButtonDidTap:
+      case .backButtonTapped:
         return .none
-      case .memberListButtonDidTap:
+      case .memberListButtonTapped:
         return .none
-      case let .eventContainerViewButtonDidTap(state):
+      case let .eventContainerViewButtonTapped(state):
         return .none
       }
     }
