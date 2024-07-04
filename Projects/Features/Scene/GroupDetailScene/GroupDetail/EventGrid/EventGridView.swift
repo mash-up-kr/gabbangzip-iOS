@@ -29,6 +29,7 @@ struct EventGridView: View {
       }
     }
     .padding(.horizontal, 16)
+    .scrollIndicators(.hidden)
   }
   
   private var titleView: some View {

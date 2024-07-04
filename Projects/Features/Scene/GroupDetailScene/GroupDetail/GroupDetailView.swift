@@ -48,7 +48,6 @@ public struct GroupDetailView: View {
     .scrollIndicators(.hidden)
     .sheet(isPresented: $showSheet) {
       EventGridView(events: store.groupDetail.eventItems)
-        .scrollIndicators(.hidden)
         .presentationDetents([.height(bottomSheetHeight), .large])
         .interactiveDismissDisabled()
         .presentationDragIndicator(.hidden)
