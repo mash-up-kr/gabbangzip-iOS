@@ -8,9 +8,7 @@
 
 import Foundation
 
-public struct Member: Equatable, Identifiable {
-  public var id = UUID()
-  
+public struct Member: Hashable {
   public let name: String
   public let isLeader: Bool
   

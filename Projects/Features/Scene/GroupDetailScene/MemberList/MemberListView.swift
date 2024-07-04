@@ -28,7 +28,7 @@ struct MemberListView: View {
       )
       .padding(.bottom, 8)
       
-      ForEach(store.memberList) { member in
+      ForEach(store.memberList, id: \.self) { member in
         MemberView(
           member: member,
           groupCategory: store.groupCategory
