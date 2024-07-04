@@ -11,8 +11,16 @@ import Models
 import SwiftUI
 
 struct MemberView: View {
-  let member: Member
-  let groupCategory: GroupCategory
+  private let member: Member
+  private let groupCategory: GroupCategory
+  
+  init(
+    member: Member,
+    groupCategory: GroupCategory
+  ) {
+    self.member = member
+    self.groupCategory = groupCategory
+  }
   
   var body: some View {
     HStack(spacing: 0) {
@@ -43,7 +51,7 @@ struct MemberView: View {
     }
   }
   
-  func logoImageFrom(
+  private func logoImageFrom(
     category: GroupCategory
   ) -> Image {
     if let categoryType = CategoryType(rawValue: category.rawValue) {

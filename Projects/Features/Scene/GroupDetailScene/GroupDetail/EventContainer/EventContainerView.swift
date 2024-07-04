@@ -11,11 +11,11 @@ import Models
 import NukeUI
 import SwiftUI
 
-public struct EventContainerView: View {
-  let eventDetail: EventDetail
+struct EventContainerView: View {
+  private let eventDetail: EventDetail
   private var action: (EventState) -> Void
   
-  public init(
+  init(
     eventDetail: EventDetail,
     action: @escaping (EventState) -> Void
   ) {
@@ -23,7 +23,7 @@ public struct EventContainerView: View {
     self.action = action
   }
   
-  public var body: some View {
+  var body: some View {
     switch eventDetail.state {
     case .noCurrentEvent, .noPastAndCurrentEvent:
       // TODO: 그룹 목록 썸네일 뷰로 대체 필요

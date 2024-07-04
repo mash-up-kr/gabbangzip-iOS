@@ -12,7 +12,7 @@ import NukeUI
 import SwiftUI
 
 struct EventProgressView: View {
-  let eventDetail: EventDetail
+  private let eventDetail: EventDetail
   private var action: () -> Void
   
   init(

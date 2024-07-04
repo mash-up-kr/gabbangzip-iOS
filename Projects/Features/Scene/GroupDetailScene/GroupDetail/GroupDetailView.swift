@@ -14,7 +14,7 @@ import SwiftUI
 public struct GroupDetailView: View {
   @State private var showSheet = true
   @State private var bottomSheetHeight: CGFloat = 0
-  let store: StoreOf<GroupDetailCore>
+  private let store: StoreOf<GroupDetailCore>
 
   public init(store: StoreOf<GroupDetailCore>) {
     self.store = store

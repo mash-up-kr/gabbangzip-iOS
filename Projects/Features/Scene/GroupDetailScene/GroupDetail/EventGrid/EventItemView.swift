@@ -12,7 +12,11 @@ import NukeUI
 import SwiftUI
 
 struct EventItemView: View {
-  var eventInfo: EventItemInfo
+  private let eventInfo: EventItemInfo
+  
+  init(eventInfo: EventItemInfo) {
+    self.eventInfo = eventInfo
+  }
   
   var body: some View {
     VStack(alignment: .leading, spacing: 0) {

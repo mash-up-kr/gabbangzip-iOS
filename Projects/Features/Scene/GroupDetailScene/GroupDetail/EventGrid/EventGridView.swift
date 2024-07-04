@@ -11,7 +11,12 @@ import Models
 import SwiftUI
 
 struct EventGridView: View {
-  var events: [EventItemInfo]
+  private let events: [EventItemInfo]
+  private let columns = [GridItem(spacing: 33), GridItem(spacing: 33)]
+  
+  init(events: [EventItemInfo]) {
+    self.events = events
+  }
   
   var body: some View {
     ScrollView {
@@ -26,7 +31,7 @@ struct EventGridView: View {
     .padding(.horizontal, 16)
   }
   
-  var titleView: some View {
+  private var titleView: some View {
     HStack {
       Text("우리들의 인생네컷")
         .foregroundStyle(DesignSystem.Colors.gray80)
@@ -36,9 +41,7 @@ struct EventGridView: View {
     .padding(.top, 16)
   }
   
-  var columns = [GridItem(spacing: 33), GridItem(spacing: 33)]
-  
-  var galleryView: some View {
+  private var galleryView: some View {
     LazyVGrid(
       columns: columns,
       spacing: 16
@@ -50,7 +53,7 @@ struct EventGridView: View {
     .padding(.top, 17)
   }
   
-  var emptyView: some View {
+  private var emptyView: some View {
     VStack(spacing: 0) {
       DesignSystem.Images.empty
         .padding(.bottom, 16)
