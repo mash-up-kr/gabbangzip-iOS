@@ -10,45 +10,26 @@ import SwiftUI
 
 public struct Tag: View {
   private var type: TagType
-  @Binding private var isSelected: Bool
-  private var action: () -> Void
-  private var backgroundColor: Color {
-    isSelected ? DesignSystem.Colors.gray80 : DesignSystem.Colors.gray20
-  }
   
-  public init(
-    type: TagType,
-    isSelected: Binding<Bool> = .constant(false),
-    action: @escaping () -> Void = {}
-  ) {
+  public init(type: TagType) {
     self.type = type
-    self._isSelected = isSelected
-    self.action = action
   }
   
   public var body: some View {
-    Button(
-      action: {
-        isSelected.toggle()
-        action()
-      },
-      label: {
-        switch type {
-        case let .category(categoryType):
-          CategoryTag(
-            type: categoryType,
-            isSelected: $isSelected
-          )
+    Group {
+      switch type {
+      case let .category(categoryType):
+        CategoryTag(
+          type: categoryType
+        )
         
-        case let .etc(etcType):
-          EtcTag(
-            type: etcType,
-            isSelected: $isSelected
-          )
-        }
+      case let .etc(etcType):
+        EtcTag(
+          type: etcType
+        )
       }
-    )
-    .background(backgroundColor)
+    }
+    .background(DesignSystem.Colors.gray40)
     .cornerRadius(20)
   }
 }
@@ -56,31 +37,20 @@ public struct Tag: View {
 // MARK: - 카테고리 태그
 fileprivate struct CategoryTag: View {
   private var type: CategoryType
-  @Binding private var isSelected: Bool
-  private var logoImage: Image {
-    isSelected ? type.selectedImage : type.unselectedImage
-  }
-  private var titleColor: Color {
-    isSelected ? DesignSystem.Colors.gray0 : DesignSystem.Colors.gray60
-  }
   
-  fileprivate init(
-    type: CategoryType,
-    isSelected: Binding<Bool>
-  ) {
+  fileprivate init(type: CategoryType) {
     self.type = type
-    self._isSelected = isSelected
   }
   
   fileprivate var body: some View {
     HStack(spacing: 4) {
-      logoImage
+      type.selectedImage
         .resizable()
         .frame(width: 10, height: 10)
       
       Text(type.title)
         .font(.body12)
-        .foregroundStyle(titleColor)
+        .foregroundStyle(DesignSystem.Colors.gray80)
     }
     .padding(.vertical, 6)
     .padding(.horizontal, 10)
@@ -90,23 +60,15 @@ fileprivate struct CategoryTag: View {
 // MARK: - 그 외 태그
 fileprivate struct EtcTag: View {
   private var type: EtcType
-  @Binding private var isSelected: Bool
-  private var titleColor: Color {
-    isSelected ? DesignSystem.Colors.gray0 : DesignSystem.Colors.gray60
-  }
   
-  fileprivate init(
-    type: EtcType,
-    isSelected: Binding<Bool>
-  ) {
+  fileprivate init(type: EtcType) {
     self.type = type
-    self._isSelected = isSelected
   }
   
   fileprivate var body: some View {
     Text(type.title)
       .font(.body12)
-      .foregroundColor(titleColor)
+      .foregroundStyle(DesignSystem.Colors.gray80)
       .padding(.vertical, 6)
       .padding(.horizontal, 10)
   }
