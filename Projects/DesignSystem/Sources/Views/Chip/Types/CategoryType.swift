@@ -11,10 +11,10 @@ import SwiftUI
 // MARK: - 카테고리 타입 (학교, 동아리, 회사, 소모임, 친목, 취미, 운동)
 public enum CategoryType {
   case school
-  case club
+  case crew
   case company
-  case gathering
-  case community
+  case littleMoim
+  case network
   case hobby
   case exercise
   
@@ -22,13 +22,13 @@ public enum CategoryType {
     switch self {
     case .school:
       return "학교"
-    case .club:
+    case .crew:
       return "동아리"
     case .company:
       return "회사"
-    case .gathering:
+    case .littleMoim:
       return "소모임"
-    case .community:
+    case .network:
       return "친목"
     case .hobby:
       return "취미"
@@ -41,14 +41,14 @@ public enum CategoryType {
     switch self {
     case .school:
       return DesignSystem.Icons.schoolActive
-    case .club:
-      return DesignSystem.Icons.clubActive
+    case .crew:
+      return DesignSystem.Icons.crewActive
     case .company:
       return DesignSystem.Icons.companyActive
-    case .gathering:
-      return DesignSystem.Icons.gatheringActive
-    case .community:
-      return DesignSystem.Icons.communityActive
+    case .littleMoim:
+      return DesignSystem.Icons.littleMoimActive
+    case .network:
+      return DesignSystem.Icons.networkActive
     case .hobby:
       return DesignSystem.Icons.hobbyActive
     case .exercise:
@@ -60,14 +60,14 @@ public enum CategoryType {
     switch self {
     case .school:
       return DesignSystem.Icons.schoolInactive
-    case .club:
-      return DesignSystem.Icons.clubInactive
+    case .crew:
+      return DesignSystem.Icons.crewInactive
     case .company:
       return DesignSystem.Icons.companyInactive
-    case .gathering:
-      return DesignSystem.Icons.gatheringInactive
-    case .community:
-      return DesignSystem.Icons.communityInactive
+    case .littleMoim:
+      return DesignSystem.Icons.littleMoimInactive
+    case .network:
+      return DesignSystem.Icons.networkInactive
     case .hobby:
       return DesignSystem.Icons.hobbyInactive
     case .exercise:
@@ -80,13 +80,13 @@ public enum CategoryType {
     switch self {
     case .school:
       return DesignSystem.Colors.conifer30
-    case .club:
+    case .crew:
       return DesignSystem.Colors.mayaBlue30
     case .company:
       return DesignSystem.Colors.magentaPink30
-    case .gathering:
+    case .littleMoim:
       return DesignSystem.Colors.lavender30
-    case .community:
+    case .network:
       return DesignSystem.Colors.coral30
     case .hobby:
       return DesignSystem.Colors.malibu30

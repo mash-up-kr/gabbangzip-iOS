@@ -121,30 +121,18 @@ public enum TagType {
 #Preview {
   HStack {
     VStack {
-      Tag(type: .category(.club), isSelected: .constant(true), action: {})
-      Tag(type: .category(.community), isSelected: .constant(true), action: {})
-      Tag(type: .category(.company), isSelected: .constant(true), action: {})
-      Tag(type: .category(.exercise), isSelected: .constant(true), action: {})
-      Tag(type: .category(.gathering), isSelected: .constant(true), action: {})
-      Tag(type: .category(.hobby), isSelected: .constant(true), action: {})
-      Tag(type: .category(.school), isSelected: .constant(true), action: {})
+      Tag(type: .category(.crew))
+      Tag(type: .category(.network))
+      Tag(type: .category(.company))
+      Tag(type: .category(.exercise))
+      Tag(type: .category(.littleMoim))
+      Tag(type: .category(.hobby))
+      Tag(type: .category(.school))
     }
     
     VStack {
-      Tag(type: .category(.club), isSelected: .constant(false), action: {})
-      Tag(type: .category(.community), isSelected: .constant(false), action: {})
-      Tag(type: .category(.company), isSelected: .constant(false), action: {})
-      Tag(type: .category(.exercise), isSelected: .constant(false), action: {})
-      Tag(type: .category(.gathering), isSelected: .constant(false), action: {})
-      Tag(type: .category(.hobby), isSelected: .constant(false), action: {})
-      Tag(type: .category(.school), isSelected: .constant(false), action: {})
-    }
-    
-    VStack {
-      Tag(type: .etc(.voting), isSelected: .constant(false), action: {})
-      Tag(type: .etc(.update(3)), isSelected: .constant(false), action: {})
-      Tag(type: .etc(.voting), isSelected: .constant(true), action: {})
-      Tag(type: .etc(.update(3)), isSelected: .constant(true), action: {})
+      Tag(type: .etc(.voting))
+      Tag(type: .etc(.update(3)))
     }
   }
 }
