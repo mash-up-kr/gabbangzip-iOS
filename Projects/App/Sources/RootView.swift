@@ -8,6 +8,7 @@
 import ComposableArchitecture
 import DesignSystem
 import KakaoLogin
+import MyPage
 import SwiftUI
 
 struct RootView: View {
@@ -30,7 +31,12 @@ struct RootView: View {
           store.send(.onOpenURL(url))
         }
       } else {
-        Text("로그인이 되었습니다.")
+        MyPageView(
+          store: Store(
+            initialState: MyPageCore.State(nickname: store.nickname),
+            reducer: MyPageCore.init
+          )
+        )
       }
     }
     .onAppear {
