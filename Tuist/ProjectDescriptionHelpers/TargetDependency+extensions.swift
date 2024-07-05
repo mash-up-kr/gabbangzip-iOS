@@ -42,6 +42,7 @@ public enum TargetName: String {
   case mainCoordinator = "MainCoordinator"
   case main = "Main"
   case kakaoLogin = "KakaoLogin"
+  case groupDetail = "GroupDetail"
 }
 
 public enum ExternalDependency: String {
@@ -49,6 +50,7 @@ public enum ExternalDependency: String {
   case composableArchitecture = "ComposableArchitecture"
   case tcaCoordinators = "TCACoordinators"
   case nuke = "Nuke"
+  case nukeUI = "NukeUI"
   case lottie = "Lottie"
   case kakaoSDK = "KakaoSDK"
 }
