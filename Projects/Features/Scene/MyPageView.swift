@@ -21,91 +21,103 @@ public struct MyPageView: View {
     VStack {
       NavigationBar(type: .titleWithBackButton(store.myPageTitle))
       
-      Text(store.nickname)
-        .font(.head20)
-        .foregroundColor(DesignSystem.Colors.gray80)
-        .frame(maxWidth: .infinity, alignment: .leading)
-        .padding(.all, 16)
+      SettingTextView(
+        text: store.nickname,
+        font: .head20,
+        verticalPadding: 16
+      )
       
-      Spacer()
-        .frame(height: 16)
+      SeparatorView(height: 16, padding: 16)
       
-      Color(DesignSystem.Colors.gray20)
-        .frame(height: 16)
-      
-      Spacer()
-        .frame(height: 16)
-      
-      Text(store.alarmSetting)
-        .font(.head14)
-        .foregroundColor(DesignSystem.Colors.gray80)
-        .frame(maxWidth: .infinity, alignment: .leading)
-        .padding(.vertical, 20)
-        .padding(.horizontal, 16)
+      SettingTextView(
+        text: store.alarmSetting,
+        font: .head14
+      )
       
       HStack {
-        Text(store.appAlarm)
-          .font(.body16)
-          .foregroundColor(DesignSystem.Colors.gray80)
-          .frame(maxWidth: .infinity, alignment: .leading)
-          .padding(.vertical, 20)
-          .padding(.horizontal, 16)
+        SettingTextView(text: store.appAlarm)
         
-        Text(store.alarmStatus)
-          .font(.body16)
-          .foregroundColor(DesignSystem.Colors.gray60)
-          .frame(maxWidth: .infinity, alignment: .trailing)
-          .padding(.vertical, 20)
-          .padding(.horizontal, 16)
+        SettingTextView(
+          text: store.alarmStatus,
+          color: DesignSystem.Colors.gray60,
+          alignment: .trailing
+        )
       }
       
-      Spacer()
-        .frame(height: 10)
+      SeparatorView(height: 2, padding: 10)
       
-      Color(DesignSystem.Colors.gray20)
-        .frame(height: 2)
-      
-      Spacer()
-        .frame(height: 10)
-      
-      Text(store.userSetting)
-        .font(.head14)
-        .foregroundColor(DesignSystem.Colors.gray80)
-        .frame(maxWidth: .infinity, alignment: .leading)
-        .padding(.vertical, 20)
-        .padding(.horizontal, 16)
+      SettingTextView(
+        text: store.userSetting,
+        font: .head14
+      )
       
       HStack {
-        Text(store.version)
-          .font(.body16)
-          .foregroundColor(DesignSystem.Colors.gray80)
-          .frame(maxWidth: .infinity, alignment: .leading)
-          .padding(.vertical, 20)
-          .padding(.horizontal, 16)
+        SettingTextView(text: store.version)
         
-        Text(store.currentVersion)
-          .font(.body16)
-          .foregroundColor(DesignSystem.Colors.gray60)
-          .frame(maxWidth: .infinity, alignment: .trailing)
-          .padding(.vertical, 20)
-          .padding(.horizontal, 16)
+        SettingTextView(
+          text: store.currentVersion,
+          color: DesignSystem.Colors.gray60,
+          alignment: .trailing
+        )
       }
       
-      Text(store.logout)
-        .font(.body16)
-        .foregroundColor(DesignSystem.Colors.gray80)
-        .frame(maxWidth: .infinity, alignment: .leading)
-        .padding(.vertical, 20)
-        .padding(.horizontal, 16)
+      SettingTextView(text: store.logout)
       
-      Text(store.unregister)
-        .font(.body16)
-        .foregroundColor(DesignSystem.Colors.gray80)
-        .frame(maxWidth: .infinity, alignment: .leading)
-        .padding(.vertical, 20)
-        .padding(.horizontal, 16)
+      SettingTextView(text: store.unregister)
       
       Spacer()
+    }
+  }
+}
+  
+// MARK: - CustomView
+extension MyPageView {
+  private struct SettingTextView: View {
+    var text: String
+    var font: Font
+    var color: Color
+    var alignment: Alignment
+    var verticalPadding: CGFloat
+    var horizontalPadding: CGFloat
+    
+    init(text: String, 
+         font: Font = .body16,
+         color: Color = DesignSystem.Colors.gray80,
+         alignment: Alignment = .leading,
+         verticalPadding: CGFloat = 20,
+         horizontalPadding: CGFloat = 16
+    ) {
+      self.text = text
+      self.font = font
+      self.color = color
+      self.alignment = alignment
+      self.verticalPadding = verticalPadding
+      self.horizontalPadding = horizontalPadding
+    }
+    
+    var body: some View {
+      Text(text)
+        .font(font)
+        .foregroundColor(color)
+        .frame(maxWidth: .infinity, alignment: alignment)
+        .padding(.vertical, verticalPadding)
+        .padding(.horizontal, horizontalPadding)
+    }
+  }
+  
+  private struct SeparatorView: View {
+    var height: CGFloat
+    var padding: CGFloat
+    
+    init(height: CGFloat, padding: CGFloat) {
+      self.height = height
+      self.padding = padding
+    }
+    
+    var body: some View {
+      Color(DesignSystem.Colors.gray20)
+        .frame(height: height)
+        .padding(.vertical, padding)
     }
   }
 }
