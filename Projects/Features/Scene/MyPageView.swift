@@ -17,6 +17,8 @@ public struct MyPageView: View {
     self.store = store
   }
   
+  @Environment(\.scenePhase) private var scenePhase
+  
   public var body: some View {
     VStack {
       NavigationBar(type: .titleWithBackButton(store.myPageTitle))
@@ -78,6 +80,11 @@ public struct MyPageView: View {
       })
       
       Spacer()
+    }
+    .onChange(of: scenePhase) { _, newScenePhase in
+      if newScenePhase == .active {
+        store.send(.checkPushOn)
+      }
     }
   }
 }
