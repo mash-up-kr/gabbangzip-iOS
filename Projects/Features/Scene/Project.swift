@@ -20,7 +20,7 @@ let project = Project.make(
     .make(
       name: "KakaoLogin",
       product: .framework,
-      bundleId: "com.mashup.gabbangzip.kakaoLogin",
+      bundleId: "com.mashup.gabbangzip.kakaoLogin.kakaoLogin",
       sources: ["KakaoLoginScene/KakaoLogin/**"],
       dependencies: [
         .project(target: .coreKit, projectPath: .core),
@@ -47,7 +47,7 @@ let project = Project.make(
     .make(
       name: "MyPage",
       product: .framework,
-      bundleId: "com.mashup.gabbangzip.myPage",
+      bundleId: "com.mashup.gabbangzip.myPage.myPage",
       sources: ["MyPageScene/**"],
       dependencies: [
         .project(target: .models, projectPath: .core),
