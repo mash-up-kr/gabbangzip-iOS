@@ -20,7 +20,7 @@ let project = Project.make(
     .make(
       name: "KakaoLogin",
       product: .framework,
-      bundleId: "com.mashup.gabbangzip.kakaoLogin.kakaoLogin",
+      bundleId: "com.mashup.gabbangzip.kakaoLogin",
       sources: ["KakaoLoginScene/KakaoLogin/**"],
       dependencies: [
         .project(target: .coreKit, projectPath: .core),
@@ -42,6 +42,18 @@ let project = Project.make(
         .external(externalDependency: .composableArchitecture),
         .external(externalDependency: .nukeUI),
         .external(externalDependency: .lottie)
+      ]
+    ),
+    .make(
+      name: "MyPage",
+      product: .framework,
+      bundleId: "com.mashup.gabbangzip.myPage",
+      sources: ["MyPageScene/**"],
+      dependencies: [
+        .project(target: .models, projectPath: .core),
+        .project(target: .coreKit, projectPath: .core),
+        .project(target: .designSystem, projectPath: .designSystem),
+        .external(externalDependency: .composableArchitecture)
       ]
     )
   ]
