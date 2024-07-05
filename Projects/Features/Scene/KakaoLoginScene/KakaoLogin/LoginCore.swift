@@ -43,6 +43,7 @@ public struct LoginCore {
     case checkUserInformationResponse(Result<User, Error>)
     case loginResponse(Result<PICUserInfo?, Error>)
     case saveTokenInKeyChain(Result<(KeyChainClient.Key, String), LoginCoreError>)
+    case saveUserInUserDefaults(Result<(UserDefaultsClient.Key, String), LoginCoreError>)
     case showError(Bool)
     case binding(BindingAction<State>)
     case delegate(Delegate)
@@ -55,6 +56,7 @@ public struct LoginCore {
   @Dependency(\.kakaoLoginClient) private var kakaoLoginClient
   @Dependency(\.kakaoAPIClient) private var kakaoAPIClient
   @Dependency(\.keyChainClient) private var keyChainClient
+  @Dependency(\.userDefaultsClient) private var userDefaultsClient
   
   public var body: some Reducer<State, Action> {
     BindingReducer()
@@ -134,7 +136,9 @@ public struct LoginCore {
                 }
               )
             )
-          )
+          } else {
+            await send(.loginResponse(.failure(LoginCoreError(code: .failToCheckUserInformation))))
+          }
         }
         
       case .checkUserInformationResponse(.failure):
@@ -154,6 +158,11 @@ public struct LoginCore {
           } else {
             await send(.saveTokenInKeyChain(.failure(LoginCoreError(code: .failToGetRefreshToken))))
           }
+          if let nickname = user?.nickname {
+            await send(.saveUserInUserDefaults(.success((.nickname, nickname))))
+          } else {
+            await send(.saveUserInUserDefaults(.failure(LoginCoreError(code: .failToGetUser))))
+          }
         }
         
       case let .loginResponse(.failure(error)):
@@ -170,6 +179,15 @@ public struct LoginCore {
         
       case let .saveTokenInKeyChain(.failure(error)):
         logger.error("Fail to save Token in KeyChain \(error)")
+        return .none
+        
+      case let .saveUserInUserDefaults(.success((key, value))):
+        return .run { send in
+          userDefaultsClient.set(value, key)
+        }
+        
+      case let .saveUserInUserDefaults(.failure(error)):
+        logger.error("Fail to save User in UserDefaults \(error)")
         return .none
         
       case let .showError(isPresented):
@@ -193,7 +211,9 @@ public struct LoginCoreError: GabbangzipError {
   public var underlying: Error?
   
   public enum Code: Int {
+    case failToCheckUserInformation
     case failToGetAccessToken
     case failToGetRefreshToken
+    case failToGetUser
   }
 }
