@@ -8,17 +8,18 @@
 
 import ComposableArchitecture
 import Services
+import UIKit
 
 @Reducer
 public struct MyPageCore {
   public init() {}
-
+  
   @ObservableState
   public struct State: Equatable {
     public let myPageTitle = "마이페이지"
     public let alarmSetting = "알림 설정"
     public let appAlarm = "앱 알람 설정"
-    public let alarmStatus: String
+    public var alarmStatus: String
     public let userSetting = "계정 설정"
     public let version = "현재 버전"
     public let currentVersion = "1.0.0"
@@ -31,17 +32,24 @@ public struct MyPageCore {
       self.nickname = nickname
     }
   }
-
+  
   public enum Action {
-    case first
+    case checkPushOn
   }
   
   @Dependency(\.userDefaultsClient) private var userDefaultsClient
-
+  
   public var body: some Reducer<State, Action> {
     Reduce { state, action in
       switch action {
-      case .first:
+      case .checkPushOn:
+        let isPushOn = UIApplication.shared.isRegisteredForRemoteNotifications
+        
+        if isPushOn {
+          state.alarmStatus = "on"
+        } else {
+          state.alarmStatus = "off"
+        }
         return .none
       }
     }
