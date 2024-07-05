@@ -34,15 +34,19 @@ public struct MyPageView: View {
         font: .head14
       )
       
-      HStack {
-        SettingTextView(text: store.appAlarm)
+      Button(action: {
         
-        SettingTextView(
-          text: store.alarmStatus,
-          color: DesignSystem.Colors.gray60,
-          alignment: .trailing
-        )
-      }
+      }, label: {
+        HStack {
+          SettingTextView(text: store.appAlarm)
+          
+          SettingTextView(
+            text: store.alarmStatus,
+            color: DesignSystem.Colors.gray60,
+            alignment: .trailing
+          )
+        }
+      })
       
       SeparatorView(height: 2, padding: 10)
       
@@ -61,15 +65,23 @@ public struct MyPageView: View {
         )
       }
       
-      SettingTextView(text: store.logout)
+      Button(action: {
+        
+      }, label: {
+        SettingTextView(text: store.logout)
+      })
       
-      SettingTextView(text: store.unregister)
+      Button(action: {
+        
+      }, label: {
+        SettingTextView(text: store.unregister)
+      })
       
       Spacer()
     }
   }
 }
-  
+
 // MARK: - CustomView
 extension MyPageView {
   private struct SettingTextView: View {
@@ -80,7 +92,7 @@ extension MyPageView {
     var verticalPadding: CGFloat
     var horizontalPadding: CGFloat
     
-    init(text: String, 
+    init(text: String,
          font: Font = .body16,
          color: Color = DesignSystem.Colors.gray80,
          alignment: Alignment = .leading,
