@@ -22,6 +22,7 @@ let project = Project.make(
       dependencies: [
         .project(target: .main, projectPath: .scene),
         .project(target: .kakaoLogin, projectPath: .scene),
+        .project(target: .myPage, projectPath: .scene),
         .external(externalDependency: .composableArchitecture),
         .external(externalDependency: .tcaCoordinators)
       ]

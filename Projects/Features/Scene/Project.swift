@@ -21,7 +21,11 @@ let project = Project.make(
       name: "KakaoLogin",
       product: .framework,
       bundleId: "com.mashup.gabbangzip.kakaoLogin.kakaoLogin",
+<<<<<<< HEAD
       sources: ["KakaoLoginScene/**"],
+=======
+      sources: ["KakaoLoginScene/KakaoLogin/**"],
+>>>>>>> f53630d (feat: UNUserNotificationCenterClient, UIApplicationClient 생성, 앱알림 설정 이동 구현, 앱알림설정에 따라 on/off 토글)
       dependencies: [
         .project(target: .coreKit, projectPath: .core),
         .project(target: .designSystem, projectPath: .designSystem),
@@ -46,7 +50,7 @@ let project = Project.make(
     .make(
       name: "MyPage",
       product: .framework,
-      bundleId: "com.mashup.gabbangzip.myPage",
+      bundleId: "com.mashup.gabbangzip.myPage.myPage",
       sources: ["MyPageScene/**"],
       dependencies: [
         .project(target: .models, projectPath: .core),

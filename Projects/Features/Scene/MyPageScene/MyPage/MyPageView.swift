@@ -11,7 +11,7 @@ import DesignSystem
 import SwiftUI
 
 public struct MyPageView: View {
-  let store: StoreOf<MyPageCore>
+  @Bindable public var store: StoreOf<MyPageCore>
   
   public init(store: StoreOf<MyPageCore>) {
     self.store = store
@@ -37,7 +37,7 @@ public struct MyPageView: View {
       )
       
       Button(action: {
-        
+        store.send(.openSetting)
       }, label: {
         HStack {
           SettingTextView(text: store.appAlarm)
