@@ -8,8 +8,14 @@
 
 public struct BaseResponse<T>: Decodable where T: Decodable {
   public let isSuccess: Bool
-  public let data: T?
+  public let data: T
   public let errorResponse: BaseErrorResponse?
+  
+  public init(isSuccess: Bool, data: T, errorResponse: BaseErrorResponse?) {
+    self.isSuccess = isSuccess
+    self.data = data
+    self.errorResponse = errorResponse
+  }
   
   public enum CodingKeys: String, CodingKey {
     case isSuccess = "is_success"
