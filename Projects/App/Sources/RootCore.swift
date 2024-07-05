@@ -10,6 +10,7 @@ import Common
 import ComposableArchitecture
 import Foundation
 import KakaoLogin
+import KakaoSDKUser
 import Models
 import Services
 
@@ -19,6 +20,7 @@ public struct RootCore {
   public struct State: Equatable {
     public var isLogin: Bool = true
     public var login: LoginCore.State = LoginCore.State()
+    public var nickname: String = ""
   }
   
   public enum Action {
@@ -28,15 +30,20 @@ public struct RootCore {
     case checkAccessToken(Result<TestInfo?, Error>)
     case refreshToken(Result<TokenInfo?, Error>)
     case updateToken(Result<(KeyChainClient.Key, String), RootCoreError>)
+    case getUser(Result<User, Error>)
+    case updateUser(UserDefaultsClient.Key, String)
     case setLoginStatus(Bool)
+    case getNickname
+    case setNickname(Result<String, Error>)
     case login(LoginCore.Action)
     case onOpenURL(URL)
     case logError(RootCoreError)
   }
   
-  @Dependency(\.kakaoAPIClient) var kakaoAPIClient
-  @Dependency(\.kakaoLoginClient) var kakaoLoginClient
-  @Dependency(\.keyChainClient) var keyChainClient
+  @Dependency(\.kakaoAPIClient) private var kakaoAPIClient
+  @Dependency(\.kakaoLoginClient) private var kakaoLoginClient
+  @Dependency(\.keyChainClient) private var keyChainClient
+  @Dependency(\.userDefaultsClient) private var userDefaultsClient
   
   public var body: some Reducer<State, Action> {
     Scope(
@@ -108,18 +115,25 @@ public struct RootCore {
         
       case let .refreshToken(.success(tokenInformation)):
         return .run { send in
-            if let accessToken = tokenInformation?.accessToken {
-              await send(.updateToken(.success((.accessToken, accessToken))))
-            } else {
-              await send(.updateToken(.failure(RootCoreError(code: .failToSaveToken))))
-            }
-            if let refreshToken = tokenInformation?.refreshToken {
-              await send(.updateToken(.success((.refreshToken, refreshToken))))
-            } else {
-              await send(.updateToken(.failure(RootCoreError(code: .failToSaveToken))))
-            }
-            await send(.setLoginStatus(true))
+          if let accessToken = tokenInformation?.accessToken {
+            await send(.updateToken(.success((.accessToken, accessToken))))
+          } else {
+            await send(.updateToken(.failure(RootCoreError(code: .failToSaveToken))))
           }
+          if let refreshToken = tokenInformation?.refreshToken {
+            await send(.updateToken(.success((.refreshToken, refreshToken))))
+          } else {
+            await send(.updateToken(.failure(RootCoreError(code: .failToSaveToken))))
+          }
+          await send(
+            .getUser(
+              Result {
+                try await kakaoLoginClient.checkUserInformation()
+              }
+            )
+          )
+          await send(.setLoginStatus(true))
+        }
         
       case .refreshToken(.failure):
         return .run { send in
@@ -136,8 +150,47 @@ public struct RootCore {
           await send(.logError(error))
         }
         
+      case let .getUser(.success(user)):
+        return .run { send in
+          if let nickname = user.kakaoAccount?.profile?.nickname {
+            await send(.updateUser(.nickname, nickname))
+          } else {
+            await send(.logError(RootCoreError(code: .failToGetNickname)))
+          }
+        }
+        
+      case .getUser(.failure):
+        return .run { send in
+          await send(.logError(RootCoreError(code: .failToGetNickname)))
+        }
+        
+      case let .updateUser(key, value):
+        return .run { send in
+          userDefaultsClient.set(value, key)
+          await send(.getNickname)
+        }
+        
       case let .setLoginStatus(isLogin):
         state.isLogin = isLogin
+        return .none
+        
+      case .getNickname:
+        return .run { send in
+          await send(
+            .setNickname(
+              Result {
+                try userDefaultsClient.string(.nickname)
+              }
+            )
+          )
+        }
+        
+      case let .setNickname(.success(nickname)):
+        state.nickname = nickname
+        return .none
+        
+      case let .setNickname(.failure(error)):
+        logger.error("RootCore Error: \(String(describing: error))")
         return .none
         
       case .login(.delegate(.checkLogin(let isLogin))):
@@ -167,6 +220,7 @@ public struct RootCoreError: GabbangzipError {
   public var underlying: Error?
   
   public enum Code: Int {
+    case failToGetNickname
     case failToGetToken
     case failToSaveToken
   }
