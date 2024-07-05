@@ -1,6 +1,6 @@
 //
 //  LoginCore.swift
-//  Main
+//  KakaoLogin
 //
 //  Created by Hyun A Song on 6/24/24.
 //  Copyright © 2024 com.mashup.gabbangzip. All rights reserved.
