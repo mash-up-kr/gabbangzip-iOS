@@ -27,7 +27,7 @@ public struct LoginView: View {
         .scaledToFit()
         .frame(width: 100)
       
-      Text("우리가 픽! 하는\n우리끼리 네컷앨범")
+      Text(store.loginTitle)
         .font(.text22)
         .multilineTextAlignment(.center)
         .foregroundStyle(DesignSystem.Colors.gray80)
@@ -59,7 +59,7 @@ public struct LoginView: View {
     }
     .toast(
       isPresented: $store.isPresented,
-      type: .textWithInfoIcon("로그인에 실패했어요.")
+      type: .textWithInfoIcon(store.loginErrorMessage)
     )
   }
 }
