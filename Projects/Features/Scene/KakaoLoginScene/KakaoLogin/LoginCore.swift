@@ -120,18 +120,19 @@ public struct LoginCore {
         state.kakaoUser.nickname = user.kakaoAccount?.profile?.nickname
         state.kakaoUser.profileImageUrl = user.kakaoAccount?.profile?.profileImageUrl
         return .run { [state] send in
-          let idToken = state.kakaoIdToken.idToken ?? ""
-          let nickname = state.kakaoUser.nickname ?? ""
-          let profileImageUrl = state.kakaoUser.profileImageUrl?.absoluteString ?? ""
-          await send(
-            .loginResponse(
-              Result {
-                try await kakaoAPIClient.login(
-                  idToken,
-                  nickname,
-                  profileImageUrl
-                )
-              }
+          if let idToken = state.kakaoIdToken.idToken,
+             let nickname = state.kakaoUser.nickname,
+             let profileImageUrl = state.kakaoUser.profileImageUrl?.absoluteString {
+            await send(
+              .loginResponse(
+                Result {
+                  try await kakaoAPIClient.login(
+                    idToken,
+                    nickname,
+                    profileImageUrl
+                  )
+                }
+              )
             )
           )
         }
