@@ -16,9 +16,18 @@ public struct MyPageCore {
   @ObservableState
   public struct State: Equatable {
     public let myPageTitle = "마이페이지"
+    public let alarmSetting = "알림 설정"
+    public let appAlarm = "앱 알람 설정"
+    public let alarmStatus: String
+    public let userSetting = "계정 설정"
+    public let version = "현재 버전"
+    public let currentVersion = "1.0.0"
+    public let logout = "로그아웃"
+    public let unregister = "회원탈퇴"
     public var nickname: String
     
-    public init(nickname: String) {
+    public init(alarmStatus: String, nickname: String) {
+      self.alarmStatus = alarmStatus
       self.nickname = nickname
     }
   }
