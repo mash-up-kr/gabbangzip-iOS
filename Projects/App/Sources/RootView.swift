@@ -33,7 +33,10 @@ struct RootView: View {
       } else {
         MyPageView(
           store: Store(
-            initialState: MyPageCore.State(nickname: store.nickname),
+            initialState: MyPageCore.State(
+              alarmStatus: "on",
+              nickname: store.nickname
+            ),
             reducer: MyPageCore.init
           )
         )

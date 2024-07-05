@@ -63,6 +63,7 @@ public struct RootCore {
               }
             )
           )
+          await send(.getNickname)
         }
         
       case let .readAccessToken(.success(accessToken)):
@@ -167,7 +168,6 @@ public struct RootCore {
       case let .updateUser(key, value):
         return .run { send in
           userDefaultsClient.set(value, key)
-          await send(.getNickname)
         }
         
       case let .setLoginStatus(isLogin):
