@@ -20,17 +20,20 @@ public struct MyPageCore {
     public var nickname: String
     public var isLogoutPresented: Bool
     public var isUnregisterPresented: Bool
+    public var isNextPage: Bool
     
     public init(
       alarmStatus: String,
       nickname: String,
       isLogoutPresented: Bool = false,
-      isUnregisterPresented: Bool = false
+      isUnregisterPresented: Bool = false,
+      isNextPage: Bool = false
     ) {
       self.alarmStatus = alarmStatus
       self.nickname = nickname
       self.isLogoutPresented = isLogoutPresented
       self.isUnregisterPresented = isUnregisterPresented
+      self.isNextPage = isNextPage
     }
   }
   
@@ -43,12 +46,16 @@ public struct MyPageCore {
     case logout
     case showUnregister(Bool)
     case unregister
+    case getAccessToken
+    case deleteUser(String)
     case binding(BindingAction<State>)
+    case showNext
   }
   
   @Dependency(\.userDefaultsClient) private var userDefaultsClient
   @Dependency(\.unUserNotificationCenterClient) private var unUserNotificationCenterClient
   @Dependency(\.uiApplicationClient) private var uiApplicationClient
+  @Dependency(\.kakaoAPIClient) private var kakaoAPIClient
   @Dependency(\.kakaoLoginClient) private var kakaoLoginClient
   @Dependency(\.keyChainClient) private var keyChainClient
   
@@ -88,11 +95,10 @@ public struct MyPageCore {
         
       case .logout:
         return .run { send in
-          do {
-            try await kakaoLoginClient.logout()
-          } catch {
-            await send(.logError(MyPageCoreError(code: .failToLogout)))
-          }
+          try await kakaoLoginClient.logout()
+          await send(.showNext)
+        } catch: { error, send in
+          await send(.logError(MyPageCoreError(code: .failToLogout)))
         }
         
       case let .showUnregister(isPresented):
@@ -101,17 +107,41 @@ public struct MyPageCore {
         
       case .unregister:
         return .run { send in
-          do {
-            try await keyChainClient.delete(key: .accessToken)
-            try await keyChainClient.delete(key: .refreshToken)
-            userDefaultsClient.removeObject(forKey: .nickname)
-            await send(.logout)
-          }
+          await send(.logout)
+          await send(.getAccessToken)
+          try await keyChainClient.delete(key: .accessToken)
+          try await keyChainClient.delete(key: .refreshToken)
+          userDefaultsClient.removeObject(forKey: .nickname)
+          await send(.showNext)
         } catch: { error, send in
           await send(.logError(MyPageCoreError(code: .failToUnregister)))
         }
         
+      case .getAccessToken:
+        return .run { send in
+          let user = try await keyChainClient.read(key: .accessToken)
+          
+          await send(.deleteUser(user))
+        } catch: { error, send in
+          await send(.logError(MyPageCoreError(code: .failToGetAccessToken)))
+        }
+        
+      case let .deleteUser(accessToken):
+        return .run { send in
+          let deleteUserInfo = try await kakaoAPIClient.delete(accessToken: accessToken)
+          
+          if deleteUserInfo == nil {
+            await send(.logError(MyPageCoreError(code: .failToGetDeleteUserInfo)))
+          }
+        } catch: { error, send in
+          await send(.logError(MyPageCoreError(code: .failToDeleteUser)))
+        }
+        
       case .binding:
+        return .none
+        
+      case .showNext:
+        state.isNextPage = true
         return .none
       }
     }
@@ -128,6 +158,9 @@ public struct MyPageCoreError: GabbangzipError {
     case alarmStatusError
     case failToGetOpenUrl
     case failToLogout
+    case failToGetAccessToken
+    case failToGetDeleteUserInfo
+    case failToDeleteUser
     case failToUnregister
   }
 }
