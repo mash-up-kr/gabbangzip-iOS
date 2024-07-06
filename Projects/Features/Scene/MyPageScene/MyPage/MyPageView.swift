@@ -11,7 +11,7 @@ import DesignSystem
 import SwiftUI
 
 public struct MyPageView: View {
-  public var store: StoreOf<MyPageCore>
+  @Bindable public var store: StoreOf<MyPageCore>
   
   public init(store: StoreOf<MyPageCore>) {
     self.store = store
@@ -68,14 +68,14 @@ public struct MyPageView: View {
       }
       
       Button(action: {
-        
+        store.send(.showLogout(true))
       }, label: {
         SettingTextView(text: MyPageNameSpace.logout)
       })
       
       
       Button(action: {
-        
+        store.send(.showUnregister(true))
       }, label: {
         SettingTextView(text: MyPageNameSpace.unregister)
       })
@@ -87,6 +87,33 @@ public struct MyPageView: View {
         store.send(.checkPushOn)
       }
     }
+    .popup(
+      isPresented: $store.isLogoutPresented,
+      title: MyPageNameSpace.Logout.title,
+      leftButtonTitle: MyPageNameSpace.Logout.leftButtonTitle,
+      leftButtonAction: {
+        store.send(.showLogout(false))
+      },
+      rightButtonTitle: MyPageNameSpace.Logout.rightButtonTitle,
+      rightButtonAction: {
+        store.send(.logout)
+        store.send(.showLogout(false))
+      }
+    )
+    .popup(
+      isPresented: $store.isUnregisterPresented,
+      title: MyPageNameSpace.Unregister.title,
+      description: MyPageNameSpace.Unregister.description,
+      leftButtonTitle: MyPageNameSpace.Unregister.leftButtonTitle,
+      leftButtonAction: {
+        store.send(.showUnregister(false))
+      },
+      rightButtonTitle: MyPageNameSpace.Unregister.rightButtonTitle,
+      rightButtonAction: {
+        store.send(.unregister)
+        store.send(.showUnregister(false))
+      }
+    )
   }
 }
 
@@ -142,7 +169,7 @@ extension MyPageView {
   }
 }
 
-// MARK: - NameSpace
+// MARK: - MyPageNameSpace
 extension MyPageView {
   private struct MyPageNameSpace {
     static let myPageTitle = "마이페이지"
