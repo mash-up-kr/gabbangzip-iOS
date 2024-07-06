@@ -104,6 +104,8 @@ private struct BottomButton: View {
     .padding(.vertical, 18)
     .background(backgroundColor)
     .cornerRadius(12)
+    .contentShape(.rect)
+    .onTapGesture(perform: action)
   }
 }
 
