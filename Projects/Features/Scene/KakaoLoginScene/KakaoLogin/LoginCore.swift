@@ -19,8 +19,6 @@ public struct LoginCore {
   
   @ObservableState
   public struct State: Equatable {
-    public let loginTitle = "우리가 픽! 하는\n우리끼리 네컷앨범"
-    public let loginErrorMessage = "로그인에 실패했어요."
     public var isPresented: Bool
     public var kakaoUser: KaKaoUserInfo
     public var kakaoIdToken: KakaoToken
