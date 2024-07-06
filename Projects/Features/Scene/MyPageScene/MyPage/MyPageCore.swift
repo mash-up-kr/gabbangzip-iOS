@@ -96,6 +96,9 @@ public struct MyPageCore {
       case .logout:
         return .run { send in
           try await kakaoLoginClient.logout()
+          try await keyChainClient.delete(key: .accessToken)
+          try await keyChainClient.delete(key: .refreshToken)
+          userDefaultsClient.removeObject(forKey: .nickname)
           await send(.showNext)
         } catch: { error, send in
           await send(.logError(MyPageCoreError(code: .failToLogout)))
