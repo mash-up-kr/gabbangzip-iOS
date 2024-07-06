@@ -33,10 +33,9 @@ public struct MyPageCore {
     }
   }
   
-  public enum Action: BindableAction {
+  public enum Action {
     case checkPushOn
     case updatePushStatus(Bool)
-    case binding(BindingAction<State>)
     case openSetting
     case logError(MyPageCoreError)
   }
@@ -60,9 +59,6 @@ public struct MyPageCore {
         
       case let .updatePushStatus(pushStatus):
         state.alarmStatus = pushStatus ? "on" : "off"
-        return .none
-        
-      case .binding:
         return .none
         
       case .openSetting:
