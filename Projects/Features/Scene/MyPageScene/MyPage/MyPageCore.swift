@@ -16,33 +16,41 @@ public struct MyPageCore {
   
   @ObservableState
   public struct State: Equatable {
-    public let myPageTitle = "마이페이지"
-    public let alarmSetting = "알림 설정"
-    public let appAlarm = "앱 알람 설정"
-    public var alarmStatus = "unknown"
-    public let userSetting = "계정 설정"
-    public let version = "현재 버전"
-    public let currentVersion = "1.0.0"
-    public let logout = "로그아웃"
-    public let unregister = "회원탈퇴"
+    public var alarmStatus: String
     public var nickname: String
+    public var isLogoutPresented: Bool
+    public var isUnregisterPresented: Bool
     
-    public init(alarmStatus: String, nickname: String) {
+    public init(
+      alarmStatus: String,
+      nickname: String,
+      isLogoutPresented: Bool = false,
+      isUnregisterPresented: Bool = false
+    ) {
       self.alarmStatus = alarmStatus
       self.nickname = nickname
+      self.isLogoutPresented = isLogoutPresented
+      self.isUnregisterPresented = isUnregisterPresented
     }
   }
   
-  public enum Action {
+  public enum Action: BindableAction {
     case checkPushOn
     case updatePushStatus(Bool)
     case openSetting
     case logError(MyPageCoreError)
+    case showLogout(Bool)
+    case logout
+    case showUnregister(Bool)
+    case unregister
+    case binding(BindingAction<State>)
   }
   
   @Dependency(\.userDefaultsClient) private var userDefaultsClient
   @Dependency(\.unUserNotificationCenterClient) private var unUserNotificationCenterClient
   @Dependency(\.uiApplicationClient) private var uiApplicationClient
+  @Dependency(\.kakaoLoginClient) private var kakaoLoginClient
+  @Dependency(\.keyChainClient) private var keyChainClient
   
   public var body: some Reducer<State, Action> {
     Reduce { state, action in
@@ -73,6 +81,38 @@ public struct MyPageCore {
       case let .logError(error):
         logger.error("MyPage Error \(error)")
         return .none
+        
+      case let .showLogout(isPresented):
+        state.isLogoutPresented = isPresented
+        return .none
+        
+      case .logout:
+        return .run { send in
+          do {
+            try await kakaoLoginClient.logout()
+          } catch {
+            await send(.logError(MyPageCoreError(code: .failToLogout)))
+          }
+        }
+        
+      case let .showUnregister(isPresented):
+        state.isUnregisterPresented = isPresented
+        return .none
+        
+      case .unregister:
+        return .run { send in
+          do {
+            try await keyChainClient.delete(key: .accessToken)
+            try await keyChainClient.delete(key: .refreshToken)
+            userDefaultsClient.removeObject(forKey: .nickname)
+            await send(.logout)
+          }
+        } catch: { error, send in
+          await send(.logError(MyPageCoreError(code: .failToUnregister)))
+        }
+        
+      case .binding:
+        return .none
       }
     }
   }
@@ -87,5 +127,7 @@ public struct MyPageCoreError: GabbangzipError {
   public enum Code: Int {
     case alarmStatusError
     case failToGetOpenUrl
+    case failToLogout
+    case failToUnregister
   }
 }
