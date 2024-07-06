@@ -20,100 +20,106 @@ public struct MyPageView: View {
   @Environment(\.scenePhase) private var scenePhase
   
   public var body: some View {
-    VStack {
-      NavigationBar(type: .titleWithBackButton(MyPageNameSpace.myPageTitle))
-      
-      SettingTextView(
-        text: store.nickname,
-        font: .head20,
-        verticalPadding: 16
-      )
-      
-      SeparatorView(height: 16, padding: 16)
-      
-      SettingTextView(
-        text: MyPageNameSpace.alarmSetting,
-        font: .head14
-      )
-      
-      Button(action: {
-        store.send(.openSetting)
-      }, label: {
-        HStack {
-          SettingTextView(text: MyPageNameSpace.appAlarm)
+    Group {
+      if store.isNextPage {
+        Text("다음 페이지")
+      } else {
+        VStack {
+          NavigationBar(type: .titleWithBackButton(MyPageNameSpace.myPageTitle))
           
           SettingTextView(
-            text: store.alarmStatus,
-            color: DesignSystem.Colors.gray60,
-            alignment: .trailing
+            text: store.nickname,
+            font: .head20,
+            verticalPadding: 16
           )
+          
+          SeparatorView(height: 16, padding: 16)
+          
+          SettingTextView(
+            text: MyPageNameSpace.alarmSetting,
+            font: .head14
+          )
+          
+          Button(action: {
+            store.send(.openSetting)
+          }, label: {
+            HStack {
+              SettingTextView(text: MyPageNameSpace.appAlarm)
+              
+              SettingTextView(
+                text: store.alarmStatus,
+                color: DesignSystem.Colors.gray60,
+                alignment: .trailing
+              )
+            }
+          })
+          
+          SeparatorView(height: 2, padding: 10)
+          
+          SettingTextView(
+            text: MyPageNameSpace.userSetting,
+            font: .head14
+          )
+          
+          HStack {
+            SettingTextView(text: MyPageNameSpace.version)
+            
+            SettingTextView(
+              text: MyPageNameSpace.currentVersion,
+              color: DesignSystem.Colors.gray60,
+              alignment: .trailing
+            )
+          }
+          
+          Button(action: {
+            store.send(.showLogout(true))
+          }, label: {
+            SettingTextView(text: MyPageNameSpace.logout)
+          })
+          
+          
+          Button(action: {
+            store.send(.showUnregister(true))
+          }, label: {
+            SettingTextView(text: MyPageNameSpace.unregister)
+          })
+          
+          Spacer()
         }
-      })
-      
-      SeparatorView(height: 2, padding: 10)
-      
-      SettingTextView(
-        text: MyPageNameSpace.userSetting,
-        font: .head14
-      )
-      
-      HStack {
-        SettingTextView(text: MyPageNameSpace.version)
-        
-        SettingTextView(
-          text: MyPageNameSpace.currentVersion,
-          color: DesignSystem.Colors.gray60,
-          alignment: .trailing
+        .onChange(of: scenePhase) { _, newScenePhase in
+          if newScenePhase == .active {
+            store.send(.checkPushOn)
+          }
+        }
+        .popup(
+          isPresented: $store.isLogoutPresented,
+          title: MyPageNameSpace.Logout.title,
+          leftButtonTitle: MyPageNameSpace.Logout.leftButtonTitle,
+          leftButtonAction: {
+            store.send(.showLogout(false))
+          },
+          rightButtonTitle: MyPageNameSpace.Logout.rightButtonTitle,
+          rightButtonAction: {
+            store.send(.logout)
+            store.send(.showLogout(false))
+          }
+        )
+        .popup(
+          isPresented: $store.isUnregisterPresented,
+          title: MyPageNameSpace.Unregister.title,
+          description: MyPageNameSpace.Unregister.description,
+          leftButtonTitle: MyPageNameSpace.Unregister.leftButtonTitle,
+          leftButtonAction: {
+            store.send(.showUnregister(false))
+          },
+          rightButtonTitle: MyPageNameSpace.Unregister.rightButtonTitle,
+          rightButtonAction: {
+            store.send(.unregister)
+            store.send(.showUnregister(false))
+          }
         )
       }
-      
-      Button(action: {
-        store.send(.showLogout(true))
-      }, label: {
-        SettingTextView(text: MyPageNameSpace.logout)
-      })
-      
-      
-      Button(action: {
-        store.send(.showUnregister(true))
-      }, label: {
-        SettingTextView(text: MyPageNameSpace.unregister)
-      })
-      
-      Spacer()
     }
-    .onChange(of: scenePhase) { _, newScenePhase in
-      if newScenePhase == .active {
-        store.send(.checkPushOn)
-      }
-    }
-    .popup(
-      isPresented: $store.isLogoutPresented,
-      title: MyPageNameSpace.Logout.title,
-      leftButtonTitle: MyPageNameSpace.Logout.leftButtonTitle,
-      leftButtonAction: {
-        store.send(.showLogout(false))
-      },
-      rightButtonTitle: MyPageNameSpace.Logout.rightButtonTitle,
-      rightButtonAction: {
-        store.send(.logout)
-        store.send(.showLogout(false))
-      }
-    )
-    .popup(
-      isPresented: $store.isUnregisterPresented,
-      title: MyPageNameSpace.Unregister.title,
-      description: MyPageNameSpace.Unregister.description,
-      leftButtonTitle: MyPageNameSpace.Unregister.leftButtonTitle,
-      leftButtonAction: {
-        store.send(.showUnregister(false))
-      },
-      rightButtonTitle: MyPageNameSpace.Unregister.rightButtonTitle,
-      rightButtonAction: {
-        store.send(.unregister)
-        store.send(.showUnregister(false))
-      }
-    )
   }
 }
 
