@@ -11,7 +11,7 @@ import DesignSystem
 import SwiftUI
 
 public struct MyPageView: View {
-  @Bindable public var store: StoreOf<MyPageCore>
+  public var store: StoreOf<MyPageCore>
   
   public init(store: StoreOf<MyPageCore>) {
     self.store = store
