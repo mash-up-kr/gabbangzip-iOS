@@ -12,6 +12,8 @@ import Services
 
 @Reducer
 public struct GroupListCore {
+  public init() {}
+  
   @ObservableState
   public struct State: Equatable {
     var groups: [GroupData]
