@@ -15,9 +15,9 @@ import SwiftUI
 public struct GroupListView: View {
   public let store: StoreOf<GroupListCore>
   private let columns = [
-      GridItem(.flexible(), spacing: 9),
-      GridItem(.flexible(), spacing: 9)
-    ]
+    GridItem(.flexible(), spacing: 9),
+    GridItem(.flexible(), spacing: 9)
+  ]
 
   public init(store: StoreOf<GroupListCore>) {
     self.store = store
@@ -44,9 +44,9 @@ public struct GroupListView: View {
                       .foregroundStyle(Color(DesignSystem.Colors.gray80))
                       .frame(maxWidth: .infinity, alignment: .leading)
                     
-                      Spacer()
+                    Spacer()
                     
-                    DesignSystem.Icons.right
+                    DesignSystem.Icons.rightArrow
                       .resizable()
                       .aspectRatio(contentMode: .fit)
                       .frame(width: 26, height: 26)
@@ -79,7 +79,9 @@ public struct GroupListView: View {
     .background(DesignSystem.Colors.gray0)
     .onAppear { store.send(.onAppear) }
   }
-  
+}
+
+extension GroupListView {
   @MainActor
   private func groupContentView(group: GroupData) -> some View {
     VStack(spacing: 16) {
@@ -127,9 +129,7 @@ public struct GroupListView: View {
       .font(.body16)
       .foregroundStyle(DesignSystem.Colors.gray80)
       
-      Group {
-        photoInFrame(for: group.keyword, with: group.cardFrontImageURL)
-      }
+      photoInFrame(for: group.keyword, with: group.cardFrontImageURL)
       .padding(.horizontal, 30)
       
       Text("이벤트명입니다")
@@ -163,7 +163,11 @@ public struct GroupListView: View {
   }
   
   @MainActor
-  private func photoInFrame(for keyword: GroupData.Keyword, with image: String, color: Color? = nil) -> some View {
+  private func photoInFrame(
+    for keyword: GroupData.Keyword,
+    with image: String,
+    color: Color? = nil
+  ) -> some View {
     let resolvedColor = color ?? mapColor(from: keyword)
     let icon = mapIcon(for: keyword)
     
@@ -224,8 +228,8 @@ public struct GroupListView: View {
       return DesignSystem.Colors.conifer30
     case .company:
       return DesignSystem.Colors.magentaPink30
-    case .crew: return
-      DesignSystem.Colors.mayaBlue30
+    case .crew: 
+      return DesignSystem.Colors.mayaBlue30
     case .network:
       return DesignSystem.Colors.coral30
     case .exercise:
@@ -262,8 +266,8 @@ public struct GroupListView: View {
       return DesignSystem.Icons.snowmanFrame
     case .company:
       return DesignSystem.Icons.ghostFrame
-    case .crew: return
-      DesignSystem.Icons.hamburgerFrame
+    case .crew: 
+      return DesignSystem.Icons.hamburgerFrame
     case .network:
       return DesignSystem.Icons.plusFrame
     case .exercise:
@@ -281,9 +285,9 @@ public struct GroupListView: View {
       return .uploadPIC
     case .afterMyUpload, .afterMyVote:
       return .stabbing
-    case .beforeMyVote: 
+    case .beforeMyVote:
       return .vote
-    default: 
+    default:
       return nil
     }
   }
