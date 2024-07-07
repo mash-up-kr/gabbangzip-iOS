@@ -10,7 +10,6 @@ import SwiftUI
 
 struct FlipView<Front: View, Back: View>: View {
   @State private var isFlipped = false
-  @State private var rotationAngle: Double = 0
   @State private var frontDegree: Double = 0
   @State private var backDegree: Double = -90.0
   private var frontContent: Front
