@@ -27,69 +27,23 @@ public struct GroupData: Decodable, Hashable {
 }
 
 extension GroupData {
-  public enum Keyword: Decodable, Hashable {
-    case school
-    case company
-    case crew
-    case network
-    case exercise
-    case hobby
-    case littleMoim
-    
-    public init(from decoder: Decoder) throws {
-      let container = try decoder.singleValueContainer()
-      let rawValue = try container.decode(String.self)
-      switch rawValue {
-      case "SCHOOL":
-        self = .school
-      case "COMPANY":
-        self = .company
-      case "CREW":
-        self = .crew
-      case "NETWORK":
-        self = .network
-      case "EXERCISE":
-        self = .exercise
-      case "HOBBY":
-        self = .hobby
-      case "LITTME_MOIM":
-        self = .littleMoim
-      default:
-        throw DecodingError.dataCorruptedError(in: container, debugDescription: "Invalid keyword value")
-      }
-    }
+  public enum Keyword: String, Decodable, Hashable {
+    case school = "SCHOOL"
+    case company = "COMPANY"
+    case crew = "CREW"
+    case network = "NETWORK"
+    case exercise = "EXERCISE"
+    case hobby = "HOBBY"
+    case littleMoim = "LITTLE_MOIM"
   }
   
-  public enum Status: Decodable, Hashable {
-    case noPastAndCurrentEvent
-    case noCurrentEvent
-    case beforeMyUpload
-    case afterMyUpload
-    case beforeMyVote
-    case afterMyVote
-    case eventCompleted
-
-    public init(from decoder: Decoder) throws {
-      let container = try decoder.singleValueContainer()
-      let rawValue = try container.decode(String.self)
-      switch rawValue {
-      case "NO_PAST_AND_CURRENT_EVENT":
-        self = .noPastAndCurrentEvent
-      case "NO_CURRENT_EVENT":
-        self = .noCurrentEvent
-      case "BEFORE_MY_UPLOAD":
-        self = .beforeMyUpload
-      case "AFTER_MY_UPLOAD":
-        self = .afterMyUpload
-      case "BEFORE_MY_VOTE":
-        self = .beforeMyVote
-      case "AFTER_MY_VOTE":
-        self = .afterMyVote
-      case "EVENT_COMPLETED":
-        self = .eventCompleted
-      default:
-        throw DecodingError.dataCorruptedError(in: container, debugDescription: "Invalid status value")
-      }
-    }
+  public enum Status: String, Decodable, Hashable {
+    case noPastAndCurrentEvent = "NO_PAST_AND_CURRENT_EVENT"
+    case noCurrentEvent = "NO_CURRENT_EVENT"
+    case beforeMyUpload = "BEFORE_MY_UPLOAD"
+    case afterMyUpload = "AFTER_MY_UPLOAD"
+    case beforeMyVote = "BEFORE_MY_VOTE"
+    case afterMyVote = "AFTER_MY_VOTE"
+    case eventCompleted = "EVENT_COMPLETED"
   }
 }
