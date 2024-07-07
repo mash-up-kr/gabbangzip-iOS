@@ -8,6 +8,7 @@
 
 import Foundation
 import Get
+import Models
 
 class GabbangzipAPIClientDelegate: APIClientDelegate {
   func client(
@@ -16,12 +17,15 @@ class GabbangzipAPIClientDelegate: APIClientDelegate {
     data: Data,
     task: URLSessionTask
   ) throws {
+    let failureResponse = try? JSONDecoder().decode(FailureResponse.self, from: data)
+    let rawData = String(data: data, encoding: .utf8) ?? "Decoding data to string failed"
+    
     switch response.statusCode {
     case 400..<500:
       throw NetworkManagerError(
         userInfo: [
           "response": response,
-          "message": String(data: data, encoding: .utf8) ?? "Decoding data to string failed"
+          "message": failureResponse ?? rawData
         ],
         code: .clientError
       )
@@ -30,7 +34,7 @@ class GabbangzipAPIClientDelegate: APIClientDelegate {
       throw NetworkManagerError(
         userInfo: [
           "response": response,
-          "message": String(data: data, encoding: .utf8) ?? "Decoding data to string failed"
+          "message": failureResponse ?? rawData
         ],
         code: .serverError
       )

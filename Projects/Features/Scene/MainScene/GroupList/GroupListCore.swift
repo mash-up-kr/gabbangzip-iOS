@@ -32,7 +32,7 @@ public struct GroupListCore {
     case groupHeaderButtonTapped
     case createGroupButtonTapped
     case myPageButtonTapped
-    case getGroupsResponse(Result<BaseResponse<GroupsData>, Error>)
+    case getGroupsResponse(Result<GroupsData, Error>)
   }
   
   @Dependency(\.groupAPIClient) var groupAPIClient
@@ -66,8 +66,8 @@ public struct GroupListCore {
       case .myPageButtonTapped:
         return .none
         
-      case let .getGroupsResponse(.success(response)):
-        state.groups = response.data.groups
+      case let .getGroupsResponse(.success(groupsData)):
+        state.groups = groupsData.groups
         return .none
         
       case .getGroupsResponse(.failure):

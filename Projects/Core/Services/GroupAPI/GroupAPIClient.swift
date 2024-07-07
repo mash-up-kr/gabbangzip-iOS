@@ -13,7 +13,7 @@ import Models
 
 @DependencyClient
 public struct GroupAPIClient: Sendable {
-  public var getGroups: @Sendable (_ accessToken: String) async throws -> BaseResponse<GroupsData>
+  public var getGroups: @Sendable (_ accessToken: String) async throws -> GroupsData
 }
 
 extension GroupAPIClient: DependencyKey {
@@ -21,10 +21,10 @@ extension GroupAPIClient: DependencyKey {
     return GroupAPIClient(
       getGroups: { accessToken in
         let route = GroupAPI.getGroups(accessToken: accessToken)
-        let request = Request<BaseResponse<GroupsData>>(route: route)
+        let request = Request<SuccessResponse<GroupsData>>(route: route)
         do {
           let response = try await NetworkManager.shared.send(request)
-          return response.value
+          return response.value.data
         } catch {
           throw GroupAPIClientError(
             code: .failToGetGroups,
@@ -38,11 +38,7 @@ extension GroupAPIClient: DependencyKey {
   public static var previewValue: GroupAPIClient {
     return GroupAPIClient(
       getGroups: { _ in
-        return BaseResponse(
-          isSuccess: true,
-          data: GroupsData.mock,
-          errorResponse: nil
-        )
+        return GroupsData.mock
       }
     )
   }
