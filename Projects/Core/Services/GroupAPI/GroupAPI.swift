@@ -17,7 +17,7 @@ extension GroupAPI: RouteType {
   public var path: String {
     switch self {
     case .getGroups:
-      return "/api/v1/auth/login"
+      return "/api/v1/groups"
     }
   }
   
