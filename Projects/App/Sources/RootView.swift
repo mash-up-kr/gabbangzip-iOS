@@ -31,15 +31,7 @@ struct RootView: View {
           store.send(.onOpenURL(url))
         }
       } else {
-        MyPageView(
-          store: Store(
-            initialState: MyPageCore.State(
-              alarmStatus: "on",
-              nickname: store.nickname
-            ),
-            reducer: MyPageCore.init
-          )
-        )
+        Text("로그인이 되었습니다.")
       }
     }
     .onAppear {
