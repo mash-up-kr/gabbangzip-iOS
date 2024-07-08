@@ -20,20 +20,20 @@ public struct MyPageCore {
     public var nickname: String
     public var isLogoutPresented: Bool
     public var isWithdrawPresented: Bool
-    public var isShowLoginView: Bool
+    public var isLoginViewPresented: Bool
     
     public init(
       alarmStatus: String,
       nickname: String,
       isLogoutPresented: Bool = false,
       isWithdrawPresented: Bool = false,
-      isShowLoginView: Bool = false
+      isLoginViewPresented: Bool = false
     ) {
       self.alarmStatus = alarmStatus
       self.nickname = nickname
       self.isLogoutPresented = isLogoutPresented
       self.isWithdrawPresented = isWithdrawPresented
-      self.isShowLoginView = isShowLoginView
+      self.isLoginViewPresented = isLoginViewPresented
     }
   }
   
@@ -144,7 +144,7 @@ public struct MyPageCore {
         return .none
         
       case .showLoginView:
-        state.isShowLoginView = true
+        state.isLoginViewPresented = true
         return .none
       }
     }
