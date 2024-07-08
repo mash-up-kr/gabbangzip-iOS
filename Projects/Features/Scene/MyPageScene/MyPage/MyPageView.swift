@@ -8,6 +8,7 @@
 
 import ComposableArchitecture
 import DesignSystem
+import KakaoLogin
 import SwiftUI
 
 public struct MyPageView: View {
@@ -21,8 +22,13 @@ public struct MyPageView: View {
   
   public var body: some View {
     Group {
-      if store.isNextPage {
-        Text("다음 페이지")
+      if store.isShowLoginView {
+        LoginView(
+          store: Store(
+            initialState: LoginCore.State(),
+            reducer: LoginCore.init
+          )
+        )
       } else {
         VStack {
           NavigationBar(type: .titleWithBackButton(MyPageNameSpace.myPageTitle))
