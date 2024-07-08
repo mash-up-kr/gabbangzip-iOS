@@ -79,7 +79,7 @@ public struct MyPageCore {
       case .openSetting:
         return .run { send in
           do {
-            try await uiApplicationClient.openURL()
+            try await uiApplicationClient.openSetting()
           } catch {
             await send(.logError(MyPageCoreError(code: .failToGetOpenUrl)))
           }

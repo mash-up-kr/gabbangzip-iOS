@@ -11,13 +11,13 @@ import UIKit
 
 @DependencyClient
 public struct UIApplicationClient: Sendable {
-  public var openURL: @Sendable () async throws -> Void
+  public var openSetting: @Sendable () async throws -> Void
 }
 
 extension UIApplicationClient: DependencyKey {
   public static var liveValue: UIApplicationClient {
     return UIApplicationClient(
-      openURL: { @MainActor in
+      openSetting: { @MainActor in
         try await withCheckedThrowingContinuation { continuation in
           if let url = URL(string: UIApplication.openSettingsURLString) {
             UIApplication.shared.open(url)
