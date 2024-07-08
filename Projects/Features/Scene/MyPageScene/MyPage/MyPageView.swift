@@ -53,12 +53,13 @@ public struct MyPageView: View {
               SettingTextView(text: MyPageNameSpace.appAlarm)
               
               SettingTextView(
-                text: store.alarmStatus,
+                text: store.alarmStatus.rawValue,
                 color: DesignSystem.Colors.gray60,
                 alignment: .trailing
               )
             }
-          })
+          }
+        )
         
         SeparatorView(height: 2, padding: 10)
         
@@ -82,7 +83,8 @@ public struct MyPageView: View {
             store.send(.showLogout(true))
           }, label: {
             SettingTextView(text: MyPageNameSpace.logout)
-          })
+          }
+        )
         
         
         Button(
@@ -90,7 +92,8 @@ public struct MyPageView: View {
             store.send(.showWithdraw(true))
           }, label: {
             SettingTextView(text: MyPageNameSpace.withdraw)
-          })
+          }
+        )
         
         Spacer()
       }
