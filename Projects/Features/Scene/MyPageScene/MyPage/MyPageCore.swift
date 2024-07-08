@@ -20,20 +20,20 @@ public struct MyPageCore {
     public var nickname: String
     public var isLogoutPresented: Bool
     public var isWithdrawPresented: Bool
-    public var isNextPage: Bool
+    public var isShowLoginView: Bool
     
     public init(
       alarmStatus: String,
       nickname: String,
       isLogoutPresented: Bool = false,
       isWithdrawPresented: Bool = false,
-      isNextPage: Bool = false
+      isShowLoginView: Bool = false
     ) {
       self.alarmStatus = alarmStatus
       self.nickname = nickname
       self.isLogoutPresented = isLogoutPresented
       self.isWithdrawPresented = isWithdrawPresented
-      self.isNextPage = isNextPage
+      self.isShowLoginView = isShowLoginView
     }
   }
   
@@ -49,7 +49,7 @@ public struct MyPageCore {
     case getAccessToken
     case deleteUser(String)
     case binding(BindingAction<State>)
-    case showNext
+    case showLoginView
   }
   
   @Dependency(\.userDefaultsClient) private var userDefaultsClient
@@ -99,7 +99,7 @@ public struct MyPageCore {
           try await keyChainClient.delete(.accessToken)
           try await keyChainClient.delete(.refreshToken)
           userDefaultsClient.removeObject("nickname")
-          await send(.showNext)
+          await send(.showLoginView)
         } catch: { error, send in
           await send(.logError(MyPageCoreError(code: .failToLogout)))
         }
@@ -115,7 +115,7 @@ public struct MyPageCore {
           try await keyChainClient.delete(.accessToken)
           try await keyChainClient.delete(.refreshToken)
           userDefaultsClient.removeObject("nickname")
-          await send(.showNext)
+          await send(.showLoginView)
         } catch: { error, send in
           await send(.logError(MyPageCoreError(code: .failToWithdraw)))
         }
@@ -143,8 +143,8 @@ public struct MyPageCore {
       case .binding:
         return .none
         
-      case .showNext:
-        state.isNextPage = true
+      case .showLoginView:
+        state.isShowLoginView = true
         return .none
       }
     }
