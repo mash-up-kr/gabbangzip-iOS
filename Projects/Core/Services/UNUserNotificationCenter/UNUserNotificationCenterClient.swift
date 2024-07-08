@@ -11,13 +11,13 @@ import UIKit
 
 @DependencyClient
 public struct UNUserNotificationCenterClient: Sendable {
-  public var isPushOn: @MainActor @Sendable () async throws -> Bool
+  public var isPushEnable: @MainActor @Sendable () async throws -> Bool
 }
 
 extension UNUserNotificationCenterClient: DependencyKey {
   public static var liveValue: UNUserNotificationCenterClient {
     return UNUserNotificationCenterClient(
-      isPushOn: {
+      isPushEnable: {
         try await withCheckedThrowingContinuation { continuation in
           UNUserNotificationCenter.current().requestAuthorization { status, error in
             if error != nil {
