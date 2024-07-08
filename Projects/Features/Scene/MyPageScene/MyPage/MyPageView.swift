@@ -126,12 +126,12 @@ public struct MyPageView: View {
 // MARK: - CustomView
 extension MyPageView {
   private struct SettingTextView: View {
-    var text: String
-    var font: Font
-    var color: Color
-    var alignment: Alignment
-    var verticalPadding: CGFloat
-    var horizontalPadding: CGFloat
+    private var text: String
+    private var font: Font
+    private var color: Color
+    private var alignment: Alignment
+    private var verticalPadding: CGFloat
+    private var horizontalPadding: CGFloat
     
     init(text: String,
          font: Font = .body16,
