@@ -149,7 +149,7 @@ extension MyPageView {
       self.horizontalPadding = horizontalPadding
     }
     
-    var body: some View {
+    fileprivate var body: some View {
       Text(text)
         .font(font)
         .foregroundColor(color)
@@ -168,7 +168,7 @@ extension MyPageView {
       self.padding = padding
     }
     
-    var body: some View {
+    fileprivate var body: some View {
       Color(DesignSystem.Colors.gray20)
         .frame(height: height)
         .padding(.vertical, padding)
