@@ -79,9 +79,9 @@ public struct MyPageView: View {
           
           
           Button(action: {
-            store.send(.showUnregister(true))
+            store.send(.showWithdraw(true))
           }, label: {
-            SettingTextView(text: MyPageNameSpace.unregister)
+            SettingTextView(text: MyPageNameSpace.withdraw)
           })
           
           Spacer()
@@ -105,17 +105,17 @@ public struct MyPageView: View {
           }
         )
         .popup(
-          isPresented: $store.isUnregisterPresented,
-          title: MyPageNameSpace.Unregister.title,
-          description: MyPageNameSpace.Unregister.description,
-          leftButtonTitle: MyPageNameSpace.Unregister.leftButtonTitle,
+          isPresented: $store.isWithdrawPresented,
+          title: MyPageNameSpace.Withdraw.title,
+          description: MyPageNameSpace.Withdraw.description,
+          leftButtonTitle: MyPageNameSpace.Withdraw.leftButtonTitle,
           leftButtonAction: {
-            store.send(.showUnregister(false))
+            store.send(.showWithdraw(false))
           },
-          rightButtonTitle: MyPageNameSpace.Unregister.rightButtonTitle,
+          rightButtonTitle: MyPageNameSpace.Withdraw.rightButtonTitle,
           rightButtonAction: {
-            store.send(.unregister)
-            store.send(.showUnregister(false))
+            store.send(.withdraw)
+            store.send(.showWithdraw(false))
           }
         )
       }
@@ -185,7 +185,7 @@ extension MyPageView {
     static let version = "현재 버전"
     static let currentVersion = "1.0.0"
     static let logout = "로그아웃"
-    static let unregister = "회원탈퇴"
+    static let withdraw = "회원탈퇴"
     
     enum Logout {
       static let title = "로그아웃 하시겠어요?"
@@ -193,7 +193,7 @@ extension MyPageView {
       static let rightButtonTitle = "로그아웃"
     }
     
-    enum Unregister {
+    enum Withdraw {
       static let title = "탈퇴하실건가요?"
       static let description = "탈퇴 시 그룹, 활동 내역이\n삭제되며 복구되지 않습니다."
       static let leftButtonTitle = "취소"
