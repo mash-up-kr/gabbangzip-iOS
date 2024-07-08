@@ -53,6 +53,7 @@ public struct MyPageCore {
     case withdraw
     case getAccessTokenToDelete
     case deleteUser(String)
+    case deleteUserInfo
     case binding(BindingAction<State>)
     case showLoginView
   }
@@ -101,9 +102,7 @@ public struct MyPageCore {
       case .logout:
         return .run { send in
           try await kakaoLoginClient.logout()
-          try await keyChainClient.delete(.accessToken)
-          try await keyChainClient.delete(.refreshToken)
-          userDefaultsClient.removeObject(.nickname)
+          await send(.deleteUserInfo)
           await send(.showLoginView)
         } catch: { error, send in
           await send(.logError(MyPageCoreError(code: .failToLogout)))
@@ -115,11 +114,9 @@ public struct MyPageCore {
         
       case .withdraw:
         return .run { send in
-          await send(.logout)
+          try await kakaoLoginClient.logout()
           await send(.getAccessTokenToDelete)
-          try await keyChainClient.delete(.accessToken)
-          try await keyChainClient.delete(.refreshToken)
-          userDefaultsClient.removeObject(.nickname)
+          await send(.deleteUserInfo)
           await send(.showLoginView)
         } catch: { error, send in
           await send(.logError(MyPageCoreError(code: .failToWithdraw)))
@@ -143,6 +140,15 @@ public struct MyPageCore {
           }
         } catch: { error, send in
           await send(.logError(MyPageCoreError(code: .failToDeleteUser)))
+        }
+        
+      case .deleteUserInfo:
+        return .run { send in
+          try await keyChainClient.delete(.accessToken)
+          try await keyChainClient.delete(.refreshToken)
+          userDefaultsClient.removeObject(.nickname)
+        } catch: { error, send in
+          await send(.logError(MyPageCoreError(code: .failToDeleteUserInfo)))
         }
         
       case .binding:
@@ -169,6 +175,7 @@ public struct MyPageCoreError: GabbangzipError {
     case failToGetAccessToken
     case failToGetDeleteUserInfo
     case failToDeleteUser
+    case failToDeleteUserInfo
     case failToWithdraw
   }
 }
