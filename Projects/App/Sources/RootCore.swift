@@ -31,7 +31,7 @@ public struct RootCore {
     case refreshToken(Result<TokenInfo?, Error>)
     case updateToken(Result<(KeyChainClient.Key, String), RootCoreError>)
     case getUser(Result<User, Error>)
-    case updateUser(UserDefaultsClient.Key, String)
+    case updateUser(String, String)
     case setLoginStatus(Bool)
     case getNickname
     case setNickname(Result<String, Error>)
@@ -154,7 +154,7 @@ public struct RootCore {
       case let .getUser(.success(user)):
         return .run { send in
           if let nickname = user.kakaoAccount?.profile?.nickname {
-            await send(.updateUser(.nickname, nickname))
+            await send(.updateUser("nickname", nickname))
           } else {
             await send(.logError(RootCoreError(code: .failToGetNickname)))
           }
@@ -179,7 +179,7 @@ public struct RootCore {
           await send(
             .setNickname(
               Result {
-                try userDefaultsClient.string(.nickname)
+                try userDefaultsClient.string("nickname")
               }
             )
           )
