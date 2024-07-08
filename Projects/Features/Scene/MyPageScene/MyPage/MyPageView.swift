@@ -134,55 +134,53 @@ public struct MyPageView: View {
 }
 
 // MARK: - CustomView
-extension MyPageView {
-  private struct SettingTextView: View {
-    private var text: String
-    private var font: Font
-    private var color: Color
-    private var alignment: Alignment
-    private var verticalPadding: CGFloat
-    private var horizontalPadding: CGFloat
-    
-    fileprivate init(
-      text: String,
-      font: Font = .body16,
-      color: Color = DesignSystem.Colors.gray80,
-      alignment: Alignment = .leading,
-      verticalPadding: CGFloat = 20,
-      horizontalPadding: CGFloat = 16
-    ) {
-      self.text = text
-      self.font = font
-      self.color = color
-      self.alignment = alignment
-      self.verticalPadding = verticalPadding
-      self.horizontalPadding = horizontalPadding
-    }
-    
-    fileprivate var body: some View {
-      Text(text)
-        .font(font)
-        .foregroundColor(color)
-        .frame(maxWidth: .infinity, alignment: alignment)
-        .padding(.vertical, verticalPadding)
-        .padding(.horizontal, horizontalPadding)
-    }
+fileprivate struct SettingTextView: View {
+  private var text: String
+  private var font: Font
+  private var color: Color
+  private var alignment: Alignment
+  private var verticalPadding: CGFloat
+  private var horizontalPadding: CGFloat
+  
+  fileprivate init(
+    text: String,
+    font: Font = .body16,
+    color: Color = DesignSystem.Colors.gray80,
+    alignment: Alignment = .leading,
+    verticalPadding: CGFloat = 20,
+    horizontalPadding: CGFloat = 16
+  ) {
+    self.text = text
+    self.font = font
+    self.color = color
+    self.alignment = alignment
+    self.verticalPadding = verticalPadding
+    self.horizontalPadding = horizontalPadding
   }
   
-  private struct SeparatorView: View {
-    private var height: CGFloat
-    private var padding: CGFloat
-    
-    fileprivate init(height: CGFloat, padding: CGFloat) {
-      self.height = height
-      self.padding = padding
-    }
-    
-    fileprivate var body: some View {
-      Color(DesignSystem.Colors.gray20)
-        .frame(height: height)
-        .padding(.vertical, padding)
-    }
+  fileprivate var body: some View {
+    Text(text)
+      .font(font)
+      .foregroundColor(color)
+      .frame(maxWidth: .infinity, alignment: alignment)
+      .padding(.vertical, verticalPadding)
+      .padding(.horizontal, horizontalPadding)
+  }
+}
+
+fileprivate struct SeparatorView: View {
+  private var height: CGFloat
+  private var padding: CGFloat
+  
+  fileprivate init(height: CGFloat, padding: CGFloat) {
+    self.height = height
+    self.padding = padding
+  }
+  
+  fileprivate var body: some View {
+    Color(DesignSystem.Colors.gray20)
+      .frame(height: height)
+      .padding(.vertical, padding)
   }
 }
 
@@ -216,7 +214,7 @@ extension MyPageView {
 #Preview {
   MyPageView(
     store: Store(
-      initialState: MyPageCore.State(alarmStatus: "on", nickname: "가빵집"),
+      initialState: MyPageCore.State(alarmStatus: .on, nickname: "가빵집"),
       reducer: MyPageCore.init
     )
   )
