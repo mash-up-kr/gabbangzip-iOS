@@ -133,12 +133,13 @@ extension MyPageView {
     private var verticalPadding: CGFloat
     private var horizontalPadding: CGFloat
     
-    init(text: String,
-         font: Font = .body16,
-         color: Color = DesignSystem.Colors.gray80,
-         alignment: Alignment = .leading,
-         verticalPadding: CGFloat = 20,
-         horizontalPadding: CGFloat = 16
+    fileprivate init(
+      text: String,
+      font: Font = .body16,
+      color: Color = DesignSystem.Colors.gray80,
+      alignment: Alignment = .leading,
+      verticalPadding: CGFloat = 20,
+      horizontalPadding: CGFloat = 16
     ) {
       self.text = text
       self.font = font
@@ -159,10 +160,10 @@ extension MyPageView {
   }
   
   private struct SeparatorView: View {
-    var height: CGFloat
-    var padding: CGFloat
+    private var height: CGFloat
+    private var padding: CGFloat
     
-    init(height: CGFloat, padding: CGFloat) {
+    fileprivate init(height: CGFloat, padding: CGFloat) {
       self.height = height
       self.padding = padding
     }
