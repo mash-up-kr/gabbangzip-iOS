@@ -46,19 +46,20 @@ public struct MyPageView: View {
             font: .head14
           )
           
-          Button(action: {
-            store.send(.openSetting)
-          }, label: {
-            HStack {
-              SettingTextView(text: MyPageNameSpace.appAlarm)
-              
-              SettingTextView(
-                text: store.alarmStatus,
-                color: DesignSystem.Colors.gray60,
-                alignment: .trailing
-              )
-            }
-          })
+          Button(
+            action: {
+              store.send(.openSetting)
+            }, label: {
+              HStack {
+                SettingTextView(text: MyPageNameSpace.appAlarm)
+                
+                SettingTextView(
+                  text: store.alarmStatus,
+                  color: DesignSystem.Colors.gray60,
+                  alignment: .trailing
+                )
+              }
+            })
           
           SeparatorView(height: 2, padding: 10)
           
@@ -77,18 +78,20 @@ public struct MyPageView: View {
             )
           }
           
-          Button(action: {
-            store.send(.showLogout(true))
-          }, label: {
-            SettingTextView(text: MyPageNameSpace.logout)
-          })
+          Button(
+            action: {
+              store.send(.showLogout(true))
+            }, label: {
+              SettingTextView(text: MyPageNameSpace.logout)
+            })
           
           
-          Button(action: {
-            store.send(.showWithdraw(true))
-          }, label: {
-            SettingTextView(text: MyPageNameSpace.withdraw)
-          })
+          Button(
+            action: {
+              store.send(.showWithdraw(true))
+            }, label: {
+              SettingTextView(text: MyPageNameSpace.withdraw)
+            })
           
           Spacer()
         }
