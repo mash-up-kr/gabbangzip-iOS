@@ -51,7 +51,7 @@ public struct MyPageCore {
     case logout
     case showWithdraw(Bool)
     case withdraw
-    case getAccessToken
+    case getAccessTokenToDelete
     case deleteUser(String)
     case binding(BindingAction<State>)
     case showLoginView
@@ -116,7 +116,7 @@ public struct MyPageCore {
       case .withdraw:
         return .run { send in
           await send(.logout)
-          await send(.getAccessToken)
+          await send(.getAccessTokenToDelete)
           try await keyChainClient.delete(.accessToken)
           try await keyChainClient.delete(.refreshToken)
           userDefaultsClient.removeObject(.nickname)
@@ -125,7 +125,7 @@ public struct MyPageCore {
           await send(.logError(MyPageCoreError(code: .failToWithdraw)))
         }
         
-      case .getAccessToken:
+      case .getAccessTokenToDelete:
         return .run { send in
           let user = try await keyChainClient.read(.accessToken)
           
