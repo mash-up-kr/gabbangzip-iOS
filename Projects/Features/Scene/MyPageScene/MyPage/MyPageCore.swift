@@ -70,7 +70,7 @@ public struct MyPageCore {
       case .checkPushOn:
         return .run { send in
           do {
-            let isPushOn = try await unUserNotificationCenterClient.isPushOn()
+            let isPushOn = try await unUserNotificationCenterClient.isPushEnable()
             await send(.updatePushStatus(isPushOn))
           } catch {
             await send(.logError(MyPageCoreError(code: .alarmStatusError)))
@@ -103,7 +103,7 @@ public struct MyPageCore {
           try await kakaoLoginClient.logout()
           try await keyChainClient.delete(.accessToken)
           try await keyChainClient.delete(.refreshToken)
-          userDefaultsClient.removeObject("nickname")
+          userDefaultsClient.removeObject(.nickname)
           await send(.showLoginView)
         } catch: { error, send in
           await send(.logError(MyPageCoreError(code: .failToLogout)))
@@ -119,7 +119,7 @@ public struct MyPageCore {
           await send(.getAccessToken)
           try await keyChainClient.delete(.accessToken)
           try await keyChainClient.delete(.refreshToken)
-          userDefaultsClient.removeObject("nickname")
+          userDefaultsClient.removeObject(.nickname)
           await send(.showLoginView)
         } catch: { error, send in
           await send(.logError(MyPageCoreError(code: .failToWithdraw)))
