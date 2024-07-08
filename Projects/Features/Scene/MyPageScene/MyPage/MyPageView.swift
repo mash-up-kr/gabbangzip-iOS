@@ -21,113 +21,111 @@ public struct MyPageView: View {
   @Environment(\.scenePhase) private var scenePhase
   
   public var body: some View {
-    Group {
-      if store.isLoginViewPresented {
-        LoginView(
-          store: Store(
-            initialState: LoginCore.State(),
-            reducer: LoginCore.init
-          )
+    if store.isLoginViewPresented {
+      LoginView(
+        store: Store(
+          initialState: LoginCore.State(),
+          reducer: LoginCore.init
         )
-      } else {
-        VStack {
-          NavigationBar(type: .titleWithBackButton(MyPageNameSpace.myPageTitle))
+      )
+    } else {
+      VStack {
+        NavigationBar(type: .titleWithBackButton(MyPageNameSpace.myPageTitle))
+        
+        SettingTextView(
+          text: store.nickname,
+          font: .head20,
+          verticalPadding: 16
+        )
+        
+        SeparatorView(height: 16, padding: 16)
+        
+        SettingTextView(
+          text: MyPageNameSpace.alarmSetting,
+          font: .head14
+        )
+        
+        Button(
+          action: {
+            store.send(.openSetting)
+          }, label: {
+            HStack {
+              SettingTextView(text: MyPageNameSpace.appAlarm)
+              
+              SettingTextView(
+                text: store.alarmStatus,
+                color: DesignSystem.Colors.gray60,
+                alignment: .trailing
+              )
+            }
+          })
+        
+        SeparatorView(height: 2, padding: 10)
+        
+        SettingTextView(
+          text: MyPageNameSpace.userSetting,
+          font: .head14
+        )
+        
+        HStack {
+          SettingTextView(text: MyPageNameSpace.version)
           
           SettingTextView(
-            text: store.nickname,
-            font: .head20,
-            verticalPadding: 16
+            text: MyPageNameSpace.currentVersion,
+            color: DesignSystem.Colors.gray60,
+            alignment: .trailing
           )
-          
-          SeparatorView(height: 16, padding: 16)
-          
-          SettingTextView(
-            text: MyPageNameSpace.alarmSetting,
-            font: .head14
-          )
-          
-          Button(
-            action: {
-              store.send(.openSetting)
-            }, label: {
-              HStack {
-                SettingTextView(text: MyPageNameSpace.appAlarm)
-                
-                SettingTextView(
-                  text: store.alarmStatus,
-                  color: DesignSystem.Colors.gray60,
-                  alignment: .trailing
-                )
-              }
-            })
-          
-          SeparatorView(height: 2, padding: 10)
-          
-          SettingTextView(
-            text: MyPageNameSpace.userSetting,
-            font: .head14
-          )
-          
-          HStack {
-            SettingTextView(text: MyPageNameSpace.version)
-            
-            SettingTextView(
-              text: MyPageNameSpace.currentVersion,
-              color: DesignSystem.Colors.gray60,
-              alignment: .trailing
-            )
-          }
-          
-          Button(
-            action: {
-              store.send(.showLogout(true))
-            }, label: {
-              SettingTextView(text: MyPageNameSpace.logout)
-            })
-          
-          
-          Button(
-            action: {
-              store.send(.showWithdraw(true))
-            }, label: {
-              SettingTextView(text: MyPageNameSpace.withdraw)
-            })
-          
-          Spacer()
         }
-        .onChange(of: scenePhase) { _, newScenePhase in
-          if newScenePhase == .active {
-            store.send(.checkPushOn)
-          }
-        }
-        .popup(
-          isPresented: $store.isLogoutPresented,
-          title: MyPageNameSpace.Logout.title,
-          leftButtonTitle: MyPageNameSpace.Logout.leftButtonTitle,
-          leftButtonAction: {
-            store.send(.showLogout(false))
-          },
-          rightButtonTitle: MyPageNameSpace.Logout.rightButtonTitle,
-          rightButtonAction: {
-            store.send(.logout)
-            store.send(.showLogout(false))
-          }
-        )
-        .popup(
-          isPresented: $store.isWithdrawPresented,
-          title: MyPageNameSpace.Withdraw.title,
-          description: MyPageNameSpace.Withdraw.description,
-          leftButtonTitle: MyPageNameSpace.Withdraw.leftButtonTitle,
-          leftButtonAction: {
-            store.send(.showWithdraw(false))
-          },
-          rightButtonTitle: MyPageNameSpace.Withdraw.rightButtonTitle,
-          rightButtonAction: {
-            store.send(.withdraw)
-            store.send(.showWithdraw(false))
-          }
-        )
+        
+        Button(
+          action: {
+            store.send(.showLogout(true))
+          }, label: {
+            SettingTextView(text: MyPageNameSpace.logout)
+          })
+        
+        
+        Button(
+          action: {
+            store.send(.showWithdraw(true))
+          }, label: {
+            SettingTextView(text: MyPageNameSpace.withdraw)
+          })
+        
+        Spacer()
       }
+      .onChange(of: scenePhase) { _, newScenePhase in
+        if newScenePhase == .active {
+          store.send(.checkPushOn)
+        }
+      }
+      .popup(
+        isPresented: $store.isLogoutPresented,
+        title: MyPageNameSpace.Logout.title,
+        leftButtonTitle: MyPageNameSpace.Logout.leftButtonTitle,
+        leftButtonAction: {
+          store.send(.showLogout(false))
+        },
+        rightButtonTitle: MyPageNameSpace.Logout.rightButtonTitle,
+        rightButtonAction: {
+          store.send(.logout)
+          store.send(.showLogout(false))
+        }
+      )
+      .popup(
+        isPresented: $store.isWithdrawPresented,
+        title: MyPageNameSpace.Withdraw.title,
+        description: MyPageNameSpace.Withdraw.description,
+        leftButtonTitle: MyPageNameSpace.Withdraw.leftButtonTitle,
+        leftButtonAction: {
+          store.send(.showWithdraw(false))
+        },
+        rightButtonTitle: MyPageNameSpace.Withdraw.rightButtonTitle,
+        rightButtonAction: {
+          store.send(.withdraw)
+          store.send(.showWithdraw(false))
+        }
+      )
     }
   }
 }
