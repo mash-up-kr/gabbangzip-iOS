@@ -177,7 +177,7 @@ extension MyPageView {
 
 // MARK: - MyPageNameSpace
 extension MyPageView {
-  private struct MyPageNameSpace {
+  private enum MyPageNameSpace {
     static let myPageTitle = "마이페이지"
     static let alarmSetting = "알림 설정"
     static let appAlarm = "앱 알람 설정"
@@ -187,13 +187,13 @@ extension MyPageView {
     static let logout = "로그아웃"
     static let unregister = "회원탈퇴"
     
-    struct Logout {
+    enum Logout {
       static let title = "로그아웃 하시겠어요?"
       static let leftButtonTitle = "취소"
       static let rightButtonTitle = "로그아웃"
     }
     
-    struct Unregister {
+    enum Unregister {
       static let title = "탈퇴하실건가요?"
       static let description = "탈퇴 시 그룹, 활동 내역이\n삭제되며 복구되지 않습니다."
       static let leftButtonTitle = "취소"

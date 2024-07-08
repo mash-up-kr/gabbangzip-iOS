@@ -66,7 +66,7 @@ public struct LoginView: View {
 
 // MARK: - LoginViewNameSpace
 extension LoginView {
-  fileprivate struct LoginViewNameSpace {
+  fileprivate enum LoginViewNameSpace {
     static let loginTitle = "우리가 픽! 하는\n우리끼리 네컷앨범"
     static let loginErrorMessage = "로그인에 실패했어요."
   }
