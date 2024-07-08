@@ -22,7 +22,7 @@ public struct MyPageView: View {
   
   public var body: some View {
     Group {
-      if store.isShowLoginView {
+      if store.isLoginViewPresented {
         LoginView(
           store: Store(
             initialState: LoginCore.State(),
