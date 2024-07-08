@@ -8,7 +8,6 @@
 import ComposableArchitecture
 import DesignSystem
 import KakaoLogin
-import MyPage
 import SwiftUI
 
 struct RootView: View {
