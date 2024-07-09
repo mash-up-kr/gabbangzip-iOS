@@ -18,10 +18,10 @@ let project = Project.make(
       ]
     ),
     .make(
-      name: "KakaoLogin",
+      name: "Login",
       product: .framework,
-      bundleId: "com.mashup.gabbangzip.kakaoLogin.kakaoLogin",
-      sources: ["KakaoLoginScene/KakaoLogin/**"],
+      bundleId: "com.mashup.gabbangzip.login.login",
+      sources: ["LoginScene/Login/**"],
       dependencies: [
         .project(target: .coreKit, projectPath: .core),
         .project(target: .designSystem, projectPath: .designSystem),
@@ -52,7 +52,7 @@ let project = Project.make(
       dependencies: [
         .project(target: .models, projectPath: .core),
         .project(target: .coreKit, projectPath: .core),
-        .project(target: .kakaoLogin, projectPath: .scene),
+        .project(target: .login, projectPath: .scene),
         .project(target: .designSystem, projectPath: .designSystem),
         .external(externalDependency: .composableArchitecture)
       ]
