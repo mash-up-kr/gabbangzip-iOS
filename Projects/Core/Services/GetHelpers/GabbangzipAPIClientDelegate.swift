@@ -6,8 +6,10 @@
 //  Copyright © 2024 com.mashup.gabbangzip. All rights reserved.
 //
 
+import Common
 import Foundation
 import Get
+import Models
 
 class GabbangzipAPIClientDelegate: APIClientDelegate {
   func client(
@@ -16,12 +18,23 @@ class GabbangzipAPIClientDelegate: APIClientDelegate {
     data: Data,
     task: URLSessionTask
   ) throws {
+    let failureResponse = try? JSONDecoder().decode(FailureResponse.self, from: data)
+    let rawData = String(data: data, encoding: .utf8) ?? "Decoding data to string failed"
+    
+    #if DEBUG
+    logger.debug("\nHTTP Headers❓\n\(task.currentRequest?.allHTTPHeaderFields?.description ?? "No HTTP Headers")\n")
+    logger.debug("\nHTTP Method❓\n\(task.currentRequest?.httpMethod?.description ?? "No HTTP Method")\n")
+    logger.debug("\nHTTP Body❓\n\(task.currentRequest?.httpBody?.description ?? "No HTTP Body")\n")
+    logger.debug("\nURL❓\n\(task.currentRequest?.url?.absoluteString ?? "No URL")\n")
+    logger.debug("\nResponse❓\n\(rawData)\n")
+    #endif
+    
     switch response.statusCode {
     case 400..<500:
       throw NetworkManagerError(
         userInfo: [
           "response": response,
-          "message": String(data: data, encoding: .utf8) ?? "Decoding data to string failed"
+          "message": failureResponse ?? rawData
         ],
         code: .clientError
       )
@@ -30,7 +43,7 @@ class GabbangzipAPIClientDelegate: APIClientDelegate {
       throw NetworkManagerError(
         userInfo: [
           "response": response,
-          "message": String(data: data, encoding: .utf8) ?? "Decoding data to string failed"
+          "message": failureResponse ?? rawData
         ],
         code: .serverError
       )

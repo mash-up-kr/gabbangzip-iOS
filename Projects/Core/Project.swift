@@ -10,7 +10,6 @@ let project = Project.make(
       bundleId: "com.mashup.gabbangzip.coreKit",
       sources: ["CoreKit/**"],
       dependencies: [
-        .target(name: .models),
         .target(name: .services),
         .target(name: .common)
       ]
