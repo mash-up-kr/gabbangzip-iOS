@@ -8,23 +8,23 @@
 
 import SwiftUI
 
-public struct PhotoCard<Content: View>: View {
+public struct PhotoCard<Content>: View where Content: View {
   private var status: Status
-  private var content: Content
+  private var content: () -> Content
   
   public init(
     status: Status,
-    content: () -> Content
+    @ViewBuilder content: @escaping () -> Content
   ) {
     self.status = status
-    self.content = content()
+    self.content = content
   }
   
   public var body: some View {
     VStack(spacing: 0) {
       horizontalIconBar
       
-      content
+      content()
       
       horizontalIconBar
     }
