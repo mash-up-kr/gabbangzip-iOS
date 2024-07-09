@@ -11,6 +11,9 @@ public struct ___VARIABLE_productName:identifier___Core {
   }
 
   public enum Action {
+    // View Action
+    // Internal Action
+    // Route Action
   }
 
   public var body: some Reducer<State, Action> {
