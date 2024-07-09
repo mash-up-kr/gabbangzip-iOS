@@ -95,17 +95,20 @@ private struct BottomButton: View {
     HStack {
       Spacer()
       
-      Text(title)
-        .font(.body14)
-        .foregroundStyle(titleColor)
+      Button(
+        action: action,
+        label: {
+          Text(title)
+            .font(.body14)
+            .foregroundColor(titleColor)
+        }
+      )
       
       Spacer()
     }
     .padding(.vertical, 18)
     .background(backgroundColor)
     .cornerRadius(12)
-    .contentShape(.rect)
-    .onTapGesture(perform: action)
   }
 }
 
