@@ -36,7 +36,9 @@ public struct KeywordButton: View {
   public var body: some View {
     Button(
       action: {
-        isSelected.toggle()
+        if !isSelected {
+          isSelected.toggle()
+        }
         action()
       },
       label: {
