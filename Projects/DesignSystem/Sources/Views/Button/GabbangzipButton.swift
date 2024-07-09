@@ -10,7 +10,7 @@ import SwiftUI
 
 // MARK: - 하단 버튼
 public struct GabbangzipBottomButton: View {
-  @Binding private var type: ButtonType
+  private var type: ButtonType
   private var title: String
   private var action: () -> Void
   private var isEnabled: Bool {
@@ -18,11 +18,11 @@ public struct GabbangzipBottomButton: View {
   }
   
   public init(
-    type: Binding<ButtonType>,
+    type: ButtonType,
     title: String,
     action: @escaping () -> Void = {}
   ) {
-    self._type = type
+    self.type = type
     self.title = title
     self.action = action
   }
@@ -82,8 +82,8 @@ public enum ButtonType {
 
 #Preview {
   VStack {
-    GabbangzipBottomButton(type: .constant(.active), title: "test", action: {})
-    GabbangzipBottomButton(type: .constant(.inactive), title: "test", action: {})
-    GabbangzipBottomButton(type: .constant(.secondary), title: "test", action: {})
+    GabbangzipBottomButton(type: .active, title: "test", action: {})
+    GabbangzipBottomButton(type: .inactive, title: "test", action: {})
+    GabbangzipBottomButton(type: .secondary, title: "test", action: {})
   }
 }
