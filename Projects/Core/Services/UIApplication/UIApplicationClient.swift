@@ -11,7 +11,7 @@ import UIKit
 
 @DependencyClient
 public struct UIApplicationClient: Sendable {
-  public var openSetting: @Sendable () async throws -> Void
+  public var openSetting: @Sendable () async throws -> Bool
 }
 
 extension UIApplicationClient: DependencyKey {
@@ -20,7 +20,13 @@ extension UIApplicationClient: DependencyKey {
       openSetting: { @MainActor in
         try await withCheckedThrowingContinuation { continuation in
           if let url = URL(string: UIApplication.openSettingsURLString) {
-            UIApplication.shared.open(url)
+            UIApplication.shared.open(url) { success in
+              if success {
+                continuation.resume(returning: true)
+              } else {
+                continuation.resume(returning: false)
+              }
+            }
           } else {
             continuation.resume(throwing: UIApplicationClientError(code: .failToGetUrl))
           }
