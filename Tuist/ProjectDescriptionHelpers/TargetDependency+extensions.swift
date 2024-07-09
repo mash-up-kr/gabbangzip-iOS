@@ -44,6 +44,7 @@ public enum TargetName: String {
   case login = "Login"
   case groupDetail = "GroupDetail"
   case myPage = "MyPage"
+  case createGroup = "CreateGroup"
 }
 
 public enum ExternalDependency: String {

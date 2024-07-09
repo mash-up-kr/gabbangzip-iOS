@@ -56,5 +56,19 @@ let project = Project.make(
         .external(externalDependency: .composableArchitecture)
       ]
     )
+    ),
+    .make(
+      name: "CreateGroup",
+      product: .framework,
+      bundleId: "com.mashup.gabbangzip.createGroup",
+      sources: ["CreateGroupScene/**"],
+      dependencies: [
+        .project(target: .coreKit, projectPath: .core),
+        .project(target: .designSystem, projectPath: .designSystem),
+        .external(externalDependency: .composableArchitecture),
+        .external(externalDependency: .nukeUI),
+        .external(externalDependency: .lottie),
+      ]
+    ),
   ]
 )
