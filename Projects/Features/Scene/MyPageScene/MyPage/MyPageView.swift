@@ -102,6 +102,18 @@ public struct MyPageView: View {
           store.send(.checkPushOn)
         }
       }
+      .toast(
+        isPresented: $store.isSettingErrorPresented,
+        type: .textWithInfoIcon(MyPageNameSpace.ErrorMessage.setting)
+      )
+      .toast(
+        isPresented: $store.isLogoutErrorPresented,
+        type: .textWithInfoIcon(MyPageNameSpace.ErrorMessage.logout)
+      )
+      .toast(
+        isPresented: $store.isWithdrawErrorPresented,
+        type: .textWithInfoIcon(MyPageNameSpace.ErrorMessage.withdraw)
+      )
       .popup(
         isPresented: $store.isLogoutPresented,
         title: MyPageNameSpace.Logout.title,
@@ -206,6 +218,12 @@ extension MyPageView {
       static let description = "탈퇴 시 그룹, 활동 내역이\n삭제되며 복구되지 않습니다."
       static let leftButtonTitle = "취소"
       static let rightButtonTitle = "탈퇴하기"
+    }
+    
+    enum ErrorMessage {
+      static let setting = "설정앱을 여는데 실패했어요."
+      static let logout = "로그아웃에 실패했어요."
+      static let withdraw = "회원탈퇴에 실패했어요."
     }
   }
 }

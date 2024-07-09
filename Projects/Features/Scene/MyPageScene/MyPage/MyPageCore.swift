@@ -22,6 +22,9 @@ public struct MyPageCore {
     public var isLogoutPresented: Bool
     public var isWithdrawPresented: Bool
     public var isLoginViewPresented: Bool
+    public var isSettingErrorPresented: Bool
+    public var isLogoutErrorPresented: Bool
+    public var isWithdrawErrorPresented: Bool
     
     public enum Status: String {
       case on
@@ -34,7 +37,10 @@ public struct MyPageCore {
       currentVersion: String,
       isLogoutPresented: Bool = false,
       isWithdrawPresented: Bool = false,
-      isLoginViewPresented: Bool = false
+      isLoginViewPresented: Bool = false,
+      isSettingErrorPresented: Bool = false,
+      isLogoutErrorPresented: Bool = false,
+      isWithdrawErrorPresented: Bool = false
     ) {
       self.alarmStatus = alarmStatus
       self.nickname = nickname
@@ -42,6 +48,9 @@ public struct MyPageCore {
       self.isLogoutPresented = isLogoutPresented
       self.isWithdrawPresented = isWithdrawPresented
       self.isLoginViewPresented = isLoginViewPresented
+      self.isSettingErrorPresented = isSettingErrorPresented
+      self.isLogoutErrorPresented = isLogoutErrorPresented
+      self.isWithdrawErrorPresented = isWithdrawErrorPresented
     }
   }
   
@@ -59,6 +68,9 @@ public struct MyPageCore {
     case deleteUserInfo
     case binding(BindingAction<State>)
     case showLoginView
+    case showSettingError(Bool)
+    case showLogoutError(Bool)
+    case showWithdrawError(Bool)
   }
   
   @Dependency(\.userDefaultsClient) private var userDefaultsClient
@@ -88,7 +100,10 @@ public struct MyPageCore {
       case .openSetting:
         return .run { send in
           do {
-            try await uiApplicationClient.openSetting()
+            let isSettingOpened = try await uiApplicationClient.openSetting()
+            if !isSettingOpened {
+              await send(.showSettingError(true))
+            }
           } catch {
             await send(.logError(MyPageCoreError(code: .failToGetOpenUrl)))
           }
@@ -109,6 +124,7 @@ public struct MyPageCore {
           await send(.showLoginView)
         } catch: { error, send in
           await send(.logError(MyPageCoreError(code: .failToLogout)))
+          await send(.showLogoutError(true))
         }
         
       case let .showWithdraw(isPresented):
@@ -123,6 +139,7 @@ public struct MyPageCore {
           await send(.showLoginView)
         } catch: { error, send in
           await send(.logError(MyPageCoreError(code: .failToWithdraw)))
+          await send(.showWithdrawError(true))
         }
         
       case .getAccessTokenToDelete:
@@ -159,6 +176,18 @@ public struct MyPageCore {
         
       case .showLoginView:
         state.isLoginViewPresented = true
+        return .none
+        
+      case let .showSettingError(isSettingErrorPresented):
+        state.isSettingErrorPresented = isSettingErrorPresented
+        return .none
+        
+      case let .showLogoutError(isLogoutErrorPresented):
+        state.isLogoutErrorPresented = isLogoutErrorPresented
+        return .none
+        
+      case let .showWithdrawError(isWithdrawErrorPresented):
+        state.isWithdrawErrorPresented = isWithdrawErrorPresented
         return .none
       }
     }
