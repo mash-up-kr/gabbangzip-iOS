@@ -213,7 +213,7 @@ extension MyPageView {
 #Preview {
   MyPageView(
     store: Store(
-      initialState: MyPageCore.State(alarmStatus: .on, nickname: "가빵집"),
+      initialState: MyPageCore.State(alarmStatus: .on, nickname: "가빵집", currentVersion: "1.0.0"),
       reducer: MyPageCore.init
     )
   )
