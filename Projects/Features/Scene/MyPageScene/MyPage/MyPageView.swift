@@ -72,7 +72,7 @@ public struct MyPageView: View {
           SettingTextView(text: MyPageNameSpace.version)
           
           SettingTextView(
-            text: MyPageNameSpace.currentVersion,
+            text: store.currentVersion,
             color: DesignSystem.Colors.gray60,
             alignment: .trailing
           )
@@ -192,7 +192,6 @@ extension MyPageView {
     static let appAlarm = "앱 알람 설정"
     static let userSetting = "계정 설정"
     static let version = "현재 버전"
-    static let currentVersion = "1.0.0"
     static let logout = "로그아웃"
     static let withdraw = "회원탈퇴"
     

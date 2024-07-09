@@ -18,6 +18,7 @@ public struct MyPageCore {
   public struct State: Equatable {
     public var alarmStatus: Status
     public var nickname: String
+    public var currentVersion: String
     public var isLogoutPresented: Bool
     public var isWithdrawPresented: Bool
     public var isLoginViewPresented: Bool
@@ -30,12 +31,14 @@ public struct MyPageCore {
     public init(
       alarmStatus: Status,
       nickname: String,
+      currentVersion: String,
       isLogoutPresented: Bool = false,
       isWithdrawPresented: Bool = false,
       isLoginViewPresented: Bool = false
     ) {
       self.alarmStatus = alarmStatus
       self.nickname = nickname
+      self.currentVersion = currentVersion
       self.isLogoutPresented = isLogoutPresented
       self.isWithdrawPresented = isWithdrawPresented
       self.isLoginViewPresented = isLoginViewPresented
