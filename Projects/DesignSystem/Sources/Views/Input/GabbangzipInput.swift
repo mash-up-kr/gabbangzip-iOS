@@ -9,18 +9,16 @@
 import SwiftUI
 
 public struct GabbangzipInput: View {
-  @Binding private var type: InputType
   @Binding private var text: String
   private var placeholderText: String
   private var maxLength: Int
+  @FocusState private var isFocused: Bool
   
   public init(
-    type: Binding<InputType> = .constant(.default),
     text: Binding<String>,
     placeholderText: String,
     maxLength: Int
   ) {
-    self._type = type
     self._text = text
     self.placeholderText = placeholderText
     self.maxLength = maxLength
@@ -28,46 +26,38 @@ public struct GabbangzipInput: View {
   
   public var body: some View {
     TextField(
-      placeholderText,
-      text: $text
+      text: $text,
+      label: {
+        Text(placeholderText)
+          .font(.body16)
+          .foregroundStyle(DesignSystem.Colors.gray60)
+      }
     )
     .font(.body16)
-    .foregroundStyle(type.textColor)
-    .padding(.vertical, 20)
-    .padding(.leading, 20)
+    .foregroundStyle(DesignSystem.Colors.gray100)
+    .padding(.vertical, 18)
+    .padding(.horizontal, 20)
     .background(DesignSystem.Colors.gray40)
     .cornerRadius(10)
+    .overlay{
+      RoundedRectangle(cornerRadius: 10)
+        .stroke(DesignSystem.Colors.gray50, lineWidth: 1)
+    }
+    .focused($isFocused)
+    .onTapGesture {
+      self.isFocused = true
+    }
     .onChange(of: text) { _, newValue in
       if newValue.count > maxLength {
         text = String(newValue.prefix(maxLength))
-      } else if !newValue.isEmpty {
-        type = .active
-      } else {
-        type = .default
       }
-    }
-  }
-}
-
-// MARK: - DS에 따른 인풋 타입 종류
-public enum InputType {
-  case `default`
-  case active
-  
-  var textColor: Color {
-    switch self {
-    case .default:
-      return DesignSystem.Colors.gray60
-    case .active:
-      return DesignSystem.Colors.gray100
     }
   }
 }
 
 #Preview {
   VStack {
-    GabbangzipInput(type: .constant(.active), text: .constant("test"), placeholderText: "placeholder", maxLength: 10)
-    
-    GabbangzipInput(type: .constant(.default), text: .constant("test"), placeholderText: "placeholder", maxLength: 10)
+    GabbangzipInput(text: .constant(""), placeholderText: "placeholder", maxLength: 10)
+    GabbangzipInput(text: .constant("test"), placeholderText: "placeholder", maxLength: 10)
   }
 }
