@@ -1,0 +1,38 @@
+//
+//  CreateGroupStartCore.swift
+//  CreateGroup
+//
+//  Created by YangJoonHyeok on 7/9/24.
+//  Copyright © 2024 com.mashup.gabbangzip. All rights reserved.
+//
+
+import ComposableArchitecture
+
+@Reducer
+public struct CreateGroupStartCore {
+  public init() {}
+  
+  public struct State: Equatable {
+    public init() {}
+  }
+
+  public enum Action {
+    // View Action
+    case createGroupButtonTapped
+    
+    // Route Action
+    case moveToSetGroupName
+  }
+
+  public var body: some Reducer<State, Action> {
+    Reduce { state, action in
+      switch action {
+      case .createGroupButtonTapped:
+        return .send(.moveToSetGroupName)
+        
+      case .moveToSetGroupName:
+        return .none
+      }
+    }
+  }
+}
