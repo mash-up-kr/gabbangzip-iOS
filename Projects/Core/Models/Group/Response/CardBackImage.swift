@@ -19,7 +19,7 @@ public struct CardBackImage: Decodable, Hashable {
 }
 
 extension CardBackImage {
-  public enum Frame: String, Decodable, Hashable {
+  public enum Frame: String, Decodable {
     case snowman = "SNOWMAN"
     case plus = "PLUS"
     case ghost = "GHOST"

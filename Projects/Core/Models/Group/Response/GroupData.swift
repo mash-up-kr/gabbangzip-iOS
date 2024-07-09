@@ -27,7 +27,7 @@ public struct GroupData: Decodable, Hashable {
 }
 
 extension GroupData {
-  public enum Keyword: String, Decodable, Hashable {
+  public enum Keyword: String, Decodable {
     case school = "SCHOOL"
     case company = "COMPANY"
     case crew = "CREW"
@@ -37,7 +37,7 @@ extension GroupData {
     case littleMoim = "LITTLE_MOIM"
   }
   
-  public enum Status: String, Decodable, Hashable {
+  public enum Status: String, Decodable {
     case noPastAndCurrentEvent = "NO_PAST_AND_CURRENT_EVENT"
     case noCurrentEvent = "NO_CURRENT_EVENT"
     case beforeMyUpload = "BEFORE_MY_UPLOAD"
