@@ -79,23 +79,24 @@ public struct LottieView: UIViewRepresentable {
 
 // MARK: - 로티 애니메이션 종류
 public enum GabbangzipLottieAnimationType {
-  /// 임시 테스트용 로티 케이스로 추후 제거 필요
   case confetti
-  case bookmark
   case login
+  case morphing
   
   var fileName: String {
     switch self {
     case .confetti:
       return JSONFiles.Confetti.name
-    case .bookmark:
-      return JSONFiles.Bookmark.name
     case .login:
       return JSONFiles.Login.name
+    case .morphing:
+      return JSONFiles.Morphing.name
     }
   }
 }
 
 #Preview {
-  LottieView(type: .bookmark, loopMode: .loop)
+  LottieView(type: .confetti, loopMode: .loop)
+    .padding(.horizontal, 100)
+    .border(.red)
 }
