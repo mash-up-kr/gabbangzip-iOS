@@ -12,6 +12,7 @@ import Foundation
 @DependencyClient
 public struct BundleClient: Sendable {
   public var getValue: @Sendable (_ key: String) throws -> Any
+  public var getCurrentVersion: @Sendable () throws -> String = { "0.0.0" }
 }
 
 extension BundleClient: DependencyKey {
@@ -22,6 +23,13 @@ extension BundleClient: DependencyKey {
           throw BundleClientError(code: .noValueForKey)
         }
         return value
+      },
+      getCurrentVersion: {
+        guard let dictionary = Bundle.main.infoDictionary,
+              let version = dictionary["CFBundleShortVersionString"] as? String else {
+          throw BundleClientError(code: .noCurrentVersion)
+        }
+        return version
       }
     )
   }
@@ -55,5 +63,6 @@ public struct BundleClientError: GabbangzipError {
   
   public enum Code: Int {
     case noValueForKey
+    case noCurrentVersion
   }
 }
