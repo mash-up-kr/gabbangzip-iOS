@@ -207,7 +207,11 @@ public struct RootCore {
         
       case let .onOpenURL(url):
         return .run { send in
-          kakaoLoginClient.openURL(url)
+          let isKakaoOpened = kakaoLoginClient.openURL(url)
+          
+          if !isKakaoOpened {
+            await send(.logError(RootCoreError(code: .failToOpenKakao)))
+          }
         }
         
       case let .logError(error):
