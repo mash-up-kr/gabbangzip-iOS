@@ -98,9 +98,13 @@ public struct RootCore {
           await send(.setLoginStatus(false))
         }
         
-      case let .checkAccessToken(.success(testInformation)):
+      case let .checkAccessToken(.success(testInfo)):
         return .run { send in
-          await send(.setLoginStatus(true))
+          if testInfo != nil {
+            await send(.setLoginStatus(true))
+          } else {
+            await send(.setLoginStatus(false))
+          }
         }
         
       case .checkAccessToken(.failure):
