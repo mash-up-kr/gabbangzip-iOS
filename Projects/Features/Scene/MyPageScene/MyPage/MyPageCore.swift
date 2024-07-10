@@ -81,7 +81,7 @@ public struct MyPageCore {
       switch action {
       case .checkPushOn:
         return .run { send in
-          let isPushOn = try await unUserNotificationCenterClient.isPushEnable()
+          let isPushOn = try await unUserNotificationCenterClient.requestAuthorization()
           await send(.updatePushStatus(isPushOn))
         } catch: { error, send in
           await send(.logError(MyPageCoreError(code: .alarmStatusError)))

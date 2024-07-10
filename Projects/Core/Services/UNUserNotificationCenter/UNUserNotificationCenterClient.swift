@@ -11,23 +11,31 @@ import UIKit
 
 @DependencyClient
 public struct UNUserNotificationCenterClient: Sendable {
-  public var isPushEnable: @MainActor @Sendable () async throws -> Bool
+  public var requestAuthorization: @MainActor @Sendable () async throws -> Bool
 }
 
 extension UNUserNotificationCenterClient: DependencyKey {
   public static var liveValue: UNUserNotificationCenterClient {
     return UNUserNotificationCenterClient(
-      isPushEnable: {
+      requestAuthorization: {
         try await withCheckedThrowingContinuation { continuation in
-          UNUserNotificationCenter.current().requestAuthorization { status, error in
-            if error != nil {
-              continuation.resume(throwing: UNUserNotificationCenterClientError(code: .unUserNotificationCenterError))
-            } else if status {
-              continuation.resume(returning: true)
-            } else {
-              continuation.resume(returning: false)
+          UNUserNotificationCenter.current()
+            .getNotificationSettings { permission in
+              switch permission.authorizationStatus  {
+              case .authorized:
+                continuation.resume(returning: true)
+              case .denied:
+                continuation.resume(returning: false)
+              case .notDetermined:
+                continuation.resume(returning: true)
+              case .provisional:
+                continuation.resume(returning: false)
+              case .ephemeral:
+                continuation.resume(returning: true)
+              @unknown default:
+                continuation.resume(returning: false)
+              }
             }
-          }
         }
       }
     )
