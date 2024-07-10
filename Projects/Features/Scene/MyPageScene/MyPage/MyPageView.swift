@@ -107,10 +107,6 @@ public struct MyPageView: View {
         type: .textWithInfoIcon(MyPageNameSpace.ErrorMessage.setting)
       )
       .toast(
-        isPresented: $store.isLogoutErrorPresented,
-        type: .textWithInfoIcon(MyPageNameSpace.ErrorMessage.logout)
-      )
-      .toast(
         isPresented: $store.isWithdrawErrorPresented,
         type: .textWithInfoIcon(MyPageNameSpace.ErrorMessage.withdraw)
       )
