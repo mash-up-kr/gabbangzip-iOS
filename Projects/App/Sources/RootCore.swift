@@ -215,8 +215,9 @@ public struct RootCore {
         }
         
       case let .logError(error):
-        logger.error("RootCore Error: \(String(describing: error))")
-        return .none
+        return .run { send in
+          logger.error("RootCore Error: \(error)")
+        }
       }
     }
   }
