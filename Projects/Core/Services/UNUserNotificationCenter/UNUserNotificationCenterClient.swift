@@ -22,16 +22,10 @@ extension UNUserNotificationCenterClient: DependencyKey {
           UNUserNotificationCenter.current()
             .getNotificationSettings { permission in
               switch permission.authorizationStatus  {
-              case .authorized:
+              case .authorized, .notDetermined, .ephemeral:
                 continuation.resume(returning: true)
-              case .denied:
+              case .denied, .provisional:
                 continuation.resume(returning: false)
-              case .notDetermined:
-                continuation.resume(returning: true)
-              case .provisional:
-                continuation.resume(returning: false)
-              case .ephemeral:
-                continuation.resume(returning: true)
               @unknown default:
                 continuation.resume(returning: false)
               }
