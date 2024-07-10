@@ -198,7 +198,7 @@ public struct RootCore {
           await send(.logError(RootCoreError(code: .failToSetNickName)))
         }
         
-      case .login(.delegate(.checkLogin(let isLogin))):
+      case let .login(.delegate(.checkLogin(isLogin))):
         state.isLogin = isLogin
         return .none
         
