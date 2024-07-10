@@ -65,34 +65,16 @@ public struct LoginCore {
       case .loginButtonTapped:
         return .run { send in
           if kakaoLoginClient.isKakaoTalkLoginAvailable() {
-            await send(
-              .loginWithKakaoTalkResponse(
-                Result {
-                  try await self.kakaoLoginClient.loginWithKakaoTalk()
-                }
-              )
-            )
+            await send(.loginWithKakaoTalkResponse(Result { try await self.kakaoLoginClient.loginWithKakaoTalk() }))
           } else {
-            await send(
-              .loginWithKakaoAccountResponse(
-                Result {
-                  try await self.kakaoLoginClient.loginWithKakaoAccount()
-                }
-              )
-            )
+            await send(.loginWithKakaoAccountResponse(Result { try await self.kakaoLoginClient.loginWithKakaoAccount() }))
           }
         }
         
       case let .loginWithKakaoTalkResponse(.success(idToken)):
         state.kakaoIdToken.idToken = idToken
         return .run { send in
-          await send(
-            .checkUserInformationResponse(
-              Result {
-                try await kakaoLoginClient.checkUserInformation()
-              }
-            )
-          )
+          await send(.checkUserInformationResponse(Result { try await kakaoLoginClient.checkUserInformation() }))
         }
         
       case .loginWithKakaoTalkResponse(.failure):
@@ -103,13 +85,7 @@ public struct LoginCore {
       case let .loginWithKakaoAccountResponse(.success(idToken)):
         state.kakaoIdToken.idToken = idToken
         return .run { send in
-          await send(
-            .checkUserInformationResponse(
-              Result {
-                try await kakaoLoginClient.checkUserInformation()
-              }
-            )
-          )
+          await send(.checkUserInformationResponse(Result { try await kakaoLoginClient.checkUserInformation() }))
         }
         
       case .loginWithKakaoAccountResponse(.failure):

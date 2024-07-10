@@ -56,25 +56,13 @@ public struct RootCore {
       switch action {
       case .onAppear:
         return .run { send in
-          await send(
-            .readAccessToken(
-              Result {
-                try await self.keyChainClient.read(.accessToken)
-              }
-            )
-          )
+          await send(.readAccessToken(Result { try await self.keyChainClient.read(.accessToken) }))
           await send(.getNickname)
         }
         
       case let .readAccessToken(.success(accessToken)):
         return .run { send in
-          await send(
-            .checkAccessToken(
-              Result {
-                try await self.kakaoAPIClient.testToken(accessToken)
-              }
-            )
-          )
+          await send(.checkAccessToken(Result { try await self.kakaoAPIClient.testToken(accessToken) }))
         }
         
       case .readAccessToken(.failure):
@@ -84,13 +72,7 @@ public struct RootCore {
         
       case let .readRefreshToken(.success(refreshToken)):
         return .run { send in
-          await send(
-            .refreshToken(
-              Result {
-                try await self.kakaoAPIClient.refreshToken(refreshToken)
-              }
-            )
-          )
+          await send(.refreshToken(Result { try await self.kakaoAPIClient.refreshToken(refreshToken) }))
         }
         
       case .readRefreshToken(.failure):
@@ -109,13 +91,7 @@ public struct RootCore {
         
       case .checkAccessToken(.failure):
         return .run { send in
-          await send(
-            .readRefreshToken(
-              Result {
-                try await self.keyChainClient.read(.refreshToken)
-              }
-            )
-          )
+          await send(.readRefreshToken(Result { try await self.keyChainClient.read(.refreshToken) }))
         }
         
       case let .refreshToken(.success(tokenInformation)):
@@ -180,13 +156,7 @@ public struct RootCore {
         
       case .getNickname:
         return .run { send in
-          await send(
-            .setNickname(
-              Result {
-                try userDefaultsClient.string(.nickname)
-              }
-            )
-          )
+          await send(.setNickname(Result { try userDefaultsClient.string(.nickname) }))
         }
         
       case let .setNickname(.success(nickname)):
@@ -231,8 +201,10 @@ public struct RootCoreError: GabbangzipError {
   
   public enum Code: Int {
     case failToGetNickname
+    case failToSetNickName
     case failToGetToken
     case failToSaveToken
+    case failToOpenKakao
   }
 }
 
