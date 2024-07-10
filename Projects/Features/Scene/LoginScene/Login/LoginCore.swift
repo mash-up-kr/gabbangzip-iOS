@@ -41,7 +41,7 @@ public struct LoginCore {
     case checkUserInformationResponse(Result<User, Error>)
     case loginResponse(Result<PICUserInfo?, Error>)
     case saveTokenInKeyChain(Result<(KeyChainClient.Key, String), LoginCoreError>)
-    case saveUserInUserDefaults(Result<(UserDefaultsClient.Key, String), LoginCoreError>)
+    case saveUserInUserDefaults(UserDefaultsClient.Key, String)
     case showError(Bool)
     case binding(BindingAction<State>)
     case delegate(Delegate)
@@ -158,7 +158,7 @@ public struct LoginCore {
             await send(.saveTokenInKeyChain(.failure(LoginCoreError(code: .failToGetRefreshToken))))
           }
           if let nickname = user?.nickname {
-            await send(.saveUserInUserDefaults(.success((.nickname, nickname))))
+            await send(.saveUserInUserDefaults(.nickname, nickname))
           } else {
             await send(.logError(LoginCoreError(code: .failToGetNickname)))
           }
@@ -181,7 +181,7 @@ public struct LoginCore {
           await send(.logError(LoginCoreError(code: .failToSaveTokenInKeyChain)))
         }
         
-      case let .saveUserInUserDefaults(.success((key, value))):
+      case let .saveUserInUserDefaults(key, value):
         return .run { send in
           userDefaultsClient.set(value, key)
         }
