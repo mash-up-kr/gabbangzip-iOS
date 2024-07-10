@@ -85,12 +85,10 @@ public struct MyPageCore {
       switch action {
       case .checkPushOn:
         return .run { send in
-          do {
-            let isPushOn = try await unUserNotificationCenterClient.isPushEnable()
-            await send(.updatePushStatus(isPushOn))
-          } catch {
-            await send(.logError(MyPageCoreError(code: .alarmStatusError)))
-          }
+          let isPushOn = try await unUserNotificationCenterClient.isPushEnable()
+          await send(.updatePushStatus(isPushOn))
+        } catch: { error, send in
+          await send(.logError(MyPageCoreError(code: .alarmStatusError)))
         }
         
       case let .updatePushStatus(pushStatus):
@@ -99,16 +97,14 @@ public struct MyPageCore {
         
       case .openSetting:
         return .run { send in
-          do {
-            let settingURL = await uiApplicationClient.getSettingURL()
-            let isSettingOpened = try await uiApplicationClient.openURL(url: settingURL)
-            
-            if !isSettingOpened {
-              await send(.showSettingError(true))
-            }
-          } catch {
-            await send(.logError(MyPageCoreError(code: .failToGetOpenUrl)))
+          let settingURL = await uiApplicationClient.getSettingURL()
+          let isSettingOpened = try await uiApplicationClient.openURL(url: settingURL)
+          
+          if !isSettingOpened {
+            await send(.showSettingError(true))
           }
+        } catch: { error, send in
+          await send(.logError(MyPageCoreError(code: .failToGetOpenUrl)))
         }
         
       case let .logError(error):
