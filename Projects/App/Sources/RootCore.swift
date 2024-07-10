@@ -193,9 +193,10 @@ public struct RootCore {
         state.nickname = nickname
         return .none
         
-      case let .setNickname(.failure(error)):
-        logger.error("RootCore Error: \(String(describing: error))")
-        return .none
+      case .setNickname(.failure):
+        return .run { send in
+          await send(.logError(RootCoreError(code: .failToSetNickName)))
+        }
         
       case .login(.delegate(.checkLogin(let isLogin))):
         state.isLogin = isLogin
