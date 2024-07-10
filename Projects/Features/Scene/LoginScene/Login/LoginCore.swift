@@ -160,7 +160,7 @@ public struct LoginCore {
           if let nickname = user?.nickname {
             await send(.saveUserInUserDefaults(.success((.nickname, nickname))))
           } else {
-            await send(.saveUserInUserDefaults(.failure(LoginCoreError(code: .failToGetUser))))
+            await send(.logError(LoginCoreError(code: .failToGetNickname)))
           }
         }
         
@@ -184,11 +184,6 @@ public struct LoginCore {
       case let .saveUserInUserDefaults(.success((key, value))):
         return .run { send in
           userDefaultsClient.set(value, key)
-        }
-        
-      case let .saveUserInUserDefaults(.failure(error)):
-        return .run { send in
-          await send(.logError(LoginCoreError(code: .failToSaveUserInUserDefaults)))
         }
         
       case let .showError(isPresented):
@@ -221,8 +216,8 @@ public struct LoginCoreError: GabbangzipError {
     case failToGetAccessToken
     case failToGetRefreshToken
     case failToGetUser
+    case failToGetNickname
     case failToLogin
     case failToSaveTokenInKeyChain
-    case failToSaveUserInUserDefaults
   }
 }
