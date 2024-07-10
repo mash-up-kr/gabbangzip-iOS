@@ -45,6 +45,7 @@ public struct LoginCore {
     case showError(Bool)
     case binding(BindingAction<State>)
     case delegate(Delegate)
+    case logError(LoginCoreError)
     
     public enum Delegate {
       case checkLogin(Bool)
@@ -165,7 +166,7 @@ public struct LoginCore {
         
       case let .loginResponse(.failure(error)):
         return .run { send in
-          logger.error("Fail to Login \(error)")
+          await send(.logError(LoginCoreError(code: .failToLogin)))
           await send(.showError(true))
         }
         
@@ -176,8 +177,9 @@ public struct LoginCore {
         }
         
       case let .saveTokenInKeyChain(.failure(error)):
-        logger.error("Fail to save Token in KeyChain \(error)")
-        return .none
+        return .run { send in
+          await send(.logError(LoginCoreError(code: .failToSaveTokenInKeyChain)))
+        }
         
       case let .saveUserInUserDefaults(.success((key, value))):
         return .run { send in
@@ -185,8 +187,9 @@ public struct LoginCore {
         }
         
       case let .saveUserInUserDefaults(.failure(error)):
-        logger.error("Fail to save User in UserDefaults \(error)")
-        return .none
+        return .run { send in
+          await send(.logError(LoginCoreError(code: .failToSaveUserInUserDefaults)))
+        }
         
       case let .showError(isPresented):
         state.isPresented = isPresented
@@ -197,6 +200,11 @@ public struct LoginCore {
         
       case .delegate:
         return .none
+        
+      case let .logError(error):
+        return .run { send in
+          logger.error("MyPage Error: \(error)")
+        }
       }
     }
   }
@@ -213,5 +221,8 @@ public struct LoginCoreError: GabbangzipError {
     case failToGetAccessToken
     case failToGetRefreshToken
     case failToGetUser
+    case failToLogin
+    case failToSaveTokenInKeyChain
+    case failToSaveUserInUserDefaults
   }
 }
