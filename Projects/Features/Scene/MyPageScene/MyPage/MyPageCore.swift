@@ -100,7 +100,9 @@ public struct MyPageCore {
       case .openSetting:
         return .run { send in
           do {
-            let isSettingOpened = try await uiApplicationClient.openSetting()
+            let settingURL = await uiApplicationClient.getSettingURL()
+            let isSettingOpened = try await uiApplicationClient.openURL(url: settingURL)
+            
             if !isSettingOpened {
               await send(.showSettingError(true))
             }
