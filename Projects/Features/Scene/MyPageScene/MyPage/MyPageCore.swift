@@ -112,8 +112,9 @@ public struct MyPageCore {
         }
         
       case let .logError(error):
-        logger.error("MyPage Error \(error)")
-        return .none
+        return .run { send in
+          logger.error("MyPage Error: \(error)")
+        }
         
       case let .showLogout(isPresented):
         state.isLogoutPresented = isPresented
