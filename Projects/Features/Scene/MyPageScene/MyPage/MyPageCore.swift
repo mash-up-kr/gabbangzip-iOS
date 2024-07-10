@@ -23,7 +23,6 @@ public struct MyPageCore {
     public var isWithdrawPresented: Bool
     public var isLoginViewPresented: Bool
     public var isSettingErrorPresented: Bool
-    public var isLogoutErrorPresented: Bool
     public var isWithdrawErrorPresented: Bool
     
     public enum Status: String {
@@ -39,7 +38,6 @@ public struct MyPageCore {
       isWithdrawPresented: Bool = false,
       isLoginViewPresented: Bool = false,
       isSettingErrorPresented: Bool = false,
-      isLogoutErrorPresented: Bool = false,
       isWithdrawErrorPresented: Bool = false
     ) {
       self.alarmStatus = alarmStatus
@@ -49,7 +47,6 @@ public struct MyPageCore {
       self.isWithdrawPresented = isWithdrawPresented
       self.isLoginViewPresented = isLoginViewPresented
       self.isSettingErrorPresented = isSettingErrorPresented
-      self.isLogoutErrorPresented = isLogoutErrorPresented
       self.isWithdrawErrorPresented = isWithdrawErrorPresented
     }
   }
@@ -69,7 +66,6 @@ public struct MyPageCore {
     case binding(BindingAction<State>)
     case showLoginView
     case showSettingError(Bool)
-    case showLogoutError(Bool)
     case showWithdrawError(Bool)
   }
   
@@ -123,7 +119,6 @@ public struct MyPageCore {
           await send(.showLoginView)
         } catch: { error, send in
           await send(.logError(MyPageCoreError(code: .failToLogout)))
-          await send(.showLogoutError(true))
         }
         
       case let .showWithdraw(isPresented):
@@ -179,10 +174,6 @@ public struct MyPageCore {
         
       case let .showSettingError(isSettingErrorPresented):
         state.isSettingErrorPresented = isSettingErrorPresented
-        return .none
-        
-      case let .showLogoutError(isLogoutErrorPresented):
-        state.isLogoutErrorPresented = isLogoutErrorPresented
         return .none
         
       case let .showWithdrawError(isWithdrawErrorPresented):
