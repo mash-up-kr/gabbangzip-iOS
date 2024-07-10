@@ -20,7 +20,6 @@ public struct ToastModifier: ViewModifier {
           content: {
             VStack(spacing: 0) {
               ToastView(type: type)
-                .padding(.top, 15)
                 .transition(.opacity)
                 .animation(.spring(), value: isPresented)
               
