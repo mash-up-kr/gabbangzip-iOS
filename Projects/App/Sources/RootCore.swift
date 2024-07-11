@@ -24,7 +24,14 @@ public struct RootCore {
   }
   
   public enum Action {
+    // View Action
     case onAppear
+    case setLoginStatus(Bool)
+    case login(LoginCore.Action)
+    case onOpenURL(URL)
+    case logError(RootCoreError)
+    
+    // Internal Action
     case readAccessToken(Result<String, Error>)
     case readRefreshToken(Result<String, Error>)
     case checkAccessToken(Result<TestInfo?, Error>)
@@ -32,12 +39,8 @@ public struct RootCore {
     case updateToken(Result<(KeyChainClient.Key, String), RootCoreError>)
     case getUser(Result<User, Error>)
     case updateUser(UserDefaultsClient.Key, String)
-    case setLoginStatus(Bool)
     case getNickname
     case setNickname(Result<String, Error>)
-    case login(LoginCore.Action)
-    case onOpenURL(URL)
-    case logError(RootCoreError)
   }
   
   @Dependency(\.kakaoAPIClient) private var kakaoAPIClient
@@ -58,6 +61,31 @@ public struct RootCore {
         return .run { send in
           await send(.readAccessToken(Result { try await self.keyChainClient.read(.accessToken) }))
           await send(.getNickname)
+        }
+        
+      case let .setLoginStatus(isLogin):
+        state.isLogin = isLogin
+        return .none
+        
+      case let .login(.delegate(.checkLogin(isLogin))):
+        state.isLogin = isLogin
+        return .none
+        
+      case .login:
+        return .none
+        
+      case let .onOpenURL(url):
+        return .run { send in
+          let isKakaoOpened = kakaoLoginClient.openURL(url)
+          
+          if !isKakaoOpened {
+            await send(.logError(RootCoreError(code: .failToOpenKakao)))
+          }
+        }
+        
+      case let .logError(error):
+        return .run { send in
+          logger.error("RootCore Error: \(error)")
         }
         
       case let .readAccessToken(.success(accessToken)):
@@ -106,13 +134,7 @@ public struct RootCore {
           } else {
             await send(.updateToken(.failure(RootCoreError(code: .failToSaveToken))))
           }
-          await send(
-            .getUser(
-              Result {
-                try await kakaoLoginClient.checkUserInformation()
-              }
-            )
-          )
+          await send(.getUser(Result { try await kakaoLoginClient.checkUserInformation() }))
           await send(.setLoginStatus(true))
         }
         
@@ -150,10 +172,6 @@ public struct RootCore {
           userDefaultsClient.set(value, key)
         }
         
-      case let .setLoginStatus(isLogin):
-        state.isLogin = isLogin
-        return .none
-        
       case .getNickname:
         return .run { send in
           await send(.setNickname(Result { try userDefaultsClient.string(.nickname) }))
@@ -167,27 +185,6 @@ public struct RootCore {
         return .run { send in
           await send(.logError(RootCoreError(code: .failToSetNickName)))
         }
-        
-      case let .login(.delegate(.checkLogin(isLogin))):
-        state.isLogin = isLogin
-        return .none
-        
-      case .login:
-        return .none
-        
-      case let .onOpenURL(url):
-        return .run { send in
-          let isKakaoOpened = kakaoLoginClient.openURL(url)
-          
-          if !isKakaoOpened {
-            await send(.logError(RootCoreError(code: .failToOpenKakao)))
-          }
-        }
-        
-      case let .logError(error):
-        return .run { send in
-          logger.error("RootCore Error: \(error)")
-        }
       }
     }
   }
@@ -200,11 +197,10 @@ public struct RootCoreError: GabbangzipError {
   public var underlying: Error?
   
   public enum Code: Int {
+    case failToOpenKakao
+    case failToSaveToken
     case failToGetNickname
     case failToSetNickName
-    case failToGetToken
-    case failToSaveToken
-    case failToOpenKakao
   }
 }
 
