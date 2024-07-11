@@ -35,17 +35,21 @@ public struct LoginCore {
   }
   
   public enum Action: BindableAction {
+    case binding(BindingAction<State>)
+    case delegate(Delegate)
+
+    // View Action
     case loginButtonTapped
+    case showError(Bool)
+    case logError(LoginCoreError)
+    
+    // Internal Action
     case loginWithKakaoTalkResponse(Result<String?, Error>)
     case loginWithKakaoAccountResponse(Result<String?, Error>)
     case checkUserInformationResponse(Result<User, Error>)
     case loginResponse(Result<PICUserInfo?, Error>)
     case saveTokenInKeyChain(Result<(KeyChainClient.Key, String), LoginCoreError>)
     case saveUserInUserDefaults(UserDefaultsClient.Key, String)
-    case showError(Bool)
-    case binding(BindingAction<State>)
-    case delegate(Delegate)
-    case logError(LoginCoreError)
     
     public enum Delegate {
       case checkLogin(Bool)
@@ -62,13 +66,34 @@ public struct LoginCore {
     
     Reduce { state, action in
       switch action {
+      case .binding:
+        return .none
+        
+      case .delegate:
+        return .none
+        
       case .loginButtonTapped:
         return .run { send in
           if kakaoLoginClient.isKakaoTalkLoginAvailable() {
             await send(.loginWithKakaoTalkResponse(Result { try await self.kakaoLoginClient.loginWithKakaoTalk() }))
           } else {
-            await send(.loginWithKakaoAccountResponse(Result { try await self.kakaoLoginClient.loginWithKakaoAccount() }))
+            await send(
+              .loginWithKakaoAccountResponse(
+                Result {
+                  try await self.kakaoLoginClient.loginWithKakaoAccount()
+                }
+              )
+            )
           }
+        }
+        
+      case let .showError(isPresented):
+        state.isPresented = isPresented
+        return .none
+        
+      case let .logError(error):
+        return .run { send in
+          logger.error("MyPage Error: \(error)")
         }
         
       case let .loginWithKakaoTalkResponse(.success(idToken)):
@@ -161,21 +186,6 @@ public struct LoginCore {
         return .run { send in
           userDefaultsClient.set(value, key)
         }
-        
-      case let .showError(isPresented):
-        state.isPresented = isPresented
-        return .none
-        
-      case .binding:
-        return .none
-        
-      case .delegate:
-        return .none
-        
-      case let .logError(error):
-        return .run { send in
-          logger.error("MyPage Error: \(error)")
-        }
       }
     }
   }
@@ -191,9 +201,7 @@ public struct LoginCoreError: GabbangzipError {
     case failToCheckUserInformation
     case failToGetAccessToken
     case failToGetRefreshToken
-    case failToGetUser
     case failToGetNickname
-    case failToLogin
     case failToSaveTokenInKeyChain
   }
 }
