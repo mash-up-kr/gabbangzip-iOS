@@ -52,21 +52,25 @@ public struct MyPageCore {
   }
   
   public enum Action: BindableAction {
+    case binding(BindingAction<State>)
+    
+    // View Action
     case checkPushOn
     case updatePushStatus(Bool)
-    case openSetting
     case logError(MyPageCoreError)
     case showLogout(Bool)
-    case logout
     case showWithdraw(Bool)
+    case showLoginView
+    case showSettingError(Bool)
+    case showWithdrawError(Bool)
+    
+    // Internal Action
+    case openSetting
+    case logout
     case withdraw
     case getAccessTokenToDelete
     case deleteUser(String)
     case deleteUserInfo
-    case binding(BindingAction<State>)
-    case showLoginView
-    case showSettingError(Bool)
-    case showWithdrawError(Bool)
   }
   
   @Dependency(\.userDefaultsClient) private var userDefaultsClient
@@ -79,6 +83,9 @@ public struct MyPageCore {
   public var body: some Reducer<State, Action> {
     Reduce { state, action in
       switch action {
+      case .binding:
+        return .none
+        
       case .checkPushOn:
         return .run { send in
           let isPushOn = try await unUserNotificationCenterClient.requestAuthorization()
@@ -89,6 +96,31 @@ public struct MyPageCore {
         
       case let .updatePushStatus(pushStatus):
         state.alarmStatus = pushStatus ? .on : .off
+        return .none
+        
+      case let .logError(error):
+        return .run { send in
+          logger.error("MyPage Error: \(error)")
+        }
+        
+      case let .showLogout(isPresented):
+        state.isLogoutPresented = isPresented
+        return .none
+        
+      case let .showWithdraw(isPresented):
+        state.isWithdrawPresented = isPresented
+        return .none
+        
+      case .showLoginView:
+        state.isLoginViewPresented = true
+        return .none
+        
+      case let .showSettingError(isSettingErrorPresented):
+        state.isSettingErrorPresented = isSettingErrorPresented
+        return .none
+        
+      case let .showWithdrawError(isWithdrawErrorPresented):
+        state.isWithdrawErrorPresented = isWithdrawErrorPresented
         return .none
         
       case .openSetting:
@@ -103,15 +135,6 @@ public struct MyPageCore {
           await send(.logError(MyPageCoreError(code: .failToGetOpenUrl)))
         }
         
-      case let .logError(error):
-        return .run { send in
-          logger.error("MyPage Error: \(error)")
-        }
-        
-      case let .showLogout(isPresented):
-        state.isLogoutPresented = isPresented
-        return .none
-        
       case .logout:
         return .run { send in
           try await kakaoLoginClient.logout()
@@ -120,10 +143,6 @@ public struct MyPageCore {
         } catch: { error, send in
           await send(.logError(MyPageCoreError(code: .failToLogout)))
         }
-        
-      case let .showWithdraw(isPresented):
-        state.isWithdrawPresented = isPresented
-        return .none
         
       case .withdraw:
         return .run { send in
@@ -164,21 +183,6 @@ public struct MyPageCore {
         } catch: { error, send in
           await send(.logError(MyPageCoreError(code: .failToDeleteUserInfo)))
         }
-        
-      case .binding:
-        return .none
-        
-      case .showLoginView:
-        state.isLoginViewPresented = true
-        return .none
-        
-      case let .showSettingError(isSettingErrorPresented):
-        state.isSettingErrorPresented = isSettingErrorPresented
-        return .none
-        
-      case let .showWithdrawError(isWithdrawErrorPresented):
-        state.isWithdrawErrorPresented = isWithdrawErrorPresented
-        return .none
       }
     }
   }
