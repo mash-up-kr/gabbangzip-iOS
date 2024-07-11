@@ -18,7 +18,6 @@ public struct SetGroupNameCore {
     var text: String
     var nextButtonType: ButtonType
     
-    
     public init(
       text: String = "",
       nextButtonType: ButtonType = .inactive
