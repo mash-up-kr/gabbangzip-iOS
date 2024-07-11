@@ -8,6 +8,7 @@
 
 import ComposableArchitecture
 import DesignSystem
+import Models
 import SwiftUI
 
 public struct SelectKeywordView: View {
@@ -40,40 +41,49 @@ public struct SelectKeywordView: View {
           GridItem(.flexible(), spacing: 16)
         ],
         content: {
-          KeywordButton(
-            type: .school,
-            isSelected: $store.schoolKeywordButtonSelected.sending(\.schoolKeywordButtonTapped)
-          )
-          
-          KeywordButton(
-            type: .crew,
-            isSelected: $store.crewKeywordButtonSelected.sending(\.crewKeywordButtonTapped)
-          )
-          
-          KeywordButton(
-            type: .company,
-            isSelected: $store.companyKeywordButtonSelected.sending(\.companyKeywordButtonTapped)
-          )
-          
-          KeywordButton(
-            type: .littleMoim,
-            isSelected: $store.littleMoimKeywordButtonSelected.sending(\.littleMoimKeywordButtonTapped)
-          )
-          
-          KeywordButton(
-            type: .network,
-            isSelected: $store.networkKeywordButtonSelected.sending(\.networkKeywordButtonTapped)
-          )
-          
-          KeywordButton(
-            type: .exercise,
-            isSelected: $store.exerciseKeywordButtonSelected.sending(\.exerciseKeywordButtonTapped)
-          )
-          
-          KeywordButton(
-            type: .hobby,
-            isSelected: $store.hobbyKeywordButtonSelected.sending(\.hobbyKeywordButtonTapped)
-          )
+          ForEach(GroupData.Keyword.allCases, id: \.self) { keyword in
+            KeywordButton(
+              type: keyword.categoryType,
+              isSelected: Binding(
+                get: {
+                  switch keyword {
+                  case .school:
+                    return store.schoolKeywordButtonSelected
+                  case .company:
+                    return store.companyKeywordButtonSelected
+                  case .crew:
+                    return store.crewKeywordButtonSelected
+                  case .network:
+                    return store.networkKeywordButtonSelected
+                  case .exercise:
+                    return store.exerciseKeywordButtonSelected
+                  case .hobby:
+                    return store.hobbyKeywordButtonSelected
+                  case .littleMoim:
+                    return store.littleMoimKeywordButtonSelected
+                  }
+                },
+                set: { isSelected in
+                  switch keyword {
+                  case .school:
+                    store.send(.keywordButtonTapped(.school, isSelected))
+                  case .company:
+                    store.send(.keywordButtonTapped(.company, isSelected))
+                  case .crew:
+                    store.send(.keywordButtonTapped(.crew, isSelected))
+                  case .network:
+                    store.send(.keywordButtonTapped(.network, isSelected))
+                  case .exercise:
+                    store.send(.keywordButtonTapped(.exercise, isSelected))
+                  case .hobby:
+                    store.send(.keywordButtonTapped(.hobby, isSelected))
+                  case .littleMoim:
+                    store.send(.keywordButtonTapped(.littleMoim, isSelected))
+                  }
+                }
+              )
+            )
+          }
         }
       )
       .padding(.horizontal, 16)

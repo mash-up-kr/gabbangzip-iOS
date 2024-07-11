@@ -11,6 +11,25 @@ import Models
 import SwiftUI
 
 extension GroupData.Keyword {
+  var categoryType: CategoryType {
+    switch self {
+    case .school:
+      return .school
+    case .company:
+      return .company
+    case .crew:
+      return .crew
+    case .network:
+      return .network
+    case .exercise:
+      return .exercise
+    case .hobby:
+      return .hobby
+    case .littleMoim:
+      return .littleMoim
+    }
+  }
+  
   var tagType: TagType {
     switch self {
     case .school:
