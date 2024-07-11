@@ -49,13 +49,7 @@ public struct SelectKeywordCore {
     // View Action
     case nextButtonTapped
     case backButtonTapped
-    case schoolKeywordButtonTapped(Bool)
-    case crewKeywordButtonTapped(Bool)
-    case companyKeywordButtonTapped(Bool)
-    case littleMoimKeywordButtonTapped(Bool)
-    case networkKeywordButtonTapped(Bool)
-    case exerciseKeywordButtonTapped(Bool)
-    case hobbyKeywordButtonTapped(Bool)
+    case keywordButtonTapped(GroupData.Keyword, Bool)
     
     // Internal Action
     case updateKeywordSelection(keyword: GroupData.Keyword, isSelected: Bool)
@@ -74,26 +68,8 @@ public struct SelectKeywordCore {
       case .backButtonTapped:
         return .send(.backToSetGroupName)
         
-      case let .schoolKeywordButtonTapped(isSelected):
-        return .send(.updateKeywordSelection(keyword: .school, isSelected: isSelected))
-        
-      case let .crewKeywordButtonTapped(isSelected):
-        return .send(.updateKeywordSelection(keyword: .crew, isSelected: isSelected))
-        
-      case let .companyKeywordButtonTapped(isSelected):
-        return .send(.updateKeywordSelection(keyword: .company, isSelected: isSelected))
-        
-      case let .littleMoimKeywordButtonTapped(isSelected):
-        return .send(.updateKeywordSelection(keyword: .littleMoim, isSelected: isSelected))
-        
-      case let .networkKeywordButtonTapped(isSelected):
-        return .send(.updateKeywordSelection(keyword: .network, isSelected: isSelected))
-        
-      case let .exerciseKeywordButtonTapped(isSelected):
-        return .send(.updateKeywordSelection(keyword: .exercise, isSelected: isSelected))
-        
-      case let .hobbyKeywordButtonTapped(isSelected):
-        return .send(.updateKeywordSelection(keyword: .hobby, isSelected: isSelected))
+      case let .keywordButtonTapped(keyword, isSelected):
+        return .send(.updateKeywordSelection(keyword: keyword, isSelected: isSelected))
         
       case let .updateKeywordSelection(keyword, isSelected):
         state.schoolKeywordButtonSelected = (keyword == .school) && isSelected
