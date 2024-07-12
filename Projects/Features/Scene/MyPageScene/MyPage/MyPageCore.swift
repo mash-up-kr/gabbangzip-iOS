@@ -165,8 +165,6 @@ public struct MyPageCore {
           await send(.getAccessTokenToDelete)
           await send(.deleteUserInfo)
           await send(.showLoginView)
-            //지우기
-          await send(.showError(true, .setting))
         } catch: { error, send in
           await send(.logError(MyPageCoreError(code: .failToWithdraw)))
           await send(.showError(true, .withdraw))
