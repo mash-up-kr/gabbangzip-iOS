@@ -16,12 +16,17 @@ public struct MyPageCore {
   
   @ObservableState
   public struct State: Equatable {
-    public var alarmStatus: AlarmStatus
-    public var errorType: MyPageError
     public var nickname: String
     public var currentVersion: String
-    public var isLogoutPresented: Bool
-    public var isWithdrawPresented: Bool
+    public var alarmStatus: AlarmStatus
+    public var errorType: MyPageError?
+    public var errorMessage: String
+    public var popupType: MyPagePopup?
+    public var popupTitle: String
+    public var popupDescription: String?
+    public var popupLeftButtonTitle: String
+    public var popupRightButtonTitle: String
+    public var isPopupPresented: Bool
     public var isLoginViewPresented: Bool
     public var isErrorPresented: Bool
     
@@ -34,32 +39,81 @@ public struct MyPageCore {
       case setting
       case withdraw
       
-      var message: String {
+      public var message: String {
         switch self {
         case .setting:
-          "설정앱을 여는데 실패했어요."
+          return "설정앱을 여는데 실패했어요."
         case .withdraw:
-          "회원탈퇴에 실패했어요."
+          return "회원탈퇴에 실패했어요."
+        }
+      }
+    }
+    
+    public enum MyPagePopup {
+      case logout
+      case withdraw
+      
+      public var title: String {
+        switch self {
+        case .logout:
+          return "로그아웃 하시겠어요?"
+        case.withdraw:
+          return "탈퇴하실건가요?"
+        }
+      }
+      
+      public var description: String? {
+        switch self {
+        case .logout:
+          return nil
+        case .withdraw:
+          return "탈퇴 시 그룹, 활동 내역이\n삭제되며 복구되지 않습니다."
+        }
+      }
+      
+      public var leftButtonTitle: String {
+        switch self {
+        case .logout, .withdraw:
+          return "취소"
+        }
+      }
+      
+      public var rightButtonTitle: String {
+        switch self {
+        case .logout:
+          return "로그아웃"
+        case .withdraw:
+          return "탈퇴하기"
         }
       }
     }
     
     public init(
-      alarmStatus: AlarmStatus,
-      errorType: MyPageError,
       nickname: String,
       currentVersion: String,
-      isLogoutPresented: Bool = false,
-      isWithdrawPresented: Bool = false,
+      alarmStatus: AlarmStatus,
+      errorType: MyPageError? = nil,
+      errorMessage: String,
+      popupType: MyPagePopup? = nil,
+      popupTitle: String,
+      popupDescription: String? = nil,
+      popupLeftButtonTitle: String,
+      popupRightButtonTitle: String,
+      isPopupPresented: Bool = false,
       isLoginViewPresented: Bool = false,
       isErrorPresented: Bool = false
     ) {
-      self.alarmStatus = alarmStatus
-      self.errorType = errorType
       self.nickname = nickname
       self.currentVersion = currentVersion
-      self.isLogoutPresented = isLogoutPresented
-      self.isWithdrawPresented = isWithdrawPresented
+      self.alarmStatus = alarmStatus
+      self.errorType = errorType
+      self.errorMessage = errorMessage
+      self.popupType = popupType
+      self.popupTitle = popupTitle
+      self.popupDescription = popupDescription
+      self.popupLeftButtonTitle = popupLeftButtonTitle
+      self.popupRightButtonTitle = popupRightButtonTitle
+      self.isPopupPresented = isPopupPresented
       self.isLoginViewPresented = isLoginViewPresented
       self.isErrorPresented = isErrorPresented
     }
@@ -71,8 +125,7 @@ public struct MyPageCore {
     // Internal Action
     case checkPushOn
     case updatePushStatus(Bool)
-    case showLogout(Bool)
-    case showWithdraw(Bool)
+    case showPopup(Bool, State.MyPagePopup?)
     case showLoginView
     case showError(Bool, State.MyPageError)
     case openSetting
@@ -120,12 +173,13 @@ public struct MyPageCore {
         state.alarmStatus = pushStatus ? .on : .off
         return .none
         
-      case let .showLogout(isPresented):
-        state.isLogoutPresented = isPresented
-        return .none
-        
-      case let .showWithdraw(isPresented):
-        state.isWithdrawPresented = isPresented
+      case let .showPopup(isPopupPresented, popupType):
+        state.isPopupPresented = isPopupPresented
+        state.popupType = popupType
+        state.popupTitle = popupType?.title ?? "타이틀"
+        state.popupDescription = popupType?.description
+        state.popupLeftButtonTitle = popupType?.leftButtonTitle ?? "왼쪽"
+        state.popupRightButtonTitle = popupType?.rightButtonTitle ?? "오른쪽"
         return .none
         
       case .showLoginView:
@@ -136,6 +190,7 @@ public struct MyPageCore {
       case let .showError(isErrorPresented, errorType):
         state.isErrorPresented = isErrorPresented
         state.errorType = errorType
+        state.errorMessage = errorType.message
         return .none
         
       case .openSetting:

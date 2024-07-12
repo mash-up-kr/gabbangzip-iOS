@@ -80,7 +80,7 @@ public struct MyPageView: View {
         
         Button(
           action: {
-            store.send(.showLogout(true))
+            store.send(.showPopup(true, .logout))
           }, label: {
             SettingTitleView(text: MyPageNameSpace.logout)
           }
@@ -89,7 +89,7 @@ public struct MyPageView: View {
         
         Button(
           action: {
-            store.send(.showWithdraw(true))
+            store.send(.showPopup(true, .withdraw))
           }, label: {
             SettingTitleView(text: MyPageNameSpace.withdraw)
           }
@@ -104,33 +104,20 @@ public struct MyPageView: View {
       }
       .toast(
         isPresented: $store.isErrorPresented,
-        type: .textWithInfoIcon(store.errorType.message)
+        type: .textWithInfoIcon(store.errorMessage)
       )
       .popup(
-        isPresented: $store.isLogoutPresented,
-        title: MyPageNameSpace.Logout.title,
-        leftButtonTitle: MyPageNameSpace.Logout.leftButtonTitle,
+        isPresented: $store.isPopupPresented,
+        title: store.popupTitle,
+        description: store.popupDescription,
+        leftButtonTitle: store.popupLeftButtonTitle,
         leftButtonAction: {
-          store.send(.showLogout(false))
+          store.send(.showPopup(false, store.popupType))
         },
-        rightButtonTitle: MyPageNameSpace.Logout.rightButtonTitle,
+        rightButtonTitle: store.popupRightButtonTitle,
         rightButtonAction: {
           store.send(.logout)
-          store.send(.showLogout(false))
-        }
-      )
-      .popup(
-        isPresented: $store.isWithdrawPresented,
-        title: MyPageNameSpace.Withdraw.title,
-        description: MyPageNameSpace.Withdraw.description,
-        leftButtonTitle: MyPageNameSpace.Withdraw.leftButtonTitle,
-        leftButtonAction: {
-          store.send(.showWithdraw(false))
-        },
-        rightButtonTitle: MyPageNameSpace.Withdraw.rightButtonTitle,
-        rightButtonAction: {
-          store.send(.withdraw)
-          store.send(.showWithdraw(false))
+          store.send(.showPopup(false, store.popupType))
         }
       )
     }
@@ -199,19 +186,6 @@ extension MyPageView {
     static let version = "현재 버전"
     static let logout = "로그아웃"
     static let withdraw = "회원탈퇴"
-    
-    enum Logout {
-      static let title = "로그아웃 하시겠어요?"
-      static let leftButtonTitle = "취소"
-      static let rightButtonTitle = "로그아웃"
-    }
-    
-    enum Withdraw {
-      static let title = "탈퇴하실건가요?"
-      static let description = "탈퇴 시 그룹, 활동 내역이\n삭제되며 복구되지 않습니다."
-      static let leftButtonTitle = "취소"
-      static let rightButtonTitle = "탈퇴하기"
-    }
   }
 }
 
@@ -219,10 +193,15 @@ extension MyPageView {
   MyPageView(
     store: Store(
       initialState: MyPageCore.State(
+        nickname: "가빵집",
+        currentVersion: "0.0.0",
         alarmStatus: .on,
         errorType: .setting,
-        nickname: "가빵집",
-        currentVersion: "1.0.0"
+        errorMessage: "에러",
+        popupType: .logout,
+        popupTitle: "타이틀",
+        popupLeftButtonTitle: "왼쪽",
+        popupRightButtonTitle: "오른쪽"
       ),
       reducer: MyPageCore.init
     )
