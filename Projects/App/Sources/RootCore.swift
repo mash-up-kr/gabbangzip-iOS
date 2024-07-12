@@ -18,9 +18,19 @@ import Services
 public struct RootCore {
   @ObservableState
   public struct State: Equatable {
-    public var isLogin: Bool = true
-    public var login: LoginCore.State = LoginCore.State()
-    public var nickname: String = ""
+    public var isLogin: Bool
+    public var login: LoginCore.State
+    public var nickname: String
+    
+    public init(
+      isLogin: Bool = true,
+      login: LoginCore.State = LoginCore.State(),
+      nickname: String = ""
+    ) {
+      self.isLogin = isLogin
+      self.login = login
+      self.nickname = nickname
+    }
   }
   
   public enum Action {
