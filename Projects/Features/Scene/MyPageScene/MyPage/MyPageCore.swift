@@ -16,7 +16,7 @@ public struct MyPageCore {
   
   @ObservableState
   public struct State: Equatable {
-    public var alarmStatus: Status
+    public var alarmStatus: AlarmStatus
     public var nickname: String
     public var currentVersion: String
     public var isLogoutPresented: Bool
@@ -25,13 +25,13 @@ public struct MyPageCore {
     public var isSettingErrorPresented: Bool
     public var isWithdrawErrorPresented: Bool
     
-    public enum Status: String {
+    public enum AlarmStatus: String {
       case on
       case off
     }
     
     public init(
-      alarmStatus: Status,
+      alarmStatus: AlarmStatus,
       nickname: String,
       currentVersion: String,
       isLogoutPresented: Bool = false,
