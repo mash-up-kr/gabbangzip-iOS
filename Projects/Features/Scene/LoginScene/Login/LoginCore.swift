@@ -202,6 +202,7 @@ public struct LoginCoreError: GabbangzipError {
     case failToGetAccessToken
     case failToGetRefreshToken
     case failToGetNickname
+    case failToLogin
     case failToSaveTokenInKeyChain
   }
 }
