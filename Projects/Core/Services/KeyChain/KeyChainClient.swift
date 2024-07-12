@@ -76,6 +76,8 @@ extension KeyChainClient: DependencyKey {
         switch status {
         case errSecNoSuchKeychain:
           throw KeyChainClientError(code: .failToDelete)
+        case errSecItemNotFound:
+          throw KeyChainClientError(code: .failToDelete)
         case noErr:
           break
         default:
