@@ -27,7 +27,7 @@ public struct GroupData: Decodable, Hashable {
 }
 
 extension GroupData {
-  public enum Keyword: String, Decodable {
+  public enum Keyword: String, CaseIterable, Decodable {
     case school = "SCHOOL"
     case company = "COMPANY"
     case crew = "CREW"

@@ -15,10 +15,19 @@ public struct GabbangzipPhotoPicker<Content: View>: View {
   @Binding private var isPresentedError: Bool
   private let maxSelectedCount: MaxSelectedCountType
   private var disabled: Bool {
-    selectedImages.count >= maxSelectedCount.rawValue
+    if case .single = maxSelectedCount {
+      return false
+    } else {
+      return selectedImages.count >= maxSelectedCount.rawValue
+    }
+    
   }
   private var availableSelectedCount: Int {
-    maxSelectedCount.rawValue - selectedImages.count
+    if case .single = maxSelectedCount {
+      return 1
+    } else {
+      return maxSelectedCount.rawValue - selectedImages.count
+    }
   }
   private let matching: PHPickerFilter
   private let photoLibrary: PHPhotoLibrary
@@ -64,7 +73,12 @@ public struct GabbangzipPhotoPicker<Content: View>: View {
           if let data = data, let newImage = UIImage(data: data) {
             if !selectedImages.contains(where: { $0.pngData() == newImage.pngData() }) {
               DispatchQueue.main.async {
-                selectedImages.append(newImage)
+                if case .single = maxSelectedCount {
+                  selectedImages.removeAll()
+                  selectedImages.append(newImage)
+                } else {
+                  selectedImages.append(newImage)
+                }
               }
             }
           }
