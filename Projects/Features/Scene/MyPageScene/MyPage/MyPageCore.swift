@@ -74,7 +74,7 @@ public struct MyPageCore {
   }
   
   @Dependency(\.userDefaultsClient) private var userDefaultsClient
-  @Dependency(\.unUserNotificationCenterClient) private var unUserNotificationCenterClient
+  @Dependency(\.userNotificationClient) private var userNotificationCenterClient
   @Dependency(\.uiApplicationClient) private var uiApplicationClient
   @Dependency(\.kakaoAPIClient) private var kakaoAPIClient
   @Dependency(\.kakaoLoginClient) private var kakaoLoginClient
@@ -88,7 +88,18 @@ public struct MyPageCore {
         
       case .checkPushOn:
         return .run { send in
-          let isPushOn = try await unUserNotificationCenterClient.requestAuthorization()
+          let authorizationStatus = await userNotificationCenterClient.getAuthorizationStatus()
+          var isPushOn: Bool
+          
+          switch authorizationStatus {
+          case .authorized, .notDetermined, .ephemeral:
+            isPushOn = true
+          case .denied, .provisional:
+            isPushOn = false
+          @unknown default:
+            isPushOn = false
+          }
+          
           await send(.updatePushStatus(isPushOn))
         } catch: { error, send in
           await send(.logError(MyPageCoreError(code: .alarmStatusError)))
