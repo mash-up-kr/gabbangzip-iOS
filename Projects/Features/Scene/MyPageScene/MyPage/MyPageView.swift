@@ -137,7 +137,7 @@ public struct MyPageView: View {
   }
 }
 
-// MARK: - CustomView
+// MARK: - 설정 항목 타이틀 뷰
 fileprivate struct SettingTitleView: View {
   private var text: String
   private var font: Font
@@ -172,6 +172,7 @@ fileprivate struct SettingTitleView: View {
   }
 }
 
+// MARK: - 설정 항목 구분선 뷰
 fileprivate struct SeparatorView: View {
   private var height: CGFloat
   private var padding: CGFloat
