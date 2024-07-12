@@ -9,7 +9,8 @@
 import Common
 import ComposableArchitecture
 import Foundation
-import KakaoLogin
+import KakaoSDKUser
+import Login
 import Models
 import Services
 
@@ -17,26 +18,45 @@ import Services
 public struct RootCore {
   @ObservableState
   public struct State: Equatable {
-    public var isLogin: Bool = true
-    public var login: LoginCore.State = LoginCore.State()
+    public var isLogin: Bool
+    public var login: LoginCore.State
+    public var nickname: String
+    
+    public init(
+      isLogin: Bool = true,
+      login: LoginCore.State = LoginCore.State(),
+      nickname: String = ""
+    ) {
+      self.isLogin = isLogin
+      self.login = login
+      self.nickname = nickname
+    }
   }
   
   public enum Action {
+    // View Action
     case onAppear
+    case onOpenURL(URL)
+    case setLoginStatus(Bool)
+    case login(LoginCore.Action)
+    
+    // Internal Action
     case readAccessToken(Result<String, Error>)
     case readRefreshToken(Result<String, Error>)
     case checkAccessToken(Result<TestInfo?, Error>)
     case refreshToken(Result<TokenInfo?, Error>)
     case updateToken(Result<(KeyChainClient.Key, String), RootCoreError>)
-    case setLoginStatus(Bool)
-    case login(LoginCore.Action)
-    case onOpenURL(URL)
+    case getUser(Result<User, Error>)
+    case updateUser(UserDefaultsClient.Key, String)
+    case getNickname
+    case setNickname(Result<String, Error>)
     case logError(RootCoreError)
   }
   
-  @Dependency(\.kakaoAPIClient) var kakaoAPIClient
-  @Dependency(\.kakaoLoginClient) var kakaoLoginClient
-  @Dependency(\.keyChainClient) var keyChainClient
+  @Dependency(\.kakaoAPIClient) private var kakaoAPIClient
+  @Dependency(\.kakaoLoginClient) private var kakaoLoginClient
+  @Dependency(\.keyChainClient) private var keyChainClient
+  @Dependency(\.userDefaultsClient) private var userDefaultsClient
   
   public var body: some Reducer<State, Action> {
     Scope(
@@ -49,24 +69,33 @@ public struct RootCore {
       switch action {
       case .onAppear:
         return .run { send in
-          await send(
-            .readAccessToken(
-              Result {
-                try await self.keyChainClient.read(.accessToken)
-              }
-            )
-          )
+          await send(.readAccessToken(Result { try await self.keyChainClient.read(.accessToken) }))
+          await send(.getNickname)
         }
+        
+      case let .onOpenURL(url):
+        return .run { send in
+          let isKakaoOpened = kakaoLoginClient.openURL(url)
+          
+          if !isKakaoOpened {
+            await send(.logError(RootCoreError(code: .failToOpenKakao)))
+          }
+        }
+        
+      case let .setLoginStatus(isLogin):
+        state.isLogin = isLogin
+        return .none
+        
+      case let .login(.delegate(.checkLogin(isLogin))):
+        state.isLogin = isLogin
+        return .none
+        
+      case .login:
+        return .none
         
       case let .readAccessToken(.success(accessToken)):
         return .run { send in
-          await send(
-            .checkAccessToken(
-              Result {
-                try await self.kakaoAPIClient.testToken(accessToken)
-              }
-            )
-          )
+          await send(.checkAccessToken(Result { try await self.kakaoAPIClient.testToken(accessToken) }))
         }
         
       case .readAccessToken(.failure):
@@ -76,13 +105,7 @@ public struct RootCore {
         
       case let .readRefreshToken(.success(refreshToken)):
         return .run { send in
-          await send(
-            .refreshToken(
-              Result {
-                try await self.kakaoAPIClient.refreshToken(refreshToken)
-              }
-            )
-          )
+          await send(.refreshToken(Result { try await self.kakaoAPIClient.refreshToken(refreshToken) }))
         }
         
       case .readRefreshToken(.failure):
@@ -90,36 +113,35 @@ public struct RootCore {
           await send(.setLoginStatus(false))
         }
         
-      case let .checkAccessToken(.success(testInformation)):
+      case let .checkAccessToken(.success(testInfo)):
         return .run { send in
-          await send(.setLoginStatus(true))
+          if testInfo != nil {
+            await send(.setLoginStatus(true))
+          } else {
+            await send(.setLoginStatus(false))
+          }
         }
         
       case .checkAccessToken(.failure):
         return .run { send in
-          await send(
-            .readRefreshToken(
-              Result {
-                try await self.keyChainClient.read(.refreshToken)
-              }
-            )
-          )
+          await send(.readRefreshToken(Result { try await self.keyChainClient.read(.refreshToken) }))
         }
         
       case let .refreshToken(.success(tokenInformation)):
         return .run { send in
-            if let accessToken = tokenInformation?.accessToken {
-              await send(.updateToken(.success((.accessToken, accessToken))))
-            } else {
-              await send(.updateToken(.failure(RootCoreError(code: .failToSaveToken))))
-            }
-            if let refreshToken = tokenInformation?.refreshToken {
-              await send(.updateToken(.success((.refreshToken, refreshToken))))
-            } else {
-              await send(.updateToken(.failure(RootCoreError(code: .failToSaveToken))))
-            }
-            await send(.setLoginStatus(true))
+          if let accessToken = tokenInformation?.accessToken {
+            await send(.updateToken(.success((.accessToken, accessToken))))
+          } else {
+            await send(.updateToken(.failure(RootCoreError(code: .failToSaveToken))))
           }
+          if let refreshToken = tokenInformation?.refreshToken {
+            await send(.updateToken(.success((.refreshToken, refreshToken))))
+          } else {
+            await send(.updateToken(.failure(RootCoreError(code: .failToSaveToken))))
+          }
+          await send(.getUser(Result { try await kakaoLoginClient.checkUserInformation() }))
+          await send(.setLoginStatus(true))
+        }
         
       case .refreshToken(.failure):
         return .run { send in
@@ -136,25 +158,43 @@ public struct RootCore {
           await send(.logError(error))
         }
         
-      case let .setLoginStatus(isLogin):
-        state.isLogin = isLogin
-        return .none
-        
-      case .login(.delegate(.checkLogin(let isLogin))):
-        state.isLogin = isLogin
-        return .none
-        
-      case .login:
-        return .none
-        
-      case let .onOpenURL(url):
+      case let .getUser(.success(user)):
         return .run { send in
-          kakaoLoginClient.openURL(url)
+          if let nickname = user.kakaoAccount?.profile?.nickname {
+            await send(.updateUser(.nickname, nickname))
+          } else {
+            await send(.logError(RootCoreError(code: .failToGetNickname)))
+          }
+        }
+        
+      case .getUser(.failure):
+        return .run { send in
+          await send(.logError(RootCoreError(code: .failToGetNickname)))
+        }
+        
+      case let .updateUser(key, value):
+        return .run { send in
+          userDefaultsClient.set(value, key)
+        }
+        
+      case .getNickname:
+        return .run { send in
+          await send(.setNickname(Result { try userDefaultsClient.string(.nickname) }))
+        }
+        
+      case let .setNickname(.success(nickname)):
+        state.nickname = nickname
+        return .none
+        
+      case .setNickname(.failure):
+        return .run { send in
+          await send(.logError(RootCoreError(code: .failToSetNickName)))
         }
         
       case let .logError(error):
-        logger.error("RootCore Error: \(String(describing: error))")
-        return .none
+        return .run { send in
+          logger.error("RootCore Error: \(error)")
+        }
       }
     }
   }
@@ -167,8 +207,10 @@ public struct RootCoreError: GabbangzipError {
   public var underlying: Error?
   
   public enum Code: Int {
-    case failToGetToken
+    case failToOpenKakao
     case failToSaveToken
+    case failToGetNickname
+    case failToSetNickName
   }
 }
 

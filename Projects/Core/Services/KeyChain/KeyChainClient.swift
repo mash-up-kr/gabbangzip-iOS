@@ -68,13 +68,15 @@ extension KeyChainClient: DependencyKey {
       delete: { key in
         let query: NSDictionary = [
           kSecClass: kSecClassGenericPassword,
-          kSecAttrAccount: key.rawValue
+          kSecAttrAccount: key.type
         ]
         
         let status = SecItemDelete(query)
         
         switch status {
         case errSecNoSuchKeychain:
+          throw KeyChainClientError(code: .failToDelete)
+        case errSecItemNotFound:
           throw KeyChainClientError(code: .failToDelete)
         case noErr:
           break
@@ -108,7 +110,7 @@ extension KeyChainClient {
 
 // MARK: - Keys NameSpace
 extension KeyChainClient {
-  public enum Key: String {
+  public enum Key {
     case accessToken
     case refreshToken
     

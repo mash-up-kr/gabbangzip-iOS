@@ -38,6 +38,8 @@ public struct PopupViewModifier: ViewModifier {
         }
         .background(DesignSystem.Colors.gray100.opacity(0.5))
       }
+    } else {
+      content
     }
   }
 }

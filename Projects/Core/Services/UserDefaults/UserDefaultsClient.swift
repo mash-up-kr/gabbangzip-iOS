@@ -11,20 +11,20 @@ import Foundation
 
 @DependencyClient
 public struct UserDefaultsClient: Sendable {
-  public var string: @Sendable (_ forKey: String) throws -> String
-  public var integer: @Sendable (_ forKey: String) throws -> Int
-  public var bool: @Sendable (_ forKey: String) throws -> Bool
-  public var float: @Sendable (_ forKey: String) throws -> Float
-  public var double: @Sendable (_ forKey: String) throws -> Double
-  public var data: @Sendable (_ forKey: String) throws -> Data
-  public var object: @Sendable (_ forKey: String) throws -> Any
-  public var set: @Sendable (_ value: Any, _ forKey: String) -> Void
-  public var removeObject: @Sendable (_ forKey: String) -> Void
+  public var string: @Sendable (_ forKey: Key) throws -> String
+  public var integer: @Sendable (_ forKey: Key) throws -> Int
+  public var bool: @Sendable (_ forKey: Key) throws -> Bool
+  public var float: @Sendable (_ forKey: Key) throws -> Float
+  public var double: @Sendable (_ forKey: Key) throws -> Double
+  public var data: @Sendable (_ forKey: Key) throws -> Data
+  public var object: @Sendable (_ forKey: Key) throws -> Any
+  public var set: @Sendable (_ value: Any, _ forKey: Key) -> Void
+  public var removeObject: @Sendable (_ forKey: Key) -> Void
 }
 
 extension UserDefaultsClient: DependencyKey {
-  static func getValue<T>(_ type: T.Type, forKey key: String) throws -> T {
-    guard let value = UserDefaults.standard.object(forKey: key) else {
+  static func getValue<T>(_ type: T.Type, forKey key: Key) throws -> T {
+    guard let value = UserDefaults.standard.object(forKey: key.type) else {
       throw UserDefaultsClientError(code: .keyNotFound)
     }
     guard let typeCastedValue = value as? T else {
@@ -54,16 +54,16 @@ extension UserDefaultsClient: DependencyKey {
         return try getValue(Data.self, forKey: key)
       },
       object: { key in
-        guard let object = UserDefaults.standard.object(forKey: key) else {
+        guard let object = UserDefaults.standard.object(forKey: key.type) else {
           throw UserDefaultsClientError(code: .keyNotFound)
         }
         return object
       },
       set: { value, key in
-        UserDefaults.standard.set(value, forKey: key)
+        UserDefaults.standard.set(value, forKey: key.type)
       },
       removeObject: { key in
-        UserDefaults.standard.removeObject(forKey: key)
+        UserDefaults.standard.removeObject(forKey: key.type)
       }
     )
   }
@@ -77,6 +77,20 @@ public extension DependencyValues {
   var userDefaultsClient: UserDefaultsClient {
     get { self[UserDefaultsClient.self] }
     set { self[UserDefaultsClient.self] = newValue }
+  }
+}
+
+// MARK: - Keys NameSpace
+extension UserDefaultsClient {
+  public enum Key {
+    case nickname
+    
+    var type: String {
+      switch self {
+      case .nickname:
+        return "nickname"
+      }
+    }
   }
 }
 

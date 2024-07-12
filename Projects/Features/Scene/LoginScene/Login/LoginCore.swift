@@ -1,6 +1,6 @@
 //
 //  LoginCore.swift
-//  Main
+//  Login
 //
 //  Created by Hyun A Song on 6/24/24.
 //  Copyright © 2024 com.mashup.gabbangzip. All rights reserved.
@@ -35,15 +35,21 @@ public struct LoginCore {
   }
   
   public enum Action: BindableAction {
+    case binding(BindingAction<State>)
+    case delegate(Delegate)
+
+    // View Action
     case loginButtonTapped
+    
+    // Internal Action
     case loginWithKakaoTalkResponse(Result<String?, Error>)
     case loginWithKakaoAccountResponse(Result<String?, Error>)
     case checkUserInformationResponse(Result<User, Error>)
     case loginResponse(Result<PICUserInfo?, Error>)
     case saveTokenInKeyChain(Result<(KeyChainClient.Key, String), LoginCoreError>)
+    case saveUserInUserDefaults(UserDefaultsClient.Key, String)
     case showError(Bool)
-    case binding(BindingAction<State>)
-    case delegate(Delegate)
+    case logError(LoginCoreError)
     
     public enum Delegate {
       case checkLogin(Bool)
@@ -53,22 +59,23 @@ public struct LoginCore {
   @Dependency(\.kakaoLoginClient) private var kakaoLoginClient
   @Dependency(\.kakaoAPIClient) private var kakaoAPIClient
   @Dependency(\.keyChainClient) private var keyChainClient
+  @Dependency(\.userDefaultsClient) private var userDefaultsClient
   
   public var body: some Reducer<State, Action> {
     BindingReducer()
     
     Reduce { state, action in
       switch action {
+      case .binding:
+        return .none
+        
+      case .delegate:
+        return .none
+        
       case .loginButtonTapped:
         return .run { send in
           if kakaoLoginClient.isKakaoTalkLoginAvailable() {
-            await send(
-              .loginWithKakaoTalkResponse(
-                Result {
-                  try await self.kakaoLoginClient.loginWithKakaoTalk()
-                }
-              )
-            )
+            await send(.loginWithKakaoTalkResponse(Result { try await self.kakaoLoginClient.loginWithKakaoTalk() }))
           } else {
             await send(
               .loginWithKakaoAccountResponse(
@@ -83,13 +90,7 @@ public struct LoginCore {
       case let .loginWithKakaoTalkResponse(.success(idToken)):
         state.kakaoIdToken.idToken = idToken
         return .run { send in
-          await send(
-            .checkUserInformationResponse(
-              Result {
-                try await kakaoLoginClient.checkUserInformation()
-              }
-            )
-          )
+          await send(.checkUserInformationResponse(Result { try await kakaoLoginClient.checkUserInformation() }))
         }
         
       case .loginWithKakaoTalkResponse(.failure):
@@ -100,13 +101,7 @@ public struct LoginCore {
       case let .loginWithKakaoAccountResponse(.success(idToken)):
         state.kakaoIdToken.idToken = idToken
         return .run { send in
-          await send(
-            .checkUserInformationResponse(
-              Result {
-                try await kakaoLoginClient.checkUserInformation()
-              }
-            )
-          )
+          await send(.checkUserInformationResponse(Result { try await kakaoLoginClient.checkUserInformation() }))
         }
         
       case .loginWithKakaoAccountResponse(.failure):
@@ -118,20 +113,23 @@ public struct LoginCore {
         state.kakaoUser.nickname = user.kakaoAccount?.profile?.nickname
         state.kakaoUser.profileImageUrl = user.kakaoAccount?.profile?.profileImageUrl
         return .run { [state] send in
-          let idToken = state.kakaoIdToken.idToken ?? ""
-          let nickname = state.kakaoUser.nickname ?? ""
-          let profileImageUrl = state.kakaoUser.profileImageUrl?.absoluteString ?? ""
-          await send(
-            .loginResponse(
-              Result {
-                try await kakaoAPIClient.login(
-                  idToken,
-                  nickname,
-                  profileImageUrl
-                )
-              }
+          if let idToken = state.kakaoIdToken.idToken,
+             let nickname = state.kakaoUser.nickname,
+             let profileImageUrl = state.kakaoUser.profileImageUrl?.absoluteString {
+            await send(
+              .loginResponse(
+                Result {
+                  try await kakaoAPIClient.login(
+                    idToken,
+                    nickname,
+                    profileImageUrl
+                  )
+                }
+              )
             )
-          )
+          } else {
+            await send(.loginResponse(.failure(LoginCoreError(code: .failToCheckUserInformation))))
+          }
         }
         
       case .checkUserInformationResponse(.failure):
@@ -151,11 +149,16 @@ public struct LoginCore {
           } else {
             await send(.saveTokenInKeyChain(.failure(LoginCoreError(code: .failToGetRefreshToken))))
           }
+          if let nickname = user?.nickname {
+            await send(.saveUserInUserDefaults(.nickname, nickname))
+          } else {
+            await send(.logError(LoginCoreError(code: .failToGetNickname)))
+          }
         }
         
-      case let .loginResponse(.failure(error)):
+      case .loginResponse(.failure):
         return .run { send in
-          logger.error("Fail to Login \(error)")
+          await send(.logError(LoginCoreError(code: .failToLogin)))
           await send(.showError(true))
         }
         
@@ -165,19 +168,24 @@ public struct LoginCore {
           await send(.delegate(.checkLogin(true)))
         }
         
-      case let .saveTokenInKeyChain(.failure(error)):
-        logger.error("Fail to save Token in KeyChain \(error)")
-        return .none
+      case .saveTokenInKeyChain(.failure):
+        return .run { send in
+          await send(.logError(LoginCoreError(code: .failToSaveTokenInKeyChain)))
+        }
+        
+      case let .saveUserInUserDefaults(key, value):
+        return .run { send in
+          userDefaultsClient.set(value, key)
+        }
         
       case let .showError(isPresented):
         state.isPresented = isPresented
         return .none
         
-      case .binding:
-        return .none
-        
-      case .delegate:
-        return .none
+      case let .logError(error):
+        return .run { send in
+          logger.error("MyPage Error: \(error)")
+        }
       }
     }
   }
@@ -190,7 +198,11 @@ public struct LoginCoreError: GabbangzipError {
   public var underlying: Error?
   
   public enum Code: Int {
+    case failToCheckUserInformation
     case failToGetAccessToken
     case failToGetRefreshToken
+    case failToGetNickname
+    case failToLogin
+    case failToSaveTokenInKeyChain
   }
 }

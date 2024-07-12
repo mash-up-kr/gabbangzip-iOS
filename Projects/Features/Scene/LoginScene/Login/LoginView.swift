@@ -1,6 +1,6 @@
 //
 //  LoginView.swift
-//  Main
+//  Login
 //
 //  Created by Hyun A Song on 6/24/24.
 //  Copyright © 2024 com.mashup.gabbangzip. All rights reserved.
@@ -27,7 +27,7 @@ public struct LoginView: View {
         .scaledToFit()
         .frame(width: 100)
       
-      Text("우리가 픽! 하는\n우리끼리 네컷앨범")
+      Text(LoginViewNameSpace.loginTitle)
         .font(.text22)
         .multilineTextAlignment(.center)
         .foregroundStyle(DesignSystem.Colors.gray80)
@@ -59,8 +59,16 @@ public struct LoginView: View {
     }
     .toast(
       isPresented: $store.isPresented,
-      type: .textWithInfoIcon("로그인에 실패했어요.")
+      type: .textWithInfoIcon(LoginViewNameSpace.loginErrorMessage)
     )
+  }
+}
+
+// MARK: - LoginViewNameSpace
+extension LoginView {
+  fileprivate enum LoginViewNameSpace {
+    static let loginTitle = "우리가 픽! 하는\n우리끼리 네컷앨범"
+    static let loginErrorMessage = "로그인에 실패했어요."
   }
 }
 

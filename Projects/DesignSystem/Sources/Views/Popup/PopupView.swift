@@ -95,9 +95,14 @@ private struct BottomButton: View {
     HStack {
       Spacer()
       
-      Text(title)
-        .font(.body14)
-        .foregroundStyle(titleColor)
+      Button(
+        action: action,
+        label: {
+          Text(title)
+            .font(.body14)
+            .foregroundColor(titleColor)
+        }
+      )
       
       Spacer()
     }

@@ -7,7 +7,7 @@
 
 import ComposableArchitecture
 import DesignSystem
-import KakaoLogin
+import Login
 import SwiftUI
 
 struct RootView: View {
