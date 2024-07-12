@@ -165,7 +165,7 @@ public struct LoginCore {
           }
         }
         
-      case let .loginResponse(.failure(error)):
+      case .loginResponse(.failure):
         return .run { send in
           await send(.logError(LoginCoreError(code: .failToLogin)))
           await send(.showError(true))
@@ -177,7 +177,7 @@ public struct LoginCore {
           await send(.delegate(.checkLogin(true)))
         }
         
-      case let .saveTokenInKeyChain(.failure(error)):
+      case .saveTokenInKeyChain(.failure):
         return .run { send in
           await send(.logError(LoginCoreError(code: .failToSaveTokenInKeyChain)))
         }

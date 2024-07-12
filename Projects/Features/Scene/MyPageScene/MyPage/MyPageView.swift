@@ -8,7 +8,7 @@
 
 import ComposableArchitecture
 import DesignSystem
-import KakaoLogin
+import Login
 import SwiftUI
 
 public struct MyPageView: View {
