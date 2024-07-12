@@ -32,7 +32,7 @@ public struct MyPageView: View {
       VStack {
         NavigationBar(type: .titleWithBackButton(MyPageNameSpace.myPageTitle))
         
-        SettingTextView(
+        SettingTitleView(
           text: store.nickname,
           font: .head20,
           verticalPadding: 16
@@ -40,7 +40,7 @@ public struct MyPageView: View {
         
         SeparatorView(height: 16, padding: 16)
         
-        SettingTextView(
+        SettingTitleView(
           text: MyPageNameSpace.alarmSetting,
           font: .head14
         )
@@ -50,9 +50,9 @@ public struct MyPageView: View {
             store.send(.openSetting)
           }, label: {
             HStack {
-              SettingTextView(text: MyPageNameSpace.appAlarm)
+              SettingTitleView(text: MyPageNameSpace.appAlarm)
               
-              SettingTextView(
+              SettingTitleView(
                 text: store.alarmStatus.rawValue,
                 color: DesignSystem.Colors.gray60,
                 alignment: .trailing
@@ -63,15 +63,15 @@ public struct MyPageView: View {
         
         SeparatorView(height: 2, padding: 10)
         
-        SettingTextView(
+        SettingTitleView(
           text: MyPageNameSpace.userSetting,
           font: .head14
         )
         
         HStack {
-          SettingTextView(text: MyPageNameSpace.version)
+          SettingTitleView(text: MyPageNameSpace.version)
           
-          SettingTextView(
+          SettingTitleView(
             text: store.currentVersion,
             color: DesignSystem.Colors.gray60,
             alignment: .trailing
@@ -82,7 +82,7 @@ public struct MyPageView: View {
           action: {
             store.send(.showLogout(true))
           }, label: {
-            SettingTextView(text: MyPageNameSpace.logout)
+            SettingTitleView(text: MyPageNameSpace.logout)
           }
         )
         
@@ -91,7 +91,7 @@ public struct MyPageView: View {
           action: {
             store.send(.showWithdraw(true))
           }, label: {
-            SettingTextView(text: MyPageNameSpace.withdraw)
+            SettingTitleView(text: MyPageNameSpace.withdraw)
           }
         )
         
@@ -142,7 +142,7 @@ public struct MyPageView: View {
 }
 
 // MARK: - CustomView
-fileprivate struct SettingTextView: View {
+fileprivate struct SettingTitleView: View {
   private var text: String
   private var font: Font
   private var color: Color
