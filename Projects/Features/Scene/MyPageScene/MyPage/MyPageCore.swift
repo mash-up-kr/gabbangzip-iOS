@@ -54,23 +54,21 @@ public struct MyPageCore {
   public enum Action: BindableAction {
     case binding(BindingAction<State>)
     
-    // View Action
+    // Internal Action
     case checkPushOn
     case updatePushStatus(Bool)
-    case logError(MyPageCoreError)
     case showLogout(Bool)
     case showWithdraw(Bool)
     case showLoginView
     case showSettingError(Bool)
     case showWithdrawError(Bool)
-    
-    // Internal Action
     case openSetting
     case logout
     case withdraw
     case getAccessTokenToDelete
     case deleteUser(String)
     case deleteUserInfo
+    case logError(MyPageCoreError)
   }
   
   @Dependency(\.userDefaultsClient) private var userDefaultsClient
@@ -109,11 +107,6 @@ public struct MyPageCore {
         state.alarmStatus = pushStatus ? .on : .off
         return .none
         
-      case let .logError(error):
-        return .run { send in
-          logger.error("MyPage Error: \(error)")
-        }
-        
       case let .showLogout(isPresented):
         state.isLogoutPresented = isPresented
         return .none
@@ -123,6 +116,7 @@ public struct MyPageCore {
         return .none
         
       case .showLoginView:
+        // TODO: - Coordinator에게 일임해야 함
         state.isLoginViewPresented = true
         return .none
         
@@ -193,6 +187,11 @@ public struct MyPageCore {
           userDefaultsClient.removeObject(.nickname)
         } catch: { error, send in
           await send(.logError(MyPageCoreError(code: .failToDeleteUserInfo)))
+        }
+        
+      case let .logError(error):
+        return .run { send in
+          logger.error("MyPage Error: \(error)")
         }
       }
     }

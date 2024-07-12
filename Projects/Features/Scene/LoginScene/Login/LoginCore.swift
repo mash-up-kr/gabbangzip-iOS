@@ -40,8 +40,6 @@ public struct LoginCore {
 
     // View Action
     case loginButtonTapped
-    case showError(Bool)
-    case logError(LoginCoreError)
     
     // Internal Action
     case loginWithKakaoTalkResponse(Result<String?, Error>)
@@ -50,6 +48,8 @@ public struct LoginCore {
     case loginResponse(Result<PICUserInfo?, Error>)
     case saveTokenInKeyChain(Result<(KeyChainClient.Key, String), LoginCoreError>)
     case saveUserInUserDefaults(UserDefaultsClient.Key, String)
+    case showError(Bool)
+    case logError(LoginCoreError)
     
     public enum Delegate {
       case checkLogin(Bool)
@@ -85,15 +85,6 @@ public struct LoginCore {
               )
             )
           }
-        }
-        
-      case let .showError(isPresented):
-        state.isPresented = isPresented
-        return .none
-        
-      case let .logError(error):
-        return .run { send in
-          logger.error("MyPage Error: \(error)")
         }
         
       case let .loginWithKakaoTalkResponse(.success(idToken)):
@@ -185,6 +176,15 @@ public struct LoginCore {
       case let .saveUserInUserDefaults(key, value):
         return .run { send in
           userDefaultsClient.set(value, key)
+        }
+        
+      case let .showError(isPresented):
+        state.isPresented = isPresented
+        return .none
+        
+      case let .logError(error):
+        return .run { send in
+          logger.error("MyPage Error: \(error)")
         }
       }
     }

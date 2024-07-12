@@ -36,10 +36,9 @@ public struct RootCore {
   public enum Action {
     // View Action
     case onAppear
+    case onOpenURL(URL)
     case setLoginStatus(Bool)
     case login(LoginCore.Action)
-    case onOpenURL(URL)
-    case logError(RootCoreError)
     
     // Internal Action
     case readAccessToken(Result<String, Error>)
@@ -51,6 +50,7 @@ public struct RootCore {
     case updateUser(UserDefaultsClient.Key, String)
     case getNickname
     case setNickname(Result<String, Error>)
+    case logError(RootCoreError)
   }
   
   @Dependency(\.kakaoAPIClient) private var kakaoAPIClient
@@ -73,6 +73,15 @@ public struct RootCore {
           await send(.getNickname)
         }
         
+      case let .onOpenURL(url):
+        return .run { send in
+          let isKakaoOpened = kakaoLoginClient.openURL(url)
+          
+          if !isKakaoOpened {
+            await send(.logError(RootCoreError(code: .failToOpenKakao)))
+          }
+        }
+        
       case let .setLoginStatus(isLogin):
         state.isLogin = isLogin
         return .none
@@ -83,20 +92,6 @@ public struct RootCore {
         
       case .login:
         return .none
-        
-      case let .onOpenURL(url):
-        return .run { send in
-          let isKakaoOpened = kakaoLoginClient.openURL(url)
-          
-          if !isKakaoOpened {
-            await send(.logError(RootCoreError(code: .failToOpenKakao)))
-          }
-        }
-        
-      case let .logError(error):
-        return .run { send in
-          logger.error("RootCore Error: \(error)")
-        }
         
       case let .readAccessToken(.success(accessToken)):
         return .run { send in
@@ -194,6 +189,11 @@ public struct RootCore {
       case .setNickname(.failure):
         return .run { send in
           await send(.logError(RootCoreError(code: .failToSetNickName)))
+        }
+        
+      case let .logError(error):
+        return .run { send in
+          logger.error("RootCore Error: \(error)")
         }
       }
     }
