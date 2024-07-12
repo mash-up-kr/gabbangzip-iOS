@@ -122,14 +122,16 @@ public struct MyPageCore {
   public enum Action: BindableAction {
     case binding(BindingAction<State>)
     
-    // Internal Action
+    // View Action
     case checkPushOn
-    case updatePushStatus(Bool)
     case showPopup(Bool, State.MyPagePopup?)
-    case showLoginView
-    case showError(Bool, State.MyPageError)
     case openSetting
     case logout
+    
+    // Internal Action
+    case updatePushStatus(Bool)
+    case showLoginView
+    case showError(Bool, State.MyPageError)
     case withdraw
     case getAccessTokenToDelete
     case deleteUser(String)
@@ -169,10 +171,6 @@ public struct MyPageCore {
           await send(.logError(MyPageCoreError(code: .alarmStatusError)))
         }
         
-      case let .updatePushStatus(pushStatus):
-        state.alarmStatus = pushStatus ? .on : .off
-        return .none
-        
       case let .showPopup(isPopupPresented, popupType):
         state.isPopupPresented = isPopupPresented
         state.popupType = popupType
@@ -180,17 +178,6 @@ public struct MyPageCore {
         state.popupDescription = popupType?.description
         state.popupLeftButtonTitle = popupType?.leftButtonTitle ?? "왼쪽"
         state.popupRightButtonTitle = popupType?.rightButtonTitle ?? "오른쪽"
-        return .none
-        
-      case .showLoginView:
-        // TODO: - Coordinator에게 일임해야 함
-        state.isLoginViewPresented = true
-        return .none
-        
-      case let .showError(isErrorPresented, errorType):
-        state.isErrorPresented = isErrorPresented
-        state.errorType = errorType
-        state.errorMessage = errorType.message
         return .none
         
       case .openSetting:
@@ -213,6 +200,21 @@ public struct MyPageCore {
         } catch: { error, send in
           await send(.logError(MyPageCoreError(code: .failToLogout)))
         }
+        
+      case let .updatePushStatus(pushStatus):
+        state.alarmStatus = pushStatus ? .on : .off
+        return .none
+        
+      case .showLoginView:
+        // TODO: - Coordinator에게 일임해야 함
+        state.isLoginViewPresented = true
+        return .none
+        
+      case let .showError(isErrorPresented, errorType):
+        state.isErrorPresented = isErrorPresented
+        state.errorType = errorType
+        state.errorMessage = errorType.message
+        return .none
         
       case .withdraw:
         return .run { send in
