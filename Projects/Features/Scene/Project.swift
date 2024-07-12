@@ -55,7 +55,6 @@ let project = Project.make(
         .project(target: .designSystem, projectPath: .designSystem),
         .external(externalDependency: .composableArchitecture)
       ]
-    )
     ),
     .make(
       name: "CreateGroup",
@@ -69,6 +68,6 @@ let project = Project.make(
         .external(externalDependency: .nukeUI),
         .external(externalDependency: .lottie),
       ]
-    ),
+    )
   ]
 )
