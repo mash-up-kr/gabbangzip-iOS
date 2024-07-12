@@ -103,12 +103,8 @@ public struct MyPageView: View {
         }
       }
       .toast(
-        isPresented: $store.isSettingErrorPresented,
-        type: .textWithInfoIcon(MyPageNameSpace.ErrorMessage.setting)
-      )
-      .toast(
-        isPresented: $store.isWithdrawErrorPresented,
-        type: .textWithInfoIcon(MyPageNameSpace.ErrorMessage.withdraw)
+        isPresented: $store.isErrorPresented,
+        type: .textWithInfoIcon(store.errorType.message)
       )
       .popup(
         isPresented: $store.isLogoutPresented,
@@ -215,19 +211,18 @@ extension MyPageView {
       static let leftButtonTitle = "취소"
       static let rightButtonTitle = "탈퇴하기"
     }
-    
-    enum ErrorMessage {
-      static let setting = "설정앱을 여는데 실패했어요."
-      static let logout = "로그아웃에 실패했어요."
-      static let withdraw = "회원탈퇴에 실패했어요."
-    }
   }
 }
 
 #Preview {
   MyPageView(
     store: Store(
-      initialState: MyPageCore.State(alarmStatus: .on, nickname: "가빵집", currentVersion: "1.0.0"),
+      initialState: MyPageCore.State(
+        alarmStatus: .on,
+        errorType: .setting,
+        nickname: "가빵집",
+        currentVersion: "1.0.0"
+      ),
       reducer: MyPageCore.init
     )
   )

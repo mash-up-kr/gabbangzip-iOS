@@ -17,37 +17,51 @@ public struct MyPageCore {
   @ObservableState
   public struct State: Equatable {
     public var alarmStatus: AlarmStatus
+    public var errorType: MyPageError
     public var nickname: String
     public var currentVersion: String
     public var isLogoutPresented: Bool
     public var isWithdrawPresented: Bool
     public var isLoginViewPresented: Bool
-    public var isSettingErrorPresented: Bool
-    public var isWithdrawErrorPresented: Bool
+    public var isErrorPresented: Bool
     
     public enum AlarmStatus: String {
       case on
       case off
     }
     
+    public enum MyPageError {
+      case setting
+      case withdraw
+      
+      var message: String {
+        switch self {
+        case .setting:
+          "설정앱을 여는데 실패했어요."
+        case .withdraw:
+          "회원탈퇴에 실패했어요."
+        }
+      }
+    }
+    
     public init(
       alarmStatus: AlarmStatus,
+      errorType: MyPageError,
       nickname: String,
       currentVersion: String,
       isLogoutPresented: Bool = false,
       isWithdrawPresented: Bool = false,
       isLoginViewPresented: Bool = false,
-      isSettingErrorPresented: Bool = false,
-      isWithdrawErrorPresented: Bool = false
+      isErrorPresented: Bool = false
     ) {
       self.alarmStatus = alarmStatus
+      self.errorType = errorType
       self.nickname = nickname
       self.currentVersion = currentVersion
       self.isLogoutPresented = isLogoutPresented
       self.isWithdrawPresented = isWithdrawPresented
       self.isLoginViewPresented = isLoginViewPresented
-      self.isSettingErrorPresented = isSettingErrorPresented
-      self.isWithdrawErrorPresented = isWithdrawErrorPresented
+      self.isErrorPresented = isErrorPresented
     }
   }
   
@@ -60,8 +74,7 @@ public struct MyPageCore {
     case showLogout(Bool)
     case showWithdraw(Bool)
     case showLoginView
-    case showSettingError(Bool)
-    case showWithdrawError(Bool)
+    case showError(Bool, State.MyPageError)
     case openSetting
     case logout
     case withdraw
@@ -120,21 +133,18 @@ public struct MyPageCore {
         state.isLoginViewPresented = true
         return .none
         
-      case let .showSettingError(isSettingErrorPresented):
-        state.isSettingErrorPresented = isSettingErrorPresented
-        return .none
-        
-      case let .showWithdrawError(isWithdrawErrorPresented):
-        state.isWithdrawErrorPresented = isWithdrawErrorPresented
+      case let .showError(isErrorPresented, errorType):
+        state.isErrorPresented = isErrorPresented
+        state.errorType = errorType
         return .none
         
       case .openSetting:
         return .run { send in
           let settingURL = await uiApplicationClient.getSettingURL()
-          let isSettingOpened = try await uiApplicationClient.openURL(url: settingURL)
+          let isSettingOpened = try await uiApplicationClient.openURL(settingURL)
           
           if !isSettingOpened {
-            await send(.showSettingError(true))
+            await send(.showError(true, .setting))
           }
         } catch: { error, send in
           await send(.logError(MyPageCoreError(code: .failToGetOpenUrl)))
@@ -155,9 +165,11 @@ public struct MyPageCore {
           await send(.getAccessTokenToDelete)
           await send(.deleteUserInfo)
           await send(.showLoginView)
+            //지우기
+          await send(.showError(true, .setting))
         } catch: { error, send in
           await send(.logError(MyPageCoreError(code: .failToWithdraw)))
-          await send(.showWithdrawError(true))
+          await send(.showError(true, .withdraw))
         }
         
       case .getAccessTokenToDelete:
