@@ -10,6 +10,7 @@ import SwiftUI
 
 public struct NavigationBar: View {
   private var type: NavigationBarType
+  private var isDarkMode: Bool
   // Back 버튼 액션
   private var backButtonAction: () -> Void
   // 우측 첫번째 아이콘 액션
@@ -21,12 +22,14 @@ public struct NavigationBar: View {
   
   public init(
     type: NavigationBarType,
+    isDarkMode: Bool = false,
     backButtonAction: @escaping () -> Void = {},
     firstRightIconAction: @escaping () -> Void = {},
     secondRightIconAction: @escaping () -> Void = {},
     rightIconAction: @escaping () -> Void = {}
   ) {
     self.type = type
+    self.isDarkMode = isDarkMode
     self.backButtonAction = backButtonAction
     self.firstRightIconAction = firstRightIconAction
     self.secondRightIconAction = secondRightIconAction
@@ -38,7 +41,8 @@ public struct NavigationBar: View {
     case let .titleWithBackButton(title):
       TitleWithBackButtonView(
         title: title,
-        backButtonAction: backButtonAction
+        backButtonAction: backButtonAction,
+        isDarkMode: isDarkMode
       )
     case let .title(title):
       TitleView(title: title)
@@ -64,13 +68,19 @@ public struct NavigationBar: View {
 fileprivate struct TitleWithBackButtonView: View {
   private var title: String
   private var backButtonAction: () -> Void
+  private var isDarkMode: Bool
+  private var mainColor: Color {
+    isDarkMode ? DesignSystem.Colors.gray0 : DesignSystem.Colors.gray100
+  }
   
   fileprivate init(
     title: String,
-    backButtonAction: @escaping () -> Void
+    backButtonAction: @escaping () -> Void,
+    isDarkMode: Bool
   ) {
     self.title = title
     self.backButtonAction = backButtonAction
+    self.isDarkMode = isDarkMode
   }
   
   fileprivate var body: some View {
@@ -86,6 +96,7 @@ fileprivate struct TitleWithBackButtonView: View {
               .frame(width: 26, height: 26)
               .padding(.vertical, 10)
               .padding(.leading, 16)
+              .tint(mainColor)
           }
         )
         
@@ -94,7 +105,7 @@ fileprivate struct TitleWithBackButtonView: View {
       
       Text(title)
         .font(.body16)
-        .foregroundStyle(DesignSystem.Colors.gray100)
+        .foregroundStyle(mainColor)
     }
     .frame(height: 46)
   }
@@ -204,6 +215,7 @@ fileprivate struct TitleWithBackButtonAndIconView: View {
           DesignSystem.Icons.back
             .resizable()
             .frame(width: 26, height: 26)
+            .tint(.black)
         }
       )
       .padding(.leading, 17.5)
@@ -233,6 +245,8 @@ fileprivate struct TitleWithBackButtonAndIconView: View {
 #Preview {
   VStack(spacing: 10) {
     NavigationBar(type: .titleWithBackButton("그룹 만들기"))
+    NavigationBar(type: .titleWithBackButton("그룹 만들기"), isDarkMode: true)
+      .background(.black)
     NavigationBar(type: .title("완료"))
     NavigationBar(type: .logoAndTwoIcon(
       DesignSystem.Icons.plus,
