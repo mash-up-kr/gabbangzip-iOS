@@ -23,13 +23,11 @@ struct VoteCompleteView: View {
       
       Text("내 PIC을 골랐어요!")
         .font(.head20)
-      // TODO: 색상 확인 후 변경 필요
         .foregroundStyle(DesignSystem.Colors.gray80)
         .padding(.bottom, 16)
       
       Text("모든 사람이 PIC을 완료하면\n네컷 사진이 만들어져요")
         .font(.body14)
-      // TODO: 색상 확인 후 변경 필요
         .foregroundStyle(DesignSystem.Colors.gray60)
         .multilineTextAlignment(.center)
         .padding(.bottom, 24)
