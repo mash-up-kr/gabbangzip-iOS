@@ -11,11 +11,16 @@ import SwiftUI
 // MARK: - 네비게이션 바 타입
 public enum NavigationBarType {
   // Back 버튼 + 타이틀 조합
-  case titleWithBackButton(String)
+  case titleWithBackButton(String, NavigationTitleAlignment)
   // 타이틀
   case title(String)
   // 로고 + 아이콘 조합
   case logoAndTwoIcon(Image, Image)
   // Back 버튼 + 타이틀 + 아이콘 조합
   case titleWithBackButtonAndIcon(String, Image)
+}
+
+public enum NavigationTitleAlignment {
+  case center
+  case left
 }

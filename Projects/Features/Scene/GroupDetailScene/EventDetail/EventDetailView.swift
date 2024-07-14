@@ -26,7 +26,7 @@ struct EventDetailView: View {
       
       VStack {
         NavigationBar(
-          type: .titleWithBackButton(store.eventDetail.name),
+          type: .titleWithBackButton(store.eventDetail.name, .left),
           isDarkMode: true,
           backButtonAction: {
             store.send(.backButtonTapped)

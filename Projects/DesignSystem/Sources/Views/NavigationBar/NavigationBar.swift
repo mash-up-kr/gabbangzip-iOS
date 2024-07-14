@@ -38,11 +38,12 @@ public struct NavigationBar: View {
   
   public var body: some View {
     switch type {
-    case let .titleWithBackButton(title):
+    case let .titleWithBackButton(title, alignment):
       TitleWithBackButtonView(
         title: title,
         backButtonAction: backButtonAction,
-        isDarkMode: isDarkMode
+        isDarkMode: isDarkMode,
+        titleAlignment: alignment
       )
     case let .title(title):
       TitleView(title: title)
@@ -72,20 +73,49 @@ fileprivate struct TitleWithBackButtonView: View {
   private var mainColor: Color {
     isDarkMode ? DesignSystem.Colors.gray0 : DesignSystem.Colors.gray100
   }
+  private var titleAlignment: NavigationTitleAlignment
   
   fileprivate init(
     title: String,
     backButtonAction: @escaping () -> Void,
-    isDarkMode: Bool
+    isDarkMode: Bool,
+    titleAlignment: NavigationTitleAlignment
   ) {
     self.title = title
     self.backButtonAction = backButtonAction
     self.isDarkMode = isDarkMode
+    self.titleAlignment = titleAlignment
   }
   
   fileprivate var body: some View {
-    ZStack {
-      HStack(spacing: 0) {
+    switch titleAlignment {
+    case .center:
+      ZStack {
+        HStack(spacing: 0) {
+          Button(
+            action: {
+              backButtonAction()
+            },
+            label: {
+              DesignSystem.Icons.back
+                .resizable()
+                .frame(width: 26, height: 26)
+                .padding(.vertical, 10)
+                .padding(.leading, 16)
+                .tint(mainColor)
+            }
+          )
+          
+          Spacer()
+        }
+        
+        Text(title)
+          .font(.body16)
+          .foregroundStyle(mainColor)
+      }
+      .frame(height: 46)
+    case .left:
+      HStack(spacing: 6) {
         Button(
           action: {
             backButtonAction()
@@ -99,15 +129,15 @@ fileprivate struct TitleWithBackButtonView: View {
               .tint(mainColor)
           }
         )
+          
+        Text(title)
+          .font(.body16)
+          .foregroundStyle(mainColor)
         
         Spacer()
       }
-      
-      Text(title)
-        .font(.body16)
-        .foregroundStyle(mainColor)
+      .frame(height: 46)
     }
-    .frame(height: 46)
   }
 }
 
@@ -244,8 +274,10 @@ fileprivate struct TitleWithBackButtonAndIconView: View {
 
 #Preview {
   VStack(spacing: 10) {
-    NavigationBar(type: .titleWithBackButton("그룹 만들기"))
-    NavigationBar(type: .titleWithBackButton("그룹 만들기"), isDarkMode: true)
+    NavigationBar(
+      type: .titleWithBackButton("그룹 만들기", .center)
+    )
+    NavigationBar(type: .titleWithBackButton("그룹 만들기", .left), isDarkMode: true)
       .background(.black)
     NavigationBar(type: .title("완료"))
     NavigationBar(type: .logoAndTwoIcon(
