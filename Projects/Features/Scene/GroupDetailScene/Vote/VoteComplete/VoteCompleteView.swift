@@ -44,7 +44,7 @@ struct VoteCompleteView: View {
       Spacer()
       
       GabbangzipBottomButton(
-        type: .constant(.active),
+        type: .active,
         title: "완료",
         action: {
           store.send(.completeButtonTapped)
