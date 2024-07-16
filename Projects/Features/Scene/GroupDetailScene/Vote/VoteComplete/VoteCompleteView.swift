@@ -50,6 +50,7 @@ struct VoteCompleteView: View {
         }
       )
       .padding(.horizontal, 21)
+      .padding(.bottom, 15)
     }
   }
 }
