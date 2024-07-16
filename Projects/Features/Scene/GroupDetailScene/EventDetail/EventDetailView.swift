@@ -11,7 +11,7 @@ import DesignSystem
 import Models
 import SwiftUI
 
-struct EventDetailView: View {
+public struct EventDetailView: View {
   private let store: StoreOf<EventDetailCore>
   private let background = DesignSystem.Colors.gray100
 
