@@ -10,7 +10,7 @@ import ComposableArchitecture
 import DesignSystem
 import SwiftUI
 
-struct VoteCompleteView: View {
+public struct VoteCompleteView: View {
   private let store: StoreOf<VoteCompleteCore>
 
   init(store: StoreOf<VoteCompleteCore>) {
