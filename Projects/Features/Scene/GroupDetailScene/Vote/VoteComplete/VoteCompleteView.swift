@@ -39,6 +39,7 @@ struct VoteCompleteView: View {
         .padding(.horizontal, 76)
       
       Spacer()
+      
       Spacer()
       
       GabbangzipBottomButton(
