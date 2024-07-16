@@ -18,7 +18,7 @@ struct VoteCompleteView: View {
   }
 
   var body: some View {
-    VStack {
+    VStack(spacing: 0) {
       Spacer()
       
       Text("내 PIC을 골랐어요!")
