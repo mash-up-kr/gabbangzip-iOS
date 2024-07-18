@@ -19,7 +19,7 @@ public struct EventDetailView: View {
     self.store = store
   }
 
-  var body: some View {
+  public var body: some View {
     ZStack {
       background
         .ignoresSafeArea()

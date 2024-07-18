@@ -17,7 +17,7 @@ public struct VoteCompleteView: View {
     self.store = store
   }
 
-  var body: some View {
+  public var body: some View {
     VStack(spacing: 0) {
       Spacer()
       
