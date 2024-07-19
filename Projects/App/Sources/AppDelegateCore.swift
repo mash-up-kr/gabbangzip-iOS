@@ -26,6 +26,7 @@ struct AppDelegateCore {
   @Dependency(\.userNotificationClient) private var userNotificationClient
   @Dependency(\.bundleClient) private var bundleClient
   @Dependency(\.kakaoLoginClient) private var kakaoLoginClient
+  @Dependency(\.firebaseClient) private var firebaseClient
 
   var body: some Reducer<State, Action> {
     Reduce { state, action in
@@ -38,6 +39,9 @@ struct AppDelegateCore {
           } else {
             send(.logError(AppDelegateCoreError(code: .failToStringTypeCasting)))
           }
+          
+          // MARK: - Firebase
+          firebaseClient.configure()
           
           // MARK: - UserNotification
           let authorizationStatus = await self.userNotificationClient.getAuthorizationStatus()
