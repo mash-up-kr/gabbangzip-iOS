@@ -30,6 +30,8 @@ let project = Project.make(
         .external(externalDependency: .get),
         .external(externalDependency: .composableArchitecture),
         .external(externalDependency: .kakaoSDK),
+        .external(externalDependency: .firebaseAnalytics),
+        .external(externalDependency: .firebaseMessaging),
         .external(externalDependency: .multipartFormDataKit),
         .target(name: .models)
       ]
