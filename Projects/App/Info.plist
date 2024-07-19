@@ -54,7 +54,6 @@
 	<string>$(PRODUCT_NAME)앱이 사진을 가져오기 위해 앨범 접근 권한을 허용해주세요.</string>
 	<key>UIBackgroundModes</key>
 	<array>
-		<string>fetch</string>
 		<string>remote-notification</string>
 	</array>
 	<key>UILaunchStoryboardName</key>
