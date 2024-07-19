@@ -57,4 +57,6 @@ public enum ExternalDependency: String {
   case nukeUI = "NukeUI"
   case lottie = "Lottie"
   case kakaoSDK = "KakaoSDK"
+  case firebaseAnalytics = "FirebaseAnalytics"
+  case firebaseMessaging = "FirebaseMessaging"
 }
