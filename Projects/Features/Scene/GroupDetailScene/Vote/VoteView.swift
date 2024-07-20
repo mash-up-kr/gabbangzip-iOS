@@ -11,7 +11,7 @@ import DesignSystem
 import SwiftUI
 
 public struct VoteView: View {
-  let store: StoreOf<VoteCore>
+  @Bindable private var store: StoreOf<VoteCore>
   
   public init(store: StoreOf<VoteCore>) {
     self.store = store
@@ -44,7 +44,23 @@ public struct VoteView: View {
           
           // TODO: 투표 이미지
           
-          // TODO: 버튼
+          HStack {
+            VoteButton(
+              type: .pass,
+              state: $store.passsButtonState,
+              action: {
+                store.send(.passButtonTapped)
+              }
+            )
+            
+            VoteButton(
+              type: .vote,
+              state: $store.voteButtonState,
+              action: {
+                store.send(.voteButtonTapped)
+              }
+            )
+          }
         }
         
         Spacer()
@@ -57,7 +73,9 @@ public struct VoteView: View {
   VoteView(
     store: Store(
       initialState: .init(
-        name: "혜린"
+        name: "혜린",
+        voteButtonState: VoteButtonState.defaultState,
+        passsButtonState: VoteButtonState.defaultState
       ),
       reducer: VoteCore.init
     )
