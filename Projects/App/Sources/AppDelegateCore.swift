@@ -8,6 +8,7 @@
 
 import Common
 import ComposableArchitecture
+import Foundation
 import Services
 
 @Reducer
@@ -20,6 +21,7 @@ struct AppDelegateCore {
     case didFinishLaunching
     case userNotifications(UserNotificationClient.DelegateEvent)
     case authorizationStatusResposne(Result<Void, Error>)
+    case getDeviceToken(Data)
     case logError(AppDelegateCoreError)
   }
   
@@ -75,6 +77,11 @@ struct AppDelegateCore {
         
       case let .authorizationStatusResposne(.failure(error)):
         return .none
+        
+      case let .getDeviceToken(deviceToken):
+        return .run { send in
+          firebaseClient.getDeviceToken(deviceToken)
+        }
         
       case let .logError(error):
         logger.error("AppDelegateCore Error: \(String(describing: error))")
