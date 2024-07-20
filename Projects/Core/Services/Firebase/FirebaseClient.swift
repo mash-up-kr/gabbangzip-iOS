@@ -15,6 +15,7 @@ public struct FirebaseClient: Sendable {
   public var configure: @Sendable () -> Void
   public var verifyInstallations: @Sendable () async throws -> String
   public var verifyMessaging: @Sendable () async throws -> String
+  public var getDeviceToken: @Sendable (Data) -> Void
 }
 
 extension FirebaseClient: DependencyKey {
@@ -24,8 +25,7 @@ extension FirebaseClient: DependencyKey {
         FirebaseApp.configure()
       },
       verifyInstallations: {
-        let result = try await Installations.installations()
-          .authTokenForcingRefresh(true)
+        let result = try await Installations.installations().authTokenForcingRefresh(true)
         
         return result.authToken
       },
@@ -39,12 +39,22 @@ extension FirebaseClient: DependencyKey {
             }
           }
         }
+      },
+      getDeviceToken: { data in
+        Messaging.messaging().apnsToken = data
       }
     )
   }
   
   public static var testValue: FirebaseClient {
     return FirebaseClient()
+  }
+}
+
+public extension DependencyValues {
+  var firebaseClient: FirebaseClient {
+    get { self[FirebaseClient.self] }
+    set { self[FirebaseClient.self] = newValue }
   }
 }
 
