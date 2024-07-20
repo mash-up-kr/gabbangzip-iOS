@@ -19,15 +19,21 @@ public struct VoteCore {
     public var name: String
     public var voteButtonState: VoteButtonState
     public var passsButtonState: VoteButtonState
+    public var imageURLs: [URL?]
+    public var pickedImageIndex: [Int]
     
     public init(
       name: String,
       voteButtonState: VoteButtonState,
-      passsButtonState: VoteButtonState
+      passsButtonState: VoteButtonState,
+      imageURLs: [URL?],
+      pickedImageIndex: [Int]
     ) {
       self.name = name
       self.voteButtonState = voteButtonState
       self.passsButtonState = passsButtonState
+      self.imageURLs = imageURLs
+      self.pickedImageIndex = pickedImageIndex
     }
   }
 
@@ -38,6 +44,7 @@ public struct VoteCore {
     case activatePassButton
     case activateVoteButton
     case resetButtonState
+    case cardSwiped(Int, SwipeDirection)
   }
 
   public var body: some Reducer<State, Action> {
@@ -72,6 +79,14 @@ public struct VoteCore {
       case .resetButtonState:
         state.passsButtonState = .defaultState
         state.voteButtonState = .defaultState
+        return .none
+      case let .cardSwiped(index, direction):
+        state.imageURLs.remove(at: index)
+        
+        if direction == .right {
+          state.pickedImageIndex.append(index)
+        }
+        
         return .none
       }
     }

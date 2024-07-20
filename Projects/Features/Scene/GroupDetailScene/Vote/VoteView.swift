@@ -36,34 +36,44 @@ public struct VoteView: View {
           .padding(.top, 27)
         }
         
+        Spacer()
+      }
+      
+      VStack(spacing: 0) {
+        
         VStack(spacing: 4) {
           DesignSystem.Icons.voteBlack
           
           Text("\(store.name)의 PIC")
             .font(.head18)
-          
-          // TODO: 투표 이미지
-          
-          HStack {
-            VoteButton(
-              type: .pass,
-              state: $store.passsButtonState,
-              action: {
-                store.send(.passButtonTapped)
-              }
-            )
-            
-            VoteButton(
-              type: .vote,
-              state: $store.voteButtonState,
-              action: {
-                store.send(.voteButtonTapped)
-              }
-            )
-          }
         }
+        .padding(.bottom, 46)
         
-        Spacer()
+        VoteSwipeView(
+          imageURLs: $store.imageURLs,
+          swipeAction: { index, swipeDirection in
+            store.send(.cardSwiped(index, swipeDirection))
+          }
+        )
+        .padding(.bottom, 68)
+        
+        HStack(spacing: 16) {
+          VoteButton(
+            type: .pass,
+            state: $store.passsButtonState,
+            action: {
+              store.send(.passButtonTapped)
+            }
+          )
+          
+          VoteButton(
+            type: .vote,
+            state: $store.voteButtonState,
+            action: {
+              store.send(.voteButtonTapped)
+            }
+          )
+        }
       }
     }
   }
@@ -75,7 +85,12 @@ public struct VoteView: View {
       initialState: .init(
         name: "혜린",
         voteButtonState: VoteButtonState.defaultState,
-        passsButtonState: VoteButtonState.defaultState
+        passsButtonState: VoteButtonState.defaultState,
+        imageURLs: [
+          URL(string: "https://t1.daumcdn.net/cafeattach/1YVY7/391cac378245e0d2c7bba59d6efc7692baf88aa6"),
+          URL(string: "https://i.namu.wiki/i/hq6niPhkN8EhXuIkCNx32AN614AxXcaxKQ1EnyFaHN41caJM7rPfkfppaGZNlpgmXWPbkD_MGTbmGE4_BOrIBg.webp")
+        ],
+        pickedImageIndex: []
       ),
       reducer: VoteCore.init
     )
