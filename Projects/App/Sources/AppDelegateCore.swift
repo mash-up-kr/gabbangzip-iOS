@@ -169,6 +169,11 @@ struct AppDelegateCore {
       case let .authorizationStatusResposne(.failure(error)):
         return .none
         
+      case let .getDeviceToken(deviceToken):
+        return .run { send in
+          firebaseClient.getDeviceToken(deviceToken)
+        }
+        
       case let .logError(error):
         return .run { send in
           logger.error("AppDelegateCore Error: \(String(describing: error))")

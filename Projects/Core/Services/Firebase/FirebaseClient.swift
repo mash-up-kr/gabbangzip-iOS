@@ -57,6 +57,9 @@ extension FirebaseClient: DependencyKey {
             }
           }
         }
+      },
+      getDeviceToken: { data in
+        Messaging.messaging().apnsToken = data
       }
     )
   }
