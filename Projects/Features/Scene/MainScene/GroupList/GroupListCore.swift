@@ -26,6 +26,7 @@ public struct GroupListCore {
   }
 
   public enum Action {
+    // View Action
     case onAppear
     case createEventButtonTapped
     case picButtonTapped
@@ -34,18 +35,29 @@ public struct GroupListCore {
     case groupHeaderButtonTapped
     case createGroupButtonTapped
     case myPageButtonTapped
+    
+    // Internal Action
     case getGroupsResponse(Result<GroupsData, Error>)
+    
+    // Route Action
+    case moveToMyPage
   }
   
   @Dependency(\.groupAPIClient) var groupAPIClient
+  @Dependency(\.keyChainClient) var keyChainClient
 
   public var body: some Reducer<State, Action> {
     Reduce { state, action in
       switch action {
       case .onAppear:
-        return .run { send in
-          await send(.getGroupsResponse(Result { try await self.groupAPIClient.getGroups(accessToken: "") }))
-        }
+        return .run (
+          operation: { send in
+            let userInfo = try await keyChainClient.readUserInfo()
+            await send(.getGroupsResponse(Result { try await self.groupAPIClient.getGroups(accessToken: userInfo.accessToken) }))
+          },
+          catch: { error, send in
+          }
+        )
         
       case .createEventButtonTapped:
         return .none
@@ -66,7 +78,7 @@ public struct GroupListCore {
         return .none
         
       case .myPageButtonTapped:
-        return .none
+        return .send(.moveToMyPage)
         
       case let .getGroupsResponse(.success(groupsData)):
         state.groups = groupsData.groups
@@ -74,6 +86,9 @@ public struct GroupListCore {
         
       case .getGroupsResponse(.failure):
         // TODO: - 서버의 에러 메시지 형식 및 에러 수집 방식에 대한 논의 후 수정
+        return .none
+        
+      case .moveToMyPage:
         return .none
       }
     }
