@@ -13,114 +13,104 @@ import SwiftUI
 
 public struct MyPageView: View {
   @Bindable public var store: StoreOf<MyPageCore>
+  @Environment(\.scenePhase) private var scenePhase
   
   public init(store: StoreOf<MyPageCore>) {
     self.store = store
-  }
-  
-  @Environment(\.scenePhase) private var scenePhase
+  }  
   
   public var body: some View {
-    if store.isLoginViewPresented {
-      LoginView(
-        store: Store(
-          initialState: LoginCore.State(),
-          reducer: LoginCore.init
-        )
+    VStack {
+      NavigationBar(type: .titleWithBackButton(MyPageNameSpace.myPageTitle))
+      
+      SettingTitleView(
+        text: store.nickname,
+        font: .head20,
+        verticalPadding: 16
       )
-    } else {
-      VStack {
-        NavigationBar(type: .titleWithBackButton(MyPageNameSpace.myPageTitle))
-        
-        SettingTitleView(
-          text: store.nickname,
-          font: .head20,
-          verticalPadding: 16
-        )
-        
-        SeparatorView(height: 16, padding: 16)
-        
-        SettingTitleView(
-          text: MyPageNameSpace.alarmSetting,
-          font: .head14
-        )
-        
-        Button(
-          action: {
-            store.send(.openSetting)
-          }, label: {
-            HStack {
-              SettingTitleView(text: MyPageNameSpace.appAlarm)
-              
-              SettingTitleView(
-                text: store.alarmStatus.rawValue,
-                color: DesignSystem.Colors.gray60,
-                alignment: .trailing
-              )
-            }
+      
+      SeparatorView(height: 16, padding: 16)
+      
+      SettingTitleView(
+        text: MyPageNameSpace.alarmSetting,
+        font: .head14
+      )
+      
+      Button(
+        action: {
+          store.send(.openSetting)
+        }, label: {
+          HStack {
+            SettingTitleView(text: MyPageNameSpace.appAlarm)
+            
+            SettingTitleView(
+              text: store.alarmStatus.rawValue,
+              color: DesignSystem.Colors.gray60,
+              alignment: .trailing
+            )
           }
-        )
-        
-        SeparatorView(height: 2, padding: 10)
-        
-        SettingTitleView(
-          text: MyPageNameSpace.userSetting,
-          font: .head14
-        )
-        
-        HStack {
-          SettingTitleView(text: MyPageNameSpace.version)
-          
-          SettingTitleView(
-            text: store.currentVersion,
-            color: DesignSystem.Colors.gray60,
-            alignment: .trailing
-          )
         }
+      )
+      
+      SeparatorView(height: 2, padding: 10)
+      
+      SettingTitleView(
+        text: MyPageNameSpace.userSetting,
+        font: .head14
+      )
+      
+      HStack {
+        SettingTitleView(text: MyPageNameSpace.version)
         
-        Button(
-          action: {
-            store.send(.showPopup(true, .logout))
-          }, label: {
-            SettingTitleView(text: MyPageNameSpace.logout)
-          }
+        SettingTitleView(
+          text: store.currentVersion,
+          color: DesignSystem.Colors.gray60,
+          alignment: .trailing
         )
-        
-        
-        Button(
-          action: {
-            store.send(.showPopup(true, .withdraw))
-          }, label: {
-            SettingTitleView(text: MyPageNameSpace.withdraw)
-          }
-        )
-        
-        Spacer()
       }
-      .onChange(of: scenePhase) { _, newScenePhase in
-        if newScenePhase == .active {
-          store.send(.checkPushOn)
-        }
-      }
-      .toast(
-        isPresented: $store.isErrorPresented,
-        type: .textWithInfoIcon(store.errorMessage)
-      )
-      .popup(
-        isPresented: $store.isPopupPresented,
-        title: store.popupTitle,
-        description: store.popupDescription,
-        leftButtonTitle: store.popupLeftButtonTitle,
-        leftButtonAction: {
-          store.send(.showPopup(false, store.popupType))
-        },
-        rightButtonTitle: store.popupRightButtonTitle,
-        rightButtonAction: {
-          store.send(.logout)
-          store.send(.showPopup(false, store.popupType))
+      
+      Button(
+        action: {
+          store.send(.showPopup(true, .logout))
+        }, label: {
+          SettingTitleView(text: MyPageNameSpace.logout)
         }
       )
+      
+      
+      Button(
+        action: {
+          store.send(.showPopup(true, .withdraw))
+        }, label: {
+          SettingTitleView(text: MyPageNameSpace.withdraw)
+        }
+      )
+      
+      Spacer()
     }
+    .onChange(of: scenePhase) { _, newScenePhase in
+      if newScenePhase == .active {
+        store.send(.checkPushOn)
+      }
+    }
+    .toast(
+      isPresented: $store.isErrorPresented,
+      type: .textWithInfoIcon(store.errorMessage)
+    )
+    .popup(
+      isPresented: $store.isPopupPresented,
+      title: store.popupTitle,
+      description: store.popupDescription,
+      leftButtonTitle: store.popupLeftButtonTitle,
+      leftButtonAction: {
+        store.send(.showPopup(false, store.popupType))
+      },
+      rightButtonTitle: store.popupRightButtonTitle,
+      rightButtonAction: {
+        store.send(.logout)
+        store.send(.showPopup(false, store.popupType))
+      }
+    )
   }
 }
 

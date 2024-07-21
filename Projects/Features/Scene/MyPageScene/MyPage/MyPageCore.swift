@@ -89,16 +89,16 @@ public struct MyPageCore {
     }
     
     public init(
-      nickname: String,
-      currentVersion: String,
-      alarmStatus: AlarmStatus,
+      nickname: String = "",
+      currentVersion: String = "",
+      alarmStatus: AlarmStatus = .off,
       errorType: MyPageError? = nil,
-      errorMessage: String,
+      errorMessage: String = "",
       popupType: MyPagePopup? = nil,
-      popupTitle: String,
+      popupTitle: String = "",
       popupDescription: String? = nil,
-      popupLeftButtonTitle: String,
-      popupRightButtonTitle: String,
+      popupLeftButtonTitle: String = "",
+      popupRightButtonTitle: String = "",
       isPopupPresented: Bool = false,
       isLoginViewPresented: Bool = false,
       isErrorPresented: Bool = false
@@ -130,19 +130,19 @@ public struct MyPageCore {
     
     // Internal Action
     case updatePushStatus(Bool)
-    case showLoginView
     case showError(Bool, State.MyPageError)
     case withdraw
-    case getAccessTokenToDelete
-    case deleteUser(String)
-    case deleteUserInfo
-    case logError(MyPageCoreError)
+    case logError(Error)
+    
+    // Route Action
+    case backToHome
+    case backToLogin
   }
   
   @Dependency(\.userDefaultsClient) private var userDefaultsClient
   @Dependency(\.userNotificationClient) private var userNotificationCenterClient
   @Dependency(\.uiApplicationClient) private var uiApplicationClient
-  @Dependency(\.kakaoAPIClient) private var kakaoAPIClient
+  @Dependency(\.authAPIClient) private var authAPIClient
   @Dependency(\.kakaoLoginClient) private var kakaoLoginClient
   @Dependency(\.keyChainClient) private var keyChainClient
   
@@ -193,21 +193,19 @@ public struct MyPageCore {
         }
         
       case .logout:
-        return .run { send in
-          try await kakaoLoginClient.logout()
-          await send(.deleteUserInfo)
-          await send(.showLoginView)
-        } catch: { error, send in
-          await send(.logError(MyPageCoreError(code: .failToLogout)))
-        }
+        return .run(
+          operation: { send in
+            try await keyChainClient.deleteUserInfo()
+            await send(.backToLogin)
+          },
+          catch: { error, send in
+            await send(.logError(MyPageCoreError(code: .failToWithdraw)))
+            await send(.showError(true, .withdraw))
+          }
+        )
         
       case let .updatePushStatus(pushStatus):
         state.alarmStatus = pushStatus ? .on : .off
-        return .none
-        
-      case .showLoginView:
-        // TODO: - Coordinator에게 일임해야 함
-        state.isLoginViewPresented = true
         return .none
         
       case let .showError(isErrorPresented, errorType):
@@ -217,49 +215,29 @@ public struct MyPageCore {
         return .none
         
       case .withdraw:
-        return .run { send in
-          try await kakaoLoginClient.logout()
-          await send(.getAccessTokenToDelete)
-          await send(.deleteUserInfo)
-          await send(.showLoginView)
-        } catch: { error, send in
-          await send(.logError(MyPageCoreError(code: .failToWithdraw)))
-          await send(.showError(true, .withdraw))
-        }
-        
-      case .getAccessTokenToDelete:
-        return .run { send in
-          let user = try await keyChainClient.read(.accessToken)
-          
-          await send(.deleteUser(user))
-        } catch: { error, send in
-          await send(.logError(MyPageCoreError(code: .failToGetAccessToken)))
-        }
-        
-      case let .deleteUser(accessToken):
-        return .run { send in
-          let deleteUserInfo = try await kakaoAPIClient.delete(accessToken)
-          
-          if deleteUserInfo == nil {
-            await send(.logError(MyPageCoreError(code: .failToGetDeleteUserInfo)))
+        return .run(
+          operation: { send in
+            let accessToken = try await self.keyChainClient.readUserInfo().accessToken
+            _ = try await self.authAPIClient.withdrawAccount(accessToken: accessToken)
+            try await keyChainClient.deleteUserInfo()
+            await send(.backToLogin)
+          },
+          catch: { error, send in
+            await send(.logError(MyPageCoreError(code: .failToWithdraw)))
+            await send(.showError(true, .withdraw))
           }
-        } catch: { error, send in
-          await send(.logError(MyPageCoreError(code: .failToDeleteUser)))
-        }
-        
-      case .deleteUserInfo:
-        return .run { send in
-          try await keyChainClient.delete(.accessToken)
-          try await keyChainClient.delete(.refreshToken)
-          userDefaultsClient.removeObject(.nickname)
-        } catch: { error, send in
-          await send(.logError(MyPageCoreError(code: .failToDeleteUserInfo)))
-        }
+        )
         
       case let .logError(error):
         return .run { send in
           logger.error("MyPage Error: \(error)")
         }
+        
+      case .backToHome:
+        return .none
+        
+      case .backToLogin:
+        return .none
       }
     }
   }
