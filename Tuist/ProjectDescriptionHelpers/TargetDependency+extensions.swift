@@ -38,13 +38,15 @@ public enum TargetName: String {
   case common = "Common"
   case coreKit = "CoreKit"
   case designSystem = "DesignSystem"
-  case appCoordinator = "AppCoordinator"
-  case mainCoordinator = "MainCoordinator"
   case main = "Main"
   case login = "Login"
   case groupDetail = "GroupDetail"
   case myPage = "MyPage"
   case createGroup = "CreateGroup"
+  case appCoordinator = "AppCoordinator"
+  case mainCoordinator = "MainCoordinator"
+  case createGroupCoordinator = "CreateGroupCoordinator"
+  case myPageCoordinator = "MyPageCoordinator"
 }
 
 public enum ExternalDependency: String {
