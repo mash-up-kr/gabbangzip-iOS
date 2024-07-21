@@ -8,10 +8,11 @@
 import ComposableArchitecture
 import DesignSystem
 import Login
+import MainCoordinator
 import SwiftUI
 
 struct RootView: View {
-  let store: StoreOf<RootCore>
+  @Bindable var store: StoreOf<RootCore>
   
   init(store: StoreOf<RootCore>) {
     self.store = store
@@ -19,22 +20,22 @@ struct RootView: View {
   
   var body: some View {
     Group {
-      if !store.isLogin {
-        LoginView(
-          store: store.scope(
-            state: \.login,
-            action: \.login
-          )
-        )
-        .onOpenURL { url in
-          store.send(.onOpenURL(url))
+      switch store.destination {
+      case .login:
+        if let store = store.scope(state: \.destination?.login, action: \.destination.login) {
+          LoginView(store: store)
         }
-      } else {
-        Text("로그인이 되었습니다.")
+      case .mainCoordinator:
+        if let store = store.scope(state: \.destination?.mainCoordinator, action: \.destination.mainCoordinator) {
+          MainCoordinatorView(store: store)
+        }
+      case .none:
+        Text("Launching...")
       }
     }
-    .onAppear {
-      store.send(.onAppear)
+    .onAppear { store.send(.onAppear) }
+    .onOpenURL { url in
+      store.send(.onOpenURL(url))
     }
   }
 }
