@@ -1,5 +1,5 @@
 //
-//  KakaoAPI.swift
+//  AuthAPI.swift
 //  Services
 //
 //  Created by Hyun A Song on 6/22/24.
@@ -11,7 +11,7 @@ import Foundation
 import Get
 import Models
 
-public enum KakaoAPI {
+public enum AuthAPI {
   case login(
     idToken: String,
     provider: String,
@@ -23,7 +23,7 @@ public enum KakaoAPI {
   case delete(accessToken: String)
 }
 
-extension KakaoAPI: RouteType {
+extension AuthAPI: RouteType {
   public var path: String {
     switch self {
     case .login:

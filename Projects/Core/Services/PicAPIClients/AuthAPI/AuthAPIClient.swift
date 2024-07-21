@@ -1,5 +1,5 @@
 //
-//  KakaoAPIClient.swift
+//  AuthAPIClient.swift
 //  Services
 //
 //  Created by Hyun A Song on 6/22/24.
@@ -12,23 +12,23 @@ import Get
 import Models
 
 @DependencyClient
-public struct KakaoAPIClient: Sendable {
+public struct AuthAPIClient: Sendable {
   public var login: @Sendable (
     _ idToken: String,
     _ nickname: String,
     _ profileImage: String
-  ) async throws -> PICUserInfo?
-  public var refreshToken: @Sendable (_ refreshToken: String) async throws -> TokenInfo?
-  public var testToken: @Sendable (_ accessToken: String) async throws -> TestInfo?
-  public var delete: @Sendable (_ accessToken: String) async throws -> DeleteUserInfo?
+  ) async throws -> PICUserInfo
+  public var refreshToken: @Sendable (_ refreshToken: String) async throws -> TokenInfo
+  public var testToken: @Sendable (_ accessToken: String) async throws -> TestInfo
+  public var withdrawAccount: @Sendable (_ accessToken: String) async throws -> DeleteUserInfo
 }
 
-extension KakaoAPIClient: DependencyKey {
-  public static var liveValue: KakaoAPIClient {
-    return KakaoAPIClient(
+extension AuthAPIClient: DependencyKey {
+  public static var liveValue: AuthAPIClient {
+    return AuthAPIClient(
       login: { idToken, nickname, profileImage in
         let provider = "KAKAO"
-        let route = KakaoAPI.login(
+        let route = AuthAPI.login(
           idToken: idToken,
           provider: provider,
           nickname: nickname,
@@ -40,40 +40,40 @@ extension KakaoAPIClient: DependencyKey {
           
           return response.value.data
         } catch {
-          throw KakaoAPIClientError(code: .failToGetPICUserInformation)
+          throw AuthAPIClientError(code: .failToGetPICUserInformation)
         }
       },
       refreshToken: { refreshToken in
-        let route = KakaoAPI.refresh(refreshToken: refreshToken)
+        let route = AuthAPI.refresh(refreshToken: refreshToken)
         let request = Request<SuccessResponse<TokenInfo>>(route: route)
         do {
           let response = try await NetworkManager.shared.send(request)
           
           return response.value.data
         } catch {
-          throw KakaoAPIClientError(code: .failToGetTokenInformation)
+          throw AuthAPIClientError(code: .failToGetTokenInformation)
         }
       },
       testToken: { accessToken in
-        let route = KakaoAPI.testToken(accessToken: accessToken)
+        let route = AuthAPI.testToken(accessToken: accessToken)
         let request = Request<SuccessResponse<TestInfo>>(route: route)
         do {
           let response = try await NetworkManager.shared.send(request)
           
           return response.value.data
         } catch {
-          throw KakaoAPIClientError(code: .failToTest)
+          throw AuthAPIClientError(code: .failToTest)
         }
       },
-      delete: { accessToken in
-        let route = KakaoAPI.delete(accessToken: accessToken)
+      withdrawAccount: { accessToken in
+        let route = AuthAPI.delete(accessToken: accessToken)
         let request = Request<SuccessResponse<DeleteUserInfo>>(route: route)
         do {
           let response = try await NetworkManager.shared.send(request)
           
           return response.value.data
         } catch {
-          throw KakaoAPIClientError(code: .failToDeleteUserInformation)
+          throw AuthAPIClientError(code: .failToDeleteUserInformation)
         }
       }
     )
@@ -81,14 +81,13 @@ extension KakaoAPIClient: DependencyKey {
 }
 
 extension DependencyValues {
-  public var kakaoAPIClient: KakaoAPIClient {
-    get { self[KakaoAPIClient.self] }
-    set { self[KakaoAPIClient.self] = newValue }
+  public var authAPIClient: AuthAPIClient {
+    get { self[AuthAPIClient.self] }
+    set { self[AuthAPIClient.self] = newValue }
   }
 }
 
-// MARK: - KakaoAPIClientError
-public struct KakaoAPIClientError: GabbangzipError {
+public struct AuthAPIClientError: GabbangzipError {
   public var userInfo: [String: Any] = [:]
   public var code: APIResponseError
   public var underlying: Error?
