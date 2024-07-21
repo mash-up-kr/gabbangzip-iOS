@@ -10,6 +10,7 @@ import SwiftUI
 
 public struct NavigationBar: View {
   private var type: NavigationBarType
+  private var isDarkMode: Bool
   // Back 버튼 액션
   private var backButtonAction: () -> Void
   // 우측 첫번째 아이콘 액션
@@ -21,12 +22,14 @@ public struct NavigationBar: View {
   
   public init(
     type: NavigationBarType,
+    isDarkMode: Bool = false,
     backButtonAction: @escaping () -> Void = {},
     firstRightIconAction: @escaping () -> Void = {},
     secondRightIconAction: @escaping () -> Void = {},
     rightIconAction: @escaping () -> Void = {}
   ) {
     self.type = type
+    self.isDarkMode = isDarkMode
     self.backButtonAction = backButtonAction
     self.firstRightIconAction = firstRightIconAction
     self.secondRightIconAction = secondRightIconAction
@@ -35,10 +38,12 @@ public struct NavigationBar: View {
   
   public var body: some View {
     switch type {
-    case let .titleWithBackButton(title):
+    case let .titleWithBackButton(title, alignment):
       TitleWithBackButtonView(
         title: title,
-        backButtonAction: backButtonAction
+        backButtonAction: backButtonAction,
+        isDarkMode: isDarkMode,
+        titleAlignment: alignment
       )
     case let .title(title):
       TitleView(title: title)
@@ -64,18 +69,53 @@ public struct NavigationBar: View {
 fileprivate struct TitleWithBackButtonView: View {
   private var title: String
   private var backButtonAction: () -> Void
+  private var isDarkMode: Bool
+  private var mainColor: Color {
+    isDarkMode ? DesignSystem.Colors.gray0 : DesignSystem.Colors.gray100
+  }
+  private var titleAlignment: NavigationTitleAlignment
   
   fileprivate init(
     title: String,
-    backButtonAction: @escaping () -> Void
+    backButtonAction: @escaping () -> Void,
+    isDarkMode: Bool,
+    titleAlignment: NavigationTitleAlignment
   ) {
     self.title = title
     self.backButtonAction = backButtonAction
+    self.isDarkMode = isDarkMode
+    self.titleAlignment = titleAlignment
   }
   
   fileprivate var body: some View {
-    ZStack {
-      HStack(spacing: 0) {
+    switch titleAlignment {
+    case .center:
+      ZStack {
+        HStack(spacing: 0) {
+          Button(
+            action: {
+              backButtonAction()
+            },
+            label: {
+              DesignSystem.Icons.back
+                .resizable()
+                .frame(width: 26, height: 26)
+                .padding(.vertical, 10)
+                .padding(.leading, 16)
+                .tint(mainColor)
+            }
+          )
+          
+          Spacer()
+        }
+        
+        Text(title)
+          .font(.body16)
+          .foregroundStyle(mainColor)
+      }
+      .frame(height: 46)
+    case .left:
+      HStack(spacing: 6) {
         Button(
           action: {
             backButtonAction()
@@ -86,17 +126,18 @@ fileprivate struct TitleWithBackButtonView: View {
               .frame(width: 26, height: 26)
               .padding(.vertical, 10)
               .padding(.leading, 16)
+              .tint(mainColor)
           }
         )
+          
+        Text(title)
+          .font(.body16)
+          .foregroundStyle(mainColor)
         
         Spacer()
       }
-      
-      Text(title)
-        .font(.body16)
-        .foregroundStyle(DesignSystem.Colors.gray100)
+      .frame(height: 46)
     }
-    .frame(height: 46)
   }
 }
 
@@ -204,6 +245,7 @@ fileprivate struct TitleWithBackButtonAndIconView: View {
           DesignSystem.Icons.back
             .resizable()
             .frame(width: 26, height: 26)
+            .tint(.black)
         }
       )
       .padding(.leading, 17.5)
@@ -232,7 +274,11 @@ fileprivate struct TitleWithBackButtonAndIconView: View {
 
 #Preview {
   VStack(spacing: 10) {
-    NavigationBar(type: .titleWithBackButton("그룹 만들기"))
+    NavigationBar(
+      type: .titleWithBackButton("그룹 만들기", .center)
+    )
+    NavigationBar(type: .titleWithBackButton("그룹 만들기", .left), isDarkMode: true)
+      .background(.black)
     NavigationBar(type: .title("완료"))
     NavigationBar(type: .logoAndTwoIcon(
       DesignSystem.Icons.plus,

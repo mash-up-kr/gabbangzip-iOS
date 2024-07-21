@@ -21,7 +21,7 @@ struct MemberListView: View {
   var body: some View {
     VStack(spacing: 0) {
       NavigationBar(
-        type: .titleWithBackButton("그룹원"),
+        type: .titleWithBackButton("그룹원", .center),
         backButtonAction: {
           store.send(.backButtonTapped)
         }
