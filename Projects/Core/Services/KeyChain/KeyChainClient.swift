@@ -8,23 +8,28 @@
 
 import ComposableArchitecture
 import Foundation
+import Models
 
 @DependencyClient
 public struct KeyChainClient: Sendable {
-  public var create: @Sendable (_ key: Key, _ data: String) async throws -> Void
-  public var read: @Sendable (_ key: Key) async throws -> String
-  public var update: @Sendable (_ key: Key, _ data: String) async throws -> Void
-  public var delete: @Sendable (_ key: Key) async throws -> Void
+  public var createUserInfo: @Sendable (_ userInfo: UserInfo) async throws -> Void
+  public var readUserInfo: @Sendable () async throws -> UserInfo
+  public var updateUserInfo: @Sendable (_ userInfo: UserInfo) async throws -> Void
+  public var deleteUserInfo: @Sendable () async throws -> Void
 }
 
 extension KeyChainClient: DependencyKey {
   public static var liveValue: KeyChainClient {
     return .init(
-      create: { key, data in
+      createUserInfo: { userInfo in
+        guard let encodedData = try? JSONEncoder().encode(userInfo) else {
+          throw KeyChainClientError(code: .failToEncode)
+        }
+        
         let query: NSDictionary = [
           kSecClass: kSecClassGenericPassword,
-          kSecAttrAccount: key.type,
-          kSecValueData: data.data(using: .utf8) as Any
+          kSecAttrAccount: Key.userInfo.rawValue,
+          kSecValueData: encodedData
         ]
         let status = SecItemAdd(query, nil)
         
@@ -32,15 +37,15 @@ extension KeyChainClient: DependencyKey {
         case errSecSuccess:
           break
         case errSecDuplicateItem:
-          try updateKey(key, data)
+          try updateKey(.userInfo, encodedData)
         default:
           throw KeyChainClientError(code: .failToCreate)
         }
       },
-      read: { key in
+      readUserInfo: {
         let query: NSDictionary = [
           kSecClass: kSecClassGenericPassword,
-          kSecAttrAccount: key.type,
+          kSecAttrAccount: Key.userInfo.rawValue,
           kSecReturnData: kCFBooleanTrue as Any,
           kSecMatchLimit: kSecMatchLimitOne
         ]
@@ -50,11 +55,8 @@ extension KeyChainClient: DependencyKey {
         switch status {
         case errSecSuccess:
           if let retrieveData = dataTypeReference as? Data,
-             let value = String(
-              data: retrieveData,
-              encoding: String.Encoding.utf8
-             ) {
-            return value
+             let decodedData = try? JSONDecoder().decode(UserInfo.self, from: retrieveData) {
+            return decodedData
           } else {
             throw KeyChainClientError(code: .failToGetData)
           }
@@ -62,13 +64,17 @@ extension KeyChainClient: DependencyKey {
           throw KeyChainClientError(code: .failToRead)
         }
       },
-      update: { key, data in
-        try updateKey(key, data)
+      updateUserInfo: { userInfo in
+        guard let encodedData = try? JSONEncoder().encode(userInfo) else {
+          throw KeyChainClientError(code: .failToEncode)
+        }
+        
+        try updateKey(.userInfo, encodedData)
       },
-      delete: { key in
+      deleteUserInfo: {
         let query: NSDictionary = [
           kSecClass: kSecClassGenericPassword,
-          kSecAttrAccount: key.type
+          kSecAttrAccount: Key.userInfo.rawValue
         ]
         
         let status = SecItemDelete(query)
@@ -89,13 +95,13 @@ extension KeyChainClient: DependencyKey {
 }
 
 extension KeyChainClient {
-  private static func updateKey(_ key: Key, _ data: String) throws {
+  private static func updateKey(_ key: Key, _ data: Data) throws {
     let previousQuery: NSDictionary = [
       kSecClass: kSecClassGenericPassword,
-      kSecAttrAccount: key.type,
+      kSecAttrAccount: key.rawValue,
     ]
     let updateQuery: NSDictionary = [
-      kSecValueData: data.data(using: .utf8) as Any
+      kSecValueData: data
     ]
     let status = SecItemUpdate(previousQuery, updateQuery)
     
@@ -110,18 +116,8 @@ extension KeyChainClient {
 
 // MARK: - Keys NameSpace
 extension KeyChainClient {
-  public enum Key {
-    case accessToken
-    case refreshToken
-    
-    var type: String {
-      switch self {
-      case .accessToken:
-        return "accessToken"
-      case .refreshToken:
-        return "refreshToken"
-      }
-    }
+  public enum Key: String {
+    case userInfo
   }
 }
 
@@ -144,5 +140,7 @@ public struct KeyChainClientError: GabbangzipError {
     case failToRead
     case failToUpdate
     case failToDelete
+    case failToEncode
+    case failToDecode
   }
 }
