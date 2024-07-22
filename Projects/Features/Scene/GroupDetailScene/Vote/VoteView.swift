@@ -49,12 +49,19 @@ public struct VoteView: View {
         }
         .padding(.bottom, 46)
         
-        VoteSwipeView(
-          imageURLs: $store.imageURLs,
-          swipeAction: { index, swipeDirection in
-            store.send(.cardSwiped(index, swipeDirection))
-          }
-        )
+        ZStack {
+          RoundedRectangle(cornerRadius: 10)
+            .frame(width: 330, height: 440)
+            .cornerRadius(10)
+            .foregroundStyle(.clear)
+          
+          VoteSwipeView(
+            imageURLs: $store.imageURLs,
+            swipeAction: { index, swipeDirection in
+              store.send(.cardSwiped(index, swipeDirection))
+            }
+          )
+        }
         .padding(.bottom, 68)
         
         HStack(spacing: 16) {
