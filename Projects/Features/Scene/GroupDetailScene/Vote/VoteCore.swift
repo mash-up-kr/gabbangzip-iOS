@@ -46,6 +46,7 @@ public struct VoteCore {
     case activateVoteButton
     case resetButtonState
     case cardSwiped(Int, SwipeDirection)
+    case voteEnded
   }
 
   public var body: some Reducer<State, Action> {
@@ -88,6 +89,13 @@ public struct VoteCore {
           state.pickedImageIndex.append(index)
         }
         
+        if state.imageURLs.isEmpty {
+          return .send(.voteEnded)
+        } else {
+          return .none
+        }
+      case .voteEnded:
+        print("vote End~")
         return .none
       }
     }
