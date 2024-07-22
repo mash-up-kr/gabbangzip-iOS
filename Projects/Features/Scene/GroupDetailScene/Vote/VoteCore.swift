@@ -22,19 +22,22 @@ public struct VoteCore {
     public var passsButtonState: VoteButtonState
     public var imageURLs: [URL?]
     public var pickedImageIndex: [Int]
+    public var swipeDirection: SwipeDirection?
     
     public init(
       name: String,
       voteButtonState: VoteButtonState,
       passsButtonState: VoteButtonState,
       imageURLs: [URL?],
-      pickedImageIndex: [Int]
+      pickedImageIndex: [Int],
+      swipeDirection: SwipeDirection?
     ) {
       self.name = name
       self.voteButtonState = voteButtonState
       self.passsButtonState = passsButtonState
       self.imageURLs = imageURLs
       self.pickedImageIndex = pickedImageIndex
+      self.swipeDirection = swipeDirection
     }
   }
 
@@ -55,6 +58,8 @@ public struct VoteCore {
       case .binding:
         return .none
       case .passButtonTapped:
+//        state.imageURLs.removeLast()
+        state.swipeDirection = .left
         return .run { send in
           await send(.activatePassButton)
           
@@ -63,6 +68,8 @@ public struct VoteCore {
           }
         }
       case .voteButtonTapped:
+//        state.imageURLs.removeLast()
+        state.swipeDirection = .right
         return .run { send in
           await send(.activatePassButton)
           

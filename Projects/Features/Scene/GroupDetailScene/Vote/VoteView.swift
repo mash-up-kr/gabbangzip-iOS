@@ -57,6 +57,7 @@ public struct VoteView: View {
           
           VoteSwipeView(
             imageURLs: $store.imageURLs,
+            swipeDirection: $store.swipeDirection,
             swipeAction: { index, swipeDirection in
               store.send(.cardSwiped(index, swipeDirection))
             }
@@ -97,7 +98,8 @@ public struct VoteView: View {
           URL(string: "https://t1.daumcdn.net/cafeattach/1YVY7/391cac378245e0d2c7bba59d6efc7692baf88aa6"),
           URL(string: "https://i.namu.wiki/i/hq6niPhkN8EhXuIkCNx32AN614AxXcaxKQ1EnyFaHN41caJM7rPfkfppaGZNlpgmXWPbkD_MGTbmGE4_BOrIBg.webp")
         ],
-        pickedImageIndex: []
+        pickedImageIndex: [],
+        swipeDirection: nil
       ),
       reducer: VoteCore.init
     )
