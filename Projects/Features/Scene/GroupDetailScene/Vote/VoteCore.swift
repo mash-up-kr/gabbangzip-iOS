@@ -23,6 +23,7 @@ public struct VoteCore {
     public var imageURLs: [URL?]
     public var pickedImageIndex: [Int]
     public var swipeDirection: SwipeDirection?
+    public var showClosePopup: Bool
     
     public init(
       name: String,
@@ -30,7 +31,8 @@ public struct VoteCore {
       passsButtonState: VoteButtonState,
       imageURLs: [URL?],
       pickedImageIndex: [Int],
-      swipeDirection: SwipeDirection?
+      swipeDirection: SwipeDirection?,
+      showClosePopup: Bool
     ) {
       self.name = name
       self.voteButtonState = voteButtonState
@@ -38,6 +40,7 @@ public struct VoteCore {
       self.imageURLs = imageURLs
       self.pickedImageIndex = pickedImageIndex
       self.swipeDirection = swipeDirection
+      self.showClosePopup = showClosePopup
     }
   }
 
@@ -50,6 +53,9 @@ public struct VoteCore {
     case resetButtonState
     case cardSwiped(Int, SwipeDirection)
     case voteEnded
+    case closeButtonTapped
+    case exitButtonTapped
+    case continueButtonTapped
   }
 
   public var body: some Reducer<State, Action> {
@@ -58,7 +64,6 @@ public struct VoteCore {
       case .binding:
         return .none
       case .passButtonTapped:
-//        state.imageURLs.removeLast()
         state.swipeDirection = .left
         return .run { send in
           await send(.activatePassButton)
@@ -68,7 +73,6 @@ public struct VoteCore {
           }
         }
       case .voteButtonTapped:
-//        state.imageURLs.removeLast()
         state.swipeDirection = .right
         return .run { send in
           await send(.activatePassButton)
@@ -104,6 +108,16 @@ public struct VoteCore {
       case .voteEnded:
         // TODO: 화면 이동
         print("vote End~")
+        return .none
+      case .closeButtonTapped:
+        state.showClosePopup = true
+        return .none
+      case .exitButtonTapped:
+        // TODO: 화면 이동
+        state.showClosePopup = false
+        return .none
+      case .continueButtonTapped:
+        state.showClosePopup = false
         return .none
       }
     }

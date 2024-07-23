@@ -27,7 +27,7 @@ public struct VoteView: View {
           
           Button(
             action: {
-              // TODO
+              store.send(.closeButtonTapped)
             }, label: {
               DesignSystem.Icons.close
             }
@@ -84,6 +84,19 @@ public struct VoteView: View {
         }
       }
     }
+    .popup(
+      isPresented: $store.showClosePopup,
+      title: "나가실건가요?",
+      description: "페이지를 나가면\n처음부터 다시 투표 하게돼요.",
+      leftButtonTitle: "나가기",
+      leftButtonAction: {
+        store.send(.exitButtonTapped)
+      },
+      rightButtonTitle: "계속 투표하기",
+      rightButtonAction: {
+        store.send(.continueButtonTapped)
+      }
+    )
   }
 }
 
@@ -99,7 +112,8 @@ public struct VoteView: View {
           URL(string: "https://i.namu.wiki/i/hq6niPhkN8EhXuIkCNx32AN614AxXcaxKQ1EnyFaHN41caJM7rPfkfppaGZNlpgmXWPbkD_MGTbmGE4_BOrIBg.webp")
         ],
         pickedImageIndex: [],
-        swipeDirection: nil
+        swipeDirection: nil,
+        showClosePopup: false
       ),
       reducer: VoteCore.init
     )
