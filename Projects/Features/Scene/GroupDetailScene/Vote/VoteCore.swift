@@ -23,7 +23,7 @@ public struct VoteCore {
     public var imageURLs: [URL?]
     public var pickedImageIndex: [Int]
     public var swipeDirection: SwipeDirection?
-    public var showClosePopup: Bool
+    public var isClosePopupPresented: Bool
     
     public init(
       name: String,
@@ -40,22 +40,28 @@ public struct VoteCore {
       self.imageURLs = imageURLs
       self.pickedImageIndex = pickedImageIndex
       self.swipeDirection = swipeDirection
-      self.showClosePopup = showClosePopup
+      self.isClosePopupPresented = showClosePopup
     }
   }
 
   public enum Action: BindableAction {
     case binding(BindingAction<State>)
+    
+    // View Action
     case passButtonTapped
     case voteButtonTapped
-    case activatePassButton
-    case activateVoteButton
-    case resetButtonState
     case cardSwiped(Int, SwipeDirection)
-    case voteEnded
     case closeButtonTapped
     case exitButtonTapped
     case continueButtonTapped
+    
+    // Internal Action
+    case activatePassButton
+    case activateVoteButton
+    case resetButtonState
+    case voteEnded
+    
+    // Route Action
   }
 
   public var body: some Reducer<State, Action> {
@@ -63,6 +69,7 @@ public struct VoteCore {
       switch action {
       case .binding:
         return .none
+        
       case .passButtonTapped:
         state.swipeDirection = .left
         return .run { send in
@@ -72,6 +79,7 @@ public struct VoteCore {
             send(.resetButtonState)
           }
         }
+        
       case .voteButtonTapped:
         state.swipeDirection = .right
         return .run { send in
@@ -81,19 +89,24 @@ public struct VoteCore {
             send(.resetButtonState)
           }
         }
+        
       case .activatePassButton:
         state.passsButtonState = .activate
         state.voteButtonState = .deactivate
         return .none
+        
       case .activateVoteButton:
         state.voteButtonState = .activate
         state.passsButtonState = .deactivate
         return .none
+        
       case .resetButtonState:
         state.passsButtonState = .defaultState
         state.voteButtonState = .defaultState
         return .none
+        
       case let .cardSwiped(index, direction):
+        // TODO: 이 부분 로직 API 붙이면서 수정할 예정입니다
         state.imageURLs.remove(at: index)
         
         if direction == .right {
@@ -105,19 +118,20 @@ public struct VoteCore {
         } else {
           return .none
         }
+        
       case .voteEnded:
-        // TODO: 화면 이동
-        print("vote End~")
         return .none
+        
       case .closeButtonTapped:
-        state.showClosePopup = true
+        state.isClosePopupPresented = true
         return .none
+        
       case .exitButtonTapped:
-        // TODO: 화면 이동
-        state.showClosePopup = false
+        state.isClosePopupPresented = false
         return .none
+        
       case .continueButtonTapped:
-        state.showClosePopup = false
+        state.isClosePopupPresented = false
         return .none
       }
     }

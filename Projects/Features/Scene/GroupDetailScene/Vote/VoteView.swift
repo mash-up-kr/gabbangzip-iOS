@@ -85,7 +85,7 @@ public struct VoteView: View {
       }
     }
     .popup(
-      isPresented: $store.showClosePopup,
+      isPresented: $store.isClosePopupPresented,
       title: "나가실건가요?",
       description: "페이지를 나가면\n처음부터 다시 투표 하게돼요.",
       leftButtonTitle: "나가기",
