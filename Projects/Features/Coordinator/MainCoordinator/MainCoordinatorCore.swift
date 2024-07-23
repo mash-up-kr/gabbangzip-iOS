@@ -11,9 +11,9 @@ import TCACoordinators
 
 @Reducer
 public struct MainCoordinatorCore {
-	public init() {}
-	
-	@ObservableState
+  public init() {}
+  
+  @ObservableState
   public struct State: Equatable {
     var routes: [Route<MainScreen.State>]
     
@@ -21,11 +21,11 @@ public struct MainCoordinatorCore {
       self.routes = routes
     }
   }
-
+  
   public enum Action {
     case router(IndexedRouterActionOf<MainScreen>)
   }
-
+  
   public var body: some Reducer<State, Action> {
     Reduce { state, action in
       switch action {

@@ -11,9 +11,9 @@ import TCACoordinators
 
 @Reducer
 public struct CreateGroupCoordinatorCore {
-	public init() {}
-	
-	@ObservableState
+  public init() {}
+  
+  @ObservableState
   public struct State: Equatable {
     var routes: [Route<CreateGroupScreen.State>]
     
@@ -21,11 +21,11 @@ public struct CreateGroupCoordinatorCore {
       self.routes = routes
     }
   }
-
+  
   public enum Action {
     case router(IndexedRouterActionOf<CreateGroupScreen>)
   }
-
+  
   public var body: some Reducer<State, Action> {
     Reduce { state, action in
       switch action {
