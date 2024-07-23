@@ -13,7 +13,7 @@ import SwiftUI
 
 struct VoteSwipeView: View {
   @Binding var imageURLs: [URL?]
-  @Binding var swipeDirection: SwipeDirection?
+  @Binding var swipeDirection: SwipeDirection
   
   @State private var offset = CGSize.zero
   @State private var angle: Double = 0
@@ -29,7 +29,7 @@ struct VoteSwipeView: View {
               get: { (self.imageURLs.indices.contains(index), .left) },
               set: { isActive, swipeDirection in
                 if !isActive {
-                  swipeAction(index, self.swipeDirection ?? .left)
+                  swipeAction(index, self.swipeDirection)
                 }
               })
             )
@@ -43,25 +43,26 @@ struct VoteSwipeView: View {
         }
       }
     }
-    .onChange(of: swipeDirection, { _, direction in
-      if let direction {
-        swipeCard(to: direction)
-        swipeDirection = nil
-      }
+    .onChange(of: swipeDirection, { oldValue, direction in
+      swipeCard(to: direction)
     })
   }
 
   private func swipeCard(to direction: SwipeDirection) {
-    let width = direction == .left ? -300 : 300
-    let rotation = direction == .left ? -15.0 : 15.0
+    if direction == .defaultState {
+      return
+    } else {
+      let width = direction == .left ? -300 : 300
+      let rotation = direction == .left ? -15.0 : 15.0
 
-    withAnimation(.easeInOut(duration: 0.2)) {
-      self.offset = CGSize(width: width, height: 0)
-      self.angle = rotation
-    } completion: {
-      self.offset = CGSize(width: 0, height: 0)
-      self.angle = 0
-      self.swipeAction(imageURLs.count - 1, direction)
+      withAnimation(.easeInOut(duration: 0.2)) {
+        self.offset = CGSize(width: width, height: 0)
+        self.angle = rotation
+      } completion: {
+        self.offset = CGSize(width: 0, height: 0)
+        self.angle = 0
+        self.swipeAction(imageURLs.count - 1, direction)
+      }
     }
   }
 }
@@ -96,7 +97,7 @@ struct CardView: View {
         URL(string: "https://i.namu.wiki/i/hq6niPhkN8EhXuIkCNx32AN614AxXcaxKQ1EnyFaHN41caJM7rPfkfppaGZNlpgmXWPbkD_MGTbmGE4_BOrIBg.webp")
       ]
     ),
-    swipeDirection: .constant(nil),
+    swipeDirection: .constant(.defaultState),
     swipeAction: { _, _  in }
   )
 }

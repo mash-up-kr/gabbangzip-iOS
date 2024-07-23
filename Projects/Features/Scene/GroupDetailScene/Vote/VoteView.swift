@@ -112,7 +112,7 @@ public struct VoteView: View {
           URL(string: "https://i.namu.wiki/i/hq6niPhkN8EhXuIkCNx32AN614AxXcaxKQ1EnyFaHN41caJM7rPfkfppaGZNlpgmXWPbkD_MGTbmGE4_BOrIBg.webp")
         ],
         pickedImageIndex: [],
-        swipeDirection: nil,
+        swipeDirection: .defaultState,
         showClosePopup: false
       ),
       reducer: VoteCore.init

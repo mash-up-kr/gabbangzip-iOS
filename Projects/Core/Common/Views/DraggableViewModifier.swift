@@ -11,6 +11,7 @@ import SwiftUI
 public enum SwipeDirection {
   case left
   case right
+  case defaultState
 }
 
 public struct DraggableViewModifier: ViewModifier {

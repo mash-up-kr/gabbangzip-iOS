@@ -22,7 +22,7 @@ public struct VoteCore {
     public var passsButtonState: VoteButtonState
     public var imageURLs: [URL?]
     public var pickedImageIndex: [Int]
-    public var swipeDirection: SwipeDirection?
+    public var swipeDirection: SwipeDirection
     public var isClosePopupPresented: Bool
     
     public init(
@@ -31,7 +31,7 @@ public struct VoteCore {
       passsButtonState: VoteButtonState,
       imageURLs: [URL?],
       pickedImageIndex: [Int],
-      swipeDirection: SwipeDirection?,
+      swipeDirection: SwipeDirection,
       showClosePopup: Bool
     ) {
       self.name = name
@@ -106,6 +106,7 @@ public struct VoteCore {
         return .none
         
       case let .cardSwiped(index, direction):
+        state.swipeDirection = .defaultState
         // TODO: 이 부분 로직 API 붙이면서 수정할 예정입니다
         state.imageURLs.remove(at: index)
         
