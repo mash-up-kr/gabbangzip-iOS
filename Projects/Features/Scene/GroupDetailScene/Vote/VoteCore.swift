@@ -24,6 +24,7 @@ public struct VoteCore {
     public var pickedImageIndex: [Int]
     public var swipeDirection: SwipeDirection
     public var isClosePopupPresented: Bool
+    public var isVoteButtonDisabled: Bool
     
     public init(
       name: String,
@@ -32,7 +33,8 @@ public struct VoteCore {
       imageURLs: [URL?],
       pickedImageIndex: [Int],
       swipeDirection: SwipeDirection,
-      showClosePopup: Bool
+      showClosePopup: Bool,
+      isVoteButtonDisabled: Bool
     ) {
       self.name = name
       self.voteButtonState = voteButtonState
@@ -41,6 +43,7 @@ public struct VoteCore {
       self.pickedImageIndex = pickedImageIndex
       self.swipeDirection = swipeDirection
       self.isClosePopupPresented = showClosePopup
+      self.isVoteButtonDisabled = isVoteButtonDisabled
     }
   }
 
@@ -56,8 +59,6 @@ public struct VoteCore {
     case continueButtonTapped
     
     // Internal Action
-    case activatePassButton
-    case activateVoteButton
     case resetButtonState
     case voteEnded
     
@@ -72,9 +73,10 @@ public struct VoteCore {
         
       case .passButtonTapped:
         state.swipeDirection = .left
+        state.passsButtonState = .activate
+        state.voteButtonState = .deactivate
+        
         return .run { send in
-          await send(.activatePassButton)
-          
           DispatchQueue.main.asyncAfter(deadline: .now() + 1.0) {
             send(.resetButtonState)
           }
@@ -82,23 +84,14 @@ public struct VoteCore {
         
       case .voteButtonTapped:
         state.swipeDirection = .right
+        state.voteButtonState = .activate
+        state.passsButtonState = .deactivate
+        
         return .run { send in
-          await send(.activatePassButton)
-          
           DispatchQueue.main.asyncAfter(deadline: .now() + 1.0) {
             send(.resetButtonState)
           }
         }
-        
-      case .activatePassButton:
-        state.passsButtonState = .activate
-        state.voteButtonState = .deactivate
-        return .none
-        
-      case .activateVoteButton:
-        state.voteButtonState = .activate
-        state.passsButtonState = .deactivate
-        return .none
         
       case .resetButtonState:
         state.passsButtonState = .defaultState
@@ -109,6 +102,7 @@ public struct VoteCore {
         state.swipeDirection = .defaultState
         // TODO: 이 부분 로직 API 붙이면서 수정할 예정입니다
         state.imageURLs.remove(at: index)
+        state.isVoteButtonDisabled = state.imageURLs.isEmpty
         
         if direction == .right {
           state.pickedImageIndex.append(index)

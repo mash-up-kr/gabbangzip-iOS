@@ -73,6 +73,7 @@ public struct VoteView: View {
               store.send(.passButtonTapped)
             }
           )
+          .disabled(store.isVoteButtonDisabled)
           
           VoteButton(
             type: .vote,
@@ -81,6 +82,7 @@ public struct VoteView: View {
               store.send(.voteButtonTapped)
             }
           )
+          .disabled(store.isVoteButtonDisabled)
         }
       }
     }
@@ -113,7 +115,8 @@ public struct VoteView: View {
         ],
         pickedImageIndex: [],
         swipeDirection: .defaultState,
-        showClosePopup: false
+        showClosePopup: false,
+        isVoteButtonDisabled: false
       ),
       reducer: VoteCore.init
     )
