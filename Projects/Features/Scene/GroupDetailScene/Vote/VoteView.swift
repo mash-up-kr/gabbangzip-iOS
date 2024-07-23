@@ -38,7 +38,7 @@ public struct VoteView: View {
         
         Spacer()
       }
-      
+
       VStack(spacing: 0) {
         
         VStack(spacing: 4) {

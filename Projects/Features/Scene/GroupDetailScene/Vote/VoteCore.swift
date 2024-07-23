@@ -102,6 +102,7 @@ public struct VoteCore {
           return .none
         }
       case .voteEnded:
+        // TODO: 화면 이동
         print("vote End~")
         return .none
       }
