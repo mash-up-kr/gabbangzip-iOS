@@ -60,6 +60,10 @@ struct AppDelegateCore {
           for await event in self.userNotificationClient.delegate() {
             send(.userNotifications(event))
           }
+          
+          // MARK: - UIApplication
+          await uiApplicationClient.registerForRemoteNotifications()
+          
         }
         
       case let .userNotifications(.didReceiveResponse(response, completionHandler)):
