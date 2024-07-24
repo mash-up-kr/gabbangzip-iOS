@@ -29,6 +29,7 @@ struct AppDelegateCore {
   @Dependency(\.bundleClient) private var bundleClient
   @Dependency(\.kakaoLoginClient) private var kakaoLoginClient
   @Dependency(\.firebaseClient) private var firebaseClient
+  @Dependency(\.uiApplicationClient) private var uiApplicationClient
 
   var body: some Reducer<State, Action> {
     Reduce { state, action in
@@ -41,9 +42,6 @@ struct AppDelegateCore {
           } else {
             send(.logError(AppDelegateCoreError(code: .failToStringTypeCasting)))
           }
-          
-          // MARK: - Firebase
-          firebaseClient.configure()
           
           // MARK: - UserNotification
           let authorizationStatus = await self.userNotificationClient.getAuthorizationStatus()
@@ -64,6 +62,14 @@ struct AppDelegateCore {
           // MARK: - UIApplication
           await uiApplicationClient.registerForRemoteNotifications()
           
+          // MARK: - Firebase
+          firebaseClient.configure()
+          
+          for await event in self.firebaseClient.delegate() {
+            let token = try await firebaseClient.verifyToken()
+            
+            print("✅ TEST DEVICE TOKEN : \(token)")
+          }
         }
         
       case let .userNotifications(.didReceiveResponse(response, completionHandler)):

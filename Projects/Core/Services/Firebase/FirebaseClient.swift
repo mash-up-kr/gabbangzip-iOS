@@ -13,8 +13,8 @@ import FirebaseMessaging
 @DependencyClient
 public struct FirebaseClient: Sendable {
   public var configure: @Sendable () -> Void
-  public var verifyInstallations: @Sendable () async throws -> String
-  public var verifyMessaging: @Sendable () async throws -> String
+  public var delegate: @Sendable () -> AsyncStream<Any> = { .finished }
+  public var verifyToken: @Sendable () async throws -> String
   public var getDeviceToken: @Sendable (Data) -> Void
 }
 
@@ -24,17 +24,21 @@ extension FirebaseClient: DependencyKey {
       configure: {
         FirebaseApp.configure()
       },
-      verifyInstallations: {
-        let result = try await Installations.installations().authTokenForcingRefresh(true)
-        
-        return result.authToken
+      delegate: {
+        AsyncStream { continuation in
+          let delegate = MessageDelegate(continuation: continuation)
+          Messaging.messaging().delegate = delegate
+          continuation.onTermination = { _ in
+            _ = delegate
+          }
+        }
       },
-      verifyMessaging: {
+      verifyToken: {
         try await withCheckedThrowingContinuation { continuation in
           Messaging.messaging().token { token, error in
             if let error = error {
               continuation.resume(throwing: FirebaseClientError(code: .failToGetMessaging))
-            } else if let token = token {
+            } else if let token {
               continuation.resume(returning: token)
             }
           }
@@ -48,6 +52,29 @@ extension FirebaseClient: DependencyKey {
   
   public static var testValue: FirebaseClient {
     return FirebaseClient()
+  }
+}
+
+extension FirebaseClient {
+  final class MessageDelegate: NSObject, MessagingDelegate, Sendable {
+    let continuation: AsyncStream<Any>.Continuation
+    
+    init(continuation: AsyncStream<Any>.Continuation) {
+      self.continuation = continuation
+    }
+    
+    func messaging(_ messaging: Messaging, didReceiveRegistrationToken fcmToken: String?) {
+      guard let fcmToken else { return }
+      let dataDict: [String: String] = ["token": fcmToken]
+      
+      NotificationCenter.default.post(
+        name: Notification.Name("FCMToken"),
+        object: nil,
+        userInfo: dataDict
+      )
+      // TODO: If necessary send token to application server.
+      // Note: This callback is fired at each app startup and whenever a new token is generated.
+    }
   }
 }
 
