@@ -13,6 +13,7 @@ import UIKit
 public struct UIApplicationClient: Sendable {
   public var getSettingURL: @Sendable () async -> String = { "unknown" }
   public var openURL: @Sendable (_ url: String) async throws -> Bool
+  public var registerForRemoteNotifications: @Sendable () async -> Void
 }
 
 extension UIApplicationClient: DependencyKey {
@@ -35,6 +36,9 @@ extension UIApplicationClient: DependencyKey {
             continuation.resume(throwing: UIApplicationClientError(code: .failToGetUrl))
           }
         }
+      },
+      registerForRemoteNotifications: { @MainActor in
+        UIApplication.shared.registerForRemoteNotifications()
       }
     )
   }
