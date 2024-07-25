@@ -11,9 +11,9 @@ import TCACoordinators
 
 @Reducer
 public struct MyPageCoordinatorCore {
-	public init() {}
-	
-	@ObservableState
+  public init() {}
+  
+  @ObservableState
   public struct State: Equatable {
     var routes: [Route<MyPageScreen.State>]
     
@@ -21,13 +21,13 @@ public struct MyPageCoordinatorCore {
       self.routes = routes
     }
   }
-
+  
   public enum Action {
     case router(IndexedRouterActionOf<MyPageScreen>)
   }
   
   @Dependency(\.dismiss) var dismiss
-
+  
   public var body: some Reducer<State, Action> {
     Reduce { state, action in
       switch action {
