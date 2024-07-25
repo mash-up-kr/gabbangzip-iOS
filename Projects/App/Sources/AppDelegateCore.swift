@@ -56,7 +56,6 @@ struct AppDelegateCore {
         return .run { send in
           await send(.setUpKakaoSDK)
           await send(.setUpFirebase)
-          await send(.setUpNotificationCenter)
         }
         
       case .setUpKakaoSDK:
@@ -71,9 +70,10 @@ struct AppDelegateCore {
       case .setUpFirebase:
         return .run { send in
           await send(.configureFirebase)
+          await send(.setUpNotificationCenter)
           await send(.configureFirebaseDelegate)
-          await send(.runFirebaseAutoInitialization)
           await send(.checkRegisterToken)
+          await send(.runFirebaseAutoInitialization)
         }
         
       case .configureFirebase:
