@@ -16,7 +16,7 @@ struct AppDelegateCore {
   @ObservableState
   struct State: Equatable {
   }
-  
+
   enum Action {
     case didFinishLaunching
     
@@ -30,7 +30,6 @@ struct AppDelegateCore {
     case runFirebaseAutoInitialization
     case checkRegisterToken
     case getDeviceToken(Data)
-    case messagingFCMToken(FirebaseClient.DelegateEvent)
     
     // NotificationCenter Setting
     case setUpNotificationCenter
@@ -48,7 +47,7 @@ struct AppDelegateCore {
   @Dependency(\.kakaoLoginClient) private var kakaoLoginClient
   @Dependency(\.firebaseClient) private var firebaseClient
   @Dependency(\.uiApplicationClient) private var uiApplicationClient
-  
+
   var body: some Reducer<State, Action> {
     Reduce { state, action in
       switch action {
@@ -56,6 +55,7 @@ struct AppDelegateCore {
         return .run { send in
           await send(.setUpKakaoSDK)
           await send(.setUpFirebase)
+          await send(.setUpNotificationCenter)
         }
         
       case .setUpKakaoSDK:
@@ -70,10 +70,9 @@ struct AppDelegateCore {
       case .setUpFirebase:
         return .run { send in
           await send(.configureFirebase)
-          await send(.setUpNotificationCenter)
           await send(.configureFirebaseDelegate)
-          await send(.checkRegisterToken)
           await send(.runFirebaseAutoInitialization)
+          await send(.checkRegisterToken)
         }
         
       case .configureFirebase:
@@ -82,9 +81,8 @@ struct AppDelegateCore {
         }
         
       case .configureFirebaseDelegate:
-        return .run { @MainActor send in
-          for await event in self.firebaseClient.delegate() {
-            send(.messagingFCMToken(event))
+        return .run { send in
+          for await _ in self.firebaseClient.delegate() {
           }
         }
         
@@ -105,19 +103,6 @@ struct AppDelegateCore {
       case let .getDeviceToken(deviceToken):
         return .run { send in
           firebaseClient.getDeviceToken(deviceToken)
-        }
-        
-      case let .messagingFCMToken(.messaging(messaging, fcmToken: fcmToken)):
-        return .run { send in
-          let dataDict: [String: String] = ["token": fcmToken ?? ""]
-          
-          NotificationCenter.default.post(
-            name: Notification.Name("FCMToken"),
-            object: nil,
-            userInfo: dataDict
-          )
-          // TODO: If necessary send token to application server.
-          // Note: This callback is fired at each app startup and whenever a new token is generated.
         }
         
       case .setUpNotificationCenter:
@@ -168,11 +153,6 @@ struct AppDelegateCore {
         
       case let .authorizationStatusResposne(.failure(error)):
         return .none
-        
-      case let .getDeviceToken(deviceToken):
-        return .run { send in
-          firebaseClient.getDeviceToken(deviceToken)
-        }
         
       case let .logError(error):
         return .run { send in
