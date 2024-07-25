@@ -18,7 +18,7 @@ public struct UserDefaultsClient: Sendable {
   public var double: @Sendable (_ forKey: Key) throws -> Double
   public var data: @Sendable (_ forKey: Key) throws -> Data
   public var object: @Sendable (_ forKey: Key) throws -> Any
-  public var set: @Sendable (_ value: Any, _ forKey: Key) -> Void
+  public var set: @Sendable (_ forKey: Key, _ value: Any) -> Void
   public var removeObject: @Sendable (_ forKey: Key) -> Void
 }
 
@@ -59,7 +59,7 @@ extension UserDefaultsClient: DependencyKey {
         }
         return object
       },
-      set: { value, key in
+      set: { key, value in
         UserDefaults.standard.set(value, forKey: key.type)
       },
       removeObject: { key in

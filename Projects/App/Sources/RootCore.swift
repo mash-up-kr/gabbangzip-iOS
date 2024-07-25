@@ -11,66 +11,74 @@ import ComposableArchitecture
 import Foundation
 import KakaoSDKUser
 import Login
+import Main
+import MainCoordinator
 import Models
 import Services
 
 @Reducer
 public struct RootCore {
+  @Reducer
+  public enum Destination {
+    case mainCoordinator(MainCoordinatorCore)
+    case login(LoginCore)
+  }
+  
   @ObservableState
-  public struct State: Equatable {
-    public var isLogin: Bool
-    public var login: LoginCore.State
-    public var nickname: String
+  public struct State {
+    @Presents var destination: Destination.State?
     
     public init(
-      isLogin: Bool = true,
-      login: LoginCore.State = LoginCore.State(),
-      nickname: String = ""
+      destination: Destination.State? = nil
     ) {
-      self.isLogin = isLogin
-      self.login = login
-      self.nickname = nickname
+      self.destination = destination
     }
   }
   
-  public enum Action {
+  public enum Action: BindableAction {
+    case binding(BindingAction<State>)
+    case destination(PresentationAction<Destination.Action>)
+    
     // View Action
     case onAppear
     case onOpenURL(URL)
-    case setLoginStatus(Bool)
-    case login(LoginCore.Action)
     
     // Internal Action
-    case readAccessToken(Result<String, Error>)
+    case readUserInfo(Result<UserInfo, Error>)
     case readRefreshToken(Result<String, Error>)
-    case checkAccessToken(Result<TestInfo?, Error>)
-    case refreshToken(Result<TokenInfo?, Error>)
-    case updateToken(Result<(KeyChainClient.Key, String), RootCoreError>)
-    case getUser(Result<User, Error>)
-    case updateUser(UserDefaultsClient.Key, String)
-    case getNickname
-    case setNickname(Result<String, Error>)
+    case checkAccessToken(Result<TestInfo, Error>)
+    case refreshToken(Result<TokenInfo, Error>)
     case logError(RootCoreError)
+    case setDestination(Destination.State?)
   }
   
-  @Dependency(\.kakaoAPIClient) private var kakaoAPIClient
+  @Dependency(\.authAPIClient) private var authAPIClient
   @Dependency(\.kakaoLoginClient) private var kakaoLoginClient
   @Dependency(\.keyChainClient) private var keyChainClient
   @Dependency(\.userDefaultsClient) private var userDefaultsClient
   
   public var body: some Reducer<State, Action> {
-    Scope(
-      state: \.login,
-      action: \.login,
-      child: LoginCore.init
-    )
+    BindingReducer()
     
     Reduce { state, action in
       switch action {
+      case .binding:
+        return .none
+        
+      case .destination(.presented(.mainCoordinator(.router(.routeAction(id: _, action: .myPageCoordinator(.router(.routeAction(id: _, action: .myPage(.backToLogin))))))))):
+        state.destination = .login(LoginCore.State())
+        return .none
+        
+      case .destination(.presented(.login(.moveToHome))):
+        state.destination = .mainCoordinator(MainCoordinatorCore.State(routes: [.root(.groupList(GroupListCore.State()), embedInNavigationView: true)]))
+        return .none
+        
+      case .destination:
+        return .none
+        
       case .onAppear:
         return .run { send in
-          await send(.readAccessToken(Result { try await self.keyChainClient.read(.accessToken) }))
-          await send(.getNickname)
+          await send(.readUserInfo(Result { try await self.keyChainClient.readUserInfo() }))
         }
         
       case let .onOpenURL(url):
@@ -82,121 +90,63 @@ public struct RootCore {
           }
         }
         
-      case let .setLoginStatus(isLogin):
-        state.isLogin = isLogin
-        return .none
-        
-      case let .login(.delegate(.checkLogin(isLogin))):
-        state.isLogin = isLogin
-        return .none
-        
-      case .login:
-        return .none
-        
-      case let .readAccessToken(.success(accessToken)):
+      case let .readUserInfo(.success(userInfo)):
         return .run { send in
-          await send(.checkAccessToken(Result { try await self.kakaoAPIClient.testToken(accessToken) }))
+          await send(.checkAccessToken(Result { try await self.authAPIClient.testToken(userInfo.accessToken) }))
         }
         
-      case .readAccessToken(.failure):
-        return .run { send in
-          await send(.setLoginStatus(false))
-        }
+      case .readUserInfo(.failure):
+        state.destination = .login(LoginCore.State())
+        return .none
         
       case let .readRefreshToken(.success(refreshToken)):
         return .run { send in
-          await send(.refreshToken(Result { try await self.kakaoAPIClient.refreshToken(refreshToken) }))
+          await send(.refreshToken(Result { try await self.authAPIClient.refreshToken(refreshToken) }))
         }
         
       case .readRefreshToken(.failure):
-        return .run { send in
-          await send(.setLoginStatus(false))
-        }
+        state.destination = .login(LoginCore.State())
+        return .none
         
-      case let .checkAccessToken(.success(testInfo)):
-        return .run { send in
-          if testInfo != nil {
-            await send(.setLoginStatus(true))
-          } else {
-            await send(.setLoginStatus(false))
-          }
-        }
+      case .checkAccessToken(.success):
+        state.destination = .mainCoordinator(MainCoordinatorCore.State(routes: [.root(.groupList(GroupListCore.State()), embedInNavigationView: true)]))
+        return .none
         
       case .checkAccessToken(.failure):
         return .run { send in
-          await send(.readRefreshToken(Result { try await self.keyChainClient.read(.refreshToken) }))
+          await send(.readRefreshToken(Result { try await self.keyChainClient.readUserInfo().refreshToken }))
         }
         
       case let .refreshToken(.success(tokenInformation)):
-        return .run { send in
-          if let accessToken = tokenInformation?.accessToken {
-            await send(.updateToken(.success((.accessToken, accessToken))))
-          } else {
-            await send(.updateToken(.failure(RootCoreError(code: .failToSaveToken))))
+        return .run(
+          operation: { send in
+            var userInfo = try await self.keyChainClient.readUserInfo()
+            userInfo.update(keyPath: \.accessToken, value: tokenInformation.accessToken)
+            userInfo.update(keyPath: \.refreshToken, value: tokenInformation.refreshToken)
+            try await keyChainClient.updateUserInfo(userInfo)
+            await send(.setDestination(.mainCoordinator(MainCoordinatorCore.State(routes: [.root(.groupList(GroupListCore.State()), embedInNavigationView: true)]))))
+          },
+          catch: { error ,send in
+            await send(.setDestination(.login(LoginCore.State())))
+            await send(.logError(RootCoreError(code: .failToSaveToken)))
           }
-          if let refreshToken = tokenInformation?.refreshToken {
-            await send(.updateToken(.success((.refreshToken, refreshToken))))
-          } else {
-            await send(.updateToken(.failure(RootCoreError(code: .failToSaveToken))))
-          }
-          await send(.getUser(Result { try await kakaoLoginClient.checkUserInformation() }))
-          await send(.setLoginStatus(true))
-        }
+        )
         
       case .refreshToken(.failure):
-        return .run { send in
-          await send(.setLoginStatus(false))
-        }
-        
-      case let .updateToken(.success((tokenKey, token))):
-        return .run { send in
-          try await keyChainClient.update(tokenKey, token)
-        }
-        
-      case let .updateToken(.failure(error)):
-        return .run { send in
-          await send(.logError(error))
-        }
-        
-      case let .getUser(.success(user)):
-        return .run { send in
-          if let nickname = user.kakaoAccount?.profile?.nickname {
-            await send(.updateUser(.nickname, nickname))
-          } else {
-            await send(.logError(RootCoreError(code: .failToGetNickname)))
-          }
-        }
-        
-      case .getUser(.failure):
-        return .run { send in
-          await send(.logError(RootCoreError(code: .failToGetNickname)))
-        }
-        
-      case let .updateUser(key, value):
-        return .run { send in
-          userDefaultsClient.set(value, key)
-        }
-        
-      case .getNickname:
-        return .run { send in
-          await send(.setNickname(Result { try userDefaultsClient.string(.nickname) }))
-        }
-        
-      case let .setNickname(.success(nickname)):
-        state.nickname = nickname
+        state.destination = .login(LoginCore.State())
         return .none
-        
-      case .setNickname(.failure):
-        return .run { send in
-          await send(.logError(RootCoreError(code: .failToSetNickName)))
-        }
         
       case let .logError(error):
         return .run { send in
           logger.error("RootCore Error: \(error)")
         }
+        
+      case let .setDestination(destination):
+        state.destination = destination
+        return .none
       }
     }
+    .ifLet(\.$destination, action: \.destination)
   }
 }
 
@@ -209,8 +159,6 @@ public struct RootCoreError: GabbangzipError {
   public enum Code: Int {
     case failToOpenKakao
     case failToSaveToken
-    case failToGetNickname
-    case failToSetNickName
   }
 }
 
