@@ -19,9 +19,26 @@ struct AppDelegateCore {
 
   enum Action {
     case didFinishLaunching
+    
+    // KakaoSDK Setting
+    case setUpKakaoSDK
+    
+    // Firebase Setting
+    case setUpFirebase
+    case configureFirebase
+    case configureFirebaseDelegate
+    case runFirebaseAutoInitialization
+    case checkRegisterToken
+    case getDeviceToken(Data)
+    
+    // NotificationCenter Setting
+    case setUpNotificationCenter
+    case configureNotificationCenterDelegate
+    case requestNotificationCenterAuthorization
+    case registerForRemoteNotifications
     case userNotifications(UserNotificationClient.DelegateEvent)
     case authorizationStatusResposne(Result<Void, Error>)
-    case getDeviceToken(Data)
+    
     case logError(AppDelegateCoreError)
   }
   
@@ -35,15 +52,75 @@ struct AppDelegateCore {
     Reduce { state, action in
       switch action {
       case .didFinishLaunching:
-        return .run { @MainActor send in
-          // MARK: - KakaoLoginSDK
+        return .run { send in
+          await send(.setUpKakaoSDK)
+          await send(.setUpFirebase)
+          await send(.setUpNotificationCenter)
+        }
+        
+      case .setUpKakaoSDK:
+        return .run { send in
           if let appKey = try bundleClient.getValue("KakaoNativeAppKey") as? String {
             await kakaoLoginClient.initSDK(appKey)
           } else {
-            send(.logError(AppDelegateCoreError(code: .failToStringTypeCasting)))
+            await send(.logError(AppDelegateCoreError(code: .failToStringTypeCasting)))
           }
-          
-          // MARK: - UserNotification
+        }
+        
+      case .setUpFirebase:
+        return .run { send in
+          await send(.configureFirebase)
+          await send(.configureFirebaseDelegate)
+          await send(.runFirebaseAutoInitialization)
+          await send(.checkRegisterToken)
+        }
+        
+      case .configureFirebase:
+        return .run { @MainActor send in
+          firebaseClient.configure()
+        }
+        
+      case .configureFirebaseDelegate:
+        return .run { send in
+          for await _ in self.firebaseClient.delegate() {
+          }
+        }
+        
+      case .runFirebaseAutoInitialization:
+        return .run { send in
+          await firebaseClient.runAutoInitialization()
+        }
+        
+      case .checkRegisterToken:
+        return .run { send in
+          // You can get FCM Register Device Token using this method.
+          let token = try await firebaseClient.checkRegistrationToken()
+          print("FCM registration token: \(String(describing: token))")
+        } catch: { _, send in
+          await send(.logError(AppDelegateCoreError(code: .failToGetRegisterToken)))
+        }
+        
+      case let .getDeviceToken(deviceToken):
+        return .run { send in
+          firebaseClient.getDeviceToken(deviceToken)
+        }
+        
+      case .setUpNotificationCenter:
+        return .run { send in
+          await send(.configureNotificationCenterDelegate)
+          await send(.requestNotificationCenterAuthorization)
+          await send(.registerForRemoteNotifications)
+        }
+        
+      case .configureNotificationCenterDelegate:
+        return .run { @MainActor send in
+          for await event in self.userNotificationClient.delegate() {
+            send(.userNotifications(event))
+          }
+        }
+        
+      case .requestNotificationCenterAuthorization:
+        return .run { send in
           let authorizationStatus = await self.userNotificationClient.getAuthorizationStatus()
           if authorizationStatus == .notDetermined {
             await send(
@@ -54,22 +131,11 @@ struct AppDelegateCore {
               )
             )
           }
-          
-          for await event in self.userNotificationClient.delegate() {
-            send(.userNotifications(event))
-          }
-          
-          // MARK: - UIApplication
+        }
+        
+      case .registerForRemoteNotifications:
+        return .run { send in
           await uiApplicationClient.registerForRemoteNotifications()
-          
-          // MARK: - Firebase
-          firebaseClient.configure()
-          
-          for await event in self.firebaseClient.delegate() {
-            let token = try await firebaseClient.verifyToken()
-            
-            print("✅ TEST DEVICE TOKEN : \(token)")
-          }
         }
         
       case let .userNotifications(.didReceiveResponse(response, completionHandler)):
@@ -88,14 +154,10 @@ struct AppDelegateCore {
       case let .authorizationStatusResposne(.failure(error)):
         return .none
         
-      case let .getDeviceToken(deviceToken):
-        return .run { send in
-          firebaseClient.getDeviceToken(deviceToken)
-        }
-        
       case let .logError(error):
-        logger.error("AppDelegateCore Error: \(String(describing: error))")
-        return .none
+        return .run { send in
+          logger.error("AppDelegateCore Error: \(String(describing: error))")
+        }
       }
     }
   }
@@ -109,5 +171,6 @@ public struct AppDelegateCoreError: GabbangzipError {
   
   public enum Code: Int {
     case failToStringTypeCasting
+    case failToGetRegisterToken
   }
 }
