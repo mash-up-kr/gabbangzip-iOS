@@ -14,8 +14,9 @@ import FirebaseMessaging
 public struct FirebaseClient: Sendable {
   public var configure: @Sendable () -> Void
   public var delegate: @Sendable () -> AsyncStream<Any> = { .finished }
-  public var verifyToken: @Sendable () async throws -> String
+  public var runAutoInitialization: @Sendable () async -> Void
   public var getDeviceToken: @Sendable (Data) -> Void
+  public var checkRegistrationToken: @Sendable () async throws -> String
 }
 
 extension FirebaseClient: DependencyKey {
@@ -33,7 +34,13 @@ extension FirebaseClient: DependencyKey {
           }
         }
       },
-      verifyToken: {
+      runAutoInitialization: {
+        Messaging.messaging().isAutoInitEnabled = true
+      },
+      getDeviceToken: { data in
+        Messaging.messaging().apnsToken = data
+      },
+      checkRegistrationToken: {
         try await withCheckedThrowingContinuation { continuation in
           Messaging.messaging().token { token, error in
             if let error = error {
@@ -43,9 +50,6 @@ extension FirebaseClient: DependencyKey {
             }
           }
         }
-      },
-      getDeviceToken: { data in
-        Messaging.messaging().apnsToken = data
       }
     )
   }
@@ -64,8 +68,9 @@ extension FirebaseClient {
     }
     
     func messaging(_ messaging: Messaging, didReceiveRegistrationToken fcmToken: String?) {
-      guard let fcmToken else { return }
-      let dataDict: [String: String] = ["token": fcmToken]
+//      guard let fcmToken else { return }
+      let dataDict: [String: String] = ["token": fcmToken ?? ""]
+      print("❤️🌈💙Firebase registration token: \(String(describing: fcmToken))")
       
       NotificationCenter.default.post(
         name: Notification.Name("FCMToken"),

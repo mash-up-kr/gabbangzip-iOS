@@ -2,6 +2,8 @@
 <!DOCTYPE plist PUBLIC "-//Apple//DTD PLIST 1.0//EN" "http://www.apple.com/DTDs/PropertyList-1.0.dtd">
 <plist version="1.0">
 <dict>
+	<key>FirebaseAppDelegateProxyEnabled</key>
+	<false/>
 	<key>S3BucketDomain</key>
 	<string>$(S3BUCKETDOMAIN)</string>
 	<key>CFBundleExecutable</key>
@@ -29,6 +31,8 @@
 	</array>
 	<key>CFBundleVersion</key>
 	<string>202405201422</string>
+	<key>FirebaseMessagingAutoInitEnabled</key>
+	<false/>
 	<key>ITSAppUsesNonExemptEncryption</key>
 	<false/>
 	<key>KakaoNativeAppKey</key>
@@ -46,6 +50,7 @@
 	<string>$(PRODUCT_NAME)앱이 사진을 가져오기 위해 앨범 접근 권한을 허용해주세요.</string>
 	<key>UIBackgroundModes</key>
 	<array>
+		<string>fetch</string>
 		<string>remote-notification</string>
 	</array>
 	<key>UILaunchStoryboardName</key>
