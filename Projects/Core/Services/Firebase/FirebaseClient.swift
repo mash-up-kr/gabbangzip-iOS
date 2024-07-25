@@ -13,10 +13,17 @@ import FirebaseMessaging
 @DependencyClient
 public struct FirebaseClient: Sendable {
   public var configure: @Sendable () -> Void
-  public var delegate: @Sendable () -> AsyncStream<Any> = { .finished }
+  public var delegate: @Sendable () -> AsyncStream<DelegateEvent> = { .finished }
   public var runAutoInitialization: @Sendable () async -> Void
   public var getDeviceToken: @Sendable (Data) -> Void
   public var checkRegistrationToken: @Sendable () async throws -> String
+  
+  public enum DelegateEvent {
+    case messaging(
+      _ messaging: Messaging,
+      fcmToken: String?
+    )
+  }
 }
 
 extension FirebaseClient: DependencyKey {
@@ -61,24 +68,17 @@ extension FirebaseClient: DependencyKey {
 
 extension FirebaseClient {
   final class MessageDelegate: NSObject, MessagingDelegate, Sendable {
-    let continuation: AsyncStream<Any>.Continuation
+    let continuation: AsyncStream<DelegateEvent>.Continuation
     
-    init(continuation: AsyncStream<Any>.Continuation) {
+    init(continuation: AsyncStream<DelegateEvent>.Continuation) {
       self.continuation = continuation
     }
     
-    func messaging(_ messaging: Messaging, didReceiveRegistrationToken fcmToken: String?) {
-//      guard let fcmToken else { return }
-      let dataDict: [String: String] = ["token": fcmToken ?? ""]
-      print("❤️🌈💙Firebase registration token: \(String(describing: fcmToken))")
-      
-      NotificationCenter.default.post(
-        name: Notification.Name("FCMToken"),
-        object: nil,
-        userInfo: dataDict
-      )
-      // TODO: If necessary send token to application server.
-      // Note: This callback is fired at each app startup and whenever a new token is generated.
+    func messaging(
+      _ messaging: Messaging,
+      didReceiveRegistrationToken fcmToken: String?
+    ) {
+      continuation.yield(.messaging(messaging, fcmToken: fcmToken))
     }
   }
 }
