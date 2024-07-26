@@ -27,7 +27,8 @@ public struct VoteCore {
     // TODO: 네이밍 수정
     public var pickedImageIndex: [Int]
     public var swipeDirection: SwipeDirection
-    public var isClosePopupPresented: Bool
+    public var isPopupPresented: Bool
+    public var popupType: VotePopupType
     public var isVoteButtonDisabled: Bool
     
     public init(
@@ -37,7 +38,8 @@ public struct VoteCore {
       imageURLs: [URL?],
       pickedImageIndex: [Int],
       swipeDirection: SwipeDirection,
-      showClosePopup: Bool,
+      isPopupPresented: Bool,
+      popupType: VotePopupType,
       isVoteButtonDisabled: Bool
     ) {
       self.name = name
@@ -46,8 +48,41 @@ public struct VoteCore {
       self.imageURLs = imageURLs
       self.pickedImageIndex = pickedImageIndex
       self.swipeDirection = swipeDirection
-      self.isClosePopupPresented = showClosePopup
+      self.isPopupPresented = isPopupPresented
+      self.popupType = popupType
       self.isVoteButtonDisabled = isVoteButtonDisabled
+    }
+  }
+
+  public enum VotePopupType {
+    case close
+    
+    var title: String {
+      switch self {
+      case .close:
+        return "나가실건가요?"
+      }
+    }
+    
+    var description: String {
+      switch self {
+      case .close:
+        return "페이지를 나가면\n처음부터 다시 투표 하게돼요."
+      }
+    }
+    
+    var leftButtonTitle: String {
+      switch self {
+      case .close:
+        return "나가기"
+      }
+    }
+    
+    var rightButtonTitle: String {
+      switch self {
+      case .close:
+        "계속 투표하기"
+      }
     }
   }
 
@@ -58,9 +93,9 @@ public struct VoteCore {
     case passButtonTapped
     case voteButtonTapped
     case cardSwiped(Int, SwipeDirection)
-    case closeButtonTapped
     case exitButtonTapped
-    case continueButtonTapped
+    case popupRightButtonTapped
+    case popupLeftButtonTapped
     
     // Internal Action
     case resetButtonState
@@ -121,16 +156,16 @@ public struct VoteCore {
       case .voteEnded:
         return .none
         
-      case .closeButtonTapped:
-        state.isClosePopupPresented = true
-        return .none
-        
       case .exitButtonTapped:
-        state.isClosePopupPresented = false
+        state.isPopupPresented = true
         return .none
         
-      case .continueButtonTapped:
-        state.isClosePopupPresented = false
+      case .popupLeftButtonTapped:
+        state.isPopupPresented = false
+        return .none
+        
+      case .popupRightButtonTapped:
+        state.isPopupPresented = false
         return .none
       }
     }

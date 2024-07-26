@@ -43,6 +43,7 @@ public struct PopupView: View {
           .font(.body14)
           .foregroundStyle(DesignSystem.Colors.gray60)
           .padding(.top, 10)
+          .multilineTextAlignment(.center)
       }
       
       HStack(spacing: 8) {

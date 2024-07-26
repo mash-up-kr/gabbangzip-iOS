@@ -28,7 +28,7 @@ public struct VoteView: View {
           
           Button(
             action: {
-              store.send(.closeButtonTapped)
+              store.send(.exitButtonTapped)
             }, label: {
               DesignSystem.Icons.close
             }
@@ -62,16 +62,16 @@ public struct VoteView: View {
       }
     }
     .popup(
-      isPresented: $store.isClosePopupPresented,
-      title: "나가실건가요?",
-      description: "페이지를 나가면\n처음부터 다시 투표 하게돼요.",
-      leftButtonTitle: "나가기",
+      isPresented: $store.isPopupPresented,
+      title: store.popupType.title,
+      description: store.popupType.description,
+      leftButtonTitle: store.popupType.leftButtonTitle,
       leftButtonAction: {
-        store.send(.exitButtonTapped)
+        store.send(.popupLeftButtonTapped)
       },
-      rightButtonTitle: "계속 투표하기",
+      rightButtonTitle: store.popupType.rightButtonTitle,
       rightButtonAction: {
-        store.send(.continueButtonTapped)
+        store.send(.popupRightButtonTapped)
       }
     )
   }
@@ -137,7 +137,8 @@ private struct VoteButtonView: View {
         ],
         pickedImageIndex: [],
         swipeDirection: SwipeDirection.defaultState,
-        showClosePopup: false,
+        isPopupPresented: false,
+        popupType: .close,
         isVoteButtonDisabled: false
       ),
       reducer: VoteCore.init
