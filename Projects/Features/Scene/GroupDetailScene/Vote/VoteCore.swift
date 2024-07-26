@@ -21,6 +21,9 @@ public struct VoteCore {
     public var voteButtonState: VoteButtonState
     public var passButtonState: VoteButtonState
     public var imageURLs: [URL?]
+    public var imageCount: Int {
+      imageURLs.count
+    }
     // TODO: 네이밍 수정
     public var pickedImageIndex: [Int]
     public var swipeDirection: SwipeDirection

@@ -58,6 +58,7 @@ public struct VoteView: View {
           
           VoteSwipeView(
             imageURLs: store.imageURLs,
+            imageCount: store.imageCount,
             swipeDirection: store.swipeDirection,
             swipeAction: { index, swipeDirection in
               store.send(.cardSwiped(index, swipeDirection))

@@ -13,6 +13,7 @@ import SwiftUI
 
 struct VoteSwipeView: View {
   var imageURLs: [URL?]
+  var imageCount: Int
   var swipeDirection: SwipeDirection
   
   @State private var offset = CGSize.zero
@@ -22,7 +23,7 @@ struct VoteSwipeView: View {
 
   var body: some View {
     ZStack {
-      ForEach(0..<imageURLs.count, id: \.self) { index in
+      ForEach(0..<imageCount, id: \.self) { index in
         if let imageURL = imageURLs[safe: index] {
           CardView(imageURL: imageURL)
             .draggable(isActive: Binding(
@@ -34,10 +35,10 @@ struct VoteSwipeView: View {
               })
             )
             .offset(
-              x: index == imageURLs.count - 1 ? offset.width : 0,
-              y: index == imageURLs.count - 1 ? offset.height : 0
+              x: index == imageCount - 1 ? offset.width : 0,
+              y: index == imageCount - 1 ? offset.height : 0
             )
-            .rotationEffect(.degrees(index == imageURLs.count - 1 ? angle : 0))
+            .rotationEffect(.degrees(index == imageCount - 1 ? angle : 0))
             .animation(.easeInOut(duration: 0.3), value: offset)
             .animation(.easeInOut(duration: 0.3), value: angle)
         }
@@ -59,7 +60,7 @@ struct VoteSwipeView: View {
       } completion: {
         self.offset = CGSize(width: 0, height: 0)
         self.angle = 0
-        self.swipeAction(imageURLs.count - 1, direction)
+        self.swipeAction(imageCount - 1, direction)
       }
     }
   }
@@ -89,12 +90,11 @@ struct CardView: View {
 
 #Preview {
   VoteSwipeView(
-    imageURLs:
-      [
+    imageURLs: [
         URL(string: "https://t1.daumcdn.net/cafeattach/1YVY7/391cac378245e0d2c7bba59d6efc7692baf88aa6"),
         URL(string: "https://i.namu.wiki/i/hq6niPhkN8EhXuIkCNx32AN614AxXcaxKQ1EnyFaHN41caJM7rPfkfppaGZNlpgmXWPbkD_MGTbmGE4_BOrIBg.webp")
-      ]
-    ,
+    ],
+    imageCount: 2,
     swipeDirection: .defaultState,
     swipeAction: { _, _  in }
   )
