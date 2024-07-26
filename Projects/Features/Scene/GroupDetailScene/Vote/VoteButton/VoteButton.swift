@@ -52,9 +52,9 @@ enum VoteButtonType {
   var icon: Image {
     switch self {
     case .vote:
-      return DesignSystem.Icons.good
+      return DesignSystem.Icons.vote
     case .pass:
-      return DesignSystem.Icons.bad
+      return DesignSystem.Icons.pass
     }
   }
 
