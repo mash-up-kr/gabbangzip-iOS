@@ -39,8 +39,6 @@ struct VoteSwipeView: View {
               y: index == imageCount - 1 ? offset.height : 0
             )
             .rotationEffect(.degrees(index == imageCount - 1 ? angle : 0))
-            .animation(.easeInOut(duration: 0.3), value: offset)
-            .animation(.easeInOut(duration: 0.3), value: angle)
         }
       }
     }
