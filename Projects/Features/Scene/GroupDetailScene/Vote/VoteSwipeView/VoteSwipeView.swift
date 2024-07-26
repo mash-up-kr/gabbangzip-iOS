@@ -64,7 +64,7 @@ struct VoteSwipeView: View {
   }
 }
 
-struct CardView: View {
+private struct CardView: View {
   var imageURL: URL?
 
   var body: some View {
