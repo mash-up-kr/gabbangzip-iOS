@@ -82,6 +82,7 @@ private struct TitleView: View {
       
       Text("\(name)의 PIC")
         .font(.head18)
+        .foregroundStyle(DesignSystem.Colors.gray80)
     }
     .padding(.bottom, 46)
   }
