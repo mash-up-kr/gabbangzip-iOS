@@ -19,7 +19,7 @@ public struct VoteCore {
   public struct State: Equatable {
     public var name: String
     public var voteButtonState: VoteButtonState
-    public var passsButtonState: VoteButtonState
+    public var passButtonState: VoteButtonState
     public var imageURLs: [URL?]
     public var pickedImageIndex: [Int]
     public var swipeDirection: SwipeDirection
@@ -38,7 +38,7 @@ public struct VoteCore {
     ) {
       self.name = name
       self.voteButtonState = voteButtonState
-      self.passsButtonState = passsButtonState
+      self.passButtonState = passsButtonState
       self.imageURLs = imageURLs
       self.pickedImageIndex = pickedImageIndex
       self.swipeDirection = swipeDirection
@@ -73,7 +73,7 @@ public struct VoteCore {
         
       case .passButtonTapped:
         state.swipeDirection = .left
-        state.passsButtonState = .activate
+        state.passButtonState = .activate
         state.voteButtonState = .deactivate
         
         return .run { send in
@@ -85,7 +85,7 @@ public struct VoteCore {
       case .voteButtonTapped:
         state.swipeDirection = .right
         state.voteButtonState = .activate
-        state.passsButtonState = .deactivate
+        state.passButtonState = .deactivate
         
         return .run { send in
           DispatchQueue.main.asyncAfter(deadline: .now() + 1.0) {
@@ -94,7 +94,7 @@ public struct VoteCore {
         }
         
       case .resetButtonState:
-        state.passsButtonState = .defaultState
+        state.passButtonState = .defaultState
         state.voteButtonState = .defaultState
         return .none
         

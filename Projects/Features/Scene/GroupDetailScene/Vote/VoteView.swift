@@ -69,7 +69,7 @@ public struct VoteView: View {
         HStack(spacing: 16) {
           VoteButton(
             type: .pass,
-            state: store.passsButtonState,
+            state: store.passButtonState,
             action: {
               store.send(.passButtonTapped)
             }
