@@ -104,6 +104,8 @@ public struct VoteCore {
     
     // Route Action
   }
+  
+  @Dependency(\.mainQueue) var mainQueue
 
   public var body: some Reducer<State, Action> {
     Reduce { state, action in
@@ -115,8 +117,10 @@ public struct VoteCore {
         return .run { send in
           await send(.swipeCard(.left))
           
-          DispatchQueue.main.asyncAfter(deadline: .now() + 1.0) {
-            send(.resetButtonState)
+          mainQueue.schedule(after: .init(.now() + 1.0)) {
+            Task {
+              await send(.resetButtonState)
+            }
           }
         }
         
@@ -124,8 +128,10 @@ public struct VoteCore {
         return .run { send in
           await send(.swipeCard(.right))
           
-          DispatchQueue.main.asyncAfter(deadline: .now() + 1.0) {
-            send(.resetButtonState)
+          mainQueue.schedule(after: .init(.now() + 1.0)) {
+            Task {
+              await send(.resetButtonState)
+            }
           }
         }
         
