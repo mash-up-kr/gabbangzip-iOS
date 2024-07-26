@@ -21,6 +21,7 @@ public struct VoteCore {
     public var voteButtonState: VoteButtonState
     public var passButtonState: VoteButtonState
     public var imageURLs: [URL?]
+    // TODO: 네이밍 수정
     public var pickedImageIndex: [Int]
     public var swipeDirection: SwipeDirection
     public var isClosePopupPresented: Bool
