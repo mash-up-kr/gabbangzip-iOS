@@ -42,19 +42,10 @@ public struct VoteView: View {
 
       VStack(spacing: 0) {
         
-        VStack(spacing: 4) {
-          DesignSystem.Icons.voteBlack
-          
-          Text("\(store.name)의 PIC")
-            .font(.head18)
-        }
-        .padding(.bottom, 46)
+        TitleView(name: store.name)
         
         ZStack {
-          RoundedRectangle(cornerRadius: 10)
-            .frame(width: 330, height: 440)
-            .cornerRadius(10)
-            .foregroundStyle(.clear)
+          clearCardView
           
           VoteSwipeView(
             imageURLs: store.imageURLs,
@@ -67,25 +58,7 @@ public struct VoteView: View {
         }
         .padding(.bottom, 68)
         
-        HStack(spacing: 16) {
-          VoteButton(
-            type: .pass,
-            state: store.passButtonState,
-            action: {
-              store.send(.passButtonTapped)
-            }
-          )
-          .disabled(store.isVoteButtonDisabled)
-          
-          VoteButton(
-            type: .vote,
-            state: store.voteButtonState,
-            action: {
-              store.send(.voteButtonTapped)
-            }
-          )
-          .disabled(store.isVoteButtonDisabled)
-        }
+        VoteButtonView(store: store)
       }
     }
     .popup(
@@ -101,6 +74,53 @@ public struct VoteView: View {
         store.send(.continueButtonTapped)
       }
     )
+  }
+  
+  private var clearCardView: some View {
+    RoundedRectangle(cornerRadius: 10)
+      .frame(width: 330, height: 440)
+      .cornerRadius(10)
+      .foregroundStyle(.clear)
+  }
+}
+
+private struct TitleView: View {
+  let name: String
+  
+  var body: some View {
+    VStack(spacing: 4) {
+      DesignSystem.Icons.voteBlack
+      
+      Text("\(name)의 PIC")
+        .font(.head18)
+    }
+    .padding(.bottom, 46)
+  }
+}
+
+private struct VoteButtonView: View {
+  let store: StoreOf<VoteCore>
+  
+  var body: some View {
+    HStack(spacing: 16) {
+      VoteButton(
+        type: .pass,
+        state: store.passButtonState,
+        action: {
+          store.send(.passButtonTapped)
+        }
+      )
+      .disabled(store.isVoteButtonDisabled)
+      
+      VoteButton(
+        type: .vote,
+        state: store.voteButtonState,
+        action: {
+          store.send(.voteButtonTapped)
+        }
+      )
+      .disabled(store.isVoteButtonDisabled)
+    }
   }
 }
 
