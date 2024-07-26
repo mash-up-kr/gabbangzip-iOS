@@ -44,18 +44,14 @@ public struct VoteView: View {
         
         TitleView(name: store.name)
         
-        ZStack {
-          clearCardView
-          
-          VoteSwipeView(
-            imageURLs: store.imageURLs,
-            imageCount: store.imageCount,
-            swipeDirection: store.swipeDirection,
-            swipeAction: { index, swipeDirection in
-              store.send(.cardSwiped(index, swipeDirection))
-            }
-          )
-        }
+        VoteSwipeView(
+          imageURLs: store.imageURLs,
+          imageCount: store.imageCount,
+          swipeDirection: store.swipeDirection,
+          swipeAction: { index, swipeDirection in
+            store.send(.cardSwiped(index, swipeDirection))
+          }
+        )
         .padding(.bottom, 68)
         
         VoteButtonView(store: store)
@@ -74,13 +70,6 @@ public struct VoteView: View {
         store.send(.popupRightButtonTapped)
       }
     )
-  }
-  
-  private var clearCardView: some View {
-    RoundedRectangle(cornerRadius: 10)
-      .frame(width: 330, height: 440)
-      .cornerRadius(10)
-      .foregroundStyle(.clear)
   }
 }
 

@@ -23,6 +23,8 @@ struct VoteSwipeView: View {
 
   var body: some View {
     ZStack {
+      clearCardView
+      
       ForEach(0..<imageCount, id: \.self) { index in
         if let imageURL = imageURLs[safe: index] {
           CardView(imageURL: imageURL)
@@ -45,6 +47,13 @@ struct VoteSwipeView: View {
     .onChange(of: swipeDirection, { oldValue, direction in
       swipeCard(to: direction)
     })
+  }
+  
+  private var clearCardView: some View {
+    RoundedRectangle(cornerRadius: 10)
+      .frame(width: 330, height: 440)
+      .cornerRadius(10)
+      .foregroundStyle(.clear)
   }
 
   private func swipeCard(to direction: SwipeDirection) {
