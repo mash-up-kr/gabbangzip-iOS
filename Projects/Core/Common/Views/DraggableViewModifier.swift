@@ -16,8 +16,8 @@ public enum SwipeDirection {
 
 public struct DraggableViewModifier: ViewModifier {
   @Binding private var isActive: (Bool, SwipeDirection)
-  @State private var translation: CGSize = .zero
-  private let threshold: CGFloat = 100.0
+  @State private var translation: CGSize
+  private let threshold: CGFloat = 200.0
   
   public init(
     isActive: Binding<(Bool, SwipeDirection)>,

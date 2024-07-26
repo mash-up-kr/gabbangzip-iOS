@@ -49,10 +49,10 @@ struct VoteSwipeView: View {
 
   private func swipeCard(to direction: SwipeDirection) {
     if direction != .defaultState {
-      let width = direction == .left ? -500 : 500
+      let width = direction == .left ? -600 : 600
       let rotation = direction == .left ? -20.0 : 20.0
 
-      withAnimation(.easeInOut(duration: 0.2)) {
+      withAnimation(.easeInOut(duration: 0.3)) {
         self.offset = CGSize(width: width, height: 0)
         self.angle = rotation
       } completion: {
