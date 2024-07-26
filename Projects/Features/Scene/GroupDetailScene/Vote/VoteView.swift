@@ -57,8 +57,8 @@ public struct VoteView: View {
             .foregroundStyle(.clear)
           
           VoteSwipeView(
-            imageURLs: $store.imageURLs,
-            swipeDirection: $store.swipeDirection,
+            imageURLs: store.imageURLs,
+            swipeDirection: store.swipeDirection,
             swipeAction: { index, swipeDirection in
               store.send(.cardSwiped(index, swipeDirection))
             }

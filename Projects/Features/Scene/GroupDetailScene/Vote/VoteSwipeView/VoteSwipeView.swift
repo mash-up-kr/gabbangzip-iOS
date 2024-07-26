@@ -12,8 +12,8 @@ import NukeUI
 import SwiftUI
 
 struct VoteSwipeView: View {
-  @Binding var imageURLs: [URL?]
-  @Binding var swipeDirection: SwipeDirection
+  var imageURLs: [URL?]
+  var swipeDirection: SwipeDirection
   
   @State private var offset = CGSize.zero
   @State private var angle: Double = 0
@@ -89,13 +89,13 @@ struct CardView: View {
 
 #Preview {
   VoteSwipeView(
-    imageURLs: .constant(
+    imageURLs:
       [
         URL(string: "https://t1.daumcdn.net/cafeattach/1YVY7/391cac378245e0d2c7bba59d6efc7692baf88aa6"),
         URL(string: "https://i.namu.wiki/i/hq6niPhkN8EhXuIkCNx32AN614AxXcaxKQ1EnyFaHN41caJM7rPfkfppaGZNlpgmXWPbkD_MGTbmGE4_BOrIBg.webp")
       ]
-    ),
-    swipeDirection: .constant(.defaultState),
+    ,
+    swipeDirection: .defaultState,
     swipeAction: { _, _  in }
   )
 }
