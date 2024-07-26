@@ -18,22 +18,21 @@ struct VoteButton: View {
     Button(
       action: action,
       label: {
-        ZStack {
-          RoundedRectangle(cornerRadius: 10)
-            .foregroundStyle(
-              state == .activate ? type.activateBackgroundColor : type.deactivateBackgroundColor
-            )
-            .frame(width: 60, height: 60)
-            .shadow(
-              color: .black.opacity(0.08),
-              radius: 4,
-              x: 0,
-              y: 4
-            )
-          
-          type.icon
-            .foregroundStyle(state == .deactivate ? type.deactivateColor : type.activateColor)
-        }
+        type.icon
+          .foregroundStyle(state == .deactivate ? type.deactivateColor : type.activateColor)
+          .frame(width: 60, height: 60)
+          .background(
+            RoundedRectangle(cornerRadius: 10)
+              .foregroundStyle(
+                state == .activate ? type.activateBackgroundColor : type.deactivateBackgroundColor
+              )
+              .shadow(
+                color: .black.opacity(0.08),
+                radius: 4,
+                x: 0,
+                y: 4
+              )
+          )
       }
     )
   }
