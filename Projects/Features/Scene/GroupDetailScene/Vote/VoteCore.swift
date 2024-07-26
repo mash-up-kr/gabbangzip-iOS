@@ -94,12 +94,13 @@ public struct VoteCore {
     case voteButtonTapped
     case cardSwiped(Int, SwipeDirection)
     case exitButtonTapped
-    case popupRightButtonTapped
     case popupLeftButtonTapped
+    case popupRightButtonTapped
     
     // Internal Action
     case resetButtonState
     case voteEnded
+    case swipeCard(SwipeDirection)
     
     // Route Action
   }
@@ -111,31 +112,22 @@ public struct VoteCore {
         return .none
         
       case .passButtonTapped:
-        state.swipeDirection = .left
-        state.passButtonState = .activate
-        state.voteButtonState = .deactivate
-        
         return .run { send in
+          await send(.swipeCard(.left))
+          
           DispatchQueue.main.asyncAfter(deadline: .now() + 1.0) {
             send(.resetButtonState)
           }
         }
         
       case .voteButtonTapped:
-        state.swipeDirection = .right
-        state.voteButtonState = .activate
-        state.passButtonState = .deactivate
-        
         return .run { send in
+          await send(.swipeCard(.right))
+          
           DispatchQueue.main.asyncAfter(deadline: .now() + 1.0) {
             send(.resetButtonState)
           }
         }
-        
-      case .resetButtonState:
-        state.passButtonState = .defaultState
-        state.voteButtonState = .defaultState
-        return .none
         
       case let .cardSwiped(index, direction):
         state.swipeDirection = .defaultState
@@ -153,9 +145,6 @@ public struct VoteCore {
           return .none
         }
         
-      case .voteEnded:
-        return .none
-        
       case .exitButtonTapped:
         state.isPopupPresented = true
         return .none
@@ -166,6 +155,20 @@ public struct VoteCore {
         
       case .popupRightButtonTapped:
         state.isPopupPresented = false
+        return .none
+        
+      case .resetButtonState:
+        state.passButtonState = .defaultState
+        state.voteButtonState = .defaultState
+        return .none
+        
+      case .voteEnded:
+        return .none
+        
+      case let .swipeCard(direction):
+        state.swipeDirection = direction
+        state.passButtonState = direction == .left ? .activate : .deactivate
+        state.voteButtonState = direction == .left ? .deactivate : .activate
         return .none
       }
     }
