@@ -11,7 +11,7 @@ import SwiftUI
 
 struct VoteButton: View {
   let type: VoteButtonType
-  @Binding var state: VoteButtonState
+  var state: VoteButtonState
   let action: () -> Void
 
   var body: some View {
@@ -88,12 +88,12 @@ enum VoteButtonType {
   Group {
     VoteButton(
       type: .vote,
-      state: .constant(.defaultState),
+      state: .defaultState,
       action: {}
     )
     VoteButton(
       type: .pass,
-      state: .constant(.defaultState),
+      state: .defaultState,
       action: {}
     )
   }

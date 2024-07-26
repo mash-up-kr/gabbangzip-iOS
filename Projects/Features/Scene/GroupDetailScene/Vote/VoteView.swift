@@ -6,6 +6,7 @@
 //  Copyright © 2024 com.mashup.gabbangzip. All rights reserved.
 //
 
+import Common
 import ComposableArchitecture
 import DesignSystem
 import SwiftUI
@@ -68,7 +69,7 @@ public struct VoteView: View {
         HStack(spacing: 16) {
           VoteButton(
             type: .pass,
-            state: $store.passsButtonState,
+            state: store.passsButtonState,
             action: {
               store.send(.passButtonTapped)
             }
@@ -77,7 +78,7 @@ public struct VoteView: View {
           
           VoteButton(
             type: .vote,
-            state: $store.voteButtonState,
+            state: store.voteButtonState,
             action: {
               store.send(.voteButtonTapped)
             }
@@ -114,7 +115,7 @@ public struct VoteView: View {
           URL(string: "https://i.namu.wiki/i/hq6niPhkN8EhXuIkCNx32AN614AxXcaxKQ1EnyFaHN41caJM7rPfkfppaGZNlpgmXWPbkD_MGTbmGE4_BOrIBg.webp")
         ],
         pickedImageIndex: [],
-        swipeDirection: .defaultState,
+        swipeDirection: SwipeDirection.defaultState,
         showClosePopup: false,
         isVoteButtonDisabled: false
       ),
