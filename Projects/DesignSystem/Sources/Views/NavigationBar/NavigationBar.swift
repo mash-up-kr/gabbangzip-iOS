@@ -274,9 +274,7 @@ fileprivate struct TitleWithBackButtonAndIconView: View {
 
 #Preview {
   VStack(spacing: 10) {
-    NavigationBar(
-      type: .titleWithBackButton("그룹 만들기", .center)
-    )
+    NavigationBar(type: .titleWithBackButton("그룹 만들기", .center))
     NavigationBar(type: .titleWithBackButton("그룹 만들기", .left), isDarkMode: true)
       .background(.black)
     NavigationBar(type: .title("완료"))

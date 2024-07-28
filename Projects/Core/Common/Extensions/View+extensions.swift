@@ -31,6 +31,10 @@ public extension View {
   func cornerRadius(_ radius: CGFloat, corners: UIRectCorner) -> some View {
     clipShape(RoundCorners(radius: radius, corners: corners))
   }
+  
+  func draggable(isActive: Binding<(Bool, SwipeDirection)>) -> some View {
+    self.modifier(DraggableViewModifier(isActive: isActive))
+  }
 }
 
 fileprivate struct RoundCorners: Shape {
