@@ -34,8 +34,13 @@ let project = Project.make(
         .external(externalDependency: .firebaseMessaging),
         .external(externalDependency: .multipartFormDataKit),
         .target(name: .models)
-      ]
-    ),
+			],
+			settings: .settings(
+				base: [
+					"OTHER_LDFLAGS": "-ObjC"
+				]
+			)
+		),
     .make(
       name: "Common",
       product: .framework,
