@@ -33,8 +33,13 @@ let project = Project.make(
         .external(externalDependency: .firebaseAnalytics),
         .external(externalDependency: .firebaseMessaging),
         .target(name: .models)
-      ]
-    ),
+			],
+			settings: .settings(
+				base: [
+					"OTHER_LDFLAGS": "-ObjC"
+				]
+			)
+		),
     .make(
       name: "Common",
       product: .framework,

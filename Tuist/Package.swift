@@ -12,8 +12,7 @@ let packageSettings = PackageSettings(
     "NukeUI": .framework,
     "Lottie": .framework,
     "Get": .framework,
-    "KakaoSDK": .framework,
-    "Firebase": .framework
+    "KakaoSDK": .framework
   ]
 )
 #endif
