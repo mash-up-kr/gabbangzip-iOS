@@ -25,8 +25,7 @@ let project = Project.make(
           "DEVELOPMENT_TEAM": "MYR6MP3VKX",
           "CODE_SIGN_STYLE": "Manual",
           "PROVISIONING_PROFILE_SPECIFIER": "match Development com.mashup.gabbangzip",
-          "CODE_SIGN_IDENTITY": "Apple Development: Hyerin Choe (QKKN56KGD9)",
-          "OTHER_LDFLAGS": "-ObjC"
+          "CODE_SIGN_IDENTITY": "Apple Development: Hyerin Choe (QKKN56KGD9)"
         ],
         configurations: [
           .release(name: .release, xcconfig: "./xcconfigs/Gabbangzip.release.xcconfig")
@@ -54,8 +53,7 @@ let project = Project.make(
           "DEVELOPMENT_TEAM": "MYR6MP3VKX",
           "CODE_SIGN_STYLE": "Manual",
           "PROVISIONING_PROFILE_SPECIFIER": "match Development com.mashup.gabbangzip-dev",
-          "CODE_SIGN_IDENTITY": "Apple Development: Hyerin Choe (QKKN56KGD9)",
-          "OTHER_LDFLAGS": "-ObjC"
+          "CODE_SIGN_IDENTITY": "Apple Development: Hyerin Choe (QKKN56KGD9)"
         ],
         configurations: [
           .debug(name: .debug, xcconfig: "./xcconfigs/Gabbangzip.debug.xcconfig")
