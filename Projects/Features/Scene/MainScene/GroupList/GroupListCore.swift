@@ -17,11 +17,14 @@ public struct GroupListCore {
   @ObservableState
   public struct State: Equatable {
     var groups: [GroupData]
+    @Shared var userInfo: UserInfo
     
     public init(
-      groups: [GroupData] = []
+      groups: [GroupData] = [],
+      userInfo: @autoclosure () -> UserInfo = .defaultValue
     ) {
       self.groups = groups
+      self._userInfo = Shared(wrappedValue: userInfo(), .inMemory("userInfo"))
     }
   }
 
@@ -50,10 +53,9 @@ public struct GroupListCore {
     Reduce { state, action in
       switch action {
       case .onAppear:
-        return .run (
-          operation: { send in
-            let userInfo = try await keyChainClient.readUserInfo()
-            await send(.getGroupsResponse(Result { try await self.groupAPIClient.getGroups(accessToken: userInfo.accessToken) }))
+        return .run(
+          operation: { [state] send in
+            await send(.getGroupsResponse(Result { try await self.groupAPIClient.getGroups(accessToken: state.userInfo.accessToken) }))
           },
           catch: { error, send in
           }

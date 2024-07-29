@@ -27,11 +27,14 @@ public struct RootCore {
   @ObservableState
   public struct State {
     @Presents var destination: Destination.State?
+    @Shared var userInfo: UserInfo
     
     public init(
-      destination: Destination.State? = nil
+      destination: Destination.State? = nil,
+      userInfo: @autoclosure () -> UserInfo = .defaultValue
     ) {
       self.destination = destination
+      self._userInfo = Shared(wrappedValue: userInfo(), .inMemory("userInfo"))
     }
   }
   
@@ -44,10 +47,9 @@ public struct RootCore {
     case onOpenURL(URL)
     
     // Internal Action
-    case readUserInfo(Result<UserInfo, Error>)
-    case readRefreshToken(Result<String, Error>)
-    case checkAccessToken(Result<TestInfo, Error>)
-    case refreshToken(Result<TokenInfo, Error>)
+    case getUserInfoFromKeyChain(Result<UserInfo, Error>)
+    case checkAccessToken(Result<TestInfo, Error>, userInfo: UserInfo)
+    case refreshToken(Result<TokenInfo, Error>, userInfo: UserInfo)
     case logError(RootCoreError)
     case setDestination(Destination.State?)
   }
@@ -78,7 +80,7 @@ public struct RootCore {
         
       case .onAppear:
         return .run { send in
-          await send(.readUserInfo(Result { try await self.keyChainClient.readUserInfo() }))
+          await send(.getUserInfoFromKeyChain(Result { try await self.keyChainClient.readUserInfo() }))
         }
         
       case let .onOpenURL(url):
@@ -90,49 +92,52 @@ public struct RootCore {
           }
         }
         
-      case let .readUserInfo(.success(userInfo)):
+      case let .getUserInfoFromKeyChain(.success(userInfo)):
         return .run { send in
-          await send(.checkAccessToken(Result { try await self.authAPIClient.testToken(userInfo.accessToken) }))
+          await send(
+            .checkAccessToken(
+              Result { try await self.authAPIClient.testToken(userInfo.accessToken) }, 
+              userInfo: userInfo
+            )
+          )
         }
         
-      case .readUserInfo(.failure):
+      case .getUserInfoFromKeyChain(.failure):
         state.destination = .login(LoginCore.State())
         return .none
         
-      case let .readRefreshToken(.success(refreshToken)):
-        return .run { send in
-          await send(.refreshToken(Result { try await self.authAPIClient.refreshToken(refreshToken) }))
-        }
-        
-      case .readRefreshToken(.failure):
-        state.destination = .login(LoginCore.State())
-        return .none
-        
-      case .checkAccessToken(.success):
+      case let .checkAccessToken(.success, userInfo):
+        state.userInfo = userInfo
         state.destination = .mainCoordinator(MainCoordinatorCore.State(routes: [.root(.groupList(GroupListCore.State()), embedInNavigationView: true)]))
         return .none
         
-      case .checkAccessToken(.failure):
+      case let .checkAccessToken(.failure, userInfo):
         return .run { send in
-          await send(.readRefreshToken(Result { try await self.keyChainClient.readUserInfo().refreshToken }))
+          await send(
+            .refreshToken(
+              Result { try await self.authAPIClient.refreshToken(userInfo.refreshToken) },
+              userInfo: userInfo)
+          )
         }
         
-      case let .refreshToken(.success(tokenInformation)):
+      case let .refreshToken(.success(tokenInformation), userInfo):
+        var newUserInfo = userInfo
+        newUserInfo.update(keyPath: \.accessToken, value: tokenInformation.accessToken)
+        newUserInfo.update(keyPath: \.refreshToken, value: tokenInformation.refreshToken)
+        state.userInfo = newUserInfo
+        
         return .run(
-          operation: { send in
-            var userInfo = try await self.keyChainClient.readUserInfo()
-            userInfo.update(keyPath: \.accessToken, value: tokenInformation.accessToken)
-            userInfo.update(keyPath: \.refreshToken, value: tokenInformation.refreshToken)
-            try await keyChainClient.updateUserInfo(userInfo)
+          operation: { [newUserInfo] send in
+            try await keyChainClient.updateUserInfo(newUserInfo)
             await send(.setDestination(.mainCoordinator(MainCoordinatorCore.State(routes: [.root(.groupList(GroupListCore.State()), embedInNavigationView: true)]))))
           },
-          catch: { error ,send in
+          catch: { error, send in
             await send(.setDestination(.login(LoginCore.State())))
             await send(.logError(RootCoreError(code: .failToSaveToken)))
           }
         )
         
-      case .refreshToken(.failure):
+      case .refreshToken(.failure, _):
         state.destination = .login(LoginCore.State())
         return .none
         

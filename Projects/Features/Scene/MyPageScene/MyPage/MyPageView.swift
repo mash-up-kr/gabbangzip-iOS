@@ -21,7 +21,7 @@ public struct MyPageView: View {
   
   public var body: some View {
     VStack {
-      NavigationBar(type: .titleWithBackButton(MyPageNameSpace.myPageTitle))
+      NavigationBar(type: .titleWithBackButton(MyPageNameSpace.myPageTitle, .center))
       
       SettingTitleView(
         text: store.nickname,
