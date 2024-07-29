@@ -22,15 +22,18 @@ public struct LoginCore {
     public var isPresented: Bool
     public var kakaoUser: KaKaoUserInfo
     public var kakaoIdToken: KakaoToken
+    @Shared var userInfo: UserInfo
     
     public init(
       isPresented: Bool = false,
       kakaoUser: KaKaoUserInfo = KaKaoUserInfo(),
-      kakaoIdToken: KakaoToken = KakaoToken()
+      kakaoIdToken: KakaoToken = KakaoToken(),
+      userInfo: @autoclosure () -> UserInfo = .defaultValue
     ) {
       self.isPresented = isPresented
       self.kakaoUser = kakaoUser
       self.kakaoIdToken = kakaoIdToken
+      self._userInfo = Shared(wrappedValue: userInfo(), .inMemory("userInfo"))
     }
   }
   
@@ -116,16 +119,16 @@ public struct LoginCore {
         }
         
       case let .loginResponse(.success(user)):
+        let userInfo = UserInfo(
+          userID: user.userID,
+          nickname: user.nickname,
+          accessToken: user.accessToken,
+          refreshToken: user.refreshToken
+        )
+        state.userInfo = userInfo
         return .run { send in
-          let userInfo = UserInfo(
-            userID: user.userID,
-            nickname: user.nickname,
-            accessToken: user.accessToken,
-            refreshToken: user.refreshToken
-          )
           await send(.saveUserInfoToKeychain(Result { try await self.keyChainClient.createUserInfo(userInfo) }))
           await send(.moveToHome)
-          // TODO: - Save UserInfo to SharedState
         }
         
       case .loginResponse(.failure):
