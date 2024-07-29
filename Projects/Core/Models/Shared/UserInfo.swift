@@ -8,7 +8,7 @@
 
 import Foundation
 
-public struct UserInfo: Codable {
+public struct UserInfo: Codable, Equatable {
   public var userID: Int
   public var nickname: String
   public var accessToken: String
@@ -24,4 +24,6 @@ public struct UserInfo: Codable {
   public mutating func update<T>(keyPath: WritableKeyPath<UserInfo, T>, value: T) {
     self[keyPath: keyPath] = value
   }
+  
+  public static let defaultValue = UserInfo(userID: -1, nickname: "", accessToken: "", refreshToken: "")
 }
