@@ -21,7 +21,7 @@ public struct SelectGroupPhotoView: View {
   public var body: some View {
     VStack(spacing: 0) {
       NavigationBar(
-        type: .titleWithBackButton("그룹 만들기"),
+        type: .titleWithBackButton("그룹 만들기", .center),
         backButtonAction: { store.send(.backButtonTapped) }
       )
       
