@@ -110,7 +110,6 @@ struct AppDelegateCore {
       case let .messagingFCMToken(.messaging(messaging, fcmToken: fcmToken)):
         return .run { send in
           let dataDict: [String: String] = ["token": fcmToken ?? ""]
-          print("❤️🌈💙Firebase registration token: \(String(describing: fcmToken))")
           
           NotificationCenter.default.post(
             name: Notification.Name("FCMToken"),
