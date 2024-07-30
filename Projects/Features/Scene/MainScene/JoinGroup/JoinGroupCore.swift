@@ -12,9 +12,9 @@ import Models
 
 @Reducer
 public struct JoinGroupCore {
-	public init() {}
-	
-	@ObservableState
+  public init() {}
+  
+  @ObservableState
   public struct State: Equatable {
     @Shared var userInfo: UserInfo
     var text: String
@@ -22,7 +22,7 @@ public struct JoinGroupCore {
     var nextButtonType: ButtonType {
       text.isEmpty ? .inactive : .active
     }
-
+    
     public init(
       userInfo: @autoclosure () -> UserInfo = .defaultValue,
       text: String = "",
@@ -33,7 +33,7 @@ public struct JoinGroupCore {
       self.toastPresented = toastPresented
     }
   }
-
+  
   public enum Action {
     
     // View Action
@@ -47,7 +47,7 @@ public struct JoinGroupCore {
     // Route Action
     case backToGroupList
   }
-
+  
   public var body: some Reducer<State, Action> {
     Reduce { state, action in
       switch action {
