@@ -33,6 +33,5 @@ extension AppDelegate: UNUserNotificationCenterDelegate {
     didRegisterForRemoteNotificationsWithDeviceToken deviceToken: Data
   ) {
     store.send(.getDeviceToken(deviceToken))
-    print("✅ TEST DEVICE TOKEN : \(deviceToken)")
   }
 }

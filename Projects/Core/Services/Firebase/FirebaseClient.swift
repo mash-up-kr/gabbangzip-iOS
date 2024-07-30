@@ -54,7 +54,6 @@ extension FirebaseClient: DependencyKey {
               continuation.resume(throwing: FirebaseClientError(code: .failToGetMessaging))
             } else if let token {
               continuation.resume(returning: token)
-              print("💙🌈 FCM registeration Token \(token)")
             }
           }
         }
