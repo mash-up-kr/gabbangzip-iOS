@@ -106,7 +106,7 @@ struct AppDelegateCore {
         
       case let .getDeviceToken(deviceToken):
         return .run { send in
-          firebaseClient.getDeviceToken(deviceToken)
+          await firebaseClient.getDeviceToken(deviceToken)
         }
         
       case let .messagingFCMToken(.messaging(_, fcmToken: fcmToken)):
