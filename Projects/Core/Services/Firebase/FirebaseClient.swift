@@ -15,7 +15,7 @@ public struct FirebaseClient: Sendable {
   public var configure: @Sendable () -> Void
   public var delegate: @Sendable () -> AsyncStream<DelegateEvent> = { .finished }
   public var runAutoInitialization: @Sendable () async -> Void
-  public var getDeviceToken: @Sendable (Data) -> Void
+  public var getDeviceToken: @Sendable (Data) async -> Void
   public var checkRegistrationToken: @Sendable () async throws -> String
   
   public enum DelegateEvent {
