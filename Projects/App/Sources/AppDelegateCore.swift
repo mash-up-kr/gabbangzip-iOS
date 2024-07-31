@@ -107,7 +107,7 @@ struct AppDelegateCore {
           await firebaseClient.getDeviceToken(deviceToken)
         }
         
-      case let .messagingFCMToken(.messaging(messaging, fcmToken: fcmToken)):
+      case let .messagingFCMToken(.messaging(_, fcmToken: fcmToken)):
         return .run { send in
           let dataDict: [String: String] = ["token": fcmToken ?? ""]
           
