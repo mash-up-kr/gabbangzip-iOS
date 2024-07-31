@@ -51,7 +51,7 @@ extension FirebaseClient: DependencyKey {
         try await withCheckedThrowingContinuation { continuation in
           Messaging.messaging().token { token, error in
             if let error = error {
-              continuation.resume(throwing: FirebaseClientError(code: .failToGetMessaging))
+              continuation.resume(throwing: FirebaseClientError(code: .failToGetMessaging, underlying: error))
             } else if let token {
               continuation.resume(returning: token)
             }
