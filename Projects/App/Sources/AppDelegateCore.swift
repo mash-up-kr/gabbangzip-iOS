@@ -41,7 +41,7 @@ struct AppDelegateCore {
     case authorizationStatusResposne(Result<Void, Error>)
     
     case logError(AppDelegateCoreError)
-    case logDescription(String)
+    case logFCMDescription(String)
   }
   
   @Dependency(\.userNotificationClient) private var userNotificationClient
@@ -97,9 +97,7 @@ struct AppDelegateCore {
       case .checkRegisterToken:
         return .run { send in
           let token = try await firebaseClient.checkRegistrationToken()
-          let description = "FCM registration token: \(String(describing: token))"
-          
-          await send(.logDescription(description))
+          await send(.logFCMDescription(token))
         } catch: { _, send in
           await send(.logError(AppDelegateCoreError(code: .failToGetRegisterToken)))
         }
@@ -109,7 +107,7 @@ struct AppDelegateCore {
           await firebaseClient.getDeviceToken(deviceToken)
         }
         
-      case let .messagingFCMToken(.messaging(_, fcmToken: fcmToken)):
+      case let .messagingFCMToken(.messaging(messaging, fcmToken: fcmToken)):
         return .run { send in
           let dataDict: [String: String] = ["token": fcmToken ?? ""]
           
@@ -176,9 +174,9 @@ struct AppDelegateCore {
           logger.error("AppDelegateCore Error: \(String(describing: error))")
         }
         
-      case let .logDescription(description):
+      case let .logFCMDescription(description):
         return .run { send in
-          logger.debug(description)
+          logger.debug("FCM registration token: \(String(describing: description))")
         }
       }
     }
