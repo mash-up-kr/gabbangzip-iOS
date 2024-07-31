@@ -194,5 +194,6 @@ public struct AppDelegateCoreError: GabbangzipError {
   public enum Code: Int {
     case failToStringTypeCasting
     case failToGetRegisterToken
+    case failToGetAuthorizationStatusResposne
   }
 }

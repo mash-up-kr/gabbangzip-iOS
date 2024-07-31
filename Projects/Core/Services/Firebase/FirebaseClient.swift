@@ -54,6 +54,8 @@ extension FirebaseClient: DependencyKey {
               continuation.resume(throwing: FirebaseClientError(code: .failToGetMessaging, underlying: error))
             } else if let token {
               continuation.resume(returning: token)
+            } else {
+              continuation.resume(throwing: FirebaseClientError(code: .unknownError))
             }
           }
         }
@@ -72,6 +74,10 @@ extension FirebaseClient {
     
     init(continuation: AsyncStream<DelegateEvent>.Continuation) {
       self.continuation = continuation
+    }
+    
+    deinit {
+      continuation.finish()
     }
     
     func messaging(
@@ -108,5 +114,6 @@ public struct FirebaseClientError: GabbangzipError {
   
   public enum Code: Int {
     case failToGetMessaging
+    case unknownError
   }
 }
