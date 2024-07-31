@@ -41,6 +41,7 @@ struct AppDelegateCore {
     case authorizationStatusResposne(Result<Void, Error>)
     
     case logError(AppDelegateCoreError)
+    case logDescription(String)
   }
   
   @Dependency(\.userNotificationClient) private var userNotificationClient
@@ -97,7 +98,9 @@ struct AppDelegateCore {
         return .run { send in
           // You can get FCM Register Device Token using this method.
           let token = try await firebaseClient.checkRegistrationToken()
-          print("FCM registration token: \(String(describing: token))")
+          let description = "FCM registration token: \(String(describing: token))"
+          
+          await send(.logDescription(description))
         } catch: { _, send in
           await send(.logError(AppDelegateCoreError(code: .failToGetRegisterToken)))
         }
@@ -172,6 +175,11 @@ struct AppDelegateCore {
       case let .logError(error):
         return .run { send in
           logger.error("AppDelegateCore Error: \(String(describing: error))")
+        }
+        
+      case let .logDescription(description):
+        return .run { send in
+          logger.debug(description)
         }
       }
     }
