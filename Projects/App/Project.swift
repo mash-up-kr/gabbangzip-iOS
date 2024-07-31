@@ -11,7 +11,7 @@ let project = Project.make(
       infoPlist: .file(path: .relativeToRoot("Projects/App/Info.plist")),
       sources: ["Sources/**"],
       resources: ["Resources/**"],
-      entitlements: .file(path: .relativeToRoot("Projects/App/Resources/Prod-Gabbangzip.entitlements")),
+      entitlements: .file(path: .relativeToRoot("Projects/App/Prod-Gabbangzip.entitlements")),
       dependencies: [
         .project(target: .coreKit, projectPath: .core),
         .project(target: .designSystem, projectPath: .designSystem),
@@ -39,7 +39,7 @@ let project = Project.make(
       infoPlist: .file(path: .relativeToRoot("Projects/App/Info.plist")),
       sources: ["Sources/**"],
       resources: ["Resources/**"],
-      entitlements: .file(path: .relativeToRoot("Projects/App/Resources/Dev-Gabbangzip.entitlements")),
+      entitlements: .file(path: .relativeToRoot("Projects/App/Dev-Gabbangzip.entitlements")),
       dependencies: [
         .project(target: .coreKit, projectPath: .core),
         .project(target: .designSystem, projectPath: .designSystem),
