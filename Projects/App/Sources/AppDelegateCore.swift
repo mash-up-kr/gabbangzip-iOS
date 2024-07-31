@@ -96,7 +96,6 @@ struct AppDelegateCore {
         
       case .checkRegisterToken:
         return .run { send in
-          // You can get FCM Register Device Token using this method.
           let token = try await firebaseClient.checkRegistrationToken()
           let description = "FCM registration token: \(String(describing: token))"
           
@@ -110,7 +109,7 @@ struct AppDelegateCore {
           firebaseClient.getDeviceToken(deviceToken)
         }
         
-      case let .messagingFCMToken(.messaging(messaging, fcmToken: fcmToken)):
+      case let .messagingFCMToken(.messaging(_, fcmToken: fcmToken)):
         return .run { send in
           let dataDict: [String: String] = ["token": fcmToken ?? ""]
           
@@ -119,8 +118,6 @@ struct AppDelegateCore {
             object: nil,
             userInfo: dataDict
           )
-          // TODO: If necessary send token to application server.
-          // Note: This callback is fired at each app startup and whenever a new token is generated.
         }
         
       case .setUpNotificationCenter:
