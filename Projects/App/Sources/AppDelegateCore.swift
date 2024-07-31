@@ -21,10 +21,10 @@ struct AppDelegateCore {
     case didFinishLaunching
     
     // KakaoSDK Setting
-    case setUpKakaoSDK
+    case setupKakaoSDK
     
     // Firebase Setting
-    case setUpFirebase
+    case setupFirebase
     case configureFirebase
     case configureFirebaseDelegate
     case runFirebaseAutoInitialization
@@ -33,7 +33,7 @@ struct AppDelegateCore {
     case messagingFCMToken(FirebaseClient.DelegateEvent)
     
     // NotificationCenter Setting
-    case setUpNotificationCenter
+    case setupNotificationCenter
     case configureNotificationCenterDelegate
     case requestNotificationCenterAuthorization
     case registerForRemoteNotifications
@@ -55,11 +55,11 @@ struct AppDelegateCore {
       switch action {
       case .didFinishLaunching:
         return .run { send in
-          await send(.setUpKakaoSDK)
-          await send(.setUpFirebase)
+          await send(.setupKakaoSDK)
+          await send(.setupFirebase)
         }
         
-      case .setUpKakaoSDK:
+      case .setupKakaoSDK:
         return .run { send in
           if let appKey = try bundleClient.getValue("KakaoNativeAppKey") as? String {
             await kakaoLoginClient.initSDK(appKey)
@@ -68,10 +68,10 @@ struct AppDelegateCore {
           }
         }
         
-      case .setUpFirebase:
+      case .setupFirebase:
         return .run { send in
           await send(.configureFirebase)
-          await send(.setUpNotificationCenter)
+          await send(.setupNotificationCenter)
           await send(.configureFirebaseDelegate)
           await send(.checkRegisterToken)
           await send(.runFirebaseAutoInitialization)
@@ -120,7 +120,7 @@ struct AppDelegateCore {
           )
         }
         
-      case .setUpNotificationCenter:
+      case .setupNotificationCenter:
         return .run { send in
           await send(.configureNotificationCenterDelegate)
           await send(.requestNotificationCenterAuthorization)
