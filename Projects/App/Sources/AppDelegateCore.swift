@@ -153,21 +153,23 @@ struct AppDelegateCore {
           await uiApplicationClient.registerForRemoteNotifications()
         }
         
-      case let .userNotifications(.didReceiveResponse(response, completionHandler)):
+      case .userNotifications(.didReceiveResponse):
         // TODO: 푸시 알림 처리
         return .none
         
-      case let .userNotifications(.willPresentNotification(notification, completionHandler)):
+      case let .userNotifications(.willPresentNotification(_, completionHandler)):
         // MARK: - UNNotificationPresentationOptions로 foreground 에서도 노티 수신 방법 설정
         return .run { send in
           completionHandler([.banner, .badge, .sound])
         }
         
-      case let .authorizationStatusResposne(.success(status)):
+      case .authorizationStatusResposne(.success):
         return .none
         
       case let .authorizationStatusResposne(.failure(error)):
-        return .none
+        return .run { send in
+          await send(.logError(AppDelegateCoreError(code: .failToGetAuthorizationStatusResposne, underlying: error)))
+        }
         
       case let .logError(error):
         return .run { send in
