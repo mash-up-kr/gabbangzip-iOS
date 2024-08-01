@@ -8,6 +8,7 @@
 
 import ComposableArchitecture
 import Models
+import Services
 import UIKit
 
 @Reducer
@@ -33,14 +34,16 @@ public struct MemberListCore {
     case copyLinkButtonTapped
     case backButtonTapped
   }
+  
+  @Dependency(\.uiPasteBoardClient) var uiPasteBoardClient
 
   public var body: some Reducer<State, Action> {
     Reduce { state, action in
       switch action {
       case .copyLinkButtonTapped:
-        // TODO: Client로 분리할 예정 ...ㅎㅎ
-        UIPasteboard.general.string = state.inviteLink
-        return .none
+        return .run { [state] send in
+          uiPasteBoardClient.copyTextToClipboard(state.inviteLink)
+        }
       case .backButtonTapped:
         return .none
       }
