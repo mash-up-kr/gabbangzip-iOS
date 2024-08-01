@@ -105,14 +105,14 @@ extension GroupListView {
             photoCardFrontView(from: group)
             
             if group.status == .noPastAndCurrentEvent {
-              SmallButton(type: .constant(.active), smallButtonContentType: .generateEvent, action: {})
+              SmallButton(type: .active, smallButtonContentType: .generateEvent, action: {})
             }
           }
         }
         .padding(.horizontal, 41.5)
         
         if let buttonType = mapButtonType(from: group.status) {
-          SmallButton(type: .constant(.active), smallButtonContentType: buttonType, action: {})
+          SmallButton(type: .active, smallButtonContentType: buttonType, action: {})
         }
       }
     }
