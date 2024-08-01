@@ -11,14 +11,14 @@ import SwiftUI
 
 public struct GabbangzipPhotoPicker<Content: View>: View {
   @State private var selectedPhotos: [PhotosPickerItem] = []
-  @Binding private var selectedImages: [UIImage]
+  @Binding private var selectedPhotosInfo: [PhotoInfo]
   @Binding private var isPresentedError: Bool
   private let maxSelectedCount: MaxSelectedCountType
   private var disabled: Bool {
     if case .single = maxSelectedCount {
       return false
     } else {
-      return selectedImages.count >= maxSelectedCount.rawValue
+      return selectedPhotosInfo.count >= maxSelectedCount.rawValue
     }
     
   }
@@ -26,7 +26,7 @@ public struct GabbangzipPhotoPicker<Content: View>: View {
     if case .single = maxSelectedCount {
       return 1
     } else {
-      return maxSelectedCount.rawValue - selectedImages.count
+      return maxSelectedCount.rawValue - selectedPhotosInfo.count
     }
   }
   private let matching: PHPickerFilter
@@ -34,14 +34,14 @@ public struct GabbangzipPhotoPicker<Content: View>: View {
   private let content: () -> Content
   
   public init(
-    selectedImages: Binding<[UIImage]>,
+    selectedPhotosInfo: Binding<[PhotoInfo]>,
     isPresentedError: Binding<Bool> = .constant(false),
     maxSelectedCount: MaxSelectedCountType = .multiple,
     matching: PHPickerFilter = .images,
     photoLibrary: PHPhotoLibrary = .shared(),
     content: @escaping () -> Content
   ) {
-    self._selectedImages = selectedImages
+    self._selectedPhotosInfo = selectedPhotosInfo
     self._isPresentedError = isPresentedError
     self.maxSelectedCount = maxSelectedCount
     self.matching = matching
@@ -66,28 +66,45 @@ public struct GabbangzipPhotoPicker<Content: View>: View {
   }
   
   private func handleSelectedPhotos(_ newPhotos: [PhotosPickerItem]) {
-    for newPhoto in newPhotos {
-      newPhoto.loadTransferable(type: Data.self) { result in
-        switch result {
-        case .success(let data):
-          if let data = data, let newImage = UIImage(data: data) {
-            if !selectedImages.contains(where: { $0.pngData() == newImage.pngData() }) {
-              DispatchQueue.main.async {
-                if case .single = maxSelectedCount {
-                  selectedImages.removeAll()
-                  selectedImages.append(newImage)
-                } else {
-                  selectedImages.append(newImage)
-                }
-              }
-            }
+    Task {
+      for newPhoto in newPhotos {
+        await processPhoto(newPhoto)
+      }
+      selectedPhotos.removeAll()
+    }
+  }
+  
+  private func processPhoto(_ photo: PhotosPickerItem) async {
+    do {
+      async let dataResult = photo.loadTransferable(type: Data.self)
+      async let urlResult = photo.loadTransferable(type: DataUrl.self)
+      
+      let (data, dataUrl) = try await (dataResult, urlResult)
+      
+      guard let imageData = data, let dataUrl = dataUrl else {
+        throw NSError(
+          domain: "PhotoPickerError", 
+          code: 0,
+          userInfo: [NSLocalizedDescriptionKey: "Failed to load image data or URL"]
+        )
+      }
+      
+      let photoInfo = PhotoInfo(data: imageData, url: dataUrl.url)
+      
+      await MainActor.run {
+        if case .single = maxSelectedCount {
+          selectedPhotosInfo.removeAll()
+          selectedPhotosInfo.append(photoInfo)
+        } else {
+          if !selectedPhotosInfo.contains(where: { $0 == photoInfo }) {
+            selectedPhotosInfo.append(photoInfo)
           }
-        case .failure:
-          isPresentedError = true
         }
       }
+    } catch {
+      await MainActor.run {
+        isPresentedError = true
+      }
     }
-    
-    selectedPhotos.removeAll()
   }
 }
