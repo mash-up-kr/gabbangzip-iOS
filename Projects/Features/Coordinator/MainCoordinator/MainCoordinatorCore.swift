@@ -31,6 +31,13 @@ public struct MainCoordinatorCore {
       switch action {
       case .router(.routeAction(id: _, action: .groupList(.moveToMyPage))):
         state.routes.presentCover(.myPageCoordinator(.init(routes: [.root(.myPage(.init()), embedInNavigationView: true)])))
+        
+      case .router(.routeAction(id: _, action: .groupList(.moveToCreateGroup))):
+        state.routes.presentCover(.createGroupCoordinator(.init(routes: [.root(.createGroupStart(.init()), embedInNavigationView: true)])))
+        
+      case .router(.routeAction(id: _, action: .createGroupCoordinator(.router(.routeAction(id: _, action: .createGroupCompletion(.backToHome)))))):
+        state.routes.dismiss()
+        
       default:
         break
       }
