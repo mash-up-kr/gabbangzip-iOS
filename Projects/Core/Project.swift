@@ -30,6 +30,7 @@ let project = Project.make(
         .external(externalDependency: .get),
         .external(externalDependency: .composableArchitecture),
         .external(externalDependency: .kakaoSDK),
+        .external(externalDependency: .multipartFormDataKit),
         .target(name: .models)
       ]
     ),
