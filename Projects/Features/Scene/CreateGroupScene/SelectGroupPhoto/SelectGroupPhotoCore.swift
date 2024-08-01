@@ -6,10 +6,11 @@
 //  Copyright © 2024 com.mashup.gabbangzip. All rights reserved.
 //
 
+import Common
 import ComposableArchitecture
 import DesignSystem
 import Models
-import UIKit.UIImage
+import Services
 
 @Reducer
 public struct SelectGroupPhotoCore {
@@ -17,48 +18,71 @@ public struct SelectGroupPhotoCore {
   
   @ObservableState
   public struct State: Equatable {
+    @Shared var userInfo: UserInfo
     var groupName: String
-    var nextButtonType: ButtonType
     var keyword: GroupData.Keyword
-    var selectedImages: [UIImage]
+    var nextButtonType: ButtonType
+    var selectedPhotosInfo: [PhotoInfo]
+    var fileExtension: String = ""
 
     public init(
+      userInfo: @autoclosure () -> UserInfo = .defaultValue,
       groupName: String,
-      nextButtonType: ButtonType = .inactive,
       keyword: GroupData.Keyword,
-      selectedImages: [UIImage] = []
-      
+      nextButtonType: ButtonType = .inactive,
+      selectedPhotosInfo: [PhotoInfo] = [],
+      fileExtension: String = ""
     ) {
+      self._userInfo = Shared(wrappedValue: userInfo(), .inMemory("userInfo"))
       self.groupName = groupName
       self.nextButtonType = nextButtonType
       self.keyword = keyword
-      self.selectedImages = selectedImages
+      self.selectedPhotosInfo = selectedPhotosInfo
+      self.fileExtension = fileExtension
     }
   }
 
   public enum Action {
     // View Action
     case nextButtonTapped
-    case selectedImagesChanged([UIImage])
+    case selectedImagesChanged([PhotoInfo])
     case backButtonTapped
     
     // Internal Action
-    // TODO: - API 요청 구현할 예정
+    case getUploadURLResponse(Result<FileUploadInfo, Error>, PhotoInfo)
+    case uploadFileToPresignedURLResponse(Result<Void, Error>, FileUploadInfo)
+    case createGroupResponse(Result<CreatedGroupInfo, Error>)
     
     // Route Action
-    case moveToCreateGroupCompletion
+    case moveToCreateGroupCompletion(CreatedGroupInfo)
     case backToSelectKeyword
   }
+  
+  @Dependency(\.fileUploadAPIClient) var fileUploadAPIClient
+  @Dependency(\.createGroupAPIClient) var createGroupAPIClient
 
   public var body: some Reducer<State, Action> {
     Reduce { state, action in
       switch action {
       case .nextButtonTapped:
-        return .send(.moveToCreateGroupCompletion)
+        return .run { [state] send in
+          if !state.selectedPhotosInfo.isEmpty {
+            let photoInfo = state.selectedPhotosInfo[0]
+            await send(
+              .getUploadURLResponse(
+                Result {
+                  try await self.fileUploadAPIClient.getUploadURL(
+                    accessToken: state.userInfo.accessToken,
+                    fileExtension: photoInfo.fileExtension)
+                }, photoInfo
+              )
+            )
+          }
+        }
         
-      case let .selectedImagesChanged(images):
-        state.selectedImages = images
-        if !images.isEmpty {
+      case let .selectedImagesChanged(imagesData):
+        state.selectedPhotosInfo = imagesData
+        if !imagesData.isEmpty {
           state.nextButtonType = .active
         }
         return .none
@@ -66,6 +90,51 @@ public struct SelectGroupPhotoCore {
       case .backButtonTapped:
         return .send(.backToSelectKeyword)
         
+      case let .getUploadURLResponse(.success(fileUploadInfo), photoInfo):
+        return .run { send in
+          await send(
+            .uploadFileToPresignedURLResponse(
+              Result {
+                try await self.fileUploadAPIClient.uploadFile(
+                  uploadURL: fileUploadInfo.uploadURL,
+                  data: photoInfo.data,
+                  fileExtension: photoInfo.fileExtension)
+              },
+              fileUploadInfo
+            )
+          )
+        }
+        
+      case let .getUploadURLResponse(.failure(error), _):
+        return .run { send in
+          logger.error(error.localizedDescription)
+        }
+        
+      case let .uploadFileToPresignedURLResponse(.success, fileUploadInfo):
+        return .run { [state] send in
+          await send(.createGroupResponse(Result {
+            try await self.createGroupAPIClient.createGroup(
+              accessToken: state.userInfo.accessToken,
+              groupName: state.groupName,
+              keyword: state.keyword.rawValue,
+              groupImageURL: fileUploadInfo.fileID
+            )
+          }))
+        }
+        
+      case let .uploadFileToPresignedURLResponse(.failure(error), _):
+        return .run { send in
+          logger.error(error.localizedDescription)
+        }
+        
+      case let .createGroupResponse(.success(createdGroupInfo)):
+        return .send(.moveToCreateGroupCompletion(createdGroupInfo))
+        
+      case let .createGroupResponse(.failure(error)):
+        return .run { send in
+          logger.error(error.localizedDescription)
+        }
+
       case .moveToCreateGroupCompletion:
         return .none
         

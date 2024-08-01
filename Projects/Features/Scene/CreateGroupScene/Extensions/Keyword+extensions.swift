@@ -105,4 +105,23 @@ extension GroupData.Keyword {
       return DesignSystem.Colors.lavender30
     }
   }
+  
+  func convertToPhotoCardStatus<T: View>() -> PhotoCard<T>.Status {
+    switch self {
+    case .school:
+      return .school
+    case .company:
+      return .company
+    case .crew:
+      return .crew
+    case .network:
+      return .network
+    case .exercise:
+      return .exercise
+    case .hobby:
+      return .hobby
+    case .littleMoim:
+      return .littleMoim
+    }
+  }
 }

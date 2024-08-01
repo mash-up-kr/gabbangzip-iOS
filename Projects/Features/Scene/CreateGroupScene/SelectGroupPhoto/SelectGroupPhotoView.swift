@@ -35,16 +35,16 @@ public struct SelectGroupPhotoView: View {
         .padding(.vertical, 32)
       
       GabbangzipPhotoPicker(
-        selectedImages: $store.selectedImages.sending(\.selectedImagesChanged),
+        selectedPhotosInfo: $store.selectedPhotosInfo.sending(\.selectedImagesChanged),
         isPresentedError: .constant(false),
         maxSelectedCount: .single,
         matching: .images
       ) {
-        PhotoCard(status: mapStatus(from: store.keyword)) {
+        PhotoCard(status: store.keyword.convertToPhotoCardStatus()) {
           VStack(spacing: 0) {
             Tag(type: store.keyword.tagType)
             
-            photoInFrame(for: store.keyword, selectedImages: store.selectedImages)
+            photoInFrame(for: store.keyword, selectedPhotosInfo: store.selectedPhotosInfo)
               .padding(.init(top: 24, leading: 30, bottom: 26, trailing: 30))
             
             Text(store.groupName)
@@ -73,19 +73,21 @@ extension SelectGroupPhotoView {
   @MainActor
   private func photoInFrame(
     for keyword: GroupData.Keyword,
-    selectedImages: [UIImage]
+    selectedPhotosInfo: [PhotoInfo]
   ) -> some View {
-    let galleryIcon = selectedImages.isEmpty ? DesignSystem.Icons.galleryPlusBlack : DesignSystem.Icons.galleryWhite
+    let galleryIcon = selectedPhotosInfo.isEmpty ? DesignSystem.Icons.galleryPlusBlack : DesignSystem.Icons.galleryWhite
     
     return keyword.frame
       .resizable()
       .aspectRatio(contentMode: .fit)
       .foregroundStyle(keyword.foregroundColor)
       .background {
-        if !selectedImages.isEmpty {
-          Image(uiImage: selectedImages[0])
-            .resizable(resizingMode: .stretch)
-            .overlay(Color.black.opacity(0.3))
+        if !selectedPhotosInfo.isEmpty {
+          if let image = UIImage(data: selectedPhotosInfo[0].data) {
+            Image(uiImage: image)
+              .resizable(resizingMode: .stretch)
+              .overlay(Color.black.opacity(0.3))
+          }
         } else {
           keyword.backgroundColor
         }
@@ -96,25 +98,6 @@ extension SelectGroupPhotoView {
           .aspectRatio(contentMode: .fit)
           .frame(width: 22, height: 22)
       }
-  }
-  
-  private func mapStatus<T: View>(from keyword: GroupData.Keyword) -> PhotoCard<T>.Status {
-    switch keyword {
-    case .school:
-      return .school
-    case .company:
-      return .company
-    case .crew:
-      return .crew
-    case .network:
-      return .network
-    case .exercise:
-      return .exercise
-    case .hobby:
-      return .hobby
-    case .littleMoim:
-      return .littleMoim
-    }
   }
 }
 
