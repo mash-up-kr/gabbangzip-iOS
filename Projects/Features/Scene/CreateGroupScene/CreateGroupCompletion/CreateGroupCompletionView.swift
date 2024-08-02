@@ -83,7 +83,12 @@ extension CreateGroupCompletionView {
       .background {
         LazyImage(url: URL(string: store.imageURLString)) { state in
           if let image = state.image {
-            image.resizable(resizingMode: .stretch)
+            ZStack {
+              DesignSystem.Colors.gray0
+              
+              image.resizable()
+                .scaledToFit()
+            }
           } else {
             createdGroupInfo.keyword.backgroundColor
           }
@@ -102,7 +107,8 @@ extension CreateGroupCompletionView {
           keyword: .company,
           groupImageURL: "pic/9c8f3f24-6ed2-4a2e-8af5-52aeff93b230.jpeg",
           invitationCode: "ttat"
-        )
+        ),
+        imageURLString: "https://pic-api-bucket.s3.ap-northeast-2.amazonaws.com/pic/9c8f3f24-6ed2-4a2e-8af5-52aeff93b230.jpeg"
       ),
       reducer: CreateGroupCompletionCore.init
     )

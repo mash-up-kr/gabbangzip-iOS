@@ -178,7 +178,13 @@ extension GroupListView {
       .background {
         LazyImage(url: URL(string: image)) { state in
           if let image = state.image {
-            image.resizable().scaledToFill()
+            ZStack {
+              DesignSystem.Colors.gray0
+              
+              image
+                .resizable()
+                .scaledToFit()
+            }
           }
         }
       }
