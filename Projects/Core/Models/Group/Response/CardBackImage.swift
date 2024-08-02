@@ -16,6 +16,11 @@ public struct CardBackImage: Decodable, Hashable {
     case imageURL = "image_url"
     case frame
   }
+  
+  public static let mock: CardBackImage = .init(
+    imageURL: "https://picsum.photos/200",
+    frame: .snowman
+  )
 }
 
 extension CardBackImage {

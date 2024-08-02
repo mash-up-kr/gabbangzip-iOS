@@ -1,5 +1,5 @@
 //
-//  EventComponentView.swift
+//  HistoryItemView.swift
 //  GroupDetail
 //
 //  Created by 최혜린 on 6/30/24.
@@ -11,29 +11,30 @@ import Models
 import NukeUI
 import SwiftUI
 
-struct EventItemView: View {
-  private let eventInfo: EventItemInfo
+struct HistoryItemView: View {
+  private let history: History
   
-  init(eventInfo: EventItemInfo) {
-    self.eventInfo = eventInfo
+  init(history: History) {
+    self.history = history
   }
   
   var body: some View {
     VStack(alignment: .leading, spacing: 0) {
-      LazyImage(url: eventInfo.imageURL) { state in
-        if let image = state.image {
-          image.resizable()
-            .aspectRatio(contentMode: .fit)
-        }
-      }
-      .padding(.bottom, 8)
+      // TODO: HistoryItemView 이미지 변경 필요
+//      LazyImage(url: history.imageURL) { state in
+//        if let image = state.image {
+//          image.resizable()
+//            .aspectRatio(contentMode: .fit)
+//        }
+//      }
+//      .padding(.bottom, 8)
       
-      Text(eventInfo.title)
+      Text(history.name)
         .font(.head18)
         .foregroundStyle(DesignSystem.Colors.gray80)
         .padding(.bottom, 4)
       
-      Text(eventInfo.date)
+      Text(history.date)
         .font(.caption12)
         .foregroundStyle(DesignSystem.Colors.gray60)
     }
@@ -42,8 +43,7 @@ struct EventItemView: View {
 
 #Preview {
   HStack(spacing: 33) {
-    EventItemView(eventInfo: EventItemInfo.mock)
-    EventItemView(eventInfo: EventItemInfo.mock)
+    HistoryItemView(history: .mock)
   }
   .padding(.horizontal, 20)
 }

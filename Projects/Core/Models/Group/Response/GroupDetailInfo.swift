@@ -46,6 +46,13 @@ public struct History: Decodable {
   public let name: String
   public let date: String
   public let images: [CardBackImage]
+  
+  public static let mock: History = .init(
+    id: 0,
+    name: "모임 이름1",
+    date: "2024.06.01",
+    images: [.mock]
+  )
 }
 
 public struct RecentEvent: Codable {
