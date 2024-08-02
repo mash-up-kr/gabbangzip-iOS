@@ -10,7 +10,6 @@ import Get
 
 public enum FileUploadAPI {
   case getUploadURL(accessToken: String, fileExtension: String)
-  case createGroup(accessToken: String, groupName: String, keyword: String, groupImageURL: String)
 }
 
 extension FileUploadAPI: RouteType {
@@ -18,8 +17,6 @@ extension FileUploadAPI: RouteType {
     switch self {
     case .getUploadURL:
       return "/api/v1/files/upload"
-    case .createGroup:
-      return "/api/v1/groups"
     }
   }
   
@@ -27,8 +24,6 @@ extension FileUploadAPI: RouteType {
     switch self {
     case .getUploadURL:
       return .get
-    case .createGroup:
-      return .post
     }
   }
   
@@ -36,8 +31,6 @@ extension FileUploadAPI: RouteType {
     switch self {
     case let .getUploadURL(_, fileExtension):
       return [("extension", fileExtension)]
-    case .createGroup:
-      return nil
     }
   }
   
@@ -45,20 +38,12 @@ extension FileUploadAPI: RouteType {
     switch self {
     case .getUploadURL:
       return nil
-    case let .createGroup(_, groupName, keyword, groupImageURL):
-      return [
-        "group_name": groupName,
-        "keyword": keyword,
-        "group_image_url": groupImageURL
-      ]
     }
   }
   
   public var headers: [String: String]? {
     switch self {
     case let .getUploadURL(accessToken, _):
-      return ["Authorization": "Bearer \(accessToken)"]
-    case let .createGroup(accessToken, _, _, _):
       return ["Authorization": "Bearer \(accessToken)"]
     }
   }

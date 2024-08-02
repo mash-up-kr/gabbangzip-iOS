@@ -24,7 +24,7 @@ extension CreateGroupAPIClient: DependencyKey {
   public static var liveValue: CreateGroupAPIClient {
     return CreateGroupAPIClient(
       createGroup: { accessToken, groupName, keyword, groupImageURL in
-        let route = FileUploadAPI.createGroup(
+        let route = CreateGroupAPI.createGroup(
           accessToken: accessToken,
           groupName: groupName,
           keyword: keyword,
