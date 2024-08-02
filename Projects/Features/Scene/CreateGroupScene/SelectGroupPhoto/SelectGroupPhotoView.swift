@@ -82,12 +82,11 @@ extension SelectGroupPhotoView {
       .aspectRatio(contentMode: .fit)
       .foregroundStyle(keyword.foregroundColor)
       .background {
-        if !selectedPhotosInfo.isEmpty {
-          if let image = UIImage(data: selectedPhotosInfo[0].data) {
-            Image(uiImage: image)
-              .resizable(resizingMode: .stretch)
-              .overlay(Color.black.opacity(0.3))
-          }
+        if let firstPhotoInfo = selectedPhotosInfo[safe: 0],
+           let image = UIImage(data: firstPhotoInfo.data) {
+          Image(uiImage: image)
+            .resizable(resizingMode: .stretch)
+            .overlay(Color.black.opacity(0.3))
         } else {
           keyword.backgroundColor
         }
