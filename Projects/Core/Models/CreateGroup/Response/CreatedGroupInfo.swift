@@ -15,7 +15,13 @@ public struct CreatedGroupInfo: Decodable, Equatable {
   public let groupImageURL: String
   public let invitationCode: String
   
-  public init(id: Int, groupName: String, keyword: GroupData.Keyword, groupImageURL: String, invitationCode: String) {
+  public init(
+    id: Int,
+    groupName: String,
+    keyword: GroupData.Keyword,
+    groupImageURL: String,
+    invitationCode: String
+  ) {
     self.id = id
     self.groupName = groupName
     self.keyword = keyword
