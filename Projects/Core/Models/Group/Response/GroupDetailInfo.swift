@@ -41,7 +41,13 @@ public struct GroupDetailInfo: Decodable {
   )
 }
 
-public struct History: Decodable {
+extension GroupDetailInfo: Equatable {
+  public static func == (lhs: GroupDetailInfo, rhs: GroupDetailInfo) -> Bool {
+    lhs.id == rhs.id
+  }
+}
+
+public struct History: Decodable, Identifiable {
   public let id: Int
   public let name: String
   public let date: String

@@ -1,5 +1,5 @@
 //
-//  EventGridView.swift
+//  HistoryGridView.swift
 //  GroupDetail
 //
 //  Created by 최혜린 on 6/29/24.
@@ -10,19 +10,19 @@ import DesignSystem
 import Models
 import SwiftUI
 
-struct EventGridView: View {
-  private let events: [EventItemInfo]
+struct HistoryGridView: View {
+  private let histories: [History]
   private let columns = [GridItem(spacing: 33), GridItem(spacing: 33)]
   
-  init(events: [EventItemInfo]) {
-    self.events = events
+  init(histories: [History]) {
+    self.histories = histories
   }
   
   var body: some View {
     ScrollView {
       titleView
       
-      if events.isEmpty {
+      if histories.isEmpty {
         emptyView
       } else {
         galleryView
@@ -45,8 +45,8 @@ struct EventGridView: View {
   
   private var galleryView: some View {
     LazyVGrid(columns: columns, spacing: 16) {
-      ForEach(events) { picInfo in
-        EventItemView(eventInfo: picInfo)
+      ForEach(histories) { history in
+        HistoryItemView(history: history)
       }
     }
     .padding(.top, 17)
@@ -67,19 +67,12 @@ struct EventGridView: View {
 }
 
 #Preview {
-  EventGridView(events: [])
+  HistoryGridView(histories: [])
 }
 
 #Preview {
-  EventGridView(
-    events: [
-      EventItemInfo.mock,
-      EventItemInfo.mock,
-      EventItemInfo.mock,
-      EventItemInfo.mock,
-      EventItemInfo.mock,
-      EventItemInfo.mock,
-      EventItemInfo.mock
-    ]
+  // TODO: History mock item 추가
+  HistoryGridView(
+    histories: []
   )
 }
