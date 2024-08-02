@@ -8,7 +8,7 @@
 
 import SwiftUI
 
-struct DataUrl: Transferable {
+struct DataURL: Transferable {
   let url: URL
   
   static var transferRepresentation: some TransferRepresentation {

@@ -77,7 +77,7 @@ public struct GabbangzipPhotoPicker<Content: View>: View {
   private func processPhoto(_ photo: PhotosPickerItem) async {
     do {
       async let dataResult = photo.loadTransferable(type: Data.self)
-      async let urlResult = photo.loadTransferable(type: DataUrl.self)
+      async let urlResult = photo.loadTransferable(type: DataURL.self)
       
       let (data, dataUrl) = try await (dataResult, urlResult)
       
