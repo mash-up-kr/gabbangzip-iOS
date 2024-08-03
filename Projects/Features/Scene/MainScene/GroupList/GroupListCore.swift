@@ -44,6 +44,7 @@ public struct GroupListCore {
     
     // Route Action
     case moveToMyPage
+    case moveToCreateGroup
   }
   
   @Dependency(\.groupAPIClient) var groupAPIClient
@@ -77,7 +78,7 @@ public struct GroupListCore {
         return .none
         
       case .createGroupButtonTapped:
-        return .none
+        return .send(.moveToCreateGroup)
         
       case .myPageButtonTapped:
         return .send(.moveToMyPage)
@@ -91,6 +92,9 @@ public struct GroupListCore {
         return .none
         
       case .moveToMyPage:
+        return .none
+        
+      case .moveToCreateGroup:
         return .none
       }
     }

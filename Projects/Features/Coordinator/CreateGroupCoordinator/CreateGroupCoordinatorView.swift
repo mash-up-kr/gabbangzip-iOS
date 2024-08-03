@@ -20,16 +20,21 @@ public struct CreateGroupCoordinatorView: View {
   
   public var body: some View {
     TCARouter(store.scope(state: \.routes, action: \.router)) { screen in
-      switch screen.case {
-      case let .createGroupStart(store):
-        CreateGroupStartView(store: store)
-      case let .setGroupName(store):
-        SetGroupNameView(store: store)
-      case let .selectKeyword(store):
-        SelectKeywordView(store: store)
-      case let .selectGroupPhoto(store):
-        SelectGroupPhotoView(store: store)
+      Group {
+        switch screen.case {
+        case let .createGroupStart(store):
+          CreateGroupStartView(store: store)
+        case let .setGroupName(store):
+          SetGroupNameView(store: store)
+        case let .selectKeyword(store):
+          SelectKeywordView(store: store)
+        case let .selectGroupPhoto(store):
+          SelectGroupPhotoView(store: store)
+        case let .createGroupCompletion(store):
+          CreateGroupCompletionView(store: store)
+        }
       }
+      .navigationBarHidden(true)
     }
   }
 }

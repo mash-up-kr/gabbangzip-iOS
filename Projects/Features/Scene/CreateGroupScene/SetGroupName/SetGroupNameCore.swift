@@ -37,7 +37,7 @@ public struct SetGroupNameCore {
     case setNextButtonType(ButtonType)
     
     // Route Action
-    case moveToSelectKeyword
+    case moveToSelectKeyword(String)
     case backToCreateGroupStart
   }
   
@@ -56,7 +56,7 @@ public struct SetGroupNameCore {
         }
         
       case .nextButtonTapped:
-        return .send(.moveToSelectKeyword)
+        return .send(.moveToSelectKeyword(state.text))
         
       case .backButtonTapped:
         return .send(.backToCreateGroupStart)

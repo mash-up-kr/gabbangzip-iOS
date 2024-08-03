@@ -16,4 +16,5 @@ public enum CreateGroupScreen {
   case setGroupName(SetGroupNameCore)
   case selectKeyword(SelectKeywordCore)
   case selectGroupPhoto(SelectGroupPhotoCore)
+  case createGroupCompletion(CreateGroupCompletionCore)
 }

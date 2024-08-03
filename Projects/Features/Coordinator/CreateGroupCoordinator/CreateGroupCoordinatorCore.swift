@@ -32,20 +32,20 @@ public struct CreateGroupCoordinatorCore {
       case .router(.routeAction(id: _, action: .createGroupStart(.moveToSetGroupName))):
         state.routes.push(.setGroupName(.init()))
         
-      case .router(.routeAction(id: _, action: .setGroupName(.moveToSelectKeyword))):
-        state.routes.push(.selectKeyword(.init(groupName: "")))
+      case let .router(.routeAction(id: _, action: .setGroupName(.moveToSelectKeyword(groupName)))):
+        state.routes.push(.selectKeyword(.init(groupName: groupName)))
         
       case .router(.routeAction(id: _, action: .setGroupName(.backToCreateGroupStart))):
         state.routes.pop()
         
-      case .router(.routeAction(id: _, action: .selectKeyword(.moveToSelectGroupPhoto))):
-        state.routes.push(.selectGroupPhoto(.init(groupName: "", keyword: .company)))
+      case let .router(.routeAction(id: _, action: .selectKeyword(.moveToSelectGroupPhoto(groupName, selectedKeyword)))):
+        state.routes.push(.selectGroupPhoto(.init(groupName: groupName, keyword: selectedKeyword)))
         
       case .router(.routeAction(id: _, action: .selectKeyword(.backToSetGroupName))):
         state.routes.pop()
         
-      case .router(.routeAction(id: _, action: .selectGroupPhoto(.moveToCreateGroupCompletion))):
-        // TODO: - 생성 완료 화면 구현되면 추가할 예정
+      case let .router(.routeAction(id: _, action: .selectGroupPhoto(.moveToCreateGroupCompletion(createdGroupInfo)))):
+        state.routes.push(.createGroupCompletion(.init(createdGroupInfo: createdGroupInfo)))
         break
         
       case .router(.routeAction(id: _, action: .selectGroupPhoto(.backToSelectKeyword))):

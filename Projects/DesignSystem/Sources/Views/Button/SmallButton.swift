@@ -10,7 +10,7 @@ import SwiftUI
 
 // MARK: - 기본 스몰 버튼
 public struct SmallButton: View {
-  @Binding private var type: SmallButtonType
+  private var type: SmallButtonType
   private var smallButtonContentType: SmallButtonContentType
   private var action: () -> Void
   private var isEnabled: Bool {
@@ -18,11 +18,11 @@ public struct SmallButton: View {
   }
   
   public init(
-    type: Binding<SmallButtonType> = .constant(.active),
+    type: SmallButtonType = .active,
     smallButtonContentType: SmallButtonContentType,
     action: @escaping () -> Void = {}
   ) {
-    self._type = type
+    self.type = type
     self.smallButtonContentType = smallButtonContentType
     self.action = action
   }
@@ -35,12 +35,12 @@ public struct SmallButton: View {
       label: {
         if smallButtonContentType.withIcon {
           SmallButtonWithIconView(
-            type: $type,
+            type: type,
             smallButtonContentType: smallButtonContentType
           )
         } else {
           SmallButtonWithoutIconView(
-            type: $type,
+            type: type,
             smallButtonContentType: smallButtonContentType
           )
         }
@@ -52,14 +52,14 @@ public struct SmallButton: View {
 
 // MARK: - 아이콘 포함 컨텐츠 뷰
 private struct SmallButtonWithIconView: View {
-  @Binding private var type: SmallButtonType
+  private var type: SmallButtonType
   private var smallButtonContentType: SmallButtonContentType
   
   fileprivate init(
-    type: Binding<SmallButtonType>,
+    type: SmallButtonType,
     smallButtonContentType: SmallButtonContentType
   ) {
-    self._type = type
+    self.type = type
     self.smallButtonContentType = smallButtonContentType
   }
   
@@ -90,14 +90,14 @@ private struct SmallButtonWithIconView: View {
 
 // MARK: - 아이콘 미포함 컨텐츠 뷰
 private struct SmallButtonWithoutIconView: View {
-  @Binding private var type: SmallButtonType
+  private var type: SmallButtonType
   private var smallButtonContentType: SmallButtonContentType
   
   fileprivate init(
-    type: Binding<SmallButtonType>,
+    type: SmallButtonType,
     smallButtonContentType: SmallButtonContentType
   ) {
-    self._type = type
+    self.type = type
     self.smallButtonContentType = smallButtonContentType
   }
   
@@ -217,9 +217,9 @@ public enum SmallButtonContentType {
     SmallButton(smallButtonContentType: .uploadPIC)
     SmallButton(smallButtonContentType: .gallery)
     SmallButton(smallButtonContentType: .deletePicture)
-    SmallButton(type: .constant(.inactive), smallButtonContentType: .deletePicture)
+    SmallButton(type: .inactive, smallButtonContentType: .deletePicture)
     SmallButton(smallButtonContentType: .copyLink)
-    SmallButton(type: .constant(.secondary), smallButtonContentType: .copyLink)
+    SmallButton(type: .secondary, smallButtonContentType: .copyLink)
     SmallButton(smallButtonContentType: .changeFrame)
     SmallButton(smallButtonContentType: .stabbing)
     SmallButton(smallButtonContentType: .generateEvent)

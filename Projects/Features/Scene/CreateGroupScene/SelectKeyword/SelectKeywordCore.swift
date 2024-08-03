@@ -16,6 +16,7 @@ public struct SelectKeywordCore {
   @ObservableState
   public struct State: Equatable {
     var groupName: String
+    var selectedKeyword: GroupData.Keyword
     var schoolKeywordButtonSelected: Bool
     var crewKeywordButtonSelected: Bool
     var companyKeywordButtonSelected: Bool
@@ -26,6 +27,7 @@ public struct SelectKeywordCore {
     
     public init(
       groupName: String,
+      selectedKeyword: GroupData.Keyword = .school,
       schoolKeywordButtonSelected: Bool = true,
       crewKeywordButtonSelected: Bool = false,
       companyKeywordButtonSelected: Bool = false,
@@ -35,6 +37,7 @@ public struct SelectKeywordCore {
       hobbyKeywordButtonSelected: Bool = false
     ) {
       self.groupName = groupName
+      self.selectedKeyword = selectedKeyword
       self.schoolKeywordButtonSelected = schoolKeywordButtonSelected
       self.crewKeywordButtonSelected = crewKeywordButtonSelected
       self.companyKeywordButtonSelected = companyKeywordButtonSelected
@@ -55,7 +58,7 @@ public struct SelectKeywordCore {
     case updateKeywordSelection(keyword: GroupData.Keyword, isSelected: Bool)
     
     // Route Action
-    case moveToSelectGroupPhoto
+    case moveToSelectGroupPhoto(String, GroupData.Keyword)
     case backToSetGroupName
   }
 
@@ -63,7 +66,7 @@ public struct SelectKeywordCore {
     Reduce { state, action in
       switch action {
       case .nextButtonTapped:
-        return .send(.moveToSelectGroupPhoto)
+        return .send(.moveToSelectGroupPhoto(state.groupName, state.selectedKeyword))
         
       case .backButtonTapped:
         return .send(.backToSetGroupName)
@@ -79,6 +82,7 @@ public struct SelectKeywordCore {
         state.networkKeywordButtonSelected = (keyword == .network) && isSelected
         state.exerciseKeywordButtonSelected = (keyword == .exercise) && isSelected
         state.hobbyKeywordButtonSelected = (keyword == .hobby) && isSelected
+        state.selectedKeyword = keyword
         return .none
         
       case .moveToSelectGroupPhoto:
