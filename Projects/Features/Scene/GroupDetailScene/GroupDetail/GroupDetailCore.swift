@@ -47,7 +47,9 @@ public struct GroupDetailCore {
     case getGroupDetailResponse(Result<GroupDetailInfo, Error>)
 
     // Route Action
-    
+    case backToHome
+    case moveToMemberList
+    case moveToVote
   }
 
   public var body: some Reducer<State, Action> {
@@ -55,6 +57,9 @@ public struct GroupDetailCore {
     
     Reduce { state, action in
       switch action {
+      case .binding:
+        return .none
+        
       case .onAppear:
         return .run(
           operation: { [state] send in
@@ -62,23 +67,43 @@ public struct GroupDetailCore {
               try await self.groupAPIClient.getGroupDetail(accessToken: state.userInfo.accessToken, groupID: state.groupID)
             }))
           },
-          catch: { error, send in
-            
-          }
+          catch: { error, send in }
         )
+        
       case .backButtonTapped:
-        return .none
+        return .send(.backToHome)
+        
       case .memberListButtonTapped:
-        return .none
+        return .send(.moveToMemberList)
+        
       case let .eventContainerViewButtonTapped(status):
-        return .none
-      case .binding:
-        return .none
+        switch status {
+        case .beforeMyUpload:
+          // 사진 업로드 화면 보여줘야함
+          return .none
+        case .beforeMyVote:
+          return .send(.moveToVote)
+        case .afterMyVote, .afterMyUpload:
+          // 쿡 찌르기 API 호출
+          return .none
+        case .noPastAndCurrentEvent, .noCurrentEvent, .eventCompleted:
+          return .none
+        }
+        
       case let .getGroupDetailResponse(.success(groupDetail)):
         state.groupDetail = groupDetail
         return .none
+        
       case .getGroupDetailResponse(.failure):
-        // TODO: 추후 수정
+        return .none
+        
+      case .backToHome:
+        return .none
+        
+      case .moveToMemberList:
+        return .none
+        
+      case .moveToVote:
         return .none
       }
     }
