@@ -31,11 +31,11 @@ public struct GroupDetailInfo: Decodable {
   public static var mock: GroupDetailInfo = .init(
     id: 0,
     name: "뛰뛰빵빵 가빵집🍞",
-    keyword: .company,
+    keyword: .crew,
     status: .beforeMyUpload,
-    statusDescription: "",
+    statusDescription: "모든 그룹원이 사진을 올리면 투표가 시작돼요",
     recentEvent: RecentEvent.mock,
-    cardFrontImageURL: "",
+    cardFrontImageURL: "https://24ai.tech/ru/wp-content/uploads/sites/4/2023/10/01_product_1_sdelat-kvadratnym-scaled.jpg",
     cardBackImages: [],
     history: []
   )
@@ -67,8 +67,8 @@ public struct RecentEvent: Codable {
   public let deadline: String
   
   public static let mock: RecentEvent = .init(
-    name: "",
-    date: "",
-    deadline: ""
+    name: "가빵집 MT",
+    date: "2024.11.03",
+    deadline: "6월 14일 월요일 12시 37분"
   )
 }

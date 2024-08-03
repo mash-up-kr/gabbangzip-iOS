@@ -37,8 +37,6 @@ public struct GroupDetailView: View {
           groupDetail: store.groupDetail) { status in
             store.send(.eventContainerViewButtonTapped(status))
           }
-        
-        dividerView
       }
       .overlay(ViewHeightGeometry())
       .onPreferenceChange(ViewHeightKey.self) { height in
@@ -54,12 +52,7 @@ public struct GroupDetailView: View {
         .presentationBackgroundInteraction(.enabled(upThrough: .large))
      }
     .onAppear { store.send(.onAppear) }
-  }
-  
-  private var dividerView: some View {
-    Rectangle()
-      .foregroundStyle(DesignSystem.Colors.gray20)
-      .frame(height: 10)
+    .background(DesignSystem.Colors.gray20)
   }
 }
 

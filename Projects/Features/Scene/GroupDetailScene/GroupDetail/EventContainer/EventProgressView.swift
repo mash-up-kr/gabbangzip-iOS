@@ -40,27 +40,25 @@ struct EventProgressView: View {
         .foregroundStyle(DesignSystem.Colors.gray80)
         .padding(.bottom, 16)
 
-//      LazyImage(url: groupDetail.imageURL) { state in
-//        if let image = state.image {
-//          image.resizable()
-//            .aspectRatio(contentMode: .fit)
-//            .padding(.horizontal, 76)
-//        }
-//      }
-      
-      if let message = groupDetail.status.message(time: groupDetail.recentEvent.deadline) {
-        Text(message)
-          .font(.caption12)
-          .foregroundStyle(DesignSystem.Colors.gray60)
-          .padding(.init(top: 24, leading: 0, bottom: 8, trailing: 0))
+      LazyImage(url: URL(string: groupDetail.cardFrontImageURL)) { state in
+        if let image = state.image {
+          image.resizable()
+            .aspectRatio(contentMode: .fit)
+            .padding(.horizontal, 76)
+        }
       }
+      
+      Text(groupDetail.statusDescription)
+        .font(.caption12)
+        .foregroundStyle(DesignSystem.Colors.gray60)
+        .padding(.init(top: 24, leading: 0, bottom: 8, trailing: 0))
       
       EventControlButton(
         buttonType: convertToButtonType(from: groupDetail.status),
         action: action
       )
     }
-    .padding(.init(top: 16, leading: 0, bottom: 24, trailing: 0))
+    .padding(.init(top: 16, leading: 0, bottom: 34, trailing: 0))
   }
   
   private func convertToButtonType(

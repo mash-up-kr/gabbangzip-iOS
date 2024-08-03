@@ -36,12 +36,6 @@ struct EventContainerView: View {
           action(groupDetail.status)
         }
       )
-//      EventProgressView(
-//        eventDetail: eventDetail,
-//        action: {
-//          action(eventDetail.state)
-//        }
-//      )
     case .eventCompleted:
       // TODO: 그룹 목록 썸네일 뷰 + complete view 생성 필요
       Rectangle()
