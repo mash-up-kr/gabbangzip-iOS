@@ -12,43 +12,43 @@ import NukeUI
 import SwiftUI
 
 struct EventProgressView: View {
-  private let eventDetail: EventDetail
+  private let groupDetail: GroupDetailInfo
   private var action: () -> Void
   
   init(
-    eventDetail: EventDetail,
+    groupDetail: GroupDetailInfo,
     action: @escaping () -> Void
   ) {
-    self.eventDetail = eventDetail
+    self.groupDetail = groupDetail
     self.action = action
   }
   
   var body: some View {
     VStack(spacing: 0) {
-      Text(eventDetail.date)
+      Text(groupDetail.recentEvent.date)
         .foregroundStyle(DesignSystem.Colors.gray80)
         .font(.body16)
         .padding(.bottom, 8)
       
-      Text(eventDetail.name)
+      Text(groupDetail.name)
         .foregroundStyle(DesignSystem.Colors.gray80)
         .font(.head20)
         .padding(.bottom, 8)
       
-      Text("\(eventDetail.dueDate) PIC 종료")
+      Text("\(groupDetail.recentEvent.deadline) PIC 종료")
         .font(.text14)
         .foregroundStyle(DesignSystem.Colors.gray80)
         .padding(.bottom, 16)
 
-      LazyImage(url: eventDetail.imageURL) { state in
-        if let image = state.image {
-          image.resizable()
-            .aspectRatio(contentMode: .fit)
-            .padding(.horizontal, 76)
-        }
-      }
+//      LazyImage(url: groupDetail.imageURL) { state in
+//        if let image = state.image {
+//          image.resizable()
+//            .aspectRatio(contentMode: .fit)
+//            .padding(.horizontal, 76)
+//        }
+//      }
       
-      if let message = eventDetail.state.message(time: eventDetail.dueTime) {
+      if let message = groupDetail.status.message(time: groupDetail.recentEvent.deadline) {
         Text(message)
           .font(.caption12)
           .foregroundStyle(DesignSystem.Colors.gray60)
@@ -56,7 +56,7 @@ struct EventProgressView: View {
       }
       
       EventControlButton(
-        buttonType: convertToButtonType(from: eventDetail.state),
+        buttonType: convertToButtonType(from: groupDetail.status),
         action: action
       )
     }
@@ -64,7 +64,7 @@ struct EventProgressView: View {
   }
   
   private func convertToButtonType(
-    from state: EventState
+    from state: GroupData.Status
   ) -> SmallButtonContentType? {
     switch state {
     case .noCurrentEvent, .noPastAndCurrentEvent:
@@ -83,7 +83,7 @@ struct EventProgressView: View {
 
 #Preview {
   EventProgressView(
-    eventDetail: EventDetail.mock(state: .afterMyUpload),
+    groupDetail: .mock,
     action: {
       print("tapped")
     }

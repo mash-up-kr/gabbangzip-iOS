@@ -24,7 +24,7 @@ public struct GroupDetailView: View {
     ScrollView {
       VStack(spacing: 0) {
         NavigationBar(
-          type: .titleWithBackButtonAndIcon(store.groupDetail.groupName, DesignSystem.Icons.group),
+          type: .titleWithBackButtonAndIcon(store.groupDetail.name, DesignSystem.Icons.group),
           backButtonAction: {
             store.send(.backButtonTapped)
           },
@@ -33,9 +33,10 @@ public struct GroupDetailView: View {
           }
         )
         
-        EventContainerView(eventDetail: store.groupDetail.eventDetail) { state in
-          store.send(.eventContainerViewButtonTapped(state))
-        }
+        EventContainerView(
+          groupDetail: store.groupDetail) { status in
+            store.send(.eventContainerViewButtonTapped(status))
+          }
         
         dividerView
       }
@@ -46,12 +47,13 @@ public struct GroupDetailView: View {
     }
     .scrollIndicators(.hidden)
     .sheet(isPresented: $store.showSheet) {
-      EventGridView(events: store.groupDetail.eventItems)
+      HistoryGridView(histories: store.groupDetail.history)
         .presentationDetents([.height(bottomSheetHeight), .large])
         .interactiveDismissDisabled()
         .presentationDragIndicator(.hidden)
         .presentationBackgroundInteraction(.enabled(upThrough: .large))
      }
+    .onAppear { store.send(.onAppear) }
   }
   
   private var dividerView: some View {
@@ -65,18 +67,24 @@ public struct GroupDetailView: View {
 #Preview {
   GroupDetailView(
     store: Store(
-      initialState: .init(groupDetail: GroupDetail.emptyMock),
+      initialState: .init(
+        groupID: 0,
+        groupDetail: .mock
+      ),
       reducer: GroupDetailCore.init
     )
   )
 }
 
-// 이벤트 목록 있는 경우
-#Preview {
-  GroupDetailView(
-    store: Store(
-      initialState: .init(groupDetail: GroupDetail.mock),
-      reducer: GroupDetailCore.init
-    )
-  )
-}
+//// 이벤트 목록 있는 경우
+//#Preview {
+//  GroupDetailView(
+//    store: Store(
+//      initialState: .init(
+//        groupID: 0,
+//        groupDetail: .mock
+//      ),
+//      reducer: GroupDetailCore.init
+//    )
+//  )
+//}
