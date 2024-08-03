@@ -19,44 +19,41 @@ public struct VoteView: View {
   }
   
   public var body: some View {
-    ZStack {
-      DesignSystem.Images.gradientBackground
-      
-      VStack {
-        HStack {
-          Spacer()
-          
-          Button(
-            action: {
-              store.send(.exitButtonTapped)
-            }, label: {
-              DesignSystem.Icons.close
-            }
-          )
-          .padding(.trailing, 16)
-          .padding(.top, 27)
-        }
-        
+    VStack(spacing: 0) {
+      HStack {
         Spacer()
-      }
-
-      VStack(spacing: 0) {
         
-        TitleView(name: store.name)
-        
-        VoteSwipeView(
-          imageURLs: store.imageURLs,
-          imageCount: store.imageCount,
-          swipeDirection: store.swipeDirection,
-          swipeAction: { index, swipeDirection in
-            store.send(.cardSwiped(index, swipeDirection))
+        Button(
+          action: {
+            store.send(.exitButtonTapped)
+          }, label: {
+            DesignSystem.Icons.close
           }
         )
-        .padding(.bottom, 68)
-        
-        VoteButtonView(store: store)
+        .padding(.trailing, 16)
+        .padding(.top, 27)
       }
+
+      TitleView(name: store.name)
+      
+      Spacer()
+      
+      VoteSwipeView(
+        imageURLs: store.imageURLs,
+        imageCount: store.imageCount,
+        swipeDirection: store.swipeDirection,
+        swipeAction: { index, swipeDirection in
+          store.send(.cardSwiped(index, swipeDirection))
+        }
+      )
+      
+      Spacer()
+      
+      VoteButtonView(store: store)
+      
+      Spacer()
     }
+    .background(DesignSystem.Images.gradientBackground)
     .popup(
       isPresented: $store.isPopupPresented,
       title: store.popupType.title,
@@ -84,7 +81,6 @@ private struct TitleView: View {
         .font(.head18)
         .foregroundStyle(DesignSystem.Colors.gray80)
     }
-    .padding(.bottom, 46)
   }
 }
 
