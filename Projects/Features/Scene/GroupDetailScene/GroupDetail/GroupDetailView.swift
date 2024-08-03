@@ -62,22 +62,22 @@ public struct GroupDetailView: View {
     store: Store(
       initialState: .init(
         groupID: 0,
-        groupDetail: .mock
+        groupDetail: .noHistorymock
       ),
       reducer: GroupDetailCore.init
     )
   )
 }
 
-//// 이벤트 목록 있는 경우
-//#Preview {
-//  GroupDetailView(
-//    store: Store(
-//      initialState: .init(
-//        groupID: 0,
-//        groupDetail: .mock
-//      ),
-//      reducer: GroupDetailCore.init
-//    )
-//  )
-//}
+// 이벤트 목록 있는 경우
+#Preview {
+  GroupDetailView(
+    store: Store(
+      initialState: .init(
+        groupID: 0,
+        groupDetail: .historymock
+      ),
+      reducer: GroupDetailCore.init
+    )
+  )
+}

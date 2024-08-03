@@ -28,7 +28,7 @@ public struct GroupDetailInfo: Decodable {
     case history
   }
   
-  public static var mock: GroupDetailInfo = .init(
+  public static let noHistorymock: GroupDetailInfo = .init(
     id: 0,
     name: "뛰뛰빵빵 가빵집🍞",
     keyword: .crew,
@@ -39,6 +39,40 @@ public struct GroupDetailInfo: Decodable {
     cardBackImages: [],
     history: []
   )
+  
+  public static let historymock: GroupDetailInfo = .init(
+    id: 0,
+    name: "뛰뛰빵빵 가빵집🍞",
+    keyword: .crew,
+    status: .beforeMyUpload,
+    statusDescription: "모든 그룹원이 사진을 올리면 투표가 시작돼요",
+    recentEvent: RecentEvent.mock,
+    cardFrontImageURL: "https://24ai.tech/ru/wp-content/uploads/sites/4/2023/10/01_product_1_sdelat-kvadratnym-scaled.jpg",
+    cardBackImages: [],
+    history: History.listMomck
+  )
+  
+  public init(
+    id: Int,
+    name: String,
+    keyword: GroupData.Keyword,
+    status: GroupData.Status,
+    statusDescription: String,
+    recentEvent: RecentEvent,
+    cardFrontImageURL: String,
+    cardBackImages: [CardBackImage],
+    history: [History]
+  ) {
+    self.id = id
+    self.name = name
+    self.keyword = keyword
+    self.status = status
+    self.statusDescription = statusDescription
+    self.recentEvent = recentEvent
+    self.cardFrontImageURL = cardFrontImageURL
+    self.cardBackImages = cardBackImages
+    self.history = history
+  }
 }
 
 extension GroupDetailInfo: Equatable {
@@ -59,6 +93,51 @@ public struct History: Decodable, Identifiable, Equatable {
     date: "2024.06.01",
     images: [.mock]
   )
+  
+  public static let listMomck: [History] = [
+    .init(
+      id: 0,
+      name: "모임 이름1",
+      date: "2024.06.01",
+      images: [.mock]
+    ),
+    .init(
+      id: 1,
+      name: "모임 이름1",
+      date: "2024.06.01",
+      images: [.mock]
+    ),
+    .init(
+      id: 2,
+      name: "모임 이름1",
+      date: "2024.06.01",
+      images: [.mock]
+    ),
+    .init(
+      id: 3,
+      name: "모임 이름1",
+      date: "2024.06.01",
+      images: [.mock]
+    ),
+    .init(
+      id: 4,
+      name: "모임 이름1",
+      date: "2024.06.01",
+      images: [.mock]
+    ),
+    .init(
+      id: 5,
+      name: "모임 이름1",
+      date: "2024.06.01",
+      images: [.mock]
+    ),
+    .init(
+      id: 6,
+      name: "모임 이름1",
+      date: "2024.06.01",
+      images: [.mock]
+    )
+  ]
 }
 
 public struct RecentEvent: Codable {

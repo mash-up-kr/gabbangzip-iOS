@@ -20,14 +20,13 @@ struct HistoryItemView: View {
   
   var body: some View {
     VStack(alignment: .leading, spacing: 0) {
-      // TODO: HistoryItemView 이미지 변경 필요
-//      LazyImage(url: history.imageURL) { state in
-//        if let image = state.image {
-//          image.resizable()
-//            .aspectRatio(contentMode: .fit)
-//        }
-//      }
-//      .padding(.bottom, 8)
+      LazyImage(url: URL(string: history.images.first!.imageURL)) { state in
+        if let image = state.image {
+          image.resizable()
+            .aspectRatio(contentMode: .fit)
+        }
+      }
+      .padding(.bottom, 8)
       
       Text(history.name)
         .font(.head18)

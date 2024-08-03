@@ -47,7 +47,7 @@ struct EventContainerView: View {
 // 진행 중인 이벤트 없는 경우
 #Preview {
   EventContainerView(
-    groupDetail: .mock,
+    groupDetail: .noHistorymock,
     action: {_ in }
   )
 }

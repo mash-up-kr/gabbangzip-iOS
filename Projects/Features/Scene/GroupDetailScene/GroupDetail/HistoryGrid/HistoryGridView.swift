@@ -67,12 +67,11 @@ struct HistoryGridView: View {
 }
 
 #Preview {
-  HistoryGridView(histories: [])
+  Group {
+    HistoryGridView(histories: [])
+  }
 }
 
 #Preview {
-  // TODO: History mock item 추가
-  HistoryGridView(
-    histories: []
-  )
+  HistoryGridView(histories: History.listMomck)
 }

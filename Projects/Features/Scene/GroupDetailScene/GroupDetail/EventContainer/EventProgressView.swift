@@ -81,7 +81,7 @@ struct EventProgressView: View {
 
 #Preview {
   EventProgressView(
-    groupDetail: .mock,
+    groupDetail: .noHistorymock,
     action: {
       print("tapped")
     }
