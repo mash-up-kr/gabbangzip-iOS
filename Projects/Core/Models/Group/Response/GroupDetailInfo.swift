@@ -47,7 +47,7 @@ extension GroupDetailInfo: Equatable {
   }
 }
 
-public struct History: Decodable, Identifiable {
+public struct History: Decodable, Identifiable, Equatable {
   public let id: Int
   public let name: String
   public let date: String
