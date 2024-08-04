@@ -84,14 +84,10 @@ extension SelectGroupPhotoView {
       .background {
         if let firstPhotoInfo = selectedPhotosInfo[safe: 0],
            let image = UIImage(data: firstPhotoInfo.data) {
-          ZStack {
-            DesignSystem.Colors.gray0
-            
-            Image(uiImage: image)
-              .resizable()
-              .scaledToFit()
-              .overlay(Color.black.opacity(0.3))
-          }
+          Image(uiImage: image)
+            .resizable()
+            .aspectRatio(contentMode: .fill)
+            .overlay(Color.black.opacity(0.3))
         } else {
           keyword.backgroundColor
         }
@@ -102,6 +98,7 @@ extension SelectGroupPhotoView {
           .aspectRatio(contentMode: .fit)
           .frame(width: 22, height: 22)
       }
+      .clipped()
   }
 }
 

@@ -192,14 +192,15 @@ extension GroupListView {
       .aspectRatio(contentMode: .fit)
       .foregroundStyle(resolvedColor)
       .background {
-        LazyImage(url: URL(string: image)) { state in
+        LazyImage(url: URL(string: store.s3BucketDomain + image)) { state in
           if let image = state.image {
-            ZStack {
-              DesignSystem.Colors.gray0
-              
+            image
+              .resizable()
+              .aspectRatio(contentMode: .fill)
           }
         }
       }
+      .clipped()
   }
   
   private func mapStatus<T: View>(from keyword: GroupData.Keyword) -> PhotoCard<T>.Status {
