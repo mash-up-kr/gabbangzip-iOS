@@ -13,7 +13,7 @@ import NukeUI
 import SwiftUI
 
 public struct GroupListView: View {
-  public let store: StoreOf<GroupListCore>
+  @Bindable var store: StoreOf<GroupListCore>
   private let columns = [
     GridItem(.flexible(), spacing: 9),
     GridItem(.flexible(), spacing: 9)
@@ -26,8 +26,8 @@ public struct GroupListView: View {
   public var body: some View {
     VStack(spacing: 0) {
       NavigationBar(
-        type: .logoAndTwoIcon(DesignSystem.Icons.plus, DesignSystem.Icons.user),
-        firstRightIconAction: { store.send(.createGroupButtonTapped) },
+        type: .logoAndOneIcon(DesignSystem.Icons.user),
+        oneIconAction: { store.send(.myPageButtonTapped) }
         secondRightIconAction: { store.send(.myPageButtonTapped) }
       )
       
@@ -78,6 +78,23 @@ public struct GroupListView: View {
     }
     .background(DesignSystem.Colors.gray0)
     .onAppear { store.send(.onAppear) }
+    .overlay(alignment: .bottomTrailing) {
+      FloatingButton(isExpended: $store.floatingButtonExpended.sending(\.floatingButtonExpendedChanged)) {
+        FloatingOptionButton(
+          title: "그룹 들어가기",
+          icon: DesignSystem.Icons.groupIn,
+          action: { store.send(.joinGroupButtonTapped) }
+        )
+        
+        FloatingOptionButton(
+          title: "그룹 만들기",
+          icon: DesignSystem.Icons.groupPlus,
+          action: { store.send(.createGroupButtonTapped) }
+        )
+      }
+      .padding(.trailing, 16)
+      .padding(.bottom, 24)
+    }
   }
 }
 

@@ -22,9 +22,11 @@ public struct GroupListCore {
     public init(
       groups: [GroupData] = [],
       userInfo: @autoclosure () -> UserInfo = .defaultValue
+      floatingButtonExpended: Bool = false
     ) {
       self.groups = groups
       self._userInfo = Shared(wrappedValue: userInfo(), .inMemory("userInfo"))
+      self.floatingButtonExpended = floatingButtonExpended
     }
   }
 
@@ -36,15 +38,18 @@ public struct GroupListCore {
     case nudgeButtonTapped
     case voteButtonTapped
     case groupHeaderButtonTapped
+    case joinGroupButtonTapped
     case createGroupButtonTapped
     case myPageButtonTapped
     
     // Internal Action
     case getGroupsResponse(Result<GroupsData, Error>)
+    case floatingButtonExpendedChanged(Bool)
     
     // Route Action
     case moveToMyPage
     case moveToCreateGroup
+    case moveToJoinGroup
   }
   
   @Dependency(\.groupAPIClient) var groupAPIClient
@@ -77,7 +82,12 @@ public struct GroupListCore {
       case .groupHeaderButtonTapped:
         return .none
         
+      case .joinGroupButtonTapped:
+        state.floatingButtonExpended = false
+        return .send(.moveToJoinGroup)
+        
       case .createGroupButtonTapped:
+        state.floatingButtonExpended = false
         return .send(.moveToCreateGroup)
         
       case .myPageButtonTapped:
@@ -91,10 +101,18 @@ public struct GroupListCore {
         // TODO: - 서버의 에러 메시지 형식 및 에러 수집 방식에 대한 논의 후 수정
         return .none
         
+        
+      case let .floatingButtonExpendedChanged(value):
+        state.floatingButtonExpended = value
+        return .none
+        
       case .moveToMyPage:
         return .none
         
       case .moveToCreateGroup:
+        return .none
+        
+      case .moveToJoinGroup:
         return .none
       }
     }
