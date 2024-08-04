@@ -19,10 +19,11 @@ public struct GroupListCore {
     var groups: [GroupData]
     @Shared var userInfo: UserInfo
     var s3BucketDomain: String
+    var floatingButtonExpended: Bool
     
     public init(
       groups: [GroupData] = [],
-      userInfo: @autoclosure () -> UserInfo = .defaultValue
+      userInfo: @autoclosure () -> UserInfo = .defaultValue,
       s3BucketDomain: String = "",
       floatingButtonExpended: Bool = false
     ) {
@@ -59,6 +60,7 @@ public struct GroupListCore {
   
   @Dependency(\.groupAPIClient) var groupAPIClient
   @Dependency(\.keyChainClient) var keyChainClient
+  @Dependency(\.bundleClient) var bundleClient
 
   public var body: some Reducer<State, Action> {
     Reduce { state, action in
