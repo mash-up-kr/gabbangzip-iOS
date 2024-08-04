@@ -13,6 +13,8 @@ public struct NavigationBar: View {
   private var isDarkMode: Bool
   // Back 버튼 액션
   private var backButtonAction: () -> Void
+  // 하나의 아이콘 액션
+  private var oneIconAction: () -> Void
   // 우측 첫번째 아이콘 액션
   private var firstRightIconAction: () -> Void
   // 우측 두번째 아이콘 액션
@@ -24,6 +26,7 @@ public struct NavigationBar: View {
     type: NavigationBarType,
     isDarkMode: Bool = false,
     backButtonAction: @escaping () -> Void = {},
+    oneIconAction: @escaping () -> Void = {},
     firstRightIconAction: @escaping () -> Void = {},
     secondRightIconAction: @escaping () -> Void = {},
     rightIconAction: @escaping () -> Void = {}
@@ -31,6 +34,7 @@ public struct NavigationBar: View {
     self.type = type
     self.isDarkMode = isDarkMode
     self.backButtonAction = backButtonAction
+    self.oneIconAction = oneIconAction
     self.firstRightIconAction = firstRightIconAction
     self.secondRightIconAction = secondRightIconAction
     self.rightIconAction = rightIconAction
@@ -47,8 +51,13 @@ public struct NavigationBar: View {
       )
     case let .title(title):
       TitleView(title: title)
-    case let .logoAndTwoIcon(firstIcon, secondIcon):
+    case let .logoAndOneIcon(icon):
       LogoAndIconView(
+        icon: icon,
+        iconAction: oneIconAction
+      )
+    case let .logoAndTwoIcon(firstIcon, secondIcon):
+      LogoAndTwoIconsView(
         firstRightIcon: firstIcon,
         secondRightIcon: secondIcon,
         firstRightIconAction: firstRightIconAction,
@@ -162,6 +171,45 @@ fileprivate struct TitleView: View {
 
 // MARK: - Logo and Icon
 fileprivate struct LogoAndIconView: View {
+  private var icon: Image
+  private var iconAction: () -> Void
+  
+  fileprivate init(
+    icon: Image = DesignSystem.Icons.user,
+    iconAction: @escaping () -> Void
+  ) {
+    self.icon = icon
+    self.iconAction = iconAction
+  }
+  
+  fileprivate var body: some View {
+    HStack(spacing: 12) {
+      DesignSystem.Icons.picLogo
+        .resizable()
+        .aspectRatio(contentMode: .fit)
+        .frame(height: 26)
+        .padding(.leading, 17.5)
+      
+      Spacer()
+      
+      Button(
+        action: {
+          iconAction()
+        },
+        label: {
+          icon
+            .resizable()
+            .frame(width: 26, height: 26)
+        }
+      )
+      .padding(.trailing, 17.5)
+    }
+    .frame(height: 56)
+  }
+}
+
+// MARK: - Logo and Icon
+fileprivate struct LogoAndTwoIconsView: View {
   private var firstRightIcon: Image
   private var secondRightIcon: Image
   private var firstRightIconAction: () -> Void
