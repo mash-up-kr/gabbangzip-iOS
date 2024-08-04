@@ -21,18 +21,15 @@ public struct CreateGroupCompletionCore {
     var createdGroupInfo: CreatedGroupInfo
     var imageURLString: String
     var toastPresented: Bool
-    @Shared var isGroupListUpdated: Bool
     
     public init(
       createdGroupInfo: CreatedGroupInfo,
       imageURLString: String = "",
-      toastPresented: Bool = false,
-      isGroupListUpdated: @autoclosure () -> Bool = false
+      toastPresented: Bool = false
     ) {
       self.createdGroupInfo = createdGroupInfo
       self.imageURLString = imageURLString
       self.toastPresented = toastPresented
-      self._isGroupListUpdated = Shared(wrappedValue: isGroupListUpdated(), .inMemory("isGroupListUpdated"))
     }
   }
 
@@ -65,7 +62,6 @@ public struct CreateGroupCompletionCore {
         }
       
       case .completeButtonTapped:
-        state.isGroupListUpdated = true
         return .send(.backToHome)
         
       case .copyLinkButtonTapped:
