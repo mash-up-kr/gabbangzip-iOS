@@ -31,7 +31,7 @@ public struct GroupListView: View {
       )
       
       ScrollView {
-        VStack {
+        LazyVStack {
           ForEach(Array(store.groups.enumerated()), id: \.element) { index, group in
             VStack(spacing: 16) {
               Button(
