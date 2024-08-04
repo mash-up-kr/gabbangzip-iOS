@@ -18,17 +18,20 @@ public struct GroupListCore {
   public struct State: Equatable {
     var groups: [GroupData]
     @Shared var userInfo: UserInfo
+    @Shared var isGroupListUpdated: Bool
     var s3BucketDomain: String
     var floatingButtonExpended: Bool
     
     public init(
       groups: [GroupData] = [],
       userInfo: @autoclosure () -> UserInfo = .defaultValue,
+      isGroupListUpdated: @autoclosure () -> Bool = false,
       s3BucketDomain: String = "",
       floatingButtonExpended: Bool = false
     ) {
       self.groups = groups
       self._userInfo = Shared(wrappedValue: userInfo(), .inMemory("userInfo"))
+      self._isGroupListUpdated = Shared(wrappedValue: isGroupListUpdated(), .inMemory("isGroupListUpdated"))
       self.s3BucketDomain = s3BucketDomain
       self.floatingButtonExpended = floatingButtonExpended
     }
@@ -47,10 +50,12 @@ public struct GroupListCore {
     case myPageButtonTapped
     
     // Internal Action
+    case fetchGroups
     case getGroupsResponse(Result<GroupsData, Error>)
     case getS3BucketDomain(Result<String?, Error>)
     case setS3BucketDomain(String)
     case floatingButtonExpendedChanged(Bool)
+    case isGroupListUpdatedChanged(Bool)
     
     // Route Action
     case moveToMyPage
@@ -66,18 +71,13 @@ public struct GroupListCore {
     Reduce { state, action in
       switch action {
       case .onAppear:
-        return .run(
-          operation: { [state] send in
-            await send(.getGroupsResponse(Result {
-              try await self.groupAPIClient.getGroups(accessToken: state.userInfo.accessToken)
-            }))
-            await send(.getS3BucketDomain(Result {
-              try bundleClient.getValue(key: "S3BucketDomain") as? String
-            }))
-          },
-          catch: { error, send in
+        return .concatenate([
+          Effect.send(.fetchGroups),
+          Effect.publisher {
+            state.$isGroupListUpdated.publisher
+              .map(Action.isGroupListUpdatedChanged)
           }
-        )
+        ])
         
       case .createEventButtonTapped:
         return .none
@@ -105,6 +105,21 @@ public struct GroupListCore {
       case .myPageButtonTapped:
         return .send(.moveToMyPage)
         
+      case .fetchGroups:
+        state.isGroupListUpdated = false
+        return .run(
+          operation: { [state] send in
+            await send(.getGroupsResponse(Result {
+              try await self.groupAPIClient.getGroups(accessToken: state.userInfo.accessToken)
+            }))
+            await send(.getS3BucketDomain(Result {
+              try bundleClient.getValue(key: "S3BucketDomain") as? String
+            }))
+          },
+          catch: { error, send in
+          }
+        )
+        
       case let .getGroupsResponse(.success(groupsData)):
         state.groups = groupsData.groups
         return .none
@@ -129,6 +144,13 @@ public struct GroupListCore {
       case let .floatingButtonExpendedChanged(value):
         state.floatingButtonExpended = value
         return .none
+        
+      case let .isGroupListUpdatedChanged(isGroupListUpdated):
+        return .run { send in
+          if isGroupListUpdated {
+            await send(.fetchGroups)
+          }
+        }
         
       case .moveToMyPage:
         return .none
