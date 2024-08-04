@@ -18,14 +18,17 @@ public struct GroupListCore {
   public struct State: Equatable {
     var groups: [GroupData]
     @Shared var userInfo: UserInfo
+    var s3BucketDomain: String
     
     public init(
       groups: [GroupData] = [],
       userInfo: @autoclosure () -> UserInfo = .defaultValue
+      s3BucketDomain: String = "",
       floatingButtonExpended: Bool = false
     ) {
       self.groups = groups
       self._userInfo = Shared(wrappedValue: userInfo(), .inMemory("userInfo"))
+      self.s3BucketDomain = s3BucketDomain
       self.floatingButtonExpended = floatingButtonExpended
     }
   }
@@ -44,6 +47,8 @@ public struct GroupListCore {
     
     // Internal Action
     case getGroupsResponse(Result<GroupsData, Error>)
+    case getS3BucketDomain(Result<String?, Error>)
+    case setS3BucketDomain(String)
     case floatingButtonExpendedChanged(Bool)
     
     // Route Action
@@ -61,7 +66,12 @@ public struct GroupListCore {
       case .onAppear:
         return .run(
           operation: { [state] send in
-            await send(.getGroupsResponse(Result { try await self.groupAPIClient.getGroups(accessToken: state.userInfo.accessToken) }))
+            await send(.getGroupsResponse(Result {
+              try await self.groupAPIClient.getGroups(accessToken: state.userInfo.accessToken)
+            }))
+            await send(.getS3BucketDomain(Result {
+              try bundleClient.getValue(key: "S3BucketDomain") as? String
+            }))
           },
           catch: { error, send in
           }
@@ -101,6 +111,18 @@ public struct GroupListCore {
         // TODO: - 서버의 에러 메시지 형식 및 에러 수집 방식에 대한 논의 후 수정
         return .none
         
+      case let .getS3BucketDomain(.success(domain)):
+        if let domain {
+          state.s3BucketDomain = domain
+        }
+        return .none
+        
+      case .getS3BucketDomain(.failure):
+        return .none
+        
+      case let .setS3BucketDomain(domain):
+        state.s3BucketDomain = domain
+        return .none
         
       case let .floatingButtonExpendedChanged(value):
         state.floatingButtonExpended = value
