@@ -28,7 +28,6 @@ public struct GroupListView: View {
       NavigationBar(
         type: .logoAndOneIcon(DesignSystem.Icons.user),
         oneIconAction: { store.send(.myPageButtonTapped) }
-        secondRightIconAction: { store.send(.myPageButtonTapped) }
       )
       
       ScrollView {
@@ -141,7 +140,7 @@ extension GroupListView {
       Text(
         group.status == .noPastAndCurrentEvent
         ? "이벤트를 만들어 보세요!"
-        : group.recentEventDate.toGroupEventDateString() ?? ""
+        : group.recentEvent.date?.toGroupEventDateString() ?? ""
       )
       .font(.body16)
       .foregroundStyle(DesignSystem.Colors.gray80)
@@ -158,12 +157,12 @@ extension GroupListView {
   @MainActor
   private func photoCardBackView(from group: GroupData) -> some View {
     VStack(spacing: 16) {
-      Text(group.recentEventDate.toGroupEventDateString() ?? "")
+      Text(group.recentEvent.date?.toGroupEventDateString() ?? "")
         .font(.body16)
         .foregroundStyle(DesignSystem.Colors.gray80)
       
       LazyVGrid(columns: columns, spacing: 9) {
-        ForEach(group.cardBackImages, id: \.self) { card in
+        ForEach(group.cardBackImages ?? [], id: \.self) { card in
           photoInFrame(
             for: mapKeyword(from: card.frame),
             with: card.imageURL,
@@ -198,10 +197,6 @@ extension GroupListView {
             ZStack {
               DesignSystem.Colors.gray0
               
-              image
-                .resizable()
-                .scaledToFit()
-            }
           }
         }
       }
