@@ -29,6 +29,8 @@ public struct MainCoordinatorView: View {
         MyPageCoordinatorView(store: store)
       case let .groupList(store):
         GroupListView(store: store)
+      case let .joinGroup(store):
+        JoinGroupView(store: store)
       }
     }
   }
