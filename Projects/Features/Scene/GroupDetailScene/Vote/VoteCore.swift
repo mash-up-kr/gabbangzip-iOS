@@ -9,6 +9,7 @@
 import Common
 import ComposableArchitecture
 import Foundation
+import Models
 
 @Reducer
 public struct VoteCore {
@@ -17,36 +18,38 @@ public struct VoteCore {
 
   @ObservableState
   public struct State: Equatable {
-    public var name: String
-    public var voteButtonState: VoteButtonState
-    public var passButtonState: VoteButtonState
-    public var imageURLs: [URL?]
-    public var imageCount: Int {
-      imageURLs.count
+    @Shared var userInfo: UserInfo
+    var voteButtonState: VoteButtonState
+    var passButtonState: VoteButtonState
+    var eventID: Int
+    var voteOptions: [VoteOptionInfo]
+    var imageCount: Int {
+      voteOptions.count
     }
-    // TODO: 네이밍 수정
-    public var pickedImageIndex: [Int]
-    public var swipeDirection: SwipeDirection
-    public var isPopupPresented: Bool
-    public var popupType: VotePopupType
-    public var isVoteButtonDisabled: Bool
+    var pickedImageIDs: [Int]
+    var swipeDirection: SwipeDirection
+    var isPopupPresented: Bool
+    var popupType: VotePopupType
+    var isVoteButtonDisabled: Bool
     
     public init(
-      name: String,
+      userInfo: @autoclosure () -> UserInfo = .defaultValue,
       voteButtonState: VoteButtonState,
       passsButtonState: VoteButtonState,
-      imageURLs: [URL?],
-      pickedImageIndex: [Int],
+      eventID: Int,
+      voteOptions: [VoteOptionInfo],
+      pickedImageIDs: [Int],
       swipeDirection: SwipeDirection,
       isPopupPresented: Bool,
       popupType: VotePopupType,
       isVoteButtonDisabled: Bool
     ) {
-      self.name = name
+      self._userInfo = Shared(wrappedValue: userInfo(), .inMemory("userInfo"))
       self.voteButtonState = voteButtonState
       self.passButtonState = passsButtonState
-      self.imageURLs = imageURLs
-      self.pickedImageIndex = pickedImageIndex
+      self.eventID = eventID
+      self.voteOptions = voteOptions
+      self.pickedImageIDs = pickedImageIDs
       self.swipeDirection = swipeDirection
       self.isPopupPresented = isPopupPresented
       self.popupType = popupType
@@ -90,6 +93,7 @@ public struct VoteCore {
     case binding(BindingAction<State>)
     
     // View Action
+    case onAppear
     case passButtonTapped
     case voteButtonTapped
     case cardSwiped(Int, SwipeDirection)
@@ -98,20 +102,35 @@ public struct VoteCore {
     case popupRightButtonTapped
     
     // Internal Action
+    case getVoteOptions(Result<[VoteOptionInfo], Error>)
+    case postVoteResult(Result<VoteCompleteInfo, Error>)
     case resetButtonState
     case voteEnded
     case swipeCard(SwipeDirection)
     
     // Route Action
+    case dismissVoteView
   }
   
   @Dependency(\.mainQueue) var mainQueue
+  @Dependency(\.voteAPIClient) var voteAPIClient
 
   public var body: some Reducer<State, Action> {
     Reduce { state, action in
       switch action {
       case .binding:
         return .none
+        
+      case .onAppear:
+        return .run(
+          operation: { [state] send in
+            await send(.getVoteOptions(Result {
+              try await self.voteAPIClient.getVoteOptions(state.userInfo.accessToken, state.eventID)
+            }))
+          }, catch: { error, send in
+          
+          }
+        )
         
       case .passButtonTapped:
         return .run { send in
@@ -138,19 +157,24 @@ public struct VoteCore {
       case let .cardSwiped(index, direction):
         state.swipeDirection = .defaultState
         // TODO: 이 부분 로직 API 붙이면서 수정할 예정입니다
-        state.imageURLs.remove(at: index)
-        state.isVoteButtonDisabled = state.imageURLs.isEmpty
-        
-        if direction == .right {
-          state.pickedImageIndex.append(index)
-        }
-        
-        if state.imageURLs.isEmpty {
-          return .send(.voteEnded)
+        if let voteOption = state.voteOptions[safe: index] {
+          print("index, direction: \(index), \(direction)")
+          state.voteOptions.remove(at: index)
+          state.isVoteButtonDisabled = state.voteOptions.isEmpty
+          
+          if direction == .right {
+            state.pickedImageIDs.append(voteOption.optionID)
+          }
+          
+          if state.voteOptions.isEmpty {
+            return .send(.voteEnded)
+          } else {
+            return .none
+          }
         } else {
           return .none
         }
-        
+
       case .exitButtonTapped:
         state.isPopupPresented = true
         return .none
@@ -161,20 +185,49 @@ public struct VoteCore {
         
       case .popupRightButtonTapped:
         state.isPopupPresented = false
+        return .send(.dismissVoteView)
+        
+      case let .getVoteOptions(.success(voteOptions)):
+        state.voteOptions = voteOptions
         return .none
         
+      case .getVoteOptions(.failure):
+        return .none
+        
+      case let .postVoteResult(.success(voteResult)):
+        return .none
+        
+      case let .postVoteResult(.failure):
+        return .none
+
       case .resetButtonState:
         state.passButtonState = .defaultState
         state.voteButtonState = .defaultState
         return .none
         
       case .voteEnded:
-        return .none
+        print("state.pickedImageIDs: \(state.pickedImageIDs)")
+        return .run(
+          operation: { [state] send in
+            await send(.postVoteResult(Result {
+              try await self.voteAPIClient.postVoteResult(
+                state.userInfo.accessToken,
+                state.eventID,
+                state.pickedImageIDs
+              )
+            }))
+          }, catch: { error, send in
+          
+          }
+        )
         
       case let .swipeCard(direction):
         state.swipeDirection = direction
         state.passButtonState = direction == .left ? .activate : .deactivate
         state.voteButtonState = direction == .left ? .deactivate : .activate
+        return .none
+        
+      case .dismissVoteView:
         return .none
       }
     }

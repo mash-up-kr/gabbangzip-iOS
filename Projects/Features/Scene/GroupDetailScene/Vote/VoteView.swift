@@ -9,6 +9,7 @@
 import Common
 import ComposableArchitecture
 import DesignSystem
+import Models
 import SwiftUI
 
 public struct VoteView: View {
@@ -34,13 +35,13 @@ public struct VoteView: View {
         .padding(.top, 27)
       }
 
-      TitleView(name: store.name)
+      TitleView(name: store.userInfo.nickname)
       
       Spacer()
       
       VoteSwipeView(
-        imageURLs: store.imageURLs,
-        imageCount: store.imageCount,
+        voteOptions: store.voteOptions,
+        voteOptionCount: store.imageCount,
         swipeDirection: store.swipeDirection,
         swipeAction: { index, swipeDirection in
           store.send(.cardSwiped(index, swipeDirection))
@@ -52,6 +53,9 @@ public struct VoteView: View {
       VoteButtonView(store: store)
       
       Spacer()
+    }
+    .onAppear {
+      store.send(.onAppear)
     }
     .background(DesignSystem.Images.gradientBackground)
     .popup(
@@ -114,14 +118,14 @@ private struct VoteButtonView: View {
   VoteView(
     store: Store(
       initialState: .init(
-        name: "혜린",
         voteButtonState: VoteButtonState.defaultState,
         passsButtonState: VoteButtonState.defaultState,
-        imageURLs: [
-          URL(string: "https://t1.daumcdn.net/cafeattach/1YVY7/391cac378245e0d2c7bba59d6efc7692baf88aa6"),
-          URL(string: "https://i.namu.wiki/i/hq6niPhkN8EhXuIkCNx32AN614AxXcaxKQ1EnyFaHN41caJM7rPfkfppaGZNlpgmXWPbkD_MGTbmGE4_BOrIBg.webp")
+        eventID: 0,
+        voteOptions: [
+          VoteOptionInfo(optionID: 0, imageURL: "https://t1.daumcdn.net/cafeattach/1YVY7/391cac378245e0d2c7bba59d6efc7692baf88aa6"),
+          VoteOptionInfo(optionID: 1, imageURL: "https://i.namu.wiki/i/hq6niPhkN8EhXuIkCNx32AN614AxXcaxKQ1EnyFaHN41caJM7rPfkfppaGZNlpgmXWPbkD_MGTbmGE4_BOrIBg.webp")
         ],
-        pickedImageIndex: [],
+        pickedImageIDs: [],
         swipeDirection: SwipeDirection.defaultState,
         isPopupPresented: false,
         popupType: .close,

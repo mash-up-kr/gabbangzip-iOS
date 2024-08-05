@@ -13,7 +13,7 @@ import Models
 
 @DependencyClient
 public struct VoteAPIClient: Sendable {
-  public var getVoteOptions: @Sendable (_ accessToken: String, _ eventID: Int) async throws -> VoteOptionInfo
+  public var getVoteOptions: @Sendable (_ accessToken: String, _ eventID: Int) async throws -> [VoteOptionInfo]
   public var postVoteResult: @Sendable(_ accessToken: String, _ eventID: Int, _ likedOptionIDs: [Int]) async throws -> VoteCompleteInfo
 }
 
@@ -22,7 +22,7 @@ extension VoteAPIClient: DependencyKey {
     return VoteAPIClient(
       getVoteOptions: { accessToken, eventID in
         let route = VoteAPI.getVoteOptions(accessToken: accessToken, eventID: eventID)
-        let request = Request<SuccessResponse<VoteOptionInfo>>(route: route)
+        let request = Request<SuccessResponse<[VoteOptionInfo]>>(route: route)
         do {
           let response = try await NetworkManager.shared.send(request)
           return response.value.data

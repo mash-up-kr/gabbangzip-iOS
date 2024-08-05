@@ -8,12 +8,13 @@
 
 import Common
 import ComposableArchitecture
+import Models
 import NukeUI
 import SwiftUI
 
 struct VoteSwipeView: View {
-  var imageURLs: [URL?]
-  var imageCount: Int
+  var voteOptions: [VoteOptionInfo]
+  var voteOptionCount: Int
   var swipeDirection: SwipeDirection
   
   @State private var offset = CGSize.zero
@@ -25,11 +26,11 @@ struct VoteSwipeView: View {
     ZStack {
       clearCardView
       
-      ForEach(0..<imageCount, id: \.self) { index in
-        if let imageURL = imageURLs[safe: index] {
-          CardView(imageURL: imageURL)
+      ForEach(0..<voteOptionCount, id: \.self) { index in
+        if let imageURL = voteOptions[safe: index] {
+          CardView(imageURL: URL(string: imageURL.imageURL))
             .draggable(isActive: Binding(
-              get: { (self.imageURLs.indices.contains(index), .left) },
+              get: { (self.voteOptions.indices.contains(index), .left) },
               set: { isActive, swipeDirection in
                 if !isActive {
                   swipeAction(index, self.swipeDirection)
@@ -37,10 +38,10 @@ struct VoteSwipeView: View {
               })
             )
             .offset(
-              x: index == imageCount - 1 ? offset.width : 0,
-              y: index == imageCount - 1 ? offset.height : 0
+              x: index == voteOptionCount - 1 ? offset.width : 0,
+              y: index == voteOptionCount - 1 ? offset.height : 0
             )
-            .rotationEffect(.degrees(index == imageCount - 1 ? angle : 0))
+            .rotationEffect(.degrees(index == voteOptionCount - 1 ? angle : 0))
         }
       }
     }
@@ -67,7 +68,7 @@ struct VoteSwipeView: View {
       } completion: {
         self.offset = CGSize(width: 0, height: 0)
         self.angle = 0
-        self.swipeAction(imageCount - 1, direction)
+        self.swipeAction(voteOptionCount - 1, direction)
       }
     }
   }
@@ -97,13 +98,18 @@ private struct CardView: View {
 
 #Preview {
   VoteSwipeView(
-    imageURLs: [
-        URL(string: "https://t1.daumcdn.net/cafeattach/1YVY7/391cac378245e0d2c7bba59d6efc7692baf88aa6"),
-        URL(string: "https://i.namu.wiki/i/hq6niPhkN8EhXuIkCNx32AN614AxXcaxKQ1EnyFaHN41caJM7rPfkfppaGZNlpgmXWPbkD_MGTbmGE4_BOrIBg.webp")
+    voteOptions: [
+      .init(
+        optionID: 0,
+        imageURL: "https://t1.daumcdn.net/cafeattach/1YVY7/391cac378245e0d2c7bba59d6efc7692baf88aa6"
+      ),
+      .init(
+        optionID: 1,
+        imageURL: "https://i.namu.wiki/i/hq6niPhkN8EhXuIkCNx32AN614AxXcaxKQ1EnyFaHN41caJM7rPfkfppaGZNlpgmXWPbkD_MGTbmGE4_BOrIBg.webp"
+      )
     ],
-    imageCount: 2,
+    voteOptionCount: 2,
     swipeDirection: .defaultState,
-    swipeAction: { _, _  in }
+    swipeAction: { _, _ in}
   )
 }
-
