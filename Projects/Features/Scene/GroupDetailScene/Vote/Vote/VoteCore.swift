@@ -83,6 +83,7 @@ public struct VoteCore {
     case voteEnded
     case swipeCard(SwipeDirection)
     case setToastPresented(Bool)
+    case setVoteOptions([VoteOptionInfo])
     
     // Route Action
     case dismissVoteView
@@ -90,6 +91,7 @@ public struct VoteCore {
   
   @Dependency(\.mainQueue) var mainQueue
   @Dependency(\.voteAPIClient) var voteAPIClient
+  @Dependency(\.bundleClient) var bundleClient
 
   public var body: some Reducer<State, Action> {
     Reduce { state, action in
@@ -163,9 +165,19 @@ public struct VoteCore {
         return .send(.dismissVoteView)
         
       case let .getVoteOptions(.success(voteOptions)):
-        state.voteOptions = voteOptions
-        return .none
-        
+        return .run { send in
+          let voteOptionsWithDomain = voteOptions.map {
+            if let s3BucketDomain = try? bundleClient.getValue(key: "S3BucketDomain") as? String {
+              let imageURLString = s3BucketDomain + $0.imageURL
+              return VoteOptionInfo(optionID: $0.optionID, imageURL: imageURLString)
+            } else {
+              return VoteOptionInfo.emptyItem
+            }
+          }
+          
+          await send(.setVoteOptions(voteOptionsWithDomain))
+        }
+
       case .getVoteOptions(.failure):
         return .send(.showToast(.error))
         
@@ -209,6 +221,10 @@ public struct VoteCore {
         
       case let .setToastPresented(isToastPresented):
         state.isToastPresented = isToastPresented
+        return .none
+        
+      case let .setVoteOptions(voteOptions):
+        state.voteOptions = voteOptions
         return .none
         
       case .dismissVoteView:
