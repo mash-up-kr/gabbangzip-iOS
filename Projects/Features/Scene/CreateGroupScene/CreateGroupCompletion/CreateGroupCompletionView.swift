@@ -36,8 +36,11 @@ public struct CreateGroupCompletionView: View {
         VStack(spacing: 0) {
           Tag(type: store.createdGroupInfo.keyword.tagType)
           
-          photoInFrame(for: store.createdGroupInfo)
-            .padding(.init(top: 24, leading: 30, bottom: 26, trailing: 30))
+          PhotoWithFrame(
+            keyword: store.createdGroupInfo.keyword,
+            imageURLString: store.createdGroupInfo.groupImageURL
+          )
+          .padding(.init(top: 24, leading: 30, bottom: 26, trailing: 30))
           
           Text(store.createdGroupInfo.groupName)
             .font(.head20)
@@ -70,30 +73,6 @@ public struct CreateGroupCompletionView: View {
       isPresented: $store.toastPresented.sending(\.setToastPresented),
       type: .textWithCheckIcon("링크를 복사했어요.")
     )
-  }
-}
-
-extension CreateGroupCompletionView {
-  @MainActor
-  private func photoInFrame(for createdGroupInfo: CreatedGroupInfo) -> some View {
-    return createdGroupInfo.keyword.frame
-      .resizable()
-      .aspectRatio(contentMode: .fit)
-      .foregroundStyle(createdGroupInfo.keyword.foregroundColor)
-      .background {
-        LazyImage(url: URL(string: store.imageURLString)) { state in
-          if let image = state.image {
-            ZStack {
-              DesignSystem.Colors.gray0
-              
-              image.resizable()
-                .scaledToFit()
-            }
-          } else {
-            createdGroupInfo.keyword.backgroundColor
-          }
-        }
-      }
   }
 }
 
