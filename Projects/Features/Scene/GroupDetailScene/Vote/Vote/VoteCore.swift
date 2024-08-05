@@ -29,7 +29,9 @@ public struct VoteCore {
     var pickedImageIDs: [Int]
     var swipeDirection: SwipeDirection
     var isPopupPresented: Bool
+    var isToastPresented: Bool
     var popupType: VotePopupType
+    var toastType: VoteToastType
     var isVoteButtonDisabled: Bool
     
     public init(
@@ -41,7 +43,9 @@ public struct VoteCore {
       pickedImageIDs: [Int],
       swipeDirection: SwipeDirection,
       isPopupPresented: Bool,
+      isToastPresented: Bool,
       popupType: VotePopupType,
+      toastType: VoteToastType,
       isVoteButtonDisabled: Bool
     ) {
       self._userInfo = Shared(wrappedValue: userInfo(), .inMemory("userInfo"))
@@ -52,40 +56,10 @@ public struct VoteCore {
       self.pickedImageIDs = pickedImageIDs
       self.swipeDirection = swipeDirection
       self.isPopupPresented = isPopupPresented
+      self.isToastPresented = isToastPresented
       self.popupType = popupType
+      self.toastType = toastType
       self.isVoteButtonDisabled = isVoteButtonDisabled
-    }
-  }
-
-  public enum VotePopupType {
-    case close
-    
-    var title: String {
-      switch self {
-      case .close:
-        return "나가실건가요?"
-      }
-    }
-    
-    var description: String {
-      switch self {
-      case .close:
-        return "페이지를 나가면\n처음부터 다시 투표 하게돼요."
-      }
-    }
-    
-    var leftButtonTitle: String {
-      switch self {
-      case .close:
-        return "나가기"
-      }
-    }
-    
-    var rightButtonTitle: String {
-      switch self {
-      case .close:
-        "계속 투표하기"
-      }
     }
   }
 
@@ -104,9 +78,11 @@ public struct VoteCore {
     // Internal Action
     case getVoteOptions(Result<[VoteOptionInfo], Error>)
     case postVoteResult(Result<VoteCompleteInfo, Error>)
+    case showToast(VoteToastType)
     case resetButtonState
     case voteEnded
     case swipeCard(SwipeDirection)
+    case setToastPresented(Bool)
     
     // Route Action
     case dismissVoteView
@@ -156,7 +132,6 @@ public struct VoteCore {
         
       case let .cardSwiped(index, direction):
         state.swipeDirection = .defaultState
-        // TODO: 이 부분 로직 API 붙이면서 수정할 예정입니다
         if let voteOption = state.voteOptions[safe: index] {
           print("index, direction: \(index), \(direction)")
           state.voteOptions.remove(at: index)
@@ -172,11 +147,12 @@ public struct VoteCore {
             return .none
           }
         } else {
-          return .none
+          return .send(.showToast(.error))
         }
 
       case .exitButtonTapped:
         state.isPopupPresented = true
+        state.popupType = .close
         return .none
         
       case .popupLeftButtonTapped:
@@ -192,12 +168,18 @@ public struct VoteCore {
         return .none
         
       case .getVoteOptions(.failure):
-        return .none
+        return .send(.showToast(.error))
         
       case let .postVoteResult(.success(voteResult)):
+        // TODO
         return .none
         
-      case let .postVoteResult(.failure):
+      case .postVoteResult(.failure):
+        return .send(.showToast(.error))
+        
+      case let .showToast(toastType):
+        state.isToastPresented = true
+        state.toastType = toastType
         return .none
 
       case .resetButtonState:
@@ -206,7 +188,6 @@ public struct VoteCore {
         return .none
         
       case .voteEnded:
-        print("state.pickedImageIDs: \(state.pickedImageIDs)")
         return .run(
           operation: { [state] send in
             await send(.postVoteResult(Result {
@@ -227,8 +208,58 @@ public struct VoteCore {
         state.voteButtonState = direction == .left ? .deactivate : .activate
         return .none
         
+      case let .setToastPresented(isToastPresented):
+        print("isToastPresented: \(isToastPresented)")
+        state.isToastPresented = isToastPresented
+        return .none
+        
       case .dismissVoteView:
         return .none
+      }
+    }
+  }
+}
+
+extension VoteCore {
+  public enum VotePopupType {
+    case close
+    
+    var title: String {
+      switch self {
+      case .close:
+        return "나가실건가요?"
+      }
+    }
+    
+    var description: String {
+      switch self {
+      case .close:
+        return "페이지를 나가면\n처음부터 다시 투표 하게돼요."
+      }
+    }
+    
+    var leftButtonTitle: String {
+      switch self {
+      case .close:
+        return "나가기"
+      }
+    }
+    
+    var rightButtonTitle: String {
+      switch self {
+      case .close:
+        "계속 투표하기"
+      }
+    }
+  }
+  
+  public enum VoteToastType {
+    case error
+    
+    var message: String {
+      switch self {
+      case .error:
+        return "오류가 발생했습니다. 다시 시도해주세요."
       }
     }
   }

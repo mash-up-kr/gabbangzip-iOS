@@ -71,6 +71,11 @@ public struct VoteView: View {
         store.send(.popupRightButtonTapped)
       }
     )
+    .toast(
+      isPresented: $store.isToastPresented.sending(\.setToastPresented),
+      type: .onlyText(store.toastType.message),
+      time: 1.0
+    )
   }
 }
 
@@ -128,7 +133,9 @@ private struct VoteButtonView: View {
         pickedImageIDs: [],
         swipeDirection: SwipeDirection.defaultState,
         isPopupPresented: false,
+        isToastPresented: false,
         popupType: .close,
+        toastType: .error,
         isVoteButtonDisabled: false
       ),
       reducer: VoteCore.init
