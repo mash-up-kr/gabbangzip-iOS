@@ -11,8 +11,8 @@ import Firebase
 
 @DependencyClient
 public struct FirebaseClient: Sendable {
-  public var configure: @Sendable () -> Void
-  public var delegate: @Sendable () -> AsyncStream<DelegateEvent> = { .finished }
+  public var configure: @Sendable () async -> Void
+  public var delegate: @Sendable () async -> AsyncStream<DelegateEvent> = { .finished }
   public var runAutoInitialization: @Sendable () async -> Void
   public var getDeviceToken: @Sendable (Data) async -> Void
   public var checkRegistrationToken: @Sendable () async throws -> String
@@ -28,10 +28,10 @@ public struct FirebaseClient: Sendable {
 extension FirebaseClient: DependencyKey {
   public static var liveValue: FirebaseClient {
     return FirebaseClient(
-      configure: {
+      configure: { @MainActor in
         FirebaseApp.configure()
       },
-      delegate: {
+      delegate: { @MainActor in
         AsyncStream { continuation in
           let delegate = MessageDelegate(continuation: continuation)
           Messaging.messaging().delegate = delegate
