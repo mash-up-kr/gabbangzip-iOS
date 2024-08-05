@@ -21,4 +21,6 @@ public struct VoteOptionInfo: Decodable, Equatable {
     self.optionID = optionID
     self.imageURL = imageURL
   }
+  
+  public static let emptyItem: VoteOptionInfo = .init(optionID: 0, imageURL: "")
 }

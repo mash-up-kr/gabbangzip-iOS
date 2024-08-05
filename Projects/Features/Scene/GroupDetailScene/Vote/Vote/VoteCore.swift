@@ -167,7 +167,7 @@ public struct VoteCore {
       case let .getVoteOptions(.success(voteOptions)):
         return .run { send in
           let voteOptionsWithDomain = voteOptions.map {
-            if let s3BucketDomain = try? bundleClient.getValue(key: "S3BucketDomain") as? String {
+            if let s3BucketDomain = try? bundleClient.getValue("S3BucketDomain") as? String {
               let imageURLString = s3BucketDomain + $0.imageURL
               return VoteOptionInfo(optionID: $0.optionID, imageURL: imageURLString)
             } else {

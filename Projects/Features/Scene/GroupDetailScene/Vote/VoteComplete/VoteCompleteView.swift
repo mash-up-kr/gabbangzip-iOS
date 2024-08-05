@@ -8,6 +8,7 @@
 
 import ComposableArchitecture
 import DesignSystem
+import Models
 import SwiftUI
 
 public struct VoteCompleteView: View {
@@ -32,11 +33,12 @@ public struct VoteCompleteView: View {
         .multilineTextAlignment(.center)
         .padding(.bottom, 24)
       
-      // TODO: 랜덤 이미지 프레임 씌운 view로 변경
-      RoundedRectangle(cornerRadius: 10)
-        .foregroundStyle(.red)
-        .frame(width: 240, height: 240)
-        .padding(.horizontal, 76)
+      PhotoWithFrame(
+        keyword: store.voteResult.keyword,
+        imageURLString: store.imageURLString,
+        isBackgroundClear: true
+      )
+      .padding(.horizontal, 76)
       
       Spacer()
       
@@ -52,12 +54,19 @@ public struct VoteCompleteView: View {
       .padding(.horizontal, 21)
       .padding(.bottom, 15)
     }
+    .onAppear {
+      store.send(.onAppear)
+    }
   }
 }
 
 #Preview {
   VoteCompleteView(
-    store: Store(initialState: .init()) {
+    store: Store(initialState: .init(
+        voteResult: VoteCompleteInfo.mock,
+        imageURLString: "https://24ai.tech/ru/wp-content/uploads/sites/4/2023/10/01_product_1_sdelat-kvadratnym-scaled.jpg"
+      )
+    ) {
       VoteCompleteCore()
     }
   )

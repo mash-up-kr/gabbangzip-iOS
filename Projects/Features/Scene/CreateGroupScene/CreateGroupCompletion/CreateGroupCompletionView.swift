@@ -38,7 +38,8 @@ public struct CreateGroupCompletionView: View {
           
           PhotoWithFrame(
             keyword: store.createdGroupInfo.keyword,
-            imageURLString: store.createdGroupInfo.groupImageURL
+            imageURLString: store.createdGroupInfo.groupImageURL,
+            isBackgroundClear: true
           )
           .padding(.init(top: 24, leading: 30, bottom: 26, trailing: 30))
           

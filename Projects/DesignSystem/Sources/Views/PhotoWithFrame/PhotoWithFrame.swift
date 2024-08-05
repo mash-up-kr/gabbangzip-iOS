@@ -13,17 +13,23 @@ import SwiftUI
 public struct PhotoWithFrame: View {
   public let keyword: GroupData.Keyword
   public let imageURLString: String
+  public let isBackgroundClear: Bool
   
-  public init(keyword: GroupData.Keyword, imageURLString: String) {
+  public init(
+    keyword: GroupData.Keyword,
+    imageURLString: String,
+    isBackgroundClear: Bool
+  ) {
     self.keyword = keyword
     self.imageURLString = imageURLString
+    self.isBackgroundClear = isBackgroundClear
   }
   
   public var body: some View {
     keyword.frame
       .resizable()
       .aspectRatio(contentMode: .fit)
-      .foregroundStyle(keyword.foregroundColor)
+      .foregroundStyle(isBackgroundClear ? .white : keyword.backgroundColor)
       .background {
         LazyImage(url: URL(string: imageURLString)) { state in
           if let image = state.image {
@@ -42,8 +48,17 @@ public struct PhotoWithFrame: View {
 }
 
 #Preview {
-  PhotoWithFrame(
-    keyword: .company,
-    imageURLString: "https://pic-api-bucket.s3.ap-northeast-2.amazonaws.com/pic/9c8f3f24-6ed2-4a2e-8af5-52aeff93b230.jpeg"
-  )
+  Group {
+    PhotoWithFrame(
+      keyword: .company,
+      imageURLString: "https://24ai.tech/ru/wp-content/uploads/sites/4/2023/10/01_product_1_sdelat-kvadratnym-scaled.jpg",
+      isBackgroundClear: false
+    )
+    
+    PhotoWithFrame(
+      keyword: .company,
+      imageURLString: "https://24ai.tech/ru/wp-content/uploads/sites/4/2023/10/01_product_1_sdelat-kvadratnym-scaled.jpg",
+      isBackgroundClear: true
+    )
+  }
 }
