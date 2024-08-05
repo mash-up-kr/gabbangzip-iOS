@@ -133,7 +133,6 @@ public struct VoteCore {
       case let .cardSwiped(index, direction):
         state.swipeDirection = .defaultState
         if let voteOption = state.voteOptions[safe: index] {
-          print("index, direction: \(index), \(direction)")
           state.voteOptions.remove(at: index)
           state.isVoteButtonDisabled = state.voteOptions.isEmpty
           
@@ -209,7 +208,6 @@ public struct VoteCore {
         return .none
         
       case let .setToastPresented(isToastPresented):
-        print("isToastPresented: \(isToastPresented)")
         state.isToastPresented = isToastPresented
         return .none
         
