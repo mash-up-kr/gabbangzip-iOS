@@ -8,7 +8,6 @@
 
 import ComposableArchitecture
 import Firebase
-import FirebaseMessaging
 
 @DependencyClient
 public struct FirebaseClient: Sendable {
