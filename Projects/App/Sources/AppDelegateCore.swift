@@ -27,8 +27,8 @@ struct AppDelegateCore {
     case setupFirebase
     case configureFirebase
     case configureFirebaseDelegate
-    case runFirebaseAutoInitialization
     case checkRegisterToken
+    case runFirebaseAutoInitialization
     case getDeviceToken(Data)
     case messagingFCMToken(FirebaseClient.DelegateEvent)
     
@@ -36,7 +36,6 @@ struct AppDelegateCore {
     case setupNotificationCenter
     case configureNotificationCenterDelegate
     case requestNotificationCenterAuthorization
-    case registerForRemoteNotifications
     case userNotifications(UserNotificationClient.DelegateEvent)
     case authorizationStatusResposne(Result<Void, Error>)
     
@@ -78,20 +77,15 @@ struct AppDelegateCore {
         }
         
       case .configureFirebase:
-        return .run { @MainActor send in
-          firebaseClient.configure()
+        return .run { send in
+          await firebaseClient.configure()
         }
         
       case .configureFirebaseDelegate:
-        return .run { @MainActor send in
-          for await event in self.firebaseClient.delegate() {
-            send(.messagingFCMToken(event))
-          }
-        }
-        
-      case .runFirebaseAutoInitialization:
         return .run { send in
-          await firebaseClient.runAutoInitialization()
+          for await event in await self.firebaseClient.delegate() {
+            await send(.messagingFCMToken(event))
+          }
         }
         
       case .checkRegisterToken:
@@ -100,6 +94,11 @@ struct AppDelegateCore {
           await send(.logFCMDescription(token))
         } catch: { _, send in
           await send(.logError(AppDelegateCoreError(code: .failToGetRegisterToken)))
+        }
+        
+      case .runFirebaseAutoInitialization:
+        return .run { send in
+          await firebaseClient.runAutoInitialization()
         }
         
       case let .getDeviceToken(deviceToken):
@@ -122,13 +121,12 @@ struct AppDelegateCore {
         return .run { send in
           await send(.configureNotificationCenterDelegate)
           await send(.requestNotificationCenterAuthorization)
-          await send(.registerForRemoteNotifications)
         }
         
       case .configureNotificationCenterDelegate:
-        return .run { @MainActor send in
-          for await event in self.userNotificationClient.delegate() {
-            send(.userNotifications(event))
+        return .run { send in
+          for await event in await self.userNotificationClient.delegate() {
+            await send(.userNotifications(event))
           }
         }
         
@@ -144,10 +142,7 @@ struct AppDelegateCore {
               )
             )
           }
-        }
-        
-      case .registerForRemoteNotifications:
-        return .run { send in
+          
           await uiApplicationClient.registerForRemoteNotifications()
         }
         
