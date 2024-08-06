@@ -34,6 +34,7 @@ public struct GroupDetailCore {
   
   @Dependency(\.groupAPIClient) var groupAPIClient
   @Dependency(\.eventAPIClient) var eventAPIClient
+  @Dependency(\.pushAPIClient) var pushAPIClienet
 
   public enum Action: BindableAction {
     case binding(BindingAction<State>)
@@ -47,6 +48,7 @@ public struct GroupDetailCore {
     // Internal Action
     case getGroupDetailResponse(Result<GroupDetailInfo, Error>)
     case putEventVisit(Result<EventVisitInfo, Error>)
+    case postKook(Result<KookInfo, Error>)
 
     // Route Action
     case backToHome
@@ -81,13 +83,22 @@ public struct GroupDetailCore {
       case let .eventContainerViewButtonTapped(status):
         switch status {
         case .beforeMyUpload:
-          // 사진 업로드 화면 보여줘야함
+          // TODO: 사진 업로드 화면 보여줘야함
           return .none
+          
         case .beforeMyVote:
           return .send(.moveToVote)
+          
         case .afterMyVote, .afterMyUpload:
-          // 쿡 찌르기 API 호출
-          return .none
+          return .run(
+            operation: { [state] send in
+              await send(.postKook(Result {
+                try await self.pushAPIClienet.postKook(accessToken: state.userInfo.accessToken, eventID: state.groupDetail.recentEvent.id)
+              }))
+            },
+            catch: { error, send in }
+          )
+          
         case .noPastAndCurrentEvent, .noCurrentEvent, .eventCompleted:
           return .none
         }
@@ -99,7 +110,7 @@ public struct GroupDetailCore {
           return .run(
             operation: { [state] send in
               await send(.putEventVisit(Result {
-                try await self.eventAPIClient.putEventVisit(accessToken: state.userInfo.accessToken, eventID: state.groupDetail.history.first?.id ?? 0)
+                try await self.eventAPIClient.putEventVisit(accessToken: state.userInfo.accessToken, eventID: state.groupDetail.recentEvent.id)
               }))
             },
             catch: { error, send in }
@@ -111,10 +122,10 @@ public struct GroupDetailCore {
       case .getGroupDetailResponse(.failure):
         return .none
         
-      case .putEventVisit(.success):
+      case .putEventVisit:
         return .none
         
-      case .putEventVisit(.failure):
+      case .postKook:
         return .none
         
       case .backToHome:

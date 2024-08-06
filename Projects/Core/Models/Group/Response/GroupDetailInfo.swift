@@ -141,11 +141,13 @@ public struct History: Decodable, Identifiable, Equatable {
 }
 
 public struct RecentEvent: Codable {
+  public let id: Int
   public let name: String
   public let date: String
   public let deadline: String
   
   public static let mock: RecentEvent = .init(
+    id: 0,
     name: "가빵집 MT",
     date: "2024.11.03",
     deadline: "6월 14일 월요일 12시 37분"
