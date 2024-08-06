@@ -33,6 +33,7 @@ public struct GroupDetailCore {
   }
   
   @Dependency(\.groupAPIClient) var groupAPIClient
+  @Dependency(\.eventAPIClient) var eventAPIClient
 
   public enum Action: BindableAction {
     case binding(BindingAction<State>)
@@ -45,6 +46,7 @@ public struct GroupDetailCore {
 
     // Internal Action
     case getGroupDetailResponse(Result<GroupDetailInfo, Error>)
+    case putEventVisit(Result<EventVisitInfo, Error>)
 
     // Route Action
     case backToHome
@@ -92,9 +94,27 @@ public struct GroupDetailCore {
         
       case let .getGroupDetailResponse(.success(groupDetail)):
         state.groupDetail = groupDetail
-        return .none
+        
+        if groupDetail.status == .eventCompleted {
+          return .run(
+            operation: { [state] send in
+              await send(.putEventVisit(Result {
+                try await self.eventAPIClient.putEventVisit(accessToken: state.userInfo.accessToken, eventID: state.groupDetail.history.first?.id ?? 0)
+              }))
+            },
+            catch: { error, send in }
+          )
+        } else {
+          return .none
+        }
         
       case .getGroupDetailResponse(.failure):
+        return .none
+        
+      case .putEventVisit(.success):
+        return .none
+        
+      case .putEventVisit(.failure):
         return .none
         
       case .backToHome:
