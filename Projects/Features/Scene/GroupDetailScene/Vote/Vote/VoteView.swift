@@ -20,39 +20,52 @@ public struct VoteView: View {
   }
   
   public var body: some View {
-    VStack(spacing: 0) {
-      HStack {
+    ZStack {
+      VStack(spacing: 0) {
+        HStack {
+          Spacer()
+          
+          Button(
+            action: {
+              store.send(.exitButtonTapped)
+            }, label: {
+              DesignSystem.Icons.close
+            }
+          )
+          .padding(.trailing, 16)
+          .padding(.top, 27)
+        }
+
+        TitleView(name: store.userInfo.nickname)
+        
         Spacer()
         
-        Button(
-          action: {
-            store.send(.exitButtonTapped)
-          }, label: {
-            DesignSystem.Icons.close
+        VoteSwipeView(
+          voteOptions: store.voteOptions,
+          voteOptionCount: store.imageCount,
+          swipeDirection: store.swipeDirection,
+          swipeAction: { index, swipeDirection in
+            store.send(.cardSwiped(index, swipeDirection))
           }
         )
-        .padding(.trailing, 16)
-        .padding(.top, 27)
+        
+        Spacer()
+        
+        VoteButtonView(store: store)
+        
+        Spacer()
       }
-
-      TitleView(name: store.userInfo.nickname)
       
-      Spacer()
-      
-      VoteSwipeView(
-        voteOptions: store.voteOptions,
-        voteOptionCount: store.imageCount,
-        swipeDirection: store.swipeDirection,
-        swipeAction: { index, swipeDirection in
-          store.send(.cardSwiped(index, swipeDirection))
-        }
-      )
-      
-      Spacer()
-      
-      VoteButtonView(store: store)
-      
-      Spacer()
+      if store.isNeedGuideView && !store.guideViews.isEmpty {
+        VoteGuideView(
+          guideViews: store.guideViews,
+          swipeAction: {
+            store.send(.guideViewSwiped)
+          }
+        )
+        .animation(.easeIn)
+        .transition(.opacity.animation(.easeIn))
+      }
     }
     .onAppear {
       store.send(.onAppear)
@@ -136,7 +149,13 @@ private struct VoteButtonView: View {
         isToastPresented: false,
         popupType: .close,
         toastType: .error,
-        isVoteButtonDisabled: false
+        isFirstVoteDone: false,
+        isNeedGuideView: true,
+        isVoteButtonDisabled: false,
+        guideViews: [
+          GuideView(guideType: .vote),
+          GuideView(guideType: .pass)
+        ]
       ),
       reducer: VoteCore.init
     )

@@ -32,7 +32,10 @@ public struct VoteCore {
     var isToastPresented: Bool
     var popupType: VotePopupType
     var toastType: VoteToastType
+    var isFirstVoteDone: Bool
+    var isNeedGuideView: Bool
     var isVoteButtonDisabled: Bool
+    var guideViews: [GuideView]
     
     public init(
       userInfo: @autoclosure () -> UserInfo = .defaultValue,
@@ -46,7 +49,10 @@ public struct VoteCore {
       isToastPresented: Bool,
       popupType: VotePopupType,
       toastType: VoteToastType,
-      isVoteButtonDisabled: Bool
+      isFirstVoteDone: Bool,
+      isNeedGuideView: Bool,
+      isVoteButtonDisabled: Bool,
+      guideViews: [GuideView]
     ) {
       self._userInfo = Shared(wrappedValue: userInfo(), .inMemory("userInfo"))
       self.voteButtonState = voteButtonState
@@ -59,7 +65,10 @@ public struct VoteCore {
       self.isToastPresented = isToastPresented
       self.popupType = popupType
       self.toastType = toastType
+      self.isFirstVoteDone = isFirstVoteDone
+      self.isNeedGuideView = isNeedGuideView
       self.isVoteButtonDisabled = isVoteButtonDisabled
+      self.guideViews = guideViews
     }
   }
 
@@ -74,6 +83,7 @@ public struct VoteCore {
     case exitButtonTapped
     case popupLeftButtonTapped
     case popupRightButtonTapped
+    case guideViewSwiped
     
     // Internal Action
     case getVoteOptions(Result<[VoteOptionInfo], Error>)
@@ -84,6 +94,9 @@ public struct VoteCore {
     case swipeCard(SwipeDirection)
     case setToastPresented(Bool)
     case setVoteOptions([VoteOptionInfo])
+    case checkFirstVote
+    case updateIsFirstVoteDone(Bool)
+    case updateIsNeedGuideView(Bool)
     
     // Route Action
     case dismissVoteView
@@ -92,6 +105,7 @@ public struct VoteCore {
   @Dependency(\.mainQueue) var mainQueue
   @Dependency(\.voteAPIClient) var voteAPIClient
   @Dependency(\.bundleClient) var bundleClient
+  @Dependency(\.userDefaultsClient) var userDefaultClient
 
   public var body: some Reducer<State, Action> {
     Reduce { state, action in
@@ -105,6 +119,8 @@ public struct VoteCore {
             await send(.getVoteOptions(Result {
               try await self.voteAPIClient.getVoteOptions(state.userInfo.accessToken, state.eventID)
             }))
+            
+            await send(.checkFirstVote)
           }, catch: { error, send in
           
           }
@@ -164,6 +180,12 @@ public struct VoteCore {
         state.isPopupPresented = false
         return .send(.dismissVoteView)
         
+      case .guideViewSwiped:
+        if !state.guideViews.isEmpty {
+          state.guideViews.removeFirst()
+        }
+        return .none
+        
       case let .getVoteOptions(.success(voteOptions)):
         return .run { send in
           let voteOptionsWithDomain = voteOptions.map {
@@ -182,8 +204,13 @@ public struct VoteCore {
         return .send(.showToast(.error))
         
       case let .postVoteResult(.success(voteResult)):
-        // TODO
-        return .none
+        return .run { [state] send in
+          if !state.isFirstVoteDone {
+            userDefaultClient.set(.isFirstVoteDone, true)
+          }
+          
+          // TODO: 화면 이동
+        }
         
       case .postVoteResult(.failure):
         return .send(.showToast(.error))
@@ -225,6 +252,28 @@ public struct VoteCore {
         
       case let .setVoteOptions(voteOptions):
         state.voteOptions = voteOptions
+        return .none
+        
+      case .checkFirstVote:
+        return .run(
+          operation: { send in
+            let isFirstVoteDone = try? userDefaultClient.bool(.isFirstVoteDone)
+            
+            if let isFirstVoteDone, !isFirstVoteDone {
+              await send(.updateIsFirstVoteDone(isFirstVoteDone))
+              await send(.updateIsNeedGuideView(isFirstVoteDone))
+            }
+          }, catch: { error, send in
+          
+          }
+        )
+        
+      case let .updateIsFirstVoteDone(isFirstVoteDone):
+        state.isFirstVoteDone = isFirstVoteDone
+        return .none
+        
+      case let .updateIsNeedGuideView(isFirstVoteDone):
+        state.isNeedGuideView = !isFirstVoteDone
         return .none
         
       case .dismissVoteView:
