@@ -10,14 +10,14 @@ import DesignSystem
 import SwiftUI
 
 struct VoteGuideView: View {
-  var guideViews: [GuideView]
+  var guideTypes: [GuideType]
   var swipeAction: () -> Void
   
   var body: some View {
     ZStack {
-      ForEach(0..<guideViews.count, id: \.self) { index in
-        if let view = guideViews[safe: index] {
-          view
+      ForEach(0..<guideTypes.count, id: \.self) { index in
+        if let type = guideTypes[safe: index] {
+          GuideView(guideType: type)
             .opacity(index == 0 ? 1 : 0)
         }
       }
@@ -52,7 +52,7 @@ public struct GuideView: View, Equatable {
   }
 }
 
-enum GuideType {
+public enum GuideType {
   case vote
   case pass
   
@@ -91,10 +91,7 @@ enum GuideType {
 
 #Preview {
   VoteGuideView(
-    guideViews: [
-      .init(guideType: .vote),
-      .init(guideType: .pass)
-    ],
+    guideTypes: [.vote, .pass],
     swipeAction: {
       ()
     }

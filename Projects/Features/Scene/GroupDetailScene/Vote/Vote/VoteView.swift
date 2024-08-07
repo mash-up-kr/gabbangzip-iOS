@@ -56,9 +56,9 @@ public struct VoteView: View {
         Spacer()
       }
       
-      if store.isNeedGuideView && !store.guideViews.isEmpty {
+      if store.isNeedGuideView && !store.guideTypes.isEmpty {
         VoteGuideView(
-          guideViews: store.guideViews,
+          guideTypes: store.guideTypes,
           swipeAction: {
             store.send(.guideViewSwiped)
           }
@@ -152,10 +152,7 @@ private struct VoteButtonView: View {
         isFirstVoteDone: false,
         isNeedGuideView: true,
         isVoteButtonDisabled: false,
-        guideViews: [
-          GuideView(guideType: .vote),
-          GuideView(guideType: .pass)
-        ]
+        guideTypes: [GuideType.vote, GuideType.pass]
       ),
       reducer: VoteCore.init
     )

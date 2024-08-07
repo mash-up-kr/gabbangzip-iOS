@@ -35,7 +35,7 @@ public struct VoteCore {
     var isFirstVoteDone: Bool
     var isNeedGuideView: Bool
     var isVoteButtonDisabled: Bool
-    var guideViews: [GuideView]
+    var guideTypes: [GuideType]
     
     public init(
       userInfo: @autoclosure () -> UserInfo = .defaultValue,
@@ -52,7 +52,7 @@ public struct VoteCore {
       isFirstVoteDone: Bool,
       isNeedGuideView: Bool,
       isVoteButtonDisabled: Bool,
-      guideViews: [GuideView]
+      guideTypes: [GuideType]
     ) {
       self._userInfo = Shared(wrappedValue: userInfo(), .inMemory("userInfo"))
       self.voteButtonState = voteButtonState
@@ -68,7 +68,7 @@ public struct VoteCore {
       self.isFirstVoteDone = isFirstVoteDone
       self.isNeedGuideView = isNeedGuideView
       self.isVoteButtonDisabled = isVoteButtonDisabled
-      self.guideViews = guideViews
+      self.guideTypes = guideTypes
     }
   }
 
@@ -181,8 +181,8 @@ public struct VoteCore {
         return .send(.dismissVoteView)
         
       case .guideViewSwiped:
-        if !state.guideViews.isEmpty {
-          state.guideViews.removeFirst()
+        if !state.guideTypes.isEmpty {
+          state.guideTypes.removeFirst()
         }
         return .none
         
