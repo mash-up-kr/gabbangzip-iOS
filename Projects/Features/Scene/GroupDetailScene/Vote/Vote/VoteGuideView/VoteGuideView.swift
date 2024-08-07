@@ -15,10 +15,10 @@ struct VoteGuideView: View {
   
   var body: some View {
     ZStack {
-      ForEach(0..<guideTypes.count, id: \.self) { index in
-        if let type = guideTypes[safe: index] {
-          GuideView(guideType: type)
-            .opacity(index == 0 ? 1 : 0)
+      ForEach(guideTypes, id: \.self) { guideType in
+        if let firstType = guideTypes.first {
+          GuideView(guideType: guideType)
+            .opacity(guideType == firstType ? 1 : 0)
         }
       }
     }
