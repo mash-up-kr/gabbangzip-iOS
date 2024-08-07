@@ -37,9 +37,10 @@ public struct CreateGroupCompletionView: View {
           Tag(type: store.createdGroupInfo.keyword.tagType)
           
           PhotoWithFrame(
-            keyword: store.createdGroupInfo.keyword,
+            frame: store.createdGroupInfo.keyword.frame,
+            backgroundColor: store.createdGroupInfo.keyword.backgroundColor,
             imageURLString: store.createdGroupInfo.groupImageURL,
-            isBackgroundClear: true
+            isBackgroundClear: false
           )
           .padding(.init(top: 24, leading: 30, bottom: 26, trailing: 30))
           

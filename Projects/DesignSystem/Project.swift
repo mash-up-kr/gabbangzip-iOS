@@ -12,8 +12,7 @@ let project = Project.make(
       resources: ["Resources/**"],
       dependencies: [
         .external(externalDependency: .lottie),
-        .external(externalDependency: .nukeUI),
-        .project(target: .models, projectPath: .core)
+        .external(externalDependency: .nukeUI)
       ]
     )
   ],
