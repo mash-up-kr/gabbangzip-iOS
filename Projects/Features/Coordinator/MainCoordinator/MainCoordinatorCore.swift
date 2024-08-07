@@ -35,6 +35,12 @@ public struct MainCoordinatorCore {
       case .router(.routeAction(id: _, action: .groupList(.moveToCreateGroup))):
         state.routes.presentCover(.createGroupCoordinator(.init(routes: [.root(.createGroupStart(.init()), embedInNavigationView: true)])))
         
+      case .router(.routeAction(id: _, action: .groupList(.moveToJoinGroup))):
+        state.routes.push(.joinGroup(.init()))
+        
+      case .router(.routeAction(id: _, action: .joinGroup(.backToGroupList))):
+        state.routes.pop()
+        
       case .router(.routeAction(id: _, action: .createGroupCoordinator(.router(.routeAction(id: _, action: .createGroupCompletion(.backToHome)))))):
         state.routes.dismiss()
         

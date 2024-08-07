@@ -14,6 +14,7 @@ import Models
 @DependencyClient
 public struct GroupAPIClient: Sendable {
   public var getGroups: @Sendable (_ accessToken: String) async throws -> GroupsData
+  public var joinGroup: @Sendable (_ accessToken: String, _ code: String) async throws -> GroupID
 }
 
 extension GroupAPIClient: DependencyKey {
@@ -31,6 +32,19 @@ extension GroupAPIClient: DependencyKey {
             underlying: error
           )
         }
+      },
+      joinGroup: { accessToken, code in
+        let route = GroupAPI.joinGroup(accessToken: accessToken, code: code)
+        let request = Request<SuccessResponse<GroupID>>(route: route)
+        do {
+          let response = try await NetworkManager.shared.send(request)
+          return response.value.data
+        } catch {
+          throw GroupAPIClientError(
+            code: .failToJoinGroup,
+            underlying: error
+          )
+        }
       }
     )
   }
@@ -39,6 +53,9 @@ extension GroupAPIClient: DependencyKey {
     return GroupAPIClient(
       getGroups: { _ in
         return GroupsData.mock
+      }, 
+      joinGroup: { _, _ in
+        return GroupID.mock
       }
     )
   }
@@ -59,6 +76,7 @@ public struct GroupAPIClientError: GabbangzipError {
 
   public enum APIResponseError: Int {
     case failToGetGroups
+    case failToJoinGroup
   }
 }
 

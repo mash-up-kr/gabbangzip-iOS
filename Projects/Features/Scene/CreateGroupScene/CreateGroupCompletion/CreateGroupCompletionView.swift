@@ -83,17 +83,16 @@ extension CreateGroupCompletionView {
       .background {
         LazyImage(url: URL(string: store.imageURLString)) { state in
           if let image = state.image {
-            ZStack {
-              DesignSystem.Colors.gray0
-              
-              image.resizable()
-                .scaledToFit()
-            }
+            image
+              .resizable()
+              .aspectRatio(contentMode: .fill)
+            
           } else {
             createdGroupInfo.keyword.backgroundColor
           }
         }
       }
+      .clipped()
   }
 }
 
