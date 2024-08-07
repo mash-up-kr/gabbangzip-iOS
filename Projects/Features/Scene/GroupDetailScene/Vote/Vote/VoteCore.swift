@@ -130,10 +130,9 @@ public struct VoteCore {
         return .run { send in
           await send(.swipeCard(.left))
           
-          mainQueue.schedule(after: .init(.now() + 1.0)) {
-            Task {
-              await send(.resetButtonState)
-            }
+          Task {
+            try await mainQueue.sleep(for: .seconds(1.0))
+            await send(.resetButtonState)
           }
         }
         
@@ -141,10 +140,9 @@ public struct VoteCore {
         return .run { send in
           await send(.swipeCard(.right))
           
-          mainQueue.schedule(after: .init(.now() + 1.0)) {
-            Task {
-              await send(.resetButtonState)
-            }
+          Task {
+            try await mainQueue.sleep(for: .seconds(1.0))
+            await send(.resetButtonState)
           }
         }
         
