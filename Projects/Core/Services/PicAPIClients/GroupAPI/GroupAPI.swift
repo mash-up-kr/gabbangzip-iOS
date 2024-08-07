@@ -53,10 +53,7 @@ extension GroupAPI: RouteType {
   
   public var headers: [String: String]? {
     switch self {
-    case let .getGroups(accessToken):
-      return ["Authorization": "Bearer \(accessToken)"]
-      
-    case let .joinGroup(accessToken, _):
+    case let .getGroups(accessToken), let .joinGroup(accessToken, _):
       return ["Authorization": "Bearer \(accessToken)"]
     }
   }
