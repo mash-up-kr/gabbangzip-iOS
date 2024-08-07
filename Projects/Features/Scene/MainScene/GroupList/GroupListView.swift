@@ -78,7 +78,7 @@ public struct GroupListView: View {
     .background(DesignSystem.Colors.gray0)
     .onAppear { store.send(.onAppear) }
     .overlay(alignment: .bottomTrailing) {
-      FloatingButton(isExpended: $store.floatingButtonExpended.sending(\.floatingButtonExpendedChanged)) {
+      FloatingButton(isExpanded: $store.floatingButtonExpanded.sending(\.floatingButtonExpandedChanged)) {
         FloatingOptionButton(
           title: "그룹 들어가기",
           icon: DesignSystem.Icons.groupIn,

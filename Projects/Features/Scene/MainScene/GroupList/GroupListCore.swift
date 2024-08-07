@@ -20,20 +20,20 @@ public struct GroupListCore {
     @Shared var userInfo: UserInfo
     @Shared var isGroupListUpdated: Bool
     var s3BucketDomain: String
-    var floatingButtonExpended: Bool
+    var floatingButtonExpanded: Bool
     
     public init(
       groups: [GroupData] = [],
       userInfo: @autoclosure () -> UserInfo = .defaultValue,
       isGroupListUpdated: @autoclosure () -> Bool = false,
       s3BucketDomain: String = "",
-      floatingButtonExpended: Bool = false
+      floatingButtonExpanded: Bool = false
     ) {
       self.groups = groups
       self._userInfo = Shared(wrappedValue: userInfo(), .inMemory("userInfo"))
       self._isGroupListUpdated = Shared(wrappedValue: isGroupListUpdated(), .inMemory("isGroupListUpdated"))
       self.s3BucketDomain = s3BucketDomain
-      self.floatingButtonExpended = floatingButtonExpended
+      self.floatingButtonExpanded = floatingButtonExpanded
     }
   }
 
@@ -54,7 +54,7 @@ public struct GroupListCore {
     case getGroupsResponse(Result<GroupsData, Error>)
     case getS3BucketDomain(Result<String?, Error>)
     case setS3BucketDomain(String)
-    case floatingButtonExpendedChanged(Bool)
+    case floatingButtonExpandedChanged(Bool)
     case isGroupListUpdatedChanged(Bool)
     
     // Route Action
@@ -95,11 +95,11 @@ public struct GroupListCore {
         return .none
         
       case .joinGroupButtonTapped:
-        state.floatingButtonExpended = false
+        state.floatingButtonExpanded = false
         return .send(.moveToJoinGroup)
         
       case .createGroupButtonTapped:
-        state.floatingButtonExpended = false
+        state.floatingButtonExpanded = false
         return .send(.moveToCreateGroup)
         
       case .myPageButtonTapped:
@@ -141,8 +141,8 @@ public struct GroupListCore {
         state.s3BucketDomain = domain
         return .none
         
-      case let .floatingButtonExpendedChanged(value):
-        state.floatingButtonExpended = value
+      case let .floatingButtonExpandedChanged(value):
+        state.floatingButtonExpanded = value
         return .none
         
       case let .isGroupListUpdatedChanged(isGroupListUpdated):
