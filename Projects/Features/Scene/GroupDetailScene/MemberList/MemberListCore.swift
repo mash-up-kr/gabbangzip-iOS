@@ -42,6 +42,9 @@ public struct MemberListCore {
     
     // Internal Action
     case getMemberList(Result<MemberList, Error>)
+    
+    // Route Action
+    case backToGroupDetail
   }
   
   @Dependency(\.uiPasteBoardClient) var uiPasteBoardClient
@@ -64,6 +67,7 @@ public struct MemberListCore {
         }
         
       case .backButtonTapped:
+        return .send(.backToGroupDetail)
         
       case let .getMemberList(.success(memberList)):
         state.memberList = memberList
@@ -72,6 +76,7 @@ public struct MemberListCore {
       case .getMemberList(.failure):
         return .none
         
+      case .backToGroupDetail:
         return .none
       }
     }
