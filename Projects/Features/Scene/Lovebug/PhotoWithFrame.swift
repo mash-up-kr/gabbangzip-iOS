@@ -1,6 +1,6 @@
 //
 //  PhotoWithFrame.swift
-//  Util
+//  Lovebug
 //
 //  Created by YangJoonHyeok on 8/8/24.
 //  Copyright © 2024 com.mashup.gabbangzip. All rights reserved.
