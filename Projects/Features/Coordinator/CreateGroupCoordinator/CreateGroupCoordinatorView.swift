@@ -34,7 +34,7 @@ public struct CreateGroupCoordinatorView: View {
           CreateGroupCompletionView(store: store)
         }
       }
-      .navigationBarHidden(true)
+      .toolbar(.hidden)
     }
   }
 }

@@ -15,6 +15,8 @@ public enum NavigationBarType {
   // 타이틀
   case title(String)
   // 로고 + 아이콘 조합
+  case logoAndOneIcon(Image)
+  // 로고 + 아이콘 + 아이콘 조합
   case logoAndTwoIcon(Image, Image)
   // Back 버튼 + 타이틀 + 아이콘 조합
   case titleWithBackButtonAndIcon(String, Image)

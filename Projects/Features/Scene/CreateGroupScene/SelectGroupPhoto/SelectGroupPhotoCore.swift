@@ -19,6 +19,7 @@ public struct SelectGroupPhotoCore {
   @ObservableState
   public struct State: Equatable {
     @Shared var userInfo: UserInfo
+    @Shared var isGroupListUpdated: Bool
     var groupName: String
     var keyword: GroupData.Keyword
     var nextButtonType: ButtonType
@@ -27,6 +28,7 @@ public struct SelectGroupPhotoCore {
 
     public init(
       userInfo: @autoclosure () -> UserInfo = .defaultValue,
+      isGroupListUpdated: @autoclosure () -> Bool = false,
       groupName: String,
       keyword: GroupData.Keyword,
       nextButtonType: ButtonType = .inactive,
@@ -34,6 +36,7 @@ public struct SelectGroupPhotoCore {
       fileExtension: String = ""
     ) {
       self._userInfo = Shared(wrappedValue: userInfo(), .inMemory("userInfo"))
+      self._isGroupListUpdated = Shared(wrappedValue: isGroupListUpdated(), .inMemory("isGroupListUpdated"))
       self.groupName = groupName
       self.nextButtonType = nextButtonType
       self.keyword = keyword
@@ -128,6 +131,7 @@ public struct SelectGroupPhotoCore {
         }
         
       case let .createGroupResponse(.success(createdGroupInfo)):
+        state.isGroupListUpdated = true
         return .send(.moveToCreateGroupCompletion(createdGroupInfo))
         
       case let .createGroupResponse(.failure(error)):

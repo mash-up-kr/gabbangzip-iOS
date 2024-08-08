@@ -13,7 +13,7 @@ import NukeUI
 import SwiftUI
 
 public struct GroupListView: View {
-  public let store: StoreOf<GroupListCore>
+  @Bindable var store: StoreOf<GroupListCore>
   private let columns = [
     GridItem(.flexible(), spacing: 9),
     GridItem(.flexible(), spacing: 9)
@@ -26,13 +26,12 @@ public struct GroupListView: View {
   public var body: some View {
     VStack(spacing: 0) {
       NavigationBar(
-        type: .logoAndTwoIcon(DesignSystem.Icons.plus, DesignSystem.Icons.user),
-        firstRightIconAction: { store.send(.createGroupButtonTapped) },
-        secondRightIconAction: { store.send(.myPageButtonTapped) }
+        type: .logoAndOneIcon(DesignSystem.Icons.user),
+        oneIconAction: { store.send(.myPageButtonTapped) }
       )
       
       ScrollView {
-        VStack {
+        LazyVStack {
           ForEach(Array(store.groups.enumerated()), id: \.element) { index, group in
             VStack(spacing: 16) {
               Button(
@@ -78,6 +77,23 @@ public struct GroupListView: View {
     }
     .background(DesignSystem.Colors.gray0)
     .onAppear { store.send(.onAppear) }
+    .overlay(alignment: .bottomTrailing) {
+      FloatingButton(isExpanded: $store.floatingButtonExpanded.sending(\.floatingButtonExpandedChanged)) {
+        FloatingOptionButton(
+          title: "그룹 들어가기",
+          icon: DesignSystem.Icons.groupIn,
+          action: { store.send(.joinGroupButtonTapped) }
+        )
+        
+        FloatingOptionButton(
+          title: "그룹 만들기",
+          icon: DesignSystem.Icons.groupPlus,
+          action: { store.send(.createGroupButtonTapped) }
+        )
+      }
+      .padding(.trailing, 16)
+      .padding(.bottom, 24)
+    }
   }
 }
 
@@ -124,7 +140,7 @@ extension GroupListView {
       Text(
         group.status == .noPastAndCurrentEvent
         ? "이벤트를 만들어 보세요!"
-        : group.recentEventDate.toGroupEventDateString() ?? ""
+        : group.recentEvent.date?.toGroupEventDateString() ?? ""
       )
       .font(.body16)
       .foregroundStyle(DesignSystem.Colors.gray80)
@@ -141,12 +157,12 @@ extension GroupListView {
   @MainActor
   private func photoCardBackView(from group: GroupData) -> some View {
     VStack(spacing: 16) {
-      Text(group.recentEventDate.toGroupEventDateString() ?? "")
+      Text(group.recentEvent.date?.toGroupEventDateString() ?? "")
         .font(.body16)
         .foregroundStyle(DesignSystem.Colors.gray80)
       
       LazyVGrid(columns: columns, spacing: 9) {
-        ForEach(group.cardBackImages, id: \.self) { card in
+        ForEach(group.cardBackImages ?? [], id: \.self) { card in
           photoInFrame(
             for: mapKeyword(from: card.frame),
             with: card.imageURL,
@@ -176,18 +192,15 @@ extension GroupListView {
       .aspectRatio(contentMode: .fit)
       .foregroundStyle(resolvedColor)
       .background {
-        LazyImage(url: URL(string: image)) { state in
+        LazyImage(url: URL(string: store.s3BucketDomain + image)) { state in
           if let image = state.image {
-            ZStack {
-              DesignSystem.Colors.gray0
-              
-              image
-                .resizable()
-                .scaledToFit()
-            }
+            image
+              .resizable()
+              .aspectRatio(contentMode: .fill)
           }
         }
       }
+      .clipped()
   }
   
   private func mapStatus<T: View>(from keyword: GroupData.Keyword) -> PhotoCard<T>.Status {

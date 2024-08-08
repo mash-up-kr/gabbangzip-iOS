@@ -17,4 +17,5 @@ public enum MainScreen {
   case createGroupCoordinator(CreateGroupCoordinatorCore)
   case myPageCoordinator(MyPageCoordinatorCore)
   case groupList(GroupListCore)
+  case joinGroup(JoinGroupCore)
 }

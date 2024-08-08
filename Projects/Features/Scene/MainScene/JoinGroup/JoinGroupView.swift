@@ -46,6 +46,7 @@ public struct JoinGroupView: View {
       )
       .padding(.horizontal, 16)
     }
+    .toolbar(.hidden)
     .toast(
       isPresented: $store.toastPresented.sending(\.toastPresentedChanged),
       type: .textWithInfoIcon("존재하지 않는 초대코드예요.")

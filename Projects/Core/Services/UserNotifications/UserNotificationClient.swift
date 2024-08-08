@@ -12,7 +12,7 @@ import UserNotifications
 @DependencyClient
 public struct UserNotificationClient: Sendable {
   public var getAuthorizationStatus: @Sendable () async -> UNAuthorizationStatus = { .notDetermined }
-  public var delegate: @Sendable () -> AsyncStream<DelegateEvent> = { .finished }
+  public var delegate: @Sendable () async -> AsyncStream<DelegateEvent> = { .finished }
   public var requestAuthorization: @Sendable () async throws -> Void
   
   public enum DelegateEvent {
@@ -37,7 +37,7 @@ extension UserNotificationClient: DependencyKey {
         let authorizationStatus = await notificationCenter.notificationSettings().authorizationStatus
         return authorizationStatus
       },
-      delegate: {
+      delegate: { @MainActor in
         AsyncStream { continuation in
           let delegate = NotificationCenterDelegate(continuation: continuation)
           UNUserNotificationCenter.current().delegate = delegate

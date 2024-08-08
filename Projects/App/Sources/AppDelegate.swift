@@ -25,3 +25,13 @@ final class AppDelegate: NSObject, UIApplicationDelegate {
     return true
   }
 }
+
+// MARK: - Firebase
+extension AppDelegate: UNUserNotificationCenterDelegate {
+  func application(
+    _ application: UIApplication,
+    didRegisterForRemoteNotificationsWithDeviceToken deviceToken: Data
+  ) {
+    store.send(.getDeviceToken(deviceToken))
+  }
+}

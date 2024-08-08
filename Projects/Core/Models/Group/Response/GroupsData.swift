@@ -16,11 +16,12 @@ extension GroupsData {
   public static let mock = Self(
     groups: [
       GroupData(
+        id: 1,
         name: "모임 이름1",
         keyword: .school,
         status: .noPastAndCurrentEvent,
         statusDescription: "최근 업데이트 2일전",
-        recentEventDate: "",
+        recentEvent: .init(name: nil, date: nil),
         cardFrontImageURL: "https://picsum.photos/200",
         cardBackImages: [
           CardBackImage(
@@ -30,11 +31,12 @@ extension GroupsData {
         ]
       ),
       GroupData(
+        id: 2,
         name: "모임 이름2",
         keyword: .company,
         status: .beforeMyVote,
         statusDescription: "최근 업데이트 3일전",
-        recentEventDate: "2024-07-03T01:22:28.673Z",
+        recentEvent: .init(name: "이벤트", date: "2024-07-03T01:22:28.673Z"),
         cardFrontImageURL: "https://picsum.photos/200",
         cardBackImages: [
           CardBackImage(
@@ -44,11 +46,12 @@ extension GroupsData {
         ]
       ),
       GroupData(
+        id: 3,
         name: "모임 이름3",
         keyword: .crew,
         status: .afterMyVote,
         statusDescription: "최근 업데이트 1일전",
-        recentEventDate: "",
+        recentEvent: .init(name: "이벤트", date: "2024-07-03T01:22:28.673Z"),
         cardFrontImageURL: "https://picsum.photos/200",
         cardBackImages: [
           CardBackImage(
@@ -58,11 +61,12 @@ extension GroupsData {
         ]
       ),
       GroupData(
+        id: 4,
         name: "모임 이름4",
         keyword: .exercise,
         status: .beforeMyUpload,
         statusDescription: "최근 업데이트 23432일전",
-        recentEventDate: "2024-07-03T01:22:28.673Z",
+        recentEvent: .init(name: "이벤트", date: "2024-07-03T01:22:28.673Z"),
         cardFrontImageURL: "https://picsum.photos/200",
         cardBackImages: [
           CardBackImage(
@@ -72,11 +76,12 @@ extension GroupsData {
         ]
       ),
       GroupData(
+        id: 5,
         name: "모임 이름5",
         keyword: .network,
         status: .afterMyUpload,
         statusDescription: "최근 업데이트 2232일전",
-        recentEventDate: "",
+        recentEvent: .init(name: "이벤트", date: "2024-07-03T01:22:28.673Z"),
         cardFrontImageURL: "https://picsum.photos/200",
         cardBackImages: [
           CardBackImage(
@@ -86,11 +91,12 @@ extension GroupsData {
         ]
       ),
       GroupData(
+        id: 6,
         name: "모임 이름6",
         keyword: .school,
         status: .noCurrentEvent,
         statusDescription: "최근 업데이트 21일전",
-        recentEventDate: "",
+        recentEvent: .init(name: "이벤트", date: "2024-07-03T01:22:28.673Z"),
         cardFrontImageURL: "https://picsum.photos/200",
         cardBackImages: [
           CardBackImage(
@@ -112,11 +118,12 @@ extension GroupsData {
         ]
       ),
       GroupData(
+        id: 7,
         name: "모임 이름7",
         keyword: .school,
         status: .eventCompleted,
         statusDescription: "최근 업데이트 44일전",
-        recentEventDate: "",
+        recentEvent: .init(name: "이벤트", date: "2024-07-03T01:22:28.673Z"),
         cardFrontImageURL: "https://picsum.photos/200",
         cardBackImages: [
           CardBackImage(

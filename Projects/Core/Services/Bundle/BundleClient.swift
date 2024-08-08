@@ -46,6 +46,7 @@ public extension DependencyValues {
   }
 }
 
+// MARK: - BundleClientError
 public struct BundleClientError: GabbangzipError {
   public var userInfo: [String: Any]
   public var code: Code

@@ -6,6 +6,7 @@
 //  Copyright © 2024 com.mashup.gabbangzip. All rights reserved.
 //
 
+import Common
 import ComposableArchitecture
 import DesignSystem
 import Models
@@ -43,27 +44,43 @@ public struct JoinGroupCore {
     case toastPresentedChanged(Bool)
     
     // Internal Action
+    case joinGroupResponse(Result<GroupID, Error>)
     
     // Route Action
     case backToGroupList
   }
   
+  @Dependency(\.groupAPIClient) var groupAPIClient
+  
   public var body: some Reducer<State, Action> {
     Reduce { state, action in
       switch action {
       case .backButtonTapped:
-        return .none
+        return .send(.backToGroupList)
         
       case let .textChanged(text):
         state.text = text
         return .none
         
       case .nextButtonTapped:
-        return .none
+        return .run { [state] send in
+          await send(.joinGroupResponse(Result {
+            try await groupAPIClient.joinGroup(state.userInfo.accessToken, state.text)
+          }))
+        }
         
       case let .toastPresentedChanged(value):
         state.toastPresented = value
         return .none
+        
+      case .joinGroupResponse(.success):
+        return .send(.backToGroupList)
+        
+      case let .joinGroupResponse(.failure(error)):
+        return .run { send in
+          await send(.toastPresentedChanged(true))
+          logger.error(error.localizedDescription)
+        }
         
       case .backToGroupList:
         return .none
