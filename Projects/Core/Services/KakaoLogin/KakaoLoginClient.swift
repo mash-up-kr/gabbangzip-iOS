@@ -69,7 +69,7 @@ extension KakaoLoginClient: DependencyKey {
         try await withCheckedThrowingContinuation { continuation in
           UserApi.shared.loginWithKakaoAccount { oauthToken, error in
             if error != nil {
-              continuation.resume(throwing: KakaoLoginClientError(code: .failToGetOauthToken))
+              continuation.resume(throwing: KakaoLoginClientError(code: .failToGetOauthToken, underlying: error))
             } else if let oauthToken {
               continuation.resume(returning: oauthToken.idToken)
             } else {
