@@ -21,6 +21,7 @@ let project = Project.make(
       sources: ["MainCoordinator/**"],
       dependencies: [
         .project(target: .main, projectPath: .scene),
+        .project(target: .myPage, projectPath: .scene),
         .project(target: .login, projectPath: .scene),
         .target(name: .createGroupCoordinator),
         .external(externalDependency: .composableArchitecture),
