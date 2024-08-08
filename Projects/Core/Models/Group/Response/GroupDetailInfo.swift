@@ -14,7 +14,7 @@ public struct GroupDetailInfo: Decodable {
   public let keyword: GroupData.Keyword
   public let status: GroupData.Status
   public let statusDescription: String
-  public let recentEvent: RecentEvent
+  public let recentEventDetail: RecentEventDetail
   public let cardFrontImageURL: String
   public let cardBackImages: [CardBackImage]
   public let history: [History]
@@ -22,7 +22,7 @@ public struct GroupDetailInfo: Decodable {
   enum CodingKeys: String, CodingKey {
     case id, name, keyword, status
     case statusDescription = "status_description"
-    case recentEvent = "recent_event"
+    case recentEventDetail = "recent_event"
     case cardFrontImageURL = "card_front_image_url"
     case cardBackImages = "card_back_images"
     case history
@@ -34,7 +34,7 @@ public struct GroupDetailInfo: Decodable {
     keyword: .crew,
     status: .beforeMyUpload,
     statusDescription: "모든 그룹원이 사진을 올리면 투표가 시작돼요",
-    recentEvent: RecentEvent.mock,
+    recentEventDetail: .mock,
     cardFrontImageURL: "https://24ai.tech/ru/wp-content/uploads/sites/4/2023/10/01_product_1_sdelat-kvadratnym-scaled.jpg",
     cardBackImages: [],
     history: []
@@ -46,7 +46,7 @@ public struct GroupDetailInfo: Decodable {
     keyword: .crew,
     status: .beforeMyUpload,
     statusDescription: "모든 그룹원이 사진을 올리면 투표가 시작돼요",
-    recentEvent: RecentEvent.mock,
+    recentEventDetail: .mock,
     cardFrontImageURL: "https://24ai.tech/ru/wp-content/uploads/sites/4/2023/10/01_product_1_sdelat-kvadratnym-scaled.jpg",
     cardBackImages: [],
     history: History.listMomck
@@ -58,7 +58,7 @@ public struct GroupDetailInfo: Decodable {
     keyword: GroupData.Keyword,
     status: GroupData.Status,
     statusDescription: String,
-    recentEvent: RecentEvent,
+    recentEventDetail: RecentEventDetail,
     cardFrontImageURL: String,
     cardBackImages: [CardBackImage],
     history: [History]
@@ -68,7 +68,7 @@ public struct GroupDetailInfo: Decodable {
     self.keyword = keyword
     self.status = status
     self.statusDescription = statusDescription
-    self.recentEvent = recentEvent
+    self.recentEventDetail = recentEventDetail
     self.cardFrontImageURL = cardFrontImageURL
     self.cardBackImages = cardBackImages
     self.history = history
@@ -140,13 +140,13 @@ public struct History: Decodable, Identifiable, Equatable {
   ]
 }
 
-public struct RecentEvent: Codable {
+public struct RecentEventDetail: Codable {
   public let id: Int
   public let name: String
   public let date: String
   public let deadline: String
   
-  public static let mock: RecentEvent = .init(
+  public static let mock: RecentEventDetail = .init(
     id: 0,
     name: "가빵집 MT",
     date: "2024.11.03",

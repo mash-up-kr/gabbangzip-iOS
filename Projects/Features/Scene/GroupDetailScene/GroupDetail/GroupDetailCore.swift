@@ -93,7 +93,7 @@ public struct GroupDetailCore {
           return .run(
             operation: { [state] send in
               await send(.postKook(Result {
-                try await self.pushAPIClienet.postKook(accessToken: state.userInfo.accessToken, eventID: state.groupDetail.recentEvent.id)
+                try await self.pushAPIClienet.postKook(accessToken: state.userInfo.accessToken, eventID: state.groupDetail.recentEventDetail.id)
               }))
             },
             catch: { error, send in }
@@ -110,7 +110,7 @@ public struct GroupDetailCore {
           return .run(
             operation: { [state] send in
               await send(.putEventVisit(Result {
-                try await self.eventAPIClient.putEventVisit(accessToken: state.userInfo.accessToken, eventID: state.groupDetail.recentEvent.id)
+                try await self.eventAPIClient.putEventVisit(accessToken: state.userInfo.accessToken, eventID: state.groupDetail.recentEventDetail.id)
               }))
             },
             catch: { error, send in }

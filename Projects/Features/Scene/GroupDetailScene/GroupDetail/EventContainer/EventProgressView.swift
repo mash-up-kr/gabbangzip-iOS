@@ -25,7 +25,7 @@ struct EventProgressView: View {
   
   var body: some View {
     VStack(spacing: 0) {
-      Text(groupDetail.recentEvent.date)
+      Text(groupDetail.recentEventDetail.date)
         .foregroundStyle(DesignSystem.Colors.gray80)
         .font(.body16)
         .padding(.bottom, 8)
@@ -35,7 +35,7 @@ struct EventProgressView: View {
         .font(.head20)
         .padding(.bottom, 8)
       
-      Text("\(groupDetail.recentEvent.deadline) PIC 종료")
+      Text("\(groupDetail.recentEventDetail.deadline) PIC 종료")
         .font(.text14)
         .foregroundStyle(DesignSystem.Colors.gray80)
         .padding(.bottom, 16)
