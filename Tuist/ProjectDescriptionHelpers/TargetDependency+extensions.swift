@@ -43,6 +43,7 @@ public enum TargetName: String {
   case groupDetail = "GroupDetail"
   case myPage = "MyPage"
   case createGroup = "CreateGroup"
+  case lovebug = "Lovebug"
   case appCoordinator = "AppCoordinator"
   case mainCoordinator = "MainCoordinator"
   case createGroupCoordinator = "CreateGroupCoordinator"
