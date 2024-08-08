@@ -9,6 +9,7 @@
 import ComposableArchitecture
 import Models
 import Services
+import DesignSystem
 
 @Reducer
 public struct GroupListCore {
@@ -16,51 +17,56 @@ public struct GroupListCore {
   
   @ObservableState
   public struct State: Equatable {
-    var groups: [GroupData]
+    var groups: IdentifiedArrayOf<GroupCore.State>
     @Shared var userInfo: UserInfo
     @Shared var isGroupListUpdated: Bool
-    var s3BucketDomain: String
     var floatingButtonExpanded: Bool
+    var toastPresented: Bool
+    var toastType: ToastType
     
     public init(
-      groups: [GroupData] = [],
+      groups: IdentifiedArrayOf<GroupCore.State> = [],
       userInfo: @autoclosure () -> UserInfo = .defaultValue,
       isGroupListUpdated: @autoclosure () -> Bool = false,
-      s3BucketDomain: String = "",
-      floatingButtonExpanded: Bool = false
+      floatingButtonExpanded: Bool = false,
+      toastPresented: Bool = false,
+      toastType: ToastType = .onlyText("")
     ) {
       self.groups = groups
       self._userInfo = Shared(wrappedValue: userInfo(), .inMemory("userInfo"))
       self._isGroupListUpdated = Shared(wrappedValue: isGroupListUpdated(), .inMemory("isGroupListUpdated"))
-      self.s3BucketDomain = s3BucketDomain
       self.floatingButtonExpanded = floatingButtonExpanded
+      self.toastPresented = toastPresented
+      self.toastType = toastType
     }
   }
 
   public enum Action {
     // View Action
     case onAppear
-    case createEventButtonTapped
-    case picButtonTapped
-    case nudgeButtonTapped
-    case voteButtonTapped
-    case groupHeaderButtonTapped
     case joinGroupButtonTapped
     case createGroupButtonTapped
     case myPageButtonTapped
+    case toastPresentedChanged(Bool)
     
     // Internal Action
     case fetchGroups
     case getGroupsResponse(Result<GroupsData, Error>)
     case getS3BucketDomain(Result<String?, Error>)
-    case setS3BucketDomain(String)
     case floatingButtonExpandedChanged(Bool)
     case isGroupListUpdatedChanged(Bool)
+    case showToastMessage(ToastType)
+    
+    // Child Action
+    case groups(IdentifiedActionOf<GroupCore>)
     
     // Route Action
     case moveToMyPage
     case moveToCreateGroup
     case moveToJoinGroup
+    case moveToGroupDetail
+    case moveToCreateEvent
+    case moveToVote
   }
   
   @Dependency(\.groupAPIClient) var groupAPIClient
@@ -79,21 +85,6 @@ public struct GroupListCore {
           }
         ])
         
-      case .createEventButtonTapped:
-        return .none
-        
-      case .picButtonTapped:
-        return .none
-        
-      case .nudgeButtonTapped:
-        return .none
-        
-      case .voteButtonTapped:
-        return .none
-        
-      case .groupHeaderButtonTapped:
-        return .none
-        
       case .joinGroupButtonTapped:
         state.floatingButtonExpanded = false
         return .send(.moveToJoinGroup)
@@ -105,23 +96,40 @@ public struct GroupListCore {
       case .myPageButtonTapped:
         return .send(.moveToMyPage)
         
+      case let .toastPresentedChanged(value):
+        state.toastPresented = value
+        return .none
+        
       case .fetchGroups:
         state.isGroupListUpdated = false
-        return .run(
-          operation: { [state] send in
-            await send(.getGroupsResponse(Result {
-              try await self.groupAPIClient.getGroups(accessToken: state.userInfo.accessToken)
-            }))
-            await send(.getS3BucketDomain(Result {
-              try bundleClient.getValue(key: "S3BucketDomain") as? String
-            }))
-          },
-          catch: { error, send in
-          }
-        )
+        return .run { [state] send in
+          await send(.getGroupsResponse(Result {
+            try await self.groupAPIClient.getGroups(state.userInfo.accessToken)
+          }))
+          await send(.getS3BucketDomain(Result {
+            try bundleClient.getValue("S3BucketDomain") as? String
+          }))
+        }
         
       case let .getGroupsResponse(.success(groupsData)):
-        state.groups = groupsData.groups
+        state.groups = IdentifiedArray(
+          uniqueElements: groupsData.groups
+            .enumerated()
+            .map { index, group in
+              GroupCore.State(
+                userInfo: state.$userInfo,
+                id: group.id,
+                name: group.name,
+                keyword: group.keyword,
+                status: group.status,
+                statusDescription: group.statusDescription,
+                recentEvent: group.recentEvent,
+                cardFrontImageURL: group.cardFrontImageURL,
+                cardBackImages: group.cardBackImages,
+                isLast: index == groupsData.groups.count - 1
+              )
+            }
+        )
         return .none
         
       case .getGroupsResponse(.failure):
@@ -130,15 +138,13 @@ public struct GroupListCore {
         
       case let .getS3BucketDomain(.success(domain)):
         if let domain {
-          state.s3BucketDomain = domain
+          for i in 0..<state.groups.count {
+            state.groups[i].s3BucketDomain = domain
+          }
         }
         return .none
         
       case .getS3BucketDomain(.failure):
-        return .none
-        
-      case let .setS3BucketDomain(domain):
-        state.s3BucketDomain = domain
         return .none
         
       case let .floatingButtonExpandedChanged(value):
@@ -152,6 +158,35 @@ public struct GroupListCore {
           }
         }
         
+      case let .showToastMessage(toastType):
+        state.toastType = toastType
+        state.toastPresented = true
+        return .none
+        
+      case let .groups(.element(id: _, action: .delegate(delegate))):
+        return .run { send in
+          switch delegate {
+          case .headerButtonTapped:
+            await send(.moveToGroupDetail)
+          case .createEventButtonTapped:
+            await send(.moveToCreateEvent)
+          case .stabbingSuccessed:
+            await send(.showToastMessage(.textWithCheckIcon("쿡찌르기 성공!")))
+          case .stabbingFailed:
+            await send(.showToastMessage(.textWithInfoIcon("쿡찌르기 실패!")))
+          case .imageUploadSuccessed:
+            await send(.showToastMessage(.textWithCheckIcon("이미지 업로드 성공!")))
+            await send(.fetchGroups)
+          case .imageUploadFailed:
+            await send(.showToastMessage(.textWithInfoIcon("이미지 업로드 실패!")))
+          case .selectPICButtonTapped:
+            await send(.moveToVote)
+          }
+        }
+        
+      case .groups:
+        return .none
+        
       case .moveToMyPage:
         return .none
         
@@ -160,7 +195,19 @@ public struct GroupListCore {
         
       case .moveToJoinGroup:
         return .none
+        
+      case .moveToGroupDetail:
+        return .none
+        
+      case .moveToCreateEvent:
+        return .none
+        
+      case .moveToVote:
+        return .none
       }
+    }
+    .forEach(\.groups, action: \.groups) {
+      GroupCore()
     }
   }
 }
