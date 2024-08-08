@@ -93,6 +93,7 @@ public struct MyPageView: View {
       
       Spacer()
     }
+    .navigationBarHidden(true)
     .onAppear {
       store.send(.checkPushOn)
     }

@@ -30,10 +30,10 @@ public struct MainCoordinatorCore {
     Reduce { state, action in
       switch action {
       case .router(.routeAction(id: _, action: .groupList(.moveToMyPage))):
-        state.routes.presentCover(.myPage(.init()), embedInNavigationView: true)
+        state.routes.push(.myPage(.init()))
         
       case .router(.routeAction(id: _, action: .myPage(.backToHome))):
-        state.routes.dismiss()
+        state.routes.pop()
         
       case .router(.routeAction(id: _, action: .groupList(.moveToCreateGroup))):
         state.routes.presentCover(.createGroupCoordinator(.init(routes: [.root(.createGroupStart(.init()), embedInNavigationView: true)])))
