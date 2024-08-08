@@ -200,7 +200,6 @@ public struct MyPageCore {
           },
           catch: { error, send in
             await send(.logError(MyPageCoreError(code: .failToLogout)))
-            await send(.showError(true, .logout))
           }
         )
         
@@ -218,7 +217,7 @@ public struct MyPageCore {
         return .run(
           operation: { send in
             let accessToken = try await self.keyChainClient.readUserInfo().accessToken
-            _ = try await self.authAPIClient.withdrawAccount(accessToken: accessToken)
+            _ = try await self.authAPIClient.withdrawAccount(accessToken)
             try await keyChainClient.deleteUserInfo()
             await send(.backToLogin)
           },
