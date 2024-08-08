@@ -8,6 +8,7 @@
 
 import Common
 import ComposableArchitecture
+import Models
 import Services
 
 @Reducer
@@ -16,7 +17,7 @@ public struct MyPageCore {
   
   @ObservableState
   public struct State: Equatable {
-    public var nickname: String
+    @Shared public var userInfo: UserInfo
     public var currentVersion: String
     public var alarmStatus: AlarmStatus
     public var errorType: MyPageError?
@@ -89,7 +90,7 @@ public struct MyPageCore {
     }
     
     public init(
-      nickname: String = "",
+      userInfo: @autoclosure () -> UserInfo = .defaultValue,
       currentVersion: String = "",
       alarmStatus: AlarmStatus = .off,
       errorType: MyPageError? = nil,
@@ -103,7 +104,7 @@ public struct MyPageCore {
       isLoginViewPresented: Bool = false,
       isErrorPresented: Bool = false
     ) {
-      self.nickname = nickname
+      self._userInfo = Shared(wrappedValue: userInfo(), .inMemory("userInfo"))
       self.currentVersion = currentVersion
       self.alarmStatus = alarmStatus
       self.errorType = errorType
