@@ -107,7 +107,7 @@ public struct MyPageView: View {
       },
       rightButtonTitle: store.popupRightButtonTitle,
       rightButtonAction: {
-        store.send(.logout)
+        store.send(store.popupType == .logout ? .logout : .withdraw)
         store.send(.showPopup(false, store.popupType))
       }
     )
