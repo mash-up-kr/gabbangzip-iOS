@@ -17,14 +17,14 @@ public struct MyPageView: View {
   
   public init(store: StoreOf<MyPageCore>) {
     self.store = store
-  }  
+  }
   
   public var body: some View {
     VStack {
       NavigationBar(type: .titleWithBackButton(MyPageNameSpace.myPageTitle, .center))
       
       SettingTitleView(
-        text: store.nickname,
+        text: store.userInfo.nickname,
         font: .head20,
         verticalPadding: 16
       )
@@ -87,6 +87,9 @@ public struct MyPageView: View {
       )
       
       Spacer()
+    }
+    .onAppear {
+      store.send(.checkPushOn)
     }
     .onChange(of: scenePhase) { _, newScenePhase in
       if newScenePhase == .active {
@@ -182,17 +185,7 @@ extension MyPageView {
 #Preview {
   MyPageView(
     store: Store(
-      initialState: MyPageCore.State(
-        nickname: "가빵집",
-        currentVersion: "0.0.0",
-        alarmStatus: .on,
-        errorType: .setting,
-        errorMessage: "에러",
-        popupType: .logout,
-        popupTitle: "타이틀",
-        popupLeftButtonTitle: "왼쪽",
-        popupRightButtonTitle: "오른쪽"
-      ),
+      initialState: .init(),
       reducer: MyPageCore.init
     )
   )
