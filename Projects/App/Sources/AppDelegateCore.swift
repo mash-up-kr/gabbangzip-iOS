@@ -26,11 +26,9 @@ struct AppDelegateCore {
     // Firebase Setting
     case setupFirebase
     case configureFirebase
-    case configureFirebaseDelegate
     case checkRegisterToken
     case runFirebaseAutoInitialization
     case getDeviceToken(Data)
-    case messagingFCMToken(FirebaseClient.DelegateEvent)
     
     // NotificationCenter Setting
     case setupNotificationCenter
@@ -71,7 +69,6 @@ struct AppDelegateCore {
         return .run { send in
           await send(.configureFirebase)
           await send(.setupNotificationCenter)
-          await send(.configureFirebaseDelegate)
           await send(.checkRegisterToken)
           await send(.runFirebaseAutoInitialization)
         }
@@ -79,13 +76,6 @@ struct AppDelegateCore {
       case .configureFirebase:
         return .run { send in
           await firebaseClient.configure()
-        }
-        
-      case .configureFirebaseDelegate:
-        return .run { send in
-          for await event in await self.firebaseClient.delegate() {
-            await send(.messagingFCMToken(event))
-          }
         }
         
       case .checkRegisterToken:
@@ -104,17 +94,6 @@ struct AppDelegateCore {
       case let .getDeviceToken(deviceToken):
         return .run { send in
           await firebaseClient.getDeviceToken(deviceToken)
-        }
-        
-      case let .messagingFCMToken(.messaging(_, fcmToken: fcmToken)):
-        return .run { send in
-          let dataDict: [String: String] = ["token": fcmToken ?? ""]
-          
-          NotificationCenter.default.post(
-            name: Notification.Name("FCMToken"),
-            object: nil,
-            userInfo: dataDict
-          )
         }
         
       case .setupNotificationCenter:
