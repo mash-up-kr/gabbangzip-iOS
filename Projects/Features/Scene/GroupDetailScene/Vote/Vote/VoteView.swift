@@ -63,8 +63,8 @@ public struct VoteView: View {
             store.send(.guideViewSwiped)
           }
         )
-        .animation(.easeIn)
-        .transition(.opacity.animation(.easeIn))
+        .transition(.opacity.animation(.easeInOut))
+        .animation(.easeInOut, value: store.guideTypes)
       }
     }
     .onAppear {
