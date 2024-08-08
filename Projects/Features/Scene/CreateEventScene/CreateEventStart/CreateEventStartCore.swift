@@ -17,7 +17,7 @@ public struct CreateEventStartCore {
     public var groupName: String
     
     public init(
-      groupName: String = ""
+      groupName: String
     ) {
       self.groupName = groupName
     }
@@ -26,11 +26,10 @@ public struct CreateEventStartCore {
   public enum Action {
     // View Action
     case onAppear
-    case backBarButtonTapped
     case createEventButtonTapped
     
     // Route Action
-    case moveToGroupList
+    case moveToGroupDetail
     case moveToGroupMemberList
     case moveToCreateEventProcess
   }
@@ -41,13 +40,10 @@ public struct CreateEventStartCore {
       case .onAppear:
         return .none
         
-      case .backBarButtonTapped:
-        return .send(.moveToGroupList)
-        
       case .createEventButtonTapped:
         return .send(.moveToCreateEventProcess)
         
-      case .moveToGroupList:
+      case .moveToGroupDetail:
         return .none
         
       case .moveToGroupMemberList:
