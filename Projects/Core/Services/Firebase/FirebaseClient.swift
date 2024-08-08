@@ -12,17 +12,9 @@ import Firebase
 @DependencyClient
 public struct FirebaseClient: Sendable {
   public var configure: @Sendable () async -> Void
-  public var delegate: @Sendable () async -> AsyncStream<DelegateEvent> = { .finished }
   public var runAutoInitialization: @Sendable () async -> Void
   public var getDeviceToken: @Sendable (Data) async -> Void
   public var checkRegistrationToken: @Sendable () async throws -> String
-  
-  public enum DelegateEvent {
-    case messaging(
-      _ messaging: Messaging,
-      fcmToken: String?
-    )
-  }
 }
 
 extension FirebaseClient: DependencyKey {
@@ -30,15 +22,6 @@ extension FirebaseClient: DependencyKey {
     return FirebaseClient(
       configure: { @MainActor in
         FirebaseApp.configure()
-      },
-      delegate: { @MainActor in
-        AsyncStream { continuation in
-          let delegate = MessageDelegate(continuation: continuation)
-          Messaging.messaging().delegate = delegate
-          continuation.onTermination = { _ in
-            _ = delegate
-          }
-        }
       },
       runAutoInitialization: {
         Messaging.messaging().isAutoInitEnabled = true
@@ -64,27 +47,6 @@ extension FirebaseClient: DependencyKey {
   
   public static var testValue: FirebaseClient {
     return FirebaseClient()
-  }
-}
-
-extension FirebaseClient {
-  final class MessageDelegate: NSObject, MessagingDelegate, Sendable {
-    let continuation: AsyncStream<DelegateEvent>.Continuation
-    
-    init(continuation: AsyncStream<DelegateEvent>.Continuation) {
-      self.continuation = continuation
-    }
-    
-    deinit {
-      continuation.finish()
-    }
-    
-    func messaging(
-      _ messaging: Messaging,
-      didReceiveRegistrationToken fcmToken: String?
-    ) {
-      continuation.yield(.messaging(messaging, fcmToken: fcmToken))
-    }
   }
 }
 
