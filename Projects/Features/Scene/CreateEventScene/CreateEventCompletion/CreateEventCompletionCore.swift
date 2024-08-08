@@ -1,5 +1,5 @@
 //
-//  CreateEventStartCore.swift
+//  CreateEventCompletionCore.swift
 //  CreateEvent
 //
 //  Created by Hyun A Song on 8/8/24.

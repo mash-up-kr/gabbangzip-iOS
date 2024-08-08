@@ -8,14 +8,8 @@
 
 import ComposableArchitecture
 import CreateEvent
-import GroupDetail
-import Main
 import TCACoordinators
 
 @Reducer(state: .equatable)
 public enum CreateEventScreen {
-  case createEventStart(CreateEventStartCore)
-  case moveToGroupList(GroupListCore)
-  case moveToGroupMemberList(MemberListCore)
-  case moveToCreateEventProcess(CreateEventProcessCore)
 }

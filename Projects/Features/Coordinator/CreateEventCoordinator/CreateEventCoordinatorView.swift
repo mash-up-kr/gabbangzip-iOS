@@ -8,15 +8,13 @@
 
 import ComposableArchitecture
 import CreateEvent
-import GroupDetail
-import Main
 import SwiftUI
 import TCACoordinators
 
 public struct CreateEventCoordinatorView: View {
-  let store: StoreOf<CreateEventCoordinatorCore>
+  let store: StoreOf<CreateEventCoordinatorView>
   
-  public init(store: StoreOf<CreateEventCoordinatorCore>) {
+  public init(store: StoreOf<CreateEventCoordinatorView>) {
     self.store = store
   }
   
@@ -24,14 +22,8 @@ public struct CreateEventCoordinatorView: View {
     TCARouter(store.scope(state: \.routes, action: \.router)) { screen in
       Group {
         switch screen.case {
-        case let .createEventStart(store):
-          CreateEventStartView(store: store)
-        case let .moveToGroupList(store):
-          GroupListView(store: store)
-        case let .moveToGroupMemberList(store):
-          MemberListView(store: store)
-        case let .moveToCreateEventProcess(store):
-          CreateEventProcessView(store: store)
+        default:
+          EmptyView()
         }
       }
       .toolbar(.hidden)
