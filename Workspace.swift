@@ -68,6 +68,18 @@ let workspace = Workspace(
       profileAction: .profileAction(configuration: .debug),
       analyzeAction: .analyzeAction(configuration: .debug)
     ),
+    .scheme(
+      name: "CreateEventScene",
+      buildAction: .buildAction(targets: [
+        .project(path: "./Projects/Features/Scene", target: "CreateEvent")
+      ]),
+      runAction: .runAction(
+        configuration: .debug
+      ),
+      archiveAction: .archiveAction(configuration: .debug),
+      profileAction: .profileAction(configuration: .debug),
+      analyzeAction: .analyzeAction(configuration: .debug)
+    ),
 	.scheme(
       name: "GroupDetailScene",
       buildAction: .buildAction(targets: [
