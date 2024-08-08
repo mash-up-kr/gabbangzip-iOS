@@ -200,7 +200,7 @@ public struct MyPageCore {
           },
           catch: { error, send in
             await send(.logError(MyPageCoreError(code: .failToWithdraw)))
-            await send(.showError(true, .withdraw))
+            await send(.showError(true, .logout))
           }
         )
         
