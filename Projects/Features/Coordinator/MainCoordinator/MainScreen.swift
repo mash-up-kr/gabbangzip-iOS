@@ -7,6 +7,7 @@
 //
 
 import ComposableArchitecture
+import CreateEventCoordinator
 import CreateGroupCoordinator
 import GroupDetailCoordinator
 import Main
