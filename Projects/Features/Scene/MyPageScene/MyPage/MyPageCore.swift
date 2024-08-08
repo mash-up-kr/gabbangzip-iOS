@@ -199,7 +199,7 @@ public struct MyPageCore {
             await send(.backToLogin)
           },
           catch: { error, send in
-            await send(.logError(MyPageCoreError(code: .failToWithdraw)))
+            await send(.logError(MyPageCoreError(code: .failToLogout)))
             await send(.showError(true, .logout))
           }
         )
@@ -253,10 +253,6 @@ public struct MyPageCoreError: GabbangzipError {
     case alarmStatusError
     case failToGetOpenUrl
     case failToLogout
-    case failToGetAccessToken
-    case failToGetDeleteUserInfo
-    case failToDeleteUser
-    case failToDeleteUserInfo
     case failToWithdraw
   }
 }
