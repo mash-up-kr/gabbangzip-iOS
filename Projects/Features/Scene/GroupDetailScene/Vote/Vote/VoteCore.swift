@@ -129,21 +129,15 @@ public struct VoteCore {
       case .passButtonTapped:
         return .run { send in
           await send(.swipeCard(.left))
-          
-          Task {
-            try await mainQueue.sleep(for: .seconds(1.0))
-            await send(.resetButtonState)
-          }
+          try await mainQueue.sleep(for: .seconds(1.0))
+          await send(.resetButtonState)
         }
         
       case .voteButtonTapped:
         return .run { send in
           await send(.swipeCard(.right))
-          
-          Task {
-            try await mainQueue.sleep(for: .seconds(1.0))
-            await send(.resetButtonState)
-          }
+          try await mainQueue.sleep(for: .seconds(1.0))
+          await send(.resetButtonState)
         }
         
       case let .cardSwiped(index, direction):
