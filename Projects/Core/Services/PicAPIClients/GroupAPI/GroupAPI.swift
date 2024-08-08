@@ -12,6 +12,7 @@ import Get
 public enum GroupAPI {
   case getGroups(accessToken: String)
   case joinGroup(accessToken: String, code: String)
+  case getMemberList(accessToken: String, groupID: Int)
 }
 
 extension GroupAPI: RouteType {
@@ -21,12 +22,14 @@ extension GroupAPI: RouteType {
       return "/api/v1/groups"
     case .joinGroup:
       return "/api/v1/groups/join"
+    case let .getMemberList(_, groupID):
+      return "/api/v1/groups/\(groupID)/members"
     }
   }
   
   public var method: HTTPMethod {
     switch self {
-    case .getGroups:
+    case .getGroups, .getMemberList:
       return .get
     case .joinGroup:
       return .post
@@ -35,16 +38,14 @@ extension GroupAPI: RouteType {
   
   public var query: [(String, String?)]? {
     switch self {
-    case .getGroups:
+    case .getGroups, .joinGroup, .getMemberList:
       return nil
-    case .joinGroup:
-      return .none
     }
   }
   
   public var body: Encodable? {
     switch self {
-    case .getGroups:
+    case .getGroups, .getMemberList:
       return nil
     case let .joinGroup(_, code):
       return ["code": code]
@@ -53,7 +54,7 @@ extension GroupAPI: RouteType {
   
   public var headers: [String: String]? {
     switch self {
-    case let .getGroups(accessToken), let .joinGroup(accessToken, _):
+    case let .getGroups(accessToken), let .joinGroup(accessToken, _), let .getMemberList(accessToken, _):
       return ["Authorization": "Bearer \(accessToken)"]
     }
   }

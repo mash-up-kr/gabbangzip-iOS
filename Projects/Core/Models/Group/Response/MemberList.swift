@@ -16,6 +16,11 @@ public struct MemberList: Decodable {
         case members
         case invitationCode = "invitation_code"
     }
+  
+  public static var mock: MemberList = .init(
+    members: Member.mockList,
+    invitationCode: "TESTCODE"
+  )
 }
 
 // MARK: - Member
