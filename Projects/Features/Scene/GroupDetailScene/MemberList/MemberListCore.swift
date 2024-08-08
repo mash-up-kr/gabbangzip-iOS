@@ -17,6 +17,12 @@ public struct MemberListCore {
     var groupID: Int
     var memberList: MemberList
     var groupKeyword: GroupData.Keyword
+    var isFullCapacity: Bool {
+      memberList.members.count == 4
+    }
+    var inviteMemberMessage: String {
+      isFullCapacity ? "그룹 최대 인원은 6명이에요." : "그룹원을 추가하고 싶으세요?"
+    }
     @Shared var userInfo: UserInfo
     
     public init(

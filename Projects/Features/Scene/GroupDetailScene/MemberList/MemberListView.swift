@@ -36,13 +36,13 @@ struct MemberListView: View {
       }
 
       VStack(spacing: 0) {
-        Text("그룹원을 추가하고 싶으세요?")
+        Text(store.inviteMemberMessage)
           .font(.body14)
           .foregroundStyle(DesignSystem.Colors.gray60)
           .padding(.bottom, 12)
         
         SmallButton(
-          type: .active,
+          type: store.isFullCapacity ? .inactive : .active,
           smallButtonContentType: .copyCode
         ) {
           store.send(.copyLinkButtonTapped)
