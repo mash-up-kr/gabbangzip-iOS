@@ -7,6 +7,7 @@
 //
 
 import ComposableArchitecture
+import CreateEventCoordinator
 import CreateGroupCoordinator
 import Main
 import MyPageCoordinator
@@ -15,6 +16,7 @@ import TCACoordinators
 @Reducer(state: .equatable)
 public enum MainScreen {
   case createGroupCoordinator(CreateGroupCoordinatorCore)
+  case createEventCoordinator(CreateEventCoordinatorCore)
   case myPageCoordinator(MyPageCoordinatorCore)
   case groupList(GroupListCore)
   case joinGroup(JoinGroupCore)

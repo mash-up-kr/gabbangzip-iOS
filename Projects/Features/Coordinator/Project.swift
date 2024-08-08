@@ -46,7 +46,7 @@ let project = Project.make(
       bundleId: "com.mashup.gabbangzip.createEventCoordinator",
       sources: ["CreateEventCoordinator/**"],
       dependencies: [
-        .project(target: .creatEvent, projectPath: .scene),
+        .project(target: .createEvent, projectPath: .scene),
         .external(externalDependency: .composableArchitecture),
         .external(externalDependency: .tcaCoordinators),
       ]
