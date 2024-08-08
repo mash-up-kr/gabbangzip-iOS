@@ -6,11 +6,12 @@
 //  Copyright © 2024 com.mashup.gabbangzip. All rights reserved.
 //
 
+import DesignSystem
 import Models
 import SwiftUI
 
-extension GroupData.Keyword {
-  public var categoryType: CategoryType {
+public extension GroupData.Keyword {
+  var categoryType: CategoryType {
     switch self {
     case .school:
       return .school
@@ -29,7 +30,7 @@ extension GroupData.Keyword {
     }
   }
   
-  public var tagType: TagType {
+  var tagType: TagType {
     switch self {
     case .school:
       return .category(.school)
@@ -48,7 +49,7 @@ extension GroupData.Keyword {
     }
   }
   
-  public var frame: Image {
+  var frame: Image {
     switch self {
     case .school:
       return DesignSystem.Icons.snowmanFrame
@@ -67,7 +68,7 @@ extension GroupData.Keyword {
     }
   }
   
-  public var backgroundColor: Color {
+  var backgroundColor: Color {
     switch self {
     case .school:
       return DesignSystem.Colors.conifer20
@@ -86,7 +87,7 @@ extension GroupData.Keyword {
     }
   }
   
-  public var foregroundColor: Color {
+  var foregroundColor: Color {
     switch self {
     case .school:
       return DesignSystem.Colors.conifer30
@@ -105,7 +106,7 @@ extension GroupData.Keyword {
     }
   }
   
-  public func convertToPhotoCardStatus<T: View>() -> PhotoCard<T>.Status {
+  func convertToPhotoCardStatus<T: View>() -> PhotoCard<T>.Status {
     switch self {
     case .school:
       return .school
