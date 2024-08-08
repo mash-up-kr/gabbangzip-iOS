@@ -52,6 +52,7 @@ struct MemberListView: View {
       
       Spacer()
     }
+    .onAppear { store.send(.onAppear) }
   }
 }
 
@@ -59,6 +60,7 @@ struct MemberListView: View {
   MemberListView(
     store: Store(
       initialState: .init(
+        groupID: 0,
         memberList: .mock,
         groupKeyword: .company
       ),

@@ -14,21 +14,34 @@ import Services
 public struct MemberListCore {
   @ObservableState
   public struct State: Equatable {
+    var groupID: Int
     var memberList: MemberList
     var groupKeyword: GroupData.Keyword
+    @Shared var userInfo: UserInfo
     
     public init(
+      groupID: Int,
       memberList: MemberList,
-      groupKeyword: GroupData.Keyword
+      groupKeyword: GroupData.Keyword,
+      userInfo: @autoclosure () -> UserInfo = .defaultValue
     ) {
+      self.groupID = groupID
       self.memberList = memberList
       self.groupKeyword = groupKeyword
+      self._userInfo = Shared(wrappedValue: userInfo(), .inMemory("userInfo"))
     }
   }
+  
+  @Dependency(\.groupAPIClient) var groupAPIClient
 
   public enum Action {
+    // View Action
+    case onAppear
     case copyLinkButtonTapped
     case backButtonTapped
+    
+    // Internal Action
+    case getMemberList(Result<MemberList, Error>)
   }
   
   @Dependency(\.uiPasteBoardClient) var uiPasteBoardClient
@@ -36,12 +49,29 @@ public struct MemberListCore {
   public var body: some Reducer<State, Action> {
     Reduce { state, action in
       switch action {
+      case .onAppear:
+        return .run(
+          operation: { [state] send in
+            await send(.getMemberList(Result {
+              try await self.groupAPIClient.getMemberList(accessToken: state.userInfo.accessToken, groupID: state.groupID)
+            }))
+          }, catch: { error, send in }
+        )
+        
       case .copyLinkButtonTapped:
         return .run { [state] send in
           uiPasteBoardClient.copyTextToClipboard(state.memberList.invitationCode)
         }
         
       case .backButtonTapped:
+        
+      case let .getMemberList(.success(memberList)):
+        state.memberList = memberList
+        return .none
+        
+      case .getMemberList(.failure):
+        return .none
+        
         return .none
       }
     }
