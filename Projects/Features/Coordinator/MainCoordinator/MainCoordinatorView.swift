@@ -9,7 +9,7 @@
 import ComposableArchitecture
 import CreateGroupCoordinator
 import Main
-import MyPageCoordinator
+import MyPage
 import SwiftUI
 import TCACoordinators
 
@@ -25,8 +25,8 @@ public struct MainCoordinatorView: View {
       switch screen.case {
       case let .createGroupCoordinator(store):
         CreateGroupCoordinatorView(store: store)
-      case let .myPageCoordinator(store):
-        MyPageCoordinatorView(store: store)
+      case let .myPage(store):
+        MyPageView(store: store)
       case let .groupList(store):
         GroupListView(store: store)
       case let .joinGroup(store):

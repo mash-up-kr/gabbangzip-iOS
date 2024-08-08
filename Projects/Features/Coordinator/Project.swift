@@ -23,7 +23,6 @@ let project = Project.make(
         .project(target: .main, projectPath: .scene),
         .project(target: .login, projectPath: .scene),
         .target(name: .createGroupCoordinator),
-        .target(name: .myPageCoordinator),
         .external(externalDependency: .composableArchitecture),
         .external(externalDependency: .tcaCoordinators),
       ]
@@ -37,17 +36,6 @@ let project = Project.make(
         .project(target: .createGroup, projectPath: .scene),
         .external(externalDependency: .composableArchitecture),
         .external(externalDependency: .tcaCoordinators),
-      ]
-    ),
-    .make(
-      name: "MyPageCoordinator",
-      product: .staticLibrary,
-      bundleId: "com.mashup.gabbangzip.myPageCoordinator",
-      sources: ["MyPageCoordinator/**"],
-      dependencies: [
-        .project(target: .myPage, projectPath: .scene),
-        .external(externalDependency: .composableArchitecture),
-        .external(externalDependency: .tcaCoordinators)
       ]
     )
   ]

@@ -67,7 +67,7 @@ public struct RootCore {
       case .binding:
         return .none
         
-      case .destination(.presented(.mainCoordinator(.router(.routeAction(id: _, action: .myPageCoordinator(.router(.routeAction(id: _, action: .myPage(.backToLogin))))))))):
+      case .destination(.presented(.mainCoordinator(.router(.routeAction(id: _, action: .myPage(.backToLogin)))))):
         state.destination = .login(LoginCore.State())
         return .none
         
