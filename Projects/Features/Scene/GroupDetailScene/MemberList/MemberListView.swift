@@ -28,10 +28,10 @@ struct MemberListView: View {
       )
       .padding(.bottom, 8)
       
-      ForEach(store.memberList, id: \.self) { member in
+      ForEach(store.memberList.members, id: \.self) { member in
         MemberView(
           member: member,
-          groupCategory: store.groupCategory
+          groupKeyword: store.groupKeyword
         )
       }
 
@@ -59,9 +59,8 @@ struct MemberListView: View {
   MemberListView(
     store: Store(
       initialState: .init(
-        memberList: Member.mockList,
-        inviteLink: "링크",
-        groupCategory: .club
+        memberList: .mock,
+        groupKeyword: .company
       ),
       reducer: MemberListCore.init
     )

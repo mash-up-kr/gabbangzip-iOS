@@ -9,24 +9,20 @@
 import ComposableArchitecture
 import Models
 import Services
-import UIKit
 
 @Reducer
 public struct MemberListCore {
   @ObservableState
   public struct State: Equatable {
     var memberList: MemberList
-    var inviteLink: String
-    var groupCategory: GroupCategory
+    var groupKeyword: GroupData.Keyword
     
     public init(
       memberList: MemberList,
-      inviteLink: String,
-      groupCategory: GroupCategory
+      groupKeyword: GroupData.Keyword
     ) {
       self.memberList = memberList
-      self.inviteLink = inviteLink
-      self.groupCategory = groupCategory
+      self.groupKeyword = groupKeyword
     }
   }
 
@@ -42,8 +38,9 @@ public struct MemberListCore {
       switch action {
       case .copyLinkButtonTapped:
         return .run { [state] send in
-          uiPasteBoardClient.copyTextToClipboard(state.inviteLink)
+          uiPasteBoardClient.copyTextToClipboard(state.memberList.invitationCode)
         }
+        
       case .backButtonTapped:
         return .none
       }
