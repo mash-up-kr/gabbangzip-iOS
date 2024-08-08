@@ -21,7 +21,7 @@ struct EventControlButton: View {
   var body: some View {
     if let smallButtonContentType = buttonType {
       SmallButton(
-        type: .constant(.active),
+        type: .active,
         smallButtonContentType: smallButtonContentType
       ) {
         action()

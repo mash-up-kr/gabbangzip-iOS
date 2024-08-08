@@ -1,0 +1,28 @@
+//
+//  VoteCompleteInfo.swift
+//  Models
+//
+//  Created by hyerin on 8/3/24.
+//  Copyright © 2024 com.mashup.gabbangzip. All rights reserved.
+//
+
+import Foundation
+
+// TODO: 실제 API 수정 후 반영 필요
+public struct VoteCompleteInfo: Decodable, Equatable {
+  public var eventID: Int
+  public var keyword: GroupData.Keyword
+  public var imageURL: String
+  
+  enum CodingKeys: String, CodingKey {
+    case eventID = "event_id"
+    case keyword
+    case imageURL = "image_url"
+  }
+  
+  public static let mock: VoteCompleteInfo = .init(
+    eventID: 0,
+    keyword: .hobby,
+    imageURL: "pic/9c8f3f24-6ed2-4a2e-8af5-52aeff93b230.jpeg"
+  )
+}
