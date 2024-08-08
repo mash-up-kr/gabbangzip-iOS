@@ -1,5 +1,5 @@
 //
-//  CreateEventStartView.swift
+//  CreateEventCompletionView.swift
 //  CreateEvent
 //
 //  Created by Hyun A Song on 8/8/24.
