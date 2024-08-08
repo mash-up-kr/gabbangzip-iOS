@@ -9,6 +9,7 @@
 import Common
 import ComposableArchitecture
 import DesignSystem
+import Models
 import SwiftUI
 
 public struct VoteView: View {
@@ -20,9 +21,7 @@ public struct VoteView: View {
   
   public var body: some View {
     ZStack {
-      DesignSystem.Images.gradientBackground
-      
-      VStack {
+      VStack(spacing: 0) {
         HStack {
           Spacer()
           
@@ -36,27 +35,42 @@ public struct VoteView: View {
           .padding(.trailing, 16)
           .padding(.top, 27)
         }
+
+        TitleView(name: store.userInfo.nickname)
         
         Spacer()
-      }
-
-      VStack(spacing: 0) {
-        
-        TitleView(name: store.name)
         
         VoteSwipeView(
-          imageURLs: store.imageURLs,
-          imageCount: store.imageCount,
+          voteOptions: store.voteOptions,
+          voteOptionCount: store.imageCount,
           swipeDirection: store.swipeDirection,
           swipeAction: { index, swipeDirection in
             store.send(.cardSwiped(index, swipeDirection))
           }
         )
-        .padding(.bottom, 68)
+        
+        Spacer()
         
         VoteButtonView(store: store)
+        
+        Spacer()
+      }
+      
+      if store.isNeedGuideView && !store.guideTypes.isEmpty {
+        VoteGuideView(
+          guideTypes: store.guideTypes,
+          swipeAction: {
+            store.send(.guideViewSwiped)
+          }
+        )
+        .transition(.opacity.animation(.easeInOut))
+        .animation(.easeInOut, value: store.guideTypes)
       }
     }
+    .onAppear {
+      store.send(.onAppear)
+    }
+    .background(DesignSystem.Images.gradientBackground)
     .popup(
       isPresented: $store.isPopupPresented,
       title: store.popupType.title,
@@ -69,6 +83,11 @@ public struct VoteView: View {
       rightButtonAction: {
         store.send(.popupRightButtonTapped)
       }
+    )
+    .toast(
+      isPresented: $store.isToastPresented.sending(\.setToastPresented),
+      type: .onlyText(store.toastType.message),
+      time: 1.0
     )
   }
 }
@@ -84,7 +103,6 @@ private struct TitleView: View {
         .font(.head18)
         .foregroundStyle(DesignSystem.Colors.gray80)
     }
-    .padding(.bottom, 46)
   }
 }
 
@@ -118,18 +136,23 @@ private struct VoteButtonView: View {
   VoteView(
     store: Store(
       initialState: .init(
-        name: "혜린",
         voteButtonState: VoteButtonState.defaultState,
         passsButtonState: VoteButtonState.defaultState,
-        imageURLs: [
-          URL(string: "https://t1.daumcdn.net/cafeattach/1YVY7/391cac378245e0d2c7bba59d6efc7692baf88aa6"),
-          URL(string: "https://i.namu.wiki/i/hq6niPhkN8EhXuIkCNx32AN614AxXcaxKQ1EnyFaHN41caJM7rPfkfppaGZNlpgmXWPbkD_MGTbmGE4_BOrIBg.webp")
+        eventID: 0,
+        voteOptions: [
+          VoteOptionInfo(optionID: 0, imageURL: "https://t1.daumcdn.net/cafeattach/1YVY7/391cac378245e0d2c7bba59d6efc7692baf88aa6"),
+          VoteOptionInfo(optionID: 1, imageURL: "https://i.namu.wiki/i/hq6niPhkN8EhXuIkCNx32AN614AxXcaxKQ1EnyFaHN41caJM7rPfkfppaGZNlpgmXWPbkD_MGTbmGE4_BOrIBg.webp")
         ],
-        pickedImageIndex: [],
+        pickedImageIDs: [],
         swipeDirection: SwipeDirection.defaultState,
         isPopupPresented: false,
+        isToastPresented: false,
         popupType: .close,
-        isVoteButtonDisabled: false
+        toastType: .error,
+        isFirstVoteDone: false,
+        isNeedGuideView: true,
+        isVoteButtonDisabled: false,
+        guideTypes: [GuideType.vote, GuideType.pass]
       ),
       reducer: VoteCore.init
     )

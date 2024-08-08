@@ -24,7 +24,7 @@ public struct UserDefaultsClient: Sendable {
 
 extension UserDefaultsClient: DependencyKey {
   static func getValue<T>(_ type: T.Type, forKey key: Key) throws -> T {
-    guard let value = UserDefaults.standard.object(forKey: key.type) else {
+    guard let value = UserDefaults.standard.object(forKey: key.rawValue) else {
       throw UserDefaultsClientError(code: .keyNotFound)
     }
     guard let typeCastedValue = value as? T else {
@@ -54,16 +54,16 @@ extension UserDefaultsClient: DependencyKey {
         return try getValue(Data.self, forKey: key)
       },
       object: { key in
-        guard let object = UserDefaults.standard.object(forKey: key.type) else {
+        guard let object = UserDefaults.standard.object(forKey: key.rawValue) else {
           throw UserDefaultsClientError(code: .keyNotFound)
         }
         return object
       },
       set: { key, value in
-        UserDefaults.standard.set(value, forKey: key.type)
+        UserDefaults.standard.set(value, forKey: key.rawValue)
       },
       removeObject: { key in
-        UserDefaults.standard.removeObject(forKey: key.type)
+        UserDefaults.standard.removeObject(forKey: key.rawValue)
       }
     )
   }
@@ -82,15 +82,9 @@ public extension DependencyValues {
 
 // MARK: - Keys NameSpace
 extension UserDefaultsClient {
-  public enum Key {
+  public enum Key: String {
     case nickname
-    
-    var type: String {
-      switch self {
-      case .nickname:
-        return "nickname"
-      }
-    }
+    case isFirstVoteDone
   }
 }
 
