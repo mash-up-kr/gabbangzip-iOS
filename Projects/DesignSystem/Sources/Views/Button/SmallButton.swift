@@ -65,7 +65,7 @@ private struct SmallButtonWithIconView: View {
   
   fileprivate var body: some View {
     HStack(spacing: 10) {
-      if smallButtonContentType == .copyLink {
+      if smallButtonContentType == .copyCode {
         smallButtonContentType.icon?
           .renderingMode(.template)
           .resizable()
@@ -149,8 +149,8 @@ public enum SmallButtonContentType {
   case gallery
   // 사진 삭제
   case deletePicture
-  // 링크 복사
-  case copyLink
+  // 코드 복사
+  case copyCode
   // 프레임 바꾸기
   case changeFrame
   // 쿡 찌르기
@@ -163,7 +163,7 @@ public enum SmallButtonContentType {
   // 아이콘 포함 여부
   var withIcon: Bool {
     switch self {
-    case .changePicture, .uploadPIC, .gallery, .copyLink, .stabbing, .vote:
+    case .changePicture, .uploadPIC, .gallery, .copyCode, .stabbing, .vote:
       return true
     default:
       return false
@@ -181,8 +181,8 @@ public enum SmallButtonContentType {
       "갤러리"
     case .deletePicture:
       "사진 삭제"
-    case .copyLink:
-      "링크 복사"
+    case .copyCode:
+      "코드 복사"
     case .changeFrame:
       "프레임 바꾸기"
     case .stabbing:
@@ -199,7 +199,7 @@ public enum SmallButtonContentType {
     switch self {
     case .changePicture, .uploadPIC, .gallery:
       return DesignSystem.Icons.galleryWhite
-    case .copyLink:
+    case .copyCode:
       return DesignSystem.Icons.copy
     case .stabbing:
       return DesignSystem.Icons.noticeWhite
@@ -218,8 +218,8 @@ public enum SmallButtonContentType {
     SmallButton(smallButtonContentType: .gallery)
     SmallButton(smallButtonContentType: .deletePicture)
     SmallButton(type: .inactive, smallButtonContentType: .deletePicture)
-    SmallButton(smallButtonContentType: .copyLink)
-    SmallButton(type: .secondary, smallButtonContentType: .copyLink)
+    SmallButton(smallButtonContentType: .copyCode)
+    SmallButton(type: .secondary, smallButtonContentType: .copyCode)
     SmallButton(smallButtonContentType: .changeFrame)
     SmallButton(smallButtonContentType: .stabbing)
     SmallButton(smallButtonContentType: .generateEvent)

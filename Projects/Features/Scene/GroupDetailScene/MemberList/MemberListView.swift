@@ -43,7 +43,7 @@ struct MemberListView: View {
         
         SmallButton(
           type: .active,
-          smallButtonContentType: .copyLink
+          smallButtonContentType: .copyCode
         ) {
           store.send(.copyLinkButtonTapped)
         }
