@@ -21,6 +21,8 @@ public struct CreateEventProcessCore {
   public struct State: Equatable {
     public var text: String
     public var isExiting: Bool
+    public var isEventNamed: Bool
+    public var isPhotoSelected: Bool
     public var completeButtonType: ButtonType
     public var currentDate: String
     public var selectedPhotosInfo: [PhotoInfo]
@@ -28,12 +30,16 @@ public struct CreateEventProcessCore {
     public init(
       text: String = "",
       isExiting: Bool = false,
+      isEventNamed: Bool = false,
+      isPhotoSelected: Bool = false,
       completeButtonType: ButtonType = .inactive,
       currentDate: String = "YY/MM/DD",
       selectedPhotosInfo: [PhotoInfo] = []
     ) {
       self.text = text
       self.isExiting = isExiting
+      self.isEventNamed = isEventNamed
+      self.isPhotoSelected = isPhotoSelected
       self.completeButtonType = completeButtonType
       self.currentDate = currentDate
       self.selectedPhotosInfo = selectedPhotosInfo
@@ -54,7 +60,9 @@ public struct CreateEventProcessCore {
     case onAppear
     
     // Internal Action
-    case setCompleteButtonType(ButtonType)
+    case changeIsEventNamedStatus(Bool)
+    case changeIsPhotoSelected
+    case checkCompleteButtonType
     
     // Route Action
   }
@@ -73,18 +81,17 @@ public struct CreateEventProcessCore {
         
         return .run { [state] send in
           if state.text.isEmpty {
-            await send(.setCompleteButtonType(.inactive))
+            await send(.changeIsEventNamedStatus(false))
           } else {
-            await send(.setCompleteButtonType(.active))
+            await send(.changeIsEventNamedStatus(true))
           }
         }
         
       case let .selectedImagesChanged(imagesData):
         state.selectedPhotosInfo = imagesData
-        if !imagesData.isEmpty {
-          state.completeButtonType = .active
+        return .run { send in
+          await send(.changeIsPhotoSelected)
         }
-        return .none
         
       case .backButtonTapped:
         return .none
@@ -100,7 +107,9 @@ public struct CreateEventProcessCore {
         
       case let .deleteSelectedPhoto(index):
         state.selectedPhotosInfo.remove(at: index)
-        return .none
+        return .run { send in
+          await send(.changeIsPhotoSelected)
+        }
         
       case .onAppear:
         let currentDate = {
@@ -111,8 +120,28 @@ public struct CreateEventProcessCore {
         state.currentDate = currentDate
         return .none
         
-      case let .setCompleteButtonType(buttonType):
-        state.completeButtonType = buttonType
+      case let .changeIsEventNamedStatus(status):
+        state.isEventNamed = status
+        return .run { send in
+          await send(.checkCompleteButtonType)
+        }
+        
+      case .changeIsPhotoSelected:
+        if state.selectedPhotosInfo.count == 4 {
+          state.isPhotoSelected = true
+        } else {
+          state.isPhotoSelected = false
+        }
+        return .run { send in
+          await send(.checkCompleteButtonType)
+        }
+        
+      case .checkCompleteButtonType:
+        if state.isEventNamed && state.isPhotoSelected {
+          state.completeButtonType = .active
+        } else {
+          state.completeButtonType = .inactive
+        }
         return .none
       }
     }
