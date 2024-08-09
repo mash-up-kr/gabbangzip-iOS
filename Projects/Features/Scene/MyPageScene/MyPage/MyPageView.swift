@@ -95,11 +95,11 @@ public struct MyPageView: View {
     }
     .navigationBarHidden(true)
     .onAppear {
-      store.send(.checkPushOn)
+      store.send(.onAppear)
     }
     .onChange(of: scenePhase) { _, newScenePhase in
       if newScenePhase == .active {
-        store.send(.checkPushOn)
+        store.send(.onAppear)
       }
     }
     .toast(
