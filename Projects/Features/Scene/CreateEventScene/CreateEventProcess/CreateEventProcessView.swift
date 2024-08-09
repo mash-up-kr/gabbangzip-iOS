@@ -35,7 +35,6 @@ public struct CreateEventProcessView: View {
             
             Spacer()
           }
-          .padding(.top, 16)
           
           GabbangzipInput(
             text: $store.text.sending(\.textChanged),
@@ -64,77 +63,32 @@ public struct CreateEventProcessView: View {
             Spacer()
           }
           .padding(.top, 24)
-          .padding(.bottom, 8)
         }
-        .padding(.horizontal, 16)
+        .padding(.all, 16)
+        
+        GabbangzipPhotoPicker(
+          selectedPhotosInfo: $store.selectedPhotosInfo.sending(\.selectedImagesChanged),
+          isPresentedError: .constant(false),
+          maxSelectedCount: .custom(4),
+          matching: .images) {
+            SelectPhoto(selectedPhotosInfo: $store.selectedPhotosInfo, maxCount: 4)
+          }
         
         VStack(spacing: 0) {
-          if !$store.selectedPhotosInfo.isEmpty {
-            ScrollView(.horizontal) {
-              HStack(spacing: 0) {
-              GabbangzipPhotoPicker(
-                selectedPhotosInfo: $store.selectedPhotosInfo.sending(\.selectedImagesChanged),
-                isPresentedError: .constant(false),
-                maxSelectedCount: .custom(4),
-                matching: .images
-              ) { SelectPhoto(selectedPhotosInfo: $store.selectedPhotosInfo, maxCount: 4) }
-              
-                ForEach(Array($store.selectedPhotosInfo.enumerated()), id: \.offset) { index, $photoInfo in
-                  if let image = UIImage(data: photoInfo.data) {
-                    ZStack(
-                      alignment: .topTrailing,
-                      content: {
-                        Image(uiImage: image)
-                          .resizable()
-                          .scaledToFill()
-                          .frame(width: 100, height: 100)
-                          .cornerRadius(10)
-                          .clipped()
-                          .padding(.top, 8)
-                        
-                        Button(
-                          action: { store.send(.deleteSelectedPhoto(index)) },
-                          label: {
-                            DesignSystem.Icons.delete
-                              .resizable()
-                              .frame(width: 26, height: 26)
-                          }
-                        )
-                        .padding([.trailing], -8)
-                      }
-                    )
-                    .padding(.leading, 8)
-                  }
-                }
-              }
-            }
-          } else {
-            HStack(spacing: 0) {
-              GabbangzipPhotoPicker(
-                selectedPhotosInfo: $store.selectedPhotosInfo.sending(\.selectedImagesChanged),
-                isPresentedError: .constant(false),
-                maxSelectedCount: .custom(4),
-                matching: .images
-              ) { SelectPhoto(selectedPhotosInfo: $store.selectedPhotosInfo, maxCount: 4) }
-              
-              Spacer()
-            }
-          }
-          
           Spacer()
           
           Text(CreateEventProcessViewNameSpace.notice)
             .font(.text14)
             .foregroundStyle(DesignSystem.Colors.gray60)
-            .padding(.bottom, 16)
           
           GabbangzipBottomButton(
             type: store.completeButtonType,
             title: CreateEventProcessViewNameSpace.complete,
             action: { store.send(.completeButtonTapped) }
           )
-          .padding(.horizontal, 16)
+          .padding(.top, 16)
         }
+        .padding(.all, 16)
       }
     }
     .onAppear { store.send(.onAppear) }

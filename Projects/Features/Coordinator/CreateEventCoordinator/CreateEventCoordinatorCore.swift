@@ -32,21 +32,6 @@ public struct CreateEventCoordinatorCore {
       case .router(.routeAction(id: _, action: .createEventStart(.moveToCreateEventProcess))):
         state.routes.push(.moveToCreateEventProcess(.init()))
         
-      case .router(.routeAction(id: _, action: .createEventStart(.moveToGroupList))):
-        state.routes.push(.moveToGroupList(.init()))
-        
-      case .router(.routeAction(id: _, action: .createEventStart(.moveToGroupMemberList))):
-        state.routes.push(.moveToGroupMemberList(.init()))
-        
-      case .router(.routeAction(id: _, action: .moveToGroupMemberList(.moveBackToEvent))):
-        state.routes.pop()
-        
-      case .router(.routeAction(id: _, action: .moveToCreateEventProcess(.moveToEventStart))):
-        state.routes.pop()
-        
-      case .router(.routeAction(id: _, action: .moveToCreateEventProcess(.moveToGroupListWithEvent))):
-        state.routes.push(.moveToGroupList(.init()))
-        
       default:
         break
       }
