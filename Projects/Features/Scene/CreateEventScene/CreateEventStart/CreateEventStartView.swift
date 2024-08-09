@@ -50,7 +50,7 @@ public struct CreateEventStartView: View {
           title: CreateEventStartViewNameSpace.buttonTitle,
           action: { store.send(.createEventButtonTapped) }
         )
-        .padding(.bottom, 9)
+        .padding(.all, 16)
       }
     }
     .onAppear {

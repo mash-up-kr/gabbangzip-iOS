@@ -26,7 +26,7 @@ public struct CreateEventProcessView: View {
         backButtonAction: { store.send(.backButtonTapped) }
       )
       
-      VStack(spacing: 16) {
+      VStack(spacing: 0) {
         HStack(spacing: 0) {
           Text(CreateEventProcessViewNameSpace.eventTitle)
             .font(.head18)
@@ -43,7 +43,7 @@ public struct CreateEventProcessView: View {
         .padding(.top, 16)
         
         HStack(spacing: 0) {
-          Text(CreateEventProcessViewNameSpace.eventTitle)
+          Text(CreateEventProcessViewNameSpace.eventDate)
             .font(.head18)
             .foregroundStyle(DesignSystem.Colors.gray80)
           
@@ -51,15 +51,11 @@ public struct CreateEventProcessView: View {
         }
         .padding(.top, 24)
         
-        GabbangzipInput(
-          text: $store.text.sending(\.textChanged),
-          placeholderText: CreateEventProcessViewNameSpace.eventTitlePlaceHolder,
-          maxLength: 10
-        )
+        GabbangzipDate(date: store.currentDate)
         .padding(.top, 16)
         
         HStack(spacing: 0) {
-          Text(CreateEventProcessViewNameSpace.eventTitle)
+          Text(CreateEventProcessViewNameSpace.eventPicture)
             .font(.head18)
             .foregroundStyle(DesignSystem.Colors.gray80)
           
@@ -67,23 +63,21 @@ public struct CreateEventProcessView: View {
         }
         .padding(.top, 24)
         
-        GabbangzipInput(
-          text: $store.text.sending(\.textChanged),
-          placeholderText: CreateEventProcessViewNameSpace.eventTitlePlaceHolder,
-          maxLength: 10
+        // 사진
+        
+        Spacer()
+        
+        Text(CreateEventProcessViewNameSpace.notice)
+          .font(.text14)
+          .foregroundStyle(DesignSystem.Colors.gray60)
+        
+        GabbangzipBottomButton(
+          type: store.completeButtonType,
+          title: CreateEventProcessViewNameSpace.complete,
+          action: { store.send(.completeButtonTapped) }
         )
         .padding(.top, 16)
       }
-      
-      Spacer()
-      
-      Text(CreateEventProcessViewNameSpace.notice)
-      
-      GabbangzipBottomButton(
-        type: store.completeButtonType,
-        title: CreateEventProcessViewNameSpace.complete,
-        action: { store.send(.completeButtonTapped) }
-      )
       .padding(.all, 16)
     }
     .onAppear { store.send(.onAppear) }
