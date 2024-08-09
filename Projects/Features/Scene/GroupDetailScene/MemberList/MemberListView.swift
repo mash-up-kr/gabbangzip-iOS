@@ -14,7 +14,7 @@ import SwiftUI
 public struct MemberListView: View {
   private let store: StoreOf<MemberListCore>
 
-  init(store: StoreOf<MemberListCore>) {
+  public init(store: StoreOf<MemberListCore>) {
     self.store = store
   }
 
