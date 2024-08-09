@@ -1,6 +1,6 @@
-<svg width="26" height="26" viewBox="0 0 26 26" fill="none" xmlns="http://www.w3.org/2000/svg">
-<rect x="3.5" y="6.75" width="19" height="14.75" rx="2.5" fill="#333333" stroke="#333333"/>
-<path d="M6 11.875L20 11.875" stroke="white" stroke-width="2" stroke-miterlimit="10" stroke-linecap="round"/>
-<path d="M7.87695 4L7.87695 9.05002" stroke="#333333" stroke-width="2" stroke-miterlimit="10" stroke-linecap="round"/>
-<path d="M17.8721 4V9.05002" stroke="#333333" stroke-width="2" stroke-miterlimit="10" stroke-linecap="round"/>
+<svg width="20" height="20" viewBox="0 0 20 20" fill="none" xmlns="http://www.w3.org/2000/svg">
+<path d="M16.5639 4.90332L3.57086 4.90332C3.05387 4.90332 2.63477 5.31787 2.63477 5.82924L2.63477 15.7403C2.63477 16.2517 3.05387 16.6663 3.57086 16.6663H16.5639C17.0809 16.6663 17.5 16.2517 17.5 15.7403V5.82924C17.5 5.31787 17.0809 4.90332 16.5639 4.90332Z" fill="#D9D9D9" stroke="#D9D9D9" stroke-width="1.4" stroke-miterlimit="10"/>
+<path d="M3.5 9.42188L16.5 9.42187" stroke="#F9F9F9" stroke-width="1.4" stroke-miterlimit="10" stroke-linecap="round"/>
+<path d="M6.25977 2.33301L6.25977 6.33301" stroke="#D9D9D9" stroke-width="1.4" stroke-miterlimit="10" stroke-linecap="round"/>
+<path d="M13.6885 2.33301V6.33301" stroke="#D9D9D9" stroke-width="1.4" stroke-miterlimit="10" stroke-linecap="round"/>
 </svg>
