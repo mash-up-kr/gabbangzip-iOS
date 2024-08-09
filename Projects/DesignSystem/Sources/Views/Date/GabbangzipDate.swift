@@ -19,7 +19,7 @@ public struct GabbangzipDate: View {
   
   public var body: some View {
     HStack(spacing: 0) {
-      Image(uiImage: DesignSystem.Icons.calendarUIImage)
+      DesignSystem.Icons.calendar
         .resizable()
         .frame(width: 20, height: 20)
         .padding(.leading, 16)
