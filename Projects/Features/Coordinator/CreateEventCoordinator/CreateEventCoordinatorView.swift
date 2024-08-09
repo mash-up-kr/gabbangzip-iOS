@@ -12,9 +12,9 @@ import SwiftUI
 import TCACoordinators
 
 public struct CreateEventCoordinatorView: View {
-  let store: StoreOf<CreateEventCoordinatorView>
+  let store: StoreOf<CreateEventCoordinatorCore>
   
-  public init(store: StoreOf<CreateEventCoordinatorView>) {
+  public init(store: StoreOf<CreateEventCoordinatorCore>) {
     self.store = store
   }
   
