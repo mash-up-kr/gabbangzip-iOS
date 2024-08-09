@@ -13,6 +13,8 @@ import UIKit
 
 @Reducer
 public struct MemberListCore {
+  public init() {}
+  
   @ObservableState
   public struct State: Equatable {
     var memberList: MemberList
