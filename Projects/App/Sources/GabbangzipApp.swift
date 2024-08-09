@@ -9,7 +9,7 @@ import ComposableArchitecture
 import SwiftUI
 
 @main
-struct GabbangzipApp: App {
+ struct GabbangzipApp: App {
   @UIApplicationDelegateAdaptor(AppDelegate.self) var appDelegate
   
   var body: some Scene {

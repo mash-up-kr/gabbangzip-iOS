@@ -124,13 +124,14 @@ public struct MyPageCore {
     case binding(BindingAction<State>)
     
     // View Action
-    case checkPushOn
+    case onAppear
     case showPopup(Bool, State.MyPagePopup?)
     case openSetting
     case logout
     
     // Internal Action
     case updatePushStatus(Bool)
+    case updateCurrentVersion(String)
     case showError(Bool, State.MyPageError)
     case withdraw
     case logError(Error)
@@ -140,12 +141,13 @@ public struct MyPageCore {
     case backToLogin
   }
   
+  @Dependency(\.authAPIClient) private var authAPIClient
+  @Dependency(\.bundleClient) private var bundleClient
+  @Dependency(\.kakaoLoginClient) private var kakaoLoginClient
+  @Dependency(\.keyChainClient) private var keyChainClient
   @Dependency(\.userDefaultsClient) private var userDefaultsClient
   @Dependency(\.userNotificationClient) private var userNotificationCenterClient
   @Dependency(\.uiApplicationClient) private var uiApplicationClient
-  @Dependency(\.authAPIClient) private var authAPIClient
-  @Dependency(\.kakaoLoginClient) private var kakaoLoginClient
-  @Dependency(\.keyChainClient) private var keyChainClient
   
   public var body: some Reducer<State, Action> {
     Reduce { state, action in
@@ -153,9 +155,10 @@ public struct MyPageCore {
       case .binding:
         return .none
         
-      case .checkPushOn:
+      case .onAppear:
         return .run { send in
           let authorizationStatus = await userNotificationCenterClient.getAuthorizationStatus()
+          let version = try bundleClient.getCurrentVersion()
           var isPushOn: Bool
           
           switch authorizationStatus {
@@ -168,8 +171,16 @@ public struct MyPageCore {
           }
           
           await send(.updatePushStatus(isPushOn))
+          await send(.updateCurrentVersion(version))
         } catch: { error, send in
-          await send(.logError(MyPageCoreError(code: .alarmStatusError)))
+          switch error {
+          case let alarmError as UserDefaultsClientError:
+            await send(.logError(MyPageCoreError(code: .alarmStatusError)))
+          case let bundleError as BundleClientError:
+            await send(.logError(MyPageCoreError(code: .failToGetCurrentVersion)))
+          default:
+            break
+          }
         }
         
       case let .showPopup(isPopupPresented, popupType):
@@ -206,6 +217,10 @@ public struct MyPageCore {
         
       case let .updatePushStatus(pushStatus):
         state.alarmStatus = pushStatus ? .on : .off
+        return .none
+        
+      case let .updateCurrentVersion(version):
+        state.currentVersion = version
         return .none
         
       case let .showError(isErrorPresented, errorType):
@@ -251,6 +266,7 @@ public struct MyPageCoreError: GabbangzipError {
   
   public enum Code: Int {
     case alarmStatusError
+    case failToGetCurrentVersion
     case failToGetOpenUrl
     case failToLogout
     case failToWithdraw
