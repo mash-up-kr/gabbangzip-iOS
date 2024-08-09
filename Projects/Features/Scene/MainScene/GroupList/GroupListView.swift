@@ -121,7 +121,9 @@ extension GroupListView {
             photoCardFrontView(from: group)
             
             if group.status == .noPastAndCurrentEvent {
-              SmallButton(type: .active, smallButtonContentType: .generateEvent, action: {})
+              SmallButton(
+                type: .active, smallButtonContentType: .generateEvent,
+                action: { store.send(.moveToEvent)})
             }
           }
         }

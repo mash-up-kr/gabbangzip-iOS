@@ -61,6 +61,7 @@ public struct GroupListCore {
     case moveToMyPage
     case moveToCreateGroup
     case moveToJoinGroup
+    case moveToEvent
   }
   
   @Dependency(\.groupAPIClient) var groupAPIClient
@@ -159,6 +160,9 @@ public struct GroupListCore {
         return .none
         
       case .moveToJoinGroup:
+        return .none
+        
+      case .moveToEvent:
         return .none
       }
     }
