@@ -65,6 +65,8 @@ public struct CreateEventProcessCore {
     case checkCompleteButtonType
     
     // Route Action
+    case moveToEventStart
+    case moveToGroupListWithEvent
   }
   
   @Dependency(\.bundleClient) var bundleClient
@@ -94,16 +96,22 @@ public struct CreateEventProcessCore {
         }
         
       case .backButtonTapped:
+        state.isExiting = true
         return .none
         
       case .popupLeftButtonTapped:
-        return .none
+        return .run { send in
+          await send(.moveToEventStart)
+        }
         
       case .popupRightButtonTapped:
+        state.isExiting = false
         return .none
         
       case .completeButtonTapped:
-        return .none
+        return .run { send in
+          await send(.moveToGroupListWithEvent)
+        }
         
       case let .deleteSelectedPhoto(index):
         state.selectedPhotosInfo.remove(at: index)
@@ -142,6 +150,12 @@ public struct CreateEventProcessCore {
         } else {
           state.completeButtonType = .inactive
         }
+        return .none
+        
+      case .moveToEventStart:
+        return .none
+        
+      case .moveToGroupListWithEvent:
         return .none
       }
     }

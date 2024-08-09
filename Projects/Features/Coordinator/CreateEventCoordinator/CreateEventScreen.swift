@@ -15,7 +15,7 @@ import TCACoordinators
 @Reducer(state: .equatable)
 public enum CreateEventScreen {
   case createEventStart(CreateEventStartCore)
-  case moveToGroupDetail(GroupListCore)
+  case moveToGroupList(GroupListCore)
   case moveToGroupMemberList(MemberListCore)
   case moveToCreateEventProcess(CreateEventProcessCore)
 }

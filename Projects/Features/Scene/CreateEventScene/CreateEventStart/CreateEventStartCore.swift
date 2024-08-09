@@ -26,10 +26,11 @@ public struct CreateEventStartCore {
   public enum Action {
     // View Action
     case onAppear
+    case backBarButtonTapped
     case createEventButtonTapped
     
     // Route Action
-    case moveToGroupDetail
+    case moveToGroupList
     case moveToGroupMemberList
     case moveToCreateEventProcess
   }
@@ -40,10 +41,13 @@ public struct CreateEventStartCore {
       case .onAppear:
         return .none
         
+      case .backBarButtonTapped:
+        return .send(.moveToGroupList)
+        
       case .createEventButtonTapped:
         return .send(.moveToCreateEventProcess)
         
-      case .moveToGroupDetail:
+      case .moveToGroupList:
         return .none
         
       case .moveToGroupMemberList:
