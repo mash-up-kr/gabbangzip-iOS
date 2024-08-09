@@ -9,6 +9,7 @@
 import Common
 import ComposableArchitecture
 import DesignSystem
+import Foundation
 import Models
 import Services
 
@@ -21,15 +22,18 @@ public struct CreateEventProcessCore {
     public var text: String
     public var isExiting: Bool
     public var completeButtonType: ButtonType
+    public var currentDate: String
     
     public init(
       text: String = "",
       isExiting: Bool = false,
-      completeButtonType: ButtonType = .inactive
+      completeButtonType: ButtonType = .inactive,
+      currentDate: String = "YY/MM/DD"
     ) {
       self.text = text
       self.isExiting = isExiting
       self.completeButtonType = completeButtonType
+      self.currentDate = currentDate
     }
   }
   
@@ -83,6 +87,12 @@ public struct CreateEventProcessCore {
         return .none
         
       case .onAppear:
+        let currentDate = {
+          let formatter = DateFormatter()
+          formatter.dateFormat = "YY/MM/dd"
+          return formatter.string(from: Date())
+        }()
+        state.currentDate = currentDate
         return .none
         
       case let .setCompleteButtonType(buttonType):
