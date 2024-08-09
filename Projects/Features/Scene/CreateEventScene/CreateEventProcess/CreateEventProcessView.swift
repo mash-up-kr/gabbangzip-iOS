@@ -21,64 +21,75 @@ public struct CreateEventProcessView: View {
   
   public var body: some View {
     VStack(spacing: 0) {
-      NavigationBar(
-        type: .titleWithBackButton(CreateEventProcessViewNameSpace.navigationTitle, .center),
-        backButtonAction: { store.send(.backButtonTapped) }
-      )
-      
       VStack(spacing: 0) {
-        HStack(spacing: 0) {
-          Text(CreateEventProcessViewNameSpace.eventTitle)
-            .font(.head18)
-            .foregroundStyle(DesignSystem.Colors.gray80)
-          
-          Spacer()
-        }
-        
-        GabbangzipInput(
-          text: $store.text.sending(\.textChanged),
-          placeholderText: CreateEventProcessViewNameSpace.eventTitlePlaceHolder,
-          maxLength: 10
+        NavigationBar(
+          type: .titleWithBackButton(CreateEventProcessViewNameSpace.navigationTitle, .center),
+          backButtonAction: { store.send(.backButtonTapped) }
         )
-        .padding(.top, 16)
         
-        HStack(spacing: 0) {
-          Text(CreateEventProcessViewNameSpace.eventDate)
-            .font(.head18)
-            .foregroundStyle(DesignSystem.Colors.gray80)
+        VStack(spacing: 0) {
+          HStack(spacing: 0) {
+            Text(CreateEventProcessViewNameSpace.eventTitle)
+              .font(.head18)
+              .foregroundStyle(DesignSystem.Colors.gray80)
+            
+            Spacer()
+          }
           
-          Spacer()
-        }
-        .padding(.top, 24)
-        
-        GabbangzipDate(date: store.currentDate)
-        .padding(.top, 16)
-        
-        HStack(spacing: 0) {
-          Text(CreateEventProcessViewNameSpace.eventPicture)
-            .font(.head18)
-            .foregroundStyle(DesignSystem.Colors.gray80)
+          GabbangzipInput(
+            text: $store.text.sending(\.textChanged),
+            placeholderText: CreateEventProcessViewNameSpace.eventTitlePlaceHolder,
+            maxLength: 10
+          )
+          .padding(.top, 16)
           
-          Spacer()
+          HStack(spacing: 0) {
+            Text(CreateEventProcessViewNameSpace.eventDate)
+              .font(.head18)
+              .foregroundStyle(DesignSystem.Colors.gray80)
+            
+            Spacer()
+          }
+          .padding(.top, 24)
+          
+          GabbangzipDate(date: store.currentDate)
+            .padding(.top, 16)
+          
+          HStack(spacing: 0) {
+            Text(CreateEventProcessViewNameSpace.eventPicture)
+              .font(.head18)
+              .foregroundStyle(DesignSystem.Colors.gray80)
+            
+            Spacer()
+          }
+          .padding(.top, 24)
         }
-        .padding(.top, 24)
+        .padding(.all, 16)
         
-        // 사진
+        GabbangzipPhotoPicker(
+          selectedPhotosInfo: $store.selectedPhotosInfo.sending(\.selectedImagesChanged),
+          isPresentedError: .constant(false),
+          maxSelectedCount: .custom(4),
+          matching: .images) {
+            SelectPhoto(selectedPhotosInfo: $store.selectedPhotosInfo, maxCount: 4)
+          }
         
-        Spacer()
-        
-        Text(CreateEventProcessViewNameSpace.notice)
-          .font(.text14)
-          .foregroundStyle(DesignSystem.Colors.gray60)
-        
-        GabbangzipBottomButton(
-          type: store.completeButtonType,
-          title: CreateEventProcessViewNameSpace.complete,
-          action: { store.send(.completeButtonTapped) }
-        )
-        .padding(.top, 16)
+        VStack(spacing: 0) {
+          Spacer()
+          
+          Text(CreateEventProcessViewNameSpace.notice)
+            .font(.text14)
+            .foregroundStyle(DesignSystem.Colors.gray60)
+          
+          GabbangzipBottomButton(
+            type: store.completeButtonType,
+            title: CreateEventProcessViewNameSpace.complete,
+            action: { store.send(.completeButtonTapped) }
+          )
+          .padding(.top, 16)
+        }
+        .padding(.all, 16)
       }
-      .padding(.all, 16)
     }
     .onAppear { store.send(.onAppear) }
     .popup(

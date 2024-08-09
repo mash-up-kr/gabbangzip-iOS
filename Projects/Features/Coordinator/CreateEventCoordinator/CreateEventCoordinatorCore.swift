@@ -29,6 +29,9 @@ public struct CreateEventCoordinatorCore {
   public var body: some Reducer<State, Action> {
     Reduce { state, action in
       switch action {
+      case .router(.routeAction(id: _, action: .createEventStart(.moveToCreateEventProcess))):
+        state.routes.push(.moveToCreateEventProcess(.init()))
+        
       default:
         break
       }
