@@ -121,7 +121,9 @@ public struct CreateEventProcessCore {
         
       case let .deleteSelectedPhoto(index):
         state.selectedPhotosInfo.remove(at: index)
-        return .none
+        return .run { send in
+          await send(.changeIsPhotoSelected)
+        }
         
       case .onAppear:
         let currentDate = {
