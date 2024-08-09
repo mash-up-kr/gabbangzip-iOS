@@ -25,12 +25,10 @@ struct RootView: View {
         if let store = store.scope(state: \.destination?.login, action: \.destination.login) {
           LoginView(store: store)
         }
-      case .mainCoordinator:
+      default:
         if let store = store.scope(state: \.destination?.mainCoordinator, action: \.destination.mainCoordinator) {
           MainCoordinatorView(store: store)
         }
-      case .none:
-        Text("Launching...")
       }
     }
     .onAppear { store.send(.onAppear) }

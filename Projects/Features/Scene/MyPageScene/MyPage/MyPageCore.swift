@@ -8,6 +8,7 @@
 
 import Common
 import ComposableArchitecture
+import Models
 import Services
 
 @Reducer
@@ -16,7 +17,7 @@ public struct MyPageCore {
   
   @ObservableState
   public struct State: Equatable {
-    public var nickname: String
+    @Shared public var userInfo: UserInfo
     public var currentVersion: String
     public var alarmStatus: AlarmStatus
     public var errorType: MyPageError?
@@ -89,7 +90,7 @@ public struct MyPageCore {
     }
     
     public init(
-      nickname: String = "",
+      userInfo: @autoclosure () -> UserInfo = .defaultValue,
       currentVersion: String = "",
       alarmStatus: AlarmStatus = .off,
       errorType: MyPageError? = nil,
@@ -103,7 +104,7 @@ public struct MyPageCore {
       isLoginViewPresented: Bool = false,
       isErrorPresented: Bool = false
     ) {
-      self.nickname = nickname
+      self._userInfo = Shared(wrappedValue: userInfo(), .inMemory("userInfo"))
       self.currentVersion = currentVersion
       self.alarmStatus = alarmStatus
       self.errorType = errorType
@@ -199,8 +200,7 @@ public struct MyPageCore {
             await send(.backToLogin)
           },
           catch: { error, send in
-            await send(.logError(MyPageCoreError(code: .failToWithdraw)))
-            await send(.showError(true, .withdraw))
+            await send(.logError(MyPageCoreError(code: .failToLogout)))
           }
         )
         
@@ -218,7 +218,7 @@ public struct MyPageCore {
         return .run(
           operation: { send in
             let accessToken = try await self.keyChainClient.readUserInfo().accessToken
-            _ = try await self.authAPIClient.withdrawAccount(accessToken: accessToken)
+            _ = try await self.authAPIClient.withdrawAccount(accessToken)
             try await keyChainClient.deleteUserInfo()
             await send(.backToLogin)
           },
@@ -253,10 +253,6 @@ public struct MyPageCoreError: GabbangzipError {
     case alarmStatusError
     case failToGetOpenUrl
     case failToLogout
-    case failToGetAccessToken
-    case failToGetDeleteUserInfo
-    case failToDeleteUser
-    case failToDeleteUserInfo
     case failToWithdraw
   }
 }
