@@ -22,7 +22,7 @@ public struct CreateEventStartView: View {
       VStack(spacing: 0) {
         NavigationBar(
           type: .titleWithBackButtonAndIcon(store.groupName, DesignSystem.Icons.group),
-          backButtonAction: { store.send(.moveToGroupDetail) },
+          backButtonAction: { store.send(.moveToGroupList) },
           rightIconAction: { store.send(.moveToGroupMemberList) }
         )
         
