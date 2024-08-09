@@ -17,7 +17,7 @@ public struct CreateEventStartCore {
     public var groupName: String
     
     public init(
-      groupName: String
+      groupName: String = ""
     ) {
       self.groupName = groupName
     }

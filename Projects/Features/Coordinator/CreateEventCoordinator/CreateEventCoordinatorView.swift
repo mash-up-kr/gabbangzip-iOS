@@ -22,8 +22,10 @@ public struct CreateEventCoordinatorView: View {
     TCARouter(store.scope(state: \.routes, action: \.router)) { screen in
       Group {
         switch screen.case {
-        default:
-          EmptyView()
+        case let .createEventStart(store):
+          CreateEventStartView(store: store)
+        case let .createEventProcess(store):
+          CreateEventProcessView(store: store)
         }
       }
       .toolbar(.hidden)

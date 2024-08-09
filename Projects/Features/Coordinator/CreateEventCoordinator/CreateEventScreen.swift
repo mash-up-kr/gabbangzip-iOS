@@ -12,4 +12,6 @@ import TCACoordinators
 
 @Reducer(state: .equatable)
 public enum CreateEventScreen {
+  case createEventStart(CreateEventStartCore)
+  case createEventProcess(CreateEventProcessCore)
 }
