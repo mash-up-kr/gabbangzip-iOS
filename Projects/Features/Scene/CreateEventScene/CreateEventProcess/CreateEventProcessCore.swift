@@ -23,17 +23,20 @@ public struct CreateEventProcessCore {
     public var isExiting: Bool
     public var completeButtonType: ButtonType
     public var currentDate: String
+    public var selectedPhotosInfo: [PhotoInfo]
     
     public init(
       text: String = "",
       isExiting: Bool = false,
       completeButtonType: ButtonType = .inactive,
-      currentDate: String = "YY/MM/DD"
+      currentDate: String = "YY/MM/DD",
+      selectedPhotosInfo: [PhotoInfo] = []
     ) {
       self.text = text
       self.isExiting = isExiting
       self.completeButtonType = completeButtonType
       self.currentDate = currentDate
+      self.selectedPhotosInfo = selectedPhotosInfo
     }
   }
   
@@ -42,6 +45,7 @@ public struct CreateEventProcessCore {
     
     // View Action
     case textChanged(String)
+    case selectedImagesChanged([PhotoInfo])
     case backButtonTapped
     case popupLeftButtonTapped
     case popupRightButtonTapped
@@ -73,6 +77,13 @@ public struct CreateEventProcessCore {
             await send(.setCompleteButtonType(.active))
           }
         }
+        
+      case let .selectedImagesChanged(imagesData):
+        state.selectedPhotosInfo = imagesData
+        if !imagesData.isEmpty {
+          state.completeButtonType = .active
+        }
+        return .none
         
       case .backButtonTapped:
         return .none
