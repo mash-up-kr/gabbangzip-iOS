@@ -22,23 +22,26 @@ public struct MemberListCore {
     var groupCategory: GroupCategory
     
     public init(
-      memberList: MemberList,
-      inviteLink: String,
-      groupCategory: GroupCategory
+      memberList: MemberList = [],
+      inviteLink: String = "",
+      groupCategory: GroupCategory = .school
     ) {
       self.memberList = memberList
       self.inviteLink = inviteLink
       self.groupCategory = groupCategory
     }
   }
-
+  
   public enum Action {
     case copyLinkButtonTapped
     case backButtonTapped
+    
+    // Route Action
+    case moveBackToEvent
   }
   
   @Dependency(\.uiPasteBoardClient) var uiPasteBoardClient
-
+  
   public var body: some Reducer<State, Action> {
     Reduce { state, action in
       switch action {
@@ -47,6 +50,11 @@ public struct MemberListCore {
           uiPasteBoardClient.copyTextToClipboard(state.inviteLink)
         }
       case .backButtonTapped:
+        return .run { send in
+          await send(.moveBackToEvent)
+        }
+        
+      case .moveBackToEvent:
         return .none
       }
     }

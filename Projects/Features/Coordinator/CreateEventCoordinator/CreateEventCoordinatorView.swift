@@ -26,7 +26,7 @@ public struct CreateEventCoordinatorView: View {
         switch screen.case {
         case let .createEventStart(store):
           CreateEventStartView(store: store)
-        case let .moveToGroupDetail(store):
+        case let .moveToGroupList(store):
           GroupListView(store: store)
         case let .moveToGroupMemberList(store):
           MemberListView(store: store)
