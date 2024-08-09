@@ -8,6 +8,8 @@
 
 import ComposableArchitecture
 import CreateEvent
+import GroupDetail
+import Main
 import SwiftUI
 import TCACoordinators
 
@@ -24,7 +26,11 @@ public struct CreateEventCoordinatorView: View {
         switch screen.case {
         case let .createEventStart(store):
           CreateEventStartView(store: store)
-        case let .createEventProcess(store):
+        case let .moveToGroupDetail(store):
+          GroupListView(store: store)
+        case let .moveToGroupMemberList(store):
+          MemberListView(store: store)
+        case let .moveToCreateEventProcess(store):
           CreateEventProcessView(store: store)
         }
       }

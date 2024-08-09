@@ -47,6 +47,8 @@ let project = Project.make(
       sources: ["CreateEventCoordinator/**"],
       dependencies: [
         .project(target: .createEvent, projectPath: .scene),
+        .project(target: .groupDetail, projectPath: .scene),
+        .project(target: .main, projectPath: .scene),
         .external(externalDependency: .composableArchitecture),
         .external(externalDependency: .tcaCoordinators),
       ]
