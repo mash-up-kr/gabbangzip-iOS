@@ -46,49 +46,50 @@ public struct SelectPhoto: View {
           .stroke(DesignSystem.Colors.gray50, lineWidth: 1)
       }
       .padding(.leading, 16)
+      .padding(.top, 8)
       
-      if !selectedPhotosInfo.isEmpty {
-        ScrollView(.horizontal) {
-          HStack {
-            ForEach(Array(selectedPhotosInfo.enumerated()), id: \.offset) { index, photoInfo in
-              if let image = UIImage(data: photoInfo.data) {
-                ZStack(
-                  alignment: .topTrailing,
-                  content: {
-                    Image(uiImage: image)
-                      .resizable()
-                      .scaledToFill()
-                      .frame(width: 100, height: 100)
-                      .cornerRadius(10)
-                      .clipped()
-                      .padding(.top, 8)
-                    
-                    Button(
-                      action: { deletePhoto(at: index) },
-                      label: {
-                        DesignSystem.Icons.delete
-                          .resizable()
-                          .frame(width: 26, height: 26)
-                      }
-                    )
-                    .padding([.trailing], -8)
-                  }
-                )
-              }
-            }
-          }
-        }
-        .padding(.leading, 8)
-      } else {
-        Spacer()
-      }
+//      if !selectedPhotosInfo.isEmpty {
+//        ScrollView(.horizontal) {
+//          HStack {
+//            ForEach(Array(selectedPhotosInfo.enumerated()), id: \.offset) { index, photoInfo in
+//              if let image = UIImage(data: photoInfo.data) {
+//                ZStack(
+//                  alignment: .topTrailing,
+//                  content: {
+//                    Image(uiImage: image)
+//                      .resizable()
+//                      .scaledToFill()
+//                      .frame(width: 100, height: 100)
+//                      .cornerRadius(10)
+//                      .clipped()
+//                      .padding(.top, 8)
+//                    
+//                    Button(
+//                      action: { deletePhoto(at: index) },
+//                      label: {
+//                        DesignSystem.Icons.delete
+//                          .resizable()
+//                          .frame(width: 26, height: 26)
+//                      }
+//                    )
+//                    .padding([.trailing], -8)
+//                  }
+//                )
+//              }
+//            }
+//          }
+//        }
+//        .padding(.leading, 8)
+//      } else {
+//        Spacer()
+//      }
     }
   }
   
-  private func deletePhoto(at index: Int) {
-    guard index >= 0 && index < selectedPhotosInfo.count else { return }
-    selectedPhotosInfo.remove(at: index)
-  }
+//  private func deletePhoto(at index: Int) {
+//    guard index >= 0 && index < selectedPhotosInfo.count else { return }
+//    selectedPhotosInfo.remove(at: index)
+//  }
 }
 
 #Preview {
