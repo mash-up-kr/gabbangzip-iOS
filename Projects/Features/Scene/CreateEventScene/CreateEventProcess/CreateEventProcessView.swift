@@ -26,7 +26,7 @@ public struct CreateEventProcessView: View {
         backButtonAction: { store.send(.backButtonTapped) }
       )
       
-      VStack(spacing: 0) {
+      VStack(spacing: 16) {
         HStack(spacing: 0) {
           Text(CreateEventProcessViewNameSpace.eventTitle)
             .font(.head18)
@@ -34,7 +34,6 @@ public struct CreateEventProcessView: View {
           
           Spacer()
         }
-        .padding(.top, 16)
         
         GabbangzipInput(
           text: $store.text.sending(\.textChanged),
@@ -75,8 +74,6 @@ public struct CreateEventProcessView: View {
         )
         .padding(.top, 16)
       }
-      .padding(.horizontal, 16)
-      .padding(.top, 16)
       
       Spacer()
       
@@ -89,9 +86,7 @@ public struct CreateEventProcessView: View {
       )
       .padding(.all, 16)
     }
-    .onAppear {
-      store.send(.onAppear)
-    }
+    .onAppear { store.send(.onAppear) }
     .popup(
       isPresented: $store.isExiting,
       title: CreateEventProcessViewNameSpace.popupTitle,
