@@ -50,6 +50,7 @@ public struct CreateEventProcessCore {
     case popupLeftButtonTapped
     case popupRightButtonTapped
     case completeButtonTapped
+    case deleteSelectedPhoto(Int)
     case onAppear
     
     // Internal Action
@@ -95,6 +96,10 @@ public struct CreateEventProcessCore {
         return .none
         
       case .completeButtonTapped:
+        return .none
+        
+      case let .deleteSelectedPhoto(index):
+        state.selectedPhotosInfo.remove(at: index)
         return .none
         
       case .onAppear:
