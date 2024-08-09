@@ -22,12 +22,8 @@ public struct CreateEventStartView: View {
       VStack(spacing: 0) {
         NavigationBar(
           type: .titleWithBackButtonAndIcon(store.groupName, DesignSystem.Icons.group),
-          backButtonAction: {
-            store.send(.moveToGroupDetail)
-          },
-          rightIconAction: {
-            store.send(.moveToGroupMemberList)
-          }
+          backButtonAction: { store.send(.moveToGroupDetail) },
+          rightIconAction: { store.send(.moveToGroupMemberList) }
         )
         
         Text(CreateEventStartViewNameSpace.eventTitle)
