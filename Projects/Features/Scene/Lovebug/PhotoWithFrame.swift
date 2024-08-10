@@ -11,22 +11,22 @@ import NukeUI
 import SwiftUI
 
 public struct PhotoWithFrame: View {
-  public let keyword: GroupData.Keyword
+  public let frameShape: Image
   public let foregroundColor: Color
   public let imageURLString: String
 
   public init(
-    keyword: GroupData.Keyword,
+    frameShape: Image,
     foregroundColor: Color,
     imageURLString: String
   ) {
-    self.keyword = keyword
+    self.frameShape = frameShape
     self.foregroundColor = foregroundColor
     self.imageURLString = imageURLString
   }
 
   public var body: some View {
-    keyword.frame
+    frameShape
       .resizable()
       .aspectRatio(contentMode: .fit)
       .foregroundStyle(foregroundColor)
@@ -46,13 +46,13 @@ public struct PhotoWithFrame: View {
 #Preview {
   Group {
     PhotoWithFrame(
-      keyword: .company, 
+      frameShape: GroupData.Keyword.company.frame,
       foregroundColor: GroupData.Keyword.company.foregroundColor,
       imageURLString: "https://24ai.tech/ru/wp-content/uploads/sites/4/2023/10/01_product_1_sdelat-kvadratnym-scaled.jpg"
     )
 
     PhotoWithFrame(
-      keyword: .company,
+      frameShape: GroupData.Keyword.company.frame,
       foregroundColor: GroupData.Keyword.company.foregroundColor,
       imageURLString: "https://24ai.tech/ru/wp-content/uploads/sites/4/2023/10/01_product_1_sdelat-kvadratnym-scaled.jpg"
     )
