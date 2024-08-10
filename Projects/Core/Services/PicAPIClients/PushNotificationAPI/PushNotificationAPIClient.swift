@@ -89,6 +89,6 @@ public struct PushNotificationAPIClientError: GabbangzipError {
   }
 
   public enum APIResponseError: Int {
-    case getAPIError = 0
+    case getAPIError
   }
 }
