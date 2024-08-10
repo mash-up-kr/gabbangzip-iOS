@@ -8,10 +8,10 @@
 
 import ComposableArchitecture
 import DesignSystem
+import Lovebug
 import Models
 import NukeUI
 import SwiftUI
-import Lovebug
 
 public struct GroupView: View {
   @Bindable var store: StoreOf<GroupCore>
@@ -26,7 +26,7 @@ public struct GroupView: View {
   
   public var body: some View {
     VStack(spacing: 16) {
-      if store.status == .noPastAndCurrentEvent || store.status == .noCurrentEvent {
+      if store.hasNoEvent {
         GroupHeaderView(title: "이벤트를 만들어 보세요!", isButtonStyle: false)
       } else {
         Button(

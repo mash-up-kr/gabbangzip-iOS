@@ -30,6 +30,9 @@ public struct GroupCore {
     var s3BucketDomain: String
     var selectedPhotosInfo: [PhotoInfo]
     var stabbingButtonType: SmallButtonType
+    var hasNoEvent: Bool {
+      return status == .noPastAndCurrentEvent || status == .noCurrentEvent
+    }
 
     public init(
       userInfo: Shared<UserInfo>,
