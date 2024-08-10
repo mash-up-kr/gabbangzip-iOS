@@ -7,9 +7,9 @@
 //
 
 import ComposableArchitecture
+import DesignSystem
 import Models
 import Services
-import DesignSystem
 
 @Reducer
 public struct GroupListCore {

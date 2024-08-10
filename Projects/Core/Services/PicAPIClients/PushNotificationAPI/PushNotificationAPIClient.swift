@@ -13,7 +13,7 @@ import Models
 @DependencyClient
 public struct PushNotificationAPIClient: Sendable {
   public var registerFCMToken: (_ accessToken: String, _ fcmToken: String) async throws -> RegisteredFCMToken
-  public var kook: (_ accessToken: String, _ eventID: Int) async throws -> Kook
+  public var kook: (_ accessToken: String, _ eventID: Int) async throws -> KookInfo
 }
 
 extension PushNotificationAPIClient: DependencyKey {
@@ -35,7 +35,7 @@ extension PushNotificationAPIClient: DependencyKey {
       },
       kook: { accessToken, eventID in
         let route = PushNotificationAPI.kook(accessToken: accessToken, eventID: eventID)
-        let request = Request<SuccessResponse<Kook>>(route: route)
+        let request = Request<SuccessResponse<KookInfo>>(route: route)
         
         do {
           let response = try await NetworkManager.shared.send(request)
@@ -60,7 +60,7 @@ extension PushNotificationAPIClient: DependencyKey {
         return RegisteredFCMToken.mock
       },
       kook: { _, _ in
-        return Kook.mock
+        return KookInfo.mock
       }
     )
   }

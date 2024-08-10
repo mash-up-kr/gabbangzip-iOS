@@ -77,7 +77,7 @@ public struct GroupCore {
     case selectedPhotosInfo([PhotoInfo])
     
     // Internal Action
-    case kookResponse(Result<Kook, Error>)
+    case kookResponse(Result<KookInfo, Error>)
     case getUploadURLResponse(Result<FileUploadInfo, Error>, PhotoInfo)
     case uploadFileToPresignedURLResponse(Result<Void, Error>)
     

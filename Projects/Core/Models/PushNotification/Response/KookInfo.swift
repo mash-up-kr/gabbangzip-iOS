@@ -1,5 +1,5 @@
 //
-//  Kook.swift
+//  KookInfo.swift
 //  Models
 //
 //  Created by YangJoonHyeok on 8/8/24.
@@ -8,7 +8,7 @@
 
 import Foundation
 
-public struct Kook: Codable {
+public struct KookInfo: Decodable {
   public let eventID: Int
   
   enum CodingKeys: String, CodingKey {
@@ -16,6 +16,6 @@ public struct Kook: Codable {
   }
 }
 
-extension Kook {
+extension KookInfo {
   public static let mock = Self(eventID: 0)
 }
