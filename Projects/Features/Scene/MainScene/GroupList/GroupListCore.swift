@@ -138,7 +138,7 @@ public struct GroupListCore {
         
       case let .getS3BucketDomain(.success(domain)):
         if let domain {
-          for i in 0..<state.groups.count {
+          for i in state.groups.indices {
             state.groups[i].s3BucketDomain = domain
           }
         }
