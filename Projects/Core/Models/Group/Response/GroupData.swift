@@ -8,7 +8,7 @@
 
 import Foundation
 
-public struct GroupData: Decodable, Hashable {
+public struct GroupData: Decodable, Equatable {
   public let id: Int
   public let name: String
   public let keyword: Keyword
@@ -27,7 +27,7 @@ public struct GroupData: Decodable, Hashable {
   }
 }
 
-public struct RecentEvent: Decodable, Hashable {
+public struct RecentEvent: Decodable, Equatable {
   public let id: Int
   public let name: String?
   public let date: String?

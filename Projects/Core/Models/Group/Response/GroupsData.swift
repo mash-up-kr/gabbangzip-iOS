@@ -8,7 +8,7 @@
 
 import Foundation
 
-public struct GroupsData: Decodable, Equatable {
+public struct GroupsData: Decodable {
   public let groups: [GroupData]
 }
 
