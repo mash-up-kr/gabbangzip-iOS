@@ -55,7 +55,6 @@ public struct GroupView: View {
 }
 
 extension GroupView {
-  @MainActor
   private func groupContentView() -> some View {
     VStack(spacing: 16) {
       if store.status == .noCurrentEvent || store.status == .eventCompleted {
@@ -124,7 +123,6 @@ extension GroupView {
     }
   }
   
-  @MainActor
   private func photoCardFrontView() -> some View {
     VStack(spacing: 16) {
       Text(
@@ -148,7 +146,6 @@ extension GroupView {
     }
   }
   
-  @MainActor
   private func photoCardBackView() -> some View {
     VStack(spacing: 16) {
       Text(store.recentEvent.date?.toGroupEventDateString() ?? "")
