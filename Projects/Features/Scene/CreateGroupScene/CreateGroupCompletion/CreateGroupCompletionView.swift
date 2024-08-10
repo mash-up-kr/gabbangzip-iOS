@@ -8,10 +8,10 @@
 
 import ComposableArchitecture
 import DesignSystem
+import Lovebug
 import Models
 import NukeUI
 import SwiftUI
-import Lovebug
 
 public struct CreateGroupCompletionView: View {
   @Bindable var store: StoreOf<CreateGroupCompletionCore>
@@ -38,7 +38,7 @@ public struct CreateGroupCompletionView: View {
           Tag(type: store.createdGroupInfo.keyword.tagType)
           
           PhotoWithFrame(
-            keyword: store.createdGroupInfo.keyword,
+            frameShape: store.createdGroupInfo.keyword.frame,
             foregroundColor: store.createdGroupInfo.keyword.foregroundColor,
             imageURLString: store.imageURLString
           )

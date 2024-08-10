@@ -15,10 +15,6 @@ import SwiftUI
 
 public struct GroupView: View {
   @Bindable var store: StoreOf<GroupCore>
-  private let columns = [
-    GridItem(.flexible(), spacing: 9),
-    GridItem(.flexible(), spacing: 9)
-  ]
   
   public init(store: StoreOf<GroupCore>) {
     self.store = store
@@ -37,12 +33,14 @@ public struct GroupView: View {
 
       HStack {
         Tag(type: store.keyword.tagType)
+        
         Tag(type: .etc(.custom(store.statusDescription)))
+        
         Spacer(minLength: 0)
       }
       .padding(.horizontal, 16)
       
-      groupContentView()
+      GroupContentView(store: store)
       
       if !store.isLast {
         Divider()
@@ -50,122 +48,6 @@ public struct GroupView: View {
           .overlay(DesignSystem.Colors.gray20)
           .padding(.top, 8)
       }
-    }
-  }
-}
-
-extension GroupView {
-  private func groupContentView() -> some View {
-    VStack(spacing: 16) {
-      if store.status == .noCurrentEvent || store.status == .eventCompleted {
-        FlipView(
-          frontContent: {
-            PhotoCard(status: store.keyword.convertToPhotoCardStatus()) {
-              photoCardFrontView()
-            }
-          },
-          backContent: {
-            PhotoCard(status: store.keyword.convertToPhotoCardStatus()) {
-              photoCardBackView()
-            }
-          }
-        )
-        .padding(.horizontal, 41.5)
-      } else {
-        PhotoCard(status: store.keyword.convertToPhotoCardStatus()) {
-          VStack(spacing: 16) {
-            photoCardFrontView()
-            
-            if store.status == .noPastAndCurrentEvent {
-              SmallButton(
-                type: .active,
-                smallButtonContentType: .generateEvent,
-                action: { store.send(.createEventButtonTapped) }
-              )
-            }
-          }
-        }
-        .padding(.horizontal, 41.5)
-        
-        if let buttonType = store.status.smallButtonContentType {
-          switch store.status {
-          case .beforeMyUpload:
-            GabbangzipPhotoPicker(
-              selectedPhotosInfo: $store.selectedPhotosInfo.sending(\.selectedPhotosInfo),
-              maxSelectedCount: .custom(4),
-              matching: .images,
-              content: {
-                SmallButton(
-                  type: .active,
-                  smallButtonContentType: buttonType,
-                  action: {}
-                )
-                .disabled(true)
-              }
-            )
-          case .afterMyUpload, .afterMyVote:
-            SmallButton(
-              type: store.stabbingButtonType,
-              smallButtonContentType: buttonType,
-              action: { store.send(.stabbingButtonTapped) }
-            )
-          case .beforeMyVote:
-            SmallButton(
-              type: .active,
-              smallButtonContentType: buttonType,
-              action: { store.send(.selectPICButtonTapped) }
-            )
-          default:
-            EmptyView()
-          }
-        }
-      }
-    }
-  }
-  
-  private func photoCardFrontView() -> some View {
-    VStack(spacing: 16) {
-      Text(
-        store.status == .noPastAndCurrentEvent
-        ? "이벤트를 만들어 보세요!"
-        : store.recentEvent.date?.toGroupEventDateString() ?? ""
-      )
-      .font(.body16)
-      .foregroundStyle(DesignSystem.Colors.gray80)
-      
-      PhotoWithFrame(
-        keyword: store.keyword,
-        foregroundColor: store.keyword.foregroundColor,
-        imageURLString: store.s3BucketDomain + store.cardFrontImageURL
-      )
-      .padding(.horizontal, 30)
-      
-      Text(store.recentEvent.name ?? "")
-        .font(.head20)
-        .foregroundStyle(DesignSystem.Colors.gray80)
-    }
-  }
-  
-  private func photoCardBackView() -> some View {
-    VStack(spacing: 16) {
-      Text(store.recentEvent.date?.toGroupEventDateString() ?? "")
-        .font(.body16)
-        .foregroundStyle(DesignSystem.Colors.gray80)
-      
-      LazyVGrid(columns: columns, spacing: 9) {
-        ForEach(store.cardBackImages ?? [], id: \.self) { card in
-          PhotoWithFrame(
-            keyword: store.keyword,
-            foregroundColor: store.keyword.foregroundColor,
-            imageURLString: store.s3BucketDomain + store.cardFrontImageURL
-          )
-        }
-      }
-      .padding(.horizontal, 20)
-      
-      Text(store.recentEvent.name ?? "")
-        .font(.head20)
-        .foregroundStyle(DesignSystem.Colors.gray80)
     }
   }
 }

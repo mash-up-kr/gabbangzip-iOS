@@ -33,6 +33,18 @@ public struct GroupCore {
     var hasNoEvent: Bool {
       return status == .noPastAndCurrentEvent || status == .noCurrentEvent
     }
+    var hasCompletedEvent: Bool {
+      return status == .noCurrentEvent || status == .eventCompleted
+    }
+    var recentEventDate: String {
+      return recentEvent.date?.toGroupEventDateString() ?? ""
+    }
+    var recentEventName: String {
+      return recentEvent.name ?? ""
+    }
+    var frontTitle: String {
+      return status == .noPastAndCurrentEvent ? "이벤트를 만들어 보세요!" : recentEventDate
+    }
 
     public init(
       userInfo: Shared<UserInfo>,
