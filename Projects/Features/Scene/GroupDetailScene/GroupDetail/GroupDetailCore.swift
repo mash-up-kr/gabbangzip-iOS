@@ -70,8 +70,7 @@ public struct GroupDetailCore {
             await send(.getGroupDetailResponse(Result {
               try await self.groupAPIClient.getGroupDetail(accessToken: state.userInfo.accessToken, groupID: state.groupID)
             }))
-          },
-          catch: { error, send in }
+          }
         )
         
       case .backButtonTapped:
@@ -95,8 +94,7 @@ public struct GroupDetailCore {
               await send(.postKook(Result {
                 try await self.pushAPIClienet.postKook(accessToken: state.userInfo.accessToken, eventID: state.groupDetail.recentEventDetail.id)
               }))
-            },
-            catch: { error, send in }
+            }
           )
           
         case .noPastAndCurrentEvent, .noCurrentEvent, .eventCompleted:
@@ -112,8 +110,7 @@ public struct GroupDetailCore {
               await send(.putEventVisit(Result {
                 try await self.eventAPIClient.putEventVisit(accessToken: state.userInfo.accessToken, eventID: state.groupDetail.recentEventDetail.id)
               }))
-            },
-            catch: { error, send in }
+            }
           )
         } else {
           return .none
