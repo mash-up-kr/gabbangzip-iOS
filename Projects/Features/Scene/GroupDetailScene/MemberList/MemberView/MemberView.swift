@@ -31,6 +31,7 @@ struct MemberView: View {
       
       Text(member.nickname)
         .font(.head16)
+        .foregroundStyle(DesignSystem.Colors.gray80)
       
       Spacer()
     }
