@@ -21,7 +21,7 @@ public struct MemberListCore {
       memberList.members.count == 4
     }
     var inviteMemberMessage: String {
-      isFullCapacity ? "그룹 최대 인원은 6명이에요." : "그룹원을 추가하고 싶으세요?"
+      isFullCapacity ? "그룹 최대 인원은 4명이에요." : "그룹원을 추가하고 싶으세요?"
     }
     @Shared var userInfo: UserInfo
     
