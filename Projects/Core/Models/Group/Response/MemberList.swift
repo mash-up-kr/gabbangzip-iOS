@@ -13,8 +13,8 @@ public struct MemberList: Decodable, Hashable {
   public let invitationCode: String
 
   enum CodingKeys: String, CodingKey {
-      case members
-      case invitationCode = "invitation_code"
+    case members
+    case invitationCode = "invitation_code"
   }
   
   public static var mock: MemberList = .init(
