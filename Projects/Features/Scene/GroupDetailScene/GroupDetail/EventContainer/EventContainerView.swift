@@ -25,8 +25,8 @@ struct EventContainerView: View {
   
   var body: some View {
     switch groupDetail.status {
-    case .noCurrentEvent, .noPastAndCurrentEvent:
-      // TODO: 그룹 목록 썸네일 뷰로 대체 필요
+    case .noCurrentEvent:
+      // TODO: 디자인 작업 완료 후 작업해야함
       Rectangle()
         .fill(.red)
     case .beforeMyUpload, .afterMyUpload, .beforeMyVote, .afterMyVote: 
@@ -40,6 +40,9 @@ struct EventContainerView: View {
       // TODO: 그룹 목록 썸네일 뷰 + complete view 생성 필요
       Rectangle()
         .fill(.red)
+    case .noPastAndCurrentEvent:
+      // 해당 화면에 접근 불가능한 조건
+      EmptyView()
     }
   }
 }
