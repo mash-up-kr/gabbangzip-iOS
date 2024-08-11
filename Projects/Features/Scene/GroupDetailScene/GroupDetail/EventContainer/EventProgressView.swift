@@ -14,6 +14,7 @@ import SwiftUI
 struct EventProgressView: View {
   private let groupDetail: GroupDetailInfo
   private var action: () -> Void
+  @State var photos: [PhotoInfo] = []
   
   init(
     groupDetail: GroupDetailInfo,
@@ -53,19 +54,36 @@ struct EventProgressView: View {
         .foregroundStyle(DesignSystem.Colors.gray60)
         .padding(.init(top: 24, leading: 0, bottom: 8, trailing: 0))
       
-      EventControlButton(
-        buttonType: convertToButtonType(from: groupDetail.status),
-        action: action
-      )
+      if groupDetail.status == .beforeMyUpload {
+        GabbangzipPhotoPicker(
+          selectedPhotosInfo: $photos,
+          isPresentedError: .constant(false),
+          maxSelectedCount: .custom(4)) {
+            SmallButton(
+              type: .active,
+              smallButtonContentType: .uploadPIC
+            ) {
+              action()
+            }
+            .disabled(true)
+          }
+      } else {
+        SmallButton(
+          type: .active,
+          smallButtonContentType: convertToButtonType(from: groupDetail.status)
+        ) {
+          action()
+        }
+      }
     }
     .padding(.init(top: 16, leading: 0, bottom: 34, trailing: 0))
   }
   
   private func convertToButtonType(
     from state: GroupData.Status
-  ) -> SmallButtonContentType? {
+  ) -> SmallButtonContentType {
     switch state {
-    case .noCurrentEvent, .noPastAndCurrentEvent:
+    case .noCurrentEvent, .noPastAndCurrentEvent, .eventCompleted:
       return .generateEvent
     case .beforeMyUpload:
       return .uploadPIC
@@ -73,8 +91,6 @@ struct EventProgressView: View {
       return .vote
     case .afterMyUpload, .afterMyVote:
       return .stabbing
-    case .eventCompleted:
-      return nil
     }
   }
 }
