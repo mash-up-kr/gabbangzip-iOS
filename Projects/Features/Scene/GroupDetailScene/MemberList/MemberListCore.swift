@@ -64,7 +64,7 @@ public struct MemberListCore {
             await send(.getMemberList(Result {
               try await self.groupAPIClient.getMemberList(accessToken: state.userInfo.accessToken, groupID: state.groupID)
             }))
-          }, catch: { error, send in }
+          }
         )
         
       case .copyLinkButtonTapped:
