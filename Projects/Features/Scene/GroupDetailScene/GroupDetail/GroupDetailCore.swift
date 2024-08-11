@@ -81,10 +81,6 @@ public struct GroupDetailCore {
         
       case let .eventContainerViewButtonTapped(status):
         switch status {
-        case .beforeMyUpload:
-          // TODO: 사진 업로드 화면 보여줘야함
-          return .none
-          
         case .beforeMyVote:
           return .send(.moveToVote)
           
@@ -97,7 +93,7 @@ public struct GroupDetailCore {
             }
           )
           
-        case .noPastAndCurrentEvent, .noCurrentEvent, .eventCompleted:
+        case .beforeMyUpload, .noPastAndCurrentEvent, .noCurrentEvent, .eventCompleted:
           return .none
         }
         
