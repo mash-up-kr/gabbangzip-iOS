@@ -16,9 +16,7 @@ public struct CreateEventStartCore {
   public struct State: Equatable {
     public var groupName: String
     
-    public init(
-      groupName: String = ""
-    ) {
+    public init(groupName: String = "") {
       self.groupName = groupName
     }
   }
