@@ -11,9 +11,7 @@ import SwiftUI
 public struct GabbangzipDate: View {
   private var date: String
   
-  public init(
-    date: String
-  ) {
+  public init(date: String) {
     self.date = date
   }
   
