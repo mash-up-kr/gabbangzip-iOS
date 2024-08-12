@@ -138,17 +138,28 @@ public struct GroupDetailCore {
       case let .getGroupDetailResponse(.success(groupDetail)):
         state.groupDetail = groupDetail
         
-        if groupDetail.status == .eventCompleted {
-          return .run(
-            operation: { [state] send in
-              await send(.putEventVisit(Result {
-                try await self.eventAPIClient.putEventVisit(state.userInfo.accessToken, state.groupDetail.recentEventDetail.id)
-              }))
-            }
+        if state.groupDetail.status == .eventCompleted || state.groupDetail.status == .noCurrentEvent {
+          state.eventCompletedState = .init(
+            status: state.groupDetail.status,
+            capturedImage: nil,
+            keyword: state.groupDetail.keyword,
+            recentEvent: state.groupDetail.recentEventDetail.toRecentEvent,
+            s3BucketDomain: state.S3BucketDomain,
+            cardBackImage: state.groupDetail.cardBackImages
           )
-        } else {
-          return .none
+          
+          if state.groupDetail.status == .eventCompleted {
+            return .run(
+              operation: { [state] send in
+                await send(.putEventVisit(Result {
+                  try await self.eventAPIClient.putEventVisit(accessToken: state.userInfo.accessToken, eventID: state.groupDetail.recentEventDetail.id)
+                }))
+              }
+            )
+          }
         }
+        
+        return .none
         
       case .getGroupDetailResponse(.failure):
         return .none
