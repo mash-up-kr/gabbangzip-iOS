@@ -35,10 +35,9 @@ public struct VoteCompleteView: View {
         .padding(.bottom, 24)
       
       PhotoWithFrame(
-        frame: store.voteResult.keyword.frame,
-        backgroundColor: store.voteResult.keyword.backgroundColor,
-        imageURLString: store.imageURLString,
-        isBackgroundClear: true
+        frameShape: store.voteResult.keyword.frame,
+        foregroundColor: .white,
+        imageURLString: store.imageURLString
       )
       .padding(.horizontal, 76)
       

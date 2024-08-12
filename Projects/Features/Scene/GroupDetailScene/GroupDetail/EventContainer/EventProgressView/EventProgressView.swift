@@ -7,6 +7,7 @@
 //
 
 import DesignSystem
+import Lovebug
 import Models
 import NukeUI
 import SwiftUI
@@ -41,13 +42,12 @@ struct EventProgressView: View {
         .foregroundStyle(DesignSystem.Colors.gray80)
         .padding(.bottom, 16)
 
-      LazyImage(url: URL(string: groupDetail.cardFrontImageURL)) { state in
-        if let image = state.image {
-          image.resizable()
-            .aspectRatio(contentMode: .fit)
-            .padding(.horizontal, 76)
-        }
-      }
+      PhotoWithFrame(
+        frameShape: groupDetail.keyword.frame,
+        foregroundColor: .white,
+        imageURLString: groupDetail.cardFrontImageURL
+      )
+      .padding(.horizontal, 76)
       
       Text(groupDetail.statusDescription)
         .font(.caption12)
