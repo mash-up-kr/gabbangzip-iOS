@@ -124,7 +124,8 @@ public struct MyPageCore {
     case binding(BindingAction<State>)
     
     // View Action
-    case onAppear
+    case checkPushStatus
+    case checkCurrentVersion
     case showPopup(Bool, State.MyPagePopup?)
     case openSetting
     case logout
@@ -155,10 +156,9 @@ public struct MyPageCore {
       case .binding:
         return .none
         
-      case .onAppear:
+      case .checkPushStatus:
         return .run { send in
           let authorizationStatus = await userNotificationCenterClient.getAuthorizationStatus()
-          let version = try bundleClient.getCurrentVersion()
           var isPushOn: Bool
           
           switch authorizationStatus {
@@ -171,16 +171,15 @@ public struct MyPageCore {
           }
           
           await send(.updatePushStatus(isPushOn))
-          await send(.updateCurrentVersion(version))
         } catch: { error, send in
-          switch error {
-          case let alarmError as UserDefaultsClientError:
-            await send(.logError(MyPageCoreError(code: .alarmStatusError)))
-          case let bundleError as BundleClientError:
-            await send(.logError(MyPageCoreError(code: .failToGetCurrentVersion)))
-          default:
-            break
-          }
+          await send(.logError(MyPageCoreError(code: .failToGetCurrentVersion)))
+        }
+        
+      case .checkCurrentVersion:
+        return .run { send in
+          let version = try bundleClient.getCurrentVersion()
+          
+          await send(.updateCurrentVersion(version))
         }
         
       case let .showPopup(isPopupPresented, popupType):
