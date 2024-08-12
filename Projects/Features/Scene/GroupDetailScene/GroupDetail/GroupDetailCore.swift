@@ -91,7 +91,7 @@ public struct GroupDetailCore {
         return .run(
           operation: { [state] send in
             await send(.getGroupDetailResponse(Result {
-              try await self.groupAPIClient.getGroupDetail(accessToken: state.userInfo.accessToken, groupID: state.groupID)
+              try await self.groupAPIClient.getGroupDetail(state.userInfo.accessToken, state.groupID)
             }))
           }
         )
@@ -111,7 +111,7 @@ public struct GroupDetailCore {
           return .run(
             operation: { [state] send in
               await send(.postKook(Result {
-                try await self.pushAPIClienet.postKook(accessToken: state.userInfo.accessToken, eventID: state.groupDetail.recentEventDetail.id)
+                try await self.pushAPIClienet.postKook(state.userInfo.accessToken, state.groupDetail.recentEventDetail.id)
               }))
             }
           )
@@ -126,8 +126,8 @@ public struct GroupDetailCore {
             await send(.getUploadURLResponse(
               Result {
                 try await self.fileUploadAPIClient.getUploadURL(
-                  accessToken: state.userInfo.accessToken,
-                  fileExtension: firstPhotoInfo.fileExtension
+                  state.userInfo.accessToken,
+                  firstPhotoInfo.fileExtension
                 )
               },
               firstPhotoInfo)
@@ -142,7 +142,7 @@ public struct GroupDetailCore {
           return .run(
             operation: { [state] send in
               await send(.putEventVisit(Result {
-                try await self.eventAPIClient.putEventVisit(accessToken: state.userInfo.accessToken, eventID: state.groupDetail.recentEventDetail.id)
+                try await self.eventAPIClient.putEventVisit(state.userInfo.accessToken, state.groupDetail.recentEventDetail.id)
               }))
             }
           )
@@ -172,7 +172,7 @@ public struct GroupDetailCore {
           )
         }
         
-      case .getUploadURLResponse:
+      case .getUploadURLResponse(.failure):
         return .none
         
       case .uploadFileToPresignedURLResponse(.success):
@@ -195,6 +195,7 @@ public struct GroupDetailCore {
         
       case .moveToVote:
         return .none
+        
       case .eventCompleted:
         return .none
       }
