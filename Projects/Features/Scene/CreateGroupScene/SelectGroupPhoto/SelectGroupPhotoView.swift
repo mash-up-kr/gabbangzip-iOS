@@ -75,7 +75,9 @@ extension SelectGroupPhotoView {
     for keyword: GroupData.Keyword,
     selectedPhotosInfo: [PhotoInfo]
   ) -> some View {
-    let galleryIcon = selectedPhotosInfo.isEmpty ? DesignSystem.Icons.galleryPlusBlack : DesignSystem.Icons.galleryWhite
+    let galleryIcon = selectedPhotosInfo.isEmpty 
+    ? DesignSystem.Icons.galleryPlusBlack
+    : DesignSystem.Icons.galleryWhite
     
     return keyword.frame
       .resizable()
