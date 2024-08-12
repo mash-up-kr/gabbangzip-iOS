@@ -6,6 +6,7 @@
 //  Copyright © 2024 com.mashup.gabbangzip. All rights reserved.
 //
 
+import ComposableArchitecture
 import DesignSystem
 import Models
 import NukeUI
@@ -14,13 +15,16 @@ import SwiftUI
 struct EventContainerView: View {
   private let groupDetail: GroupDetailInfo
   private var action: (GroupData.Status) -> Void
+  @Bindable var store: StoreOf<GroupDetailCore>
   
   init(
     groupDetail: GroupDetailInfo,
-    action: @escaping (GroupData.Status) -> Void
+    action: @escaping (GroupData.Status) -> Void,
+    store: StoreOf<GroupDetailCore>
   ) {
     self.groupDetail = groupDetail
     self.action = action
+    self.store = store
   }
   
   var body: some View {
@@ -37,40 +41,13 @@ struct EventContainerView: View {
         }
       )
     case .eventCompleted:
-      // TODO: 그룹 목록 썸네일 뷰 + complete view 생성 필요
-      Rectangle()
-        .fill(.red)
+      EventCompletedView(store: store.scope(
+        state: \.eventCompletedState,
+        action: GroupDetailCore.Action.eventCompleted
+      ))
     case .noPastAndCurrentEvent:
       // 해당 화면에 접근 불가능한 조건
       EmptyView()
     }
   }
 }
-
-// 진행 중인 이벤트 없는 경우
-#Preview {
-  EventContainerView(
-    groupDetail: .noHistorymock,
-    action: {_ in }
-  )
-}
-
-//// 사진 등록 진행 중, 내 pic 등록 전
-//#Preview {
-//  EventContainerView(eventDetail: .mock(state: .beforeMyUpload)) { _ in }
-//}
-//
-//// 사진 등록 진행 중, 내 pic 등록 후
-//#Preview {
-//  EventContainerView(eventDetail: .mock(state: .afterMyUpload)) { _ in }
-//}
-//
-//// 투표 진행 중, 투표 완료 전
-//#Preview {
-//  EventContainerView(eventDetail: .mock(state: .beforeMyVote)) { _ in }
-//}
-//
-//// 투표 진행 중, 투표 완료 후
-//#Preview {
-//  EventContainerView(eventDetail: .mock(state: .afterMyVote)) { _ in }
-//}

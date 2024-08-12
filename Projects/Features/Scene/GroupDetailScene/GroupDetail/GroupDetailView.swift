@@ -34,9 +34,12 @@ public struct GroupDetailView: View {
         )
         
         EventContainerView(
-          groupDetail: store.groupDetail) { status in
+          groupDetail: store.groupDetail,
+          action: { status in
             store.send(.eventContainerViewButtonTapped(status))
-          }
+          },
+          store: store
+        )
       }
       .overlay(ViewHeightGeometry())
       .onPreferenceChange(ViewHeightKey.self) { height in

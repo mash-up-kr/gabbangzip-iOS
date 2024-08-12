@@ -17,11 +17,11 @@ public struct EventCompletedCore {
   @ObservableState
   public struct State: Equatable {
     var showActivityView: Bool
-    var capturedImage: UIImage
+    var capturedImage: UIImage?
     
     public init(
       showActivityView: Bool = false,
-      capturedImage: UIImage
+      capturedImage: UIImage?
     ) {
       self.showActivityView = showActivityView
       self.capturedImage = capturedImage
@@ -51,9 +51,7 @@ public struct EventCompletedCore {
         return .none
         
       case let .imageCaptured(image):
-        if let image {
-          state.capturedImage = image
-        }
+        state.capturedImage = image
         return .none
       }
     }

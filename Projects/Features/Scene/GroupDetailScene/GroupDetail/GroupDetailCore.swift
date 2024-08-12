@@ -18,6 +18,7 @@ public struct GroupDetailCore {
     var groupDetail: GroupDetailInfo
     var showSheet: Bool
     @Shared var userInfo: UserInfo
+    var eventCompletedState: EventCompletedCore.State = .init(capturedImage: nil)
 
     public init(
       groupID: Int,
@@ -54,6 +55,8 @@ public struct GroupDetailCore {
     case backToHome
     case moveToMemberList
     case moveToVote
+    
+    case eventCompleted(EventCompletedCore.Action)
   }
 
   public var body: some Reducer<State, Action> {
@@ -128,6 +131,8 @@ public struct GroupDetailCore {
         return .none
         
       case .moveToVote:
+        return .none
+      case .eventCompleted:
         return .none
       }
     }

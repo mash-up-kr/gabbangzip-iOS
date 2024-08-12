@@ -44,7 +44,7 @@ public struct GroupDetailInfo: Decodable {
     id: 0,
     name: "뛰뛰빵빵 가빵집🍞",
     keyword: .crew,
-    status: .beforeMyUpload,
+    status: .eventCompleted,
     statusDescription: "모든 그룹원이 사진을 올리면 투표가 시작돼요",
     recentEventDetail: .mock,
     cardFrontImageURL: "https://24ai.tech/ru/wp-content/uploads/sites/4/2023/10/01_product_1_sdelat-kvadratnym-scaled.jpg",
