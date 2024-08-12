@@ -43,7 +43,7 @@ struct EventContainerView: View {
     case .eventCompleted:
       EventCompletedView(store: store.scope(
         state: \.eventCompletedState,
-        action: GroupDetailCore.Action.eventCompleted
+        action: \.eventCompleted
       ))
     case .noPastAndCurrentEvent:
       // 해당 화면에 접근 불가능한 조건
