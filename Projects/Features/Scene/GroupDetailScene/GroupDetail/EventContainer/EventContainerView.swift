@@ -29,11 +29,7 @@ struct EventContainerView: View {
   
   var body: some View {
     switch groupDetail.status {
-    case .noCurrentEvent:
-      // TODO: 디자인 작업 완료 후 작업해야함
-      Rectangle()
-        .fill(.red)
-    case .beforeMyUpload, .afterMyUpload, .beforeMyVote, .afterMyVote: 
+    case .beforeMyUpload, .afterMyUpload, .beforeMyVote, .afterMyVote:
       EventProgressView(
         groupDetail: groupDetail,
         action: {
@@ -41,7 +37,7 @@ struct EventContainerView: View {
         },
         store: store
       )
-    case .eventCompleted:
+    case .noCurrentEvent, .eventCompleted:
       EventCompletedView(store: store.scope(
         state: \.eventCompletedState,
         action: \.eventCompleted

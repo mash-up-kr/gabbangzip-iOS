@@ -17,6 +17,7 @@ public struct EventCompletedCore {
 
   @ObservableState
   public struct State: Equatable {
+    var status: GroupData.Status
     var showActivityView: Bool
     var capturedImage: UIImage?
     var keyword: GroupData.Keyword
@@ -24,7 +25,12 @@ public struct EventCompletedCore {
     var s3BucketDomain: String
     var cardBackImage: [CardBackImage]
     
+    var isNeedTitle: Bool {
+      return status == .eventCompleted
+    }
+    
     public init(
+      status: GroupData.Status,
       showActivityView: Bool = false,
       capturedImage: UIImage?,
       keyword: GroupData.Keyword,
@@ -32,6 +38,7 @@ public struct EventCompletedCore {
       s3BucketDomain: String,
       cardBackImage: [CardBackImage]
     ) {
+      self.status = status
       self.showActivityView = showActivityView
       self.capturedImage = capturedImage
       self.keyword = keyword

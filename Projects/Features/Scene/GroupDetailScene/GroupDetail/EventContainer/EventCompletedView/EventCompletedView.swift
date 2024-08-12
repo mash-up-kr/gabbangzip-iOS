@@ -22,14 +22,15 @@ public struct EventCompletedView: View {
   
   public var body: some View {
     VStack(spacing: 0) {
-      Text("네컷 사진이 만들어졌어요!")
-        .foregroundStyle(DesignSystem.Colors.gray80)
-        .font(.head20)
-        .padding(.vertical, 16)
+      if store.isNeedTitle {
+        Text("네컷 사진이 만들어졌어요!")
+          .foregroundStyle(DesignSystem.Colors.gray80)
+          .font(.head20)
+      }
       
       completedImage
       .padding(.horizontal, 41.5)
-      .padding(.bottom, 16)
+      .padding(.vertical, 16)
       
       ShareButton(action: {
         store.send(.shareButtonTapped)
@@ -64,6 +65,7 @@ public struct EventCompletedView: View {
   EventCompletedView(
     store: Store(
       initialState: .init(
+        status: .noCurrentEvent,
         capturedImage: DesignSystem.Images.emptyUIImage,
         keyword: .company,
         recentEvent: RecentEvent(

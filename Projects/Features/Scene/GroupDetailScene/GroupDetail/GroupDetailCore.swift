@@ -21,7 +21,9 @@ public struct GroupDetailCore {
     var selectedPhotosInfo: [PhotoInfo]
     var isToastPresented: Bool
     var toastType: ToastType
+    // TODO: 수정 필요
     var eventCompletedState: EventCompletedCore.State = .init(
+      status: .noCurrentEvent,
       capturedImage: nil,
       keyword: .company,
       recentEvent:  RecentEvent(
