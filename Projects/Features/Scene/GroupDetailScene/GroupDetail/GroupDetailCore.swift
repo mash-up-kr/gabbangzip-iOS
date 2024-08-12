@@ -187,11 +187,10 @@ public struct GroupDetailCore {
         return .none
         
       case .uploadFileToPresignedURLResponse(.success):
-        // TODO: show toast
-        return .none
+        return .send(.showToast(.imageUploadSuccess))
         
       case .uploadFileToPresignedURLResponse(.failure):
-        return .none
+        return .send(.showToast(.imageUploadFail))
         
       case let .showToast(detailToastType):
         state.isToastPresented = true
