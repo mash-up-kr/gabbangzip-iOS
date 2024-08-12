@@ -50,6 +50,7 @@ public struct CreateEventProcessCore {
     case binding(BindingAction<State>)
     
     // View Action
+    case onAppear
     case textChanged(String)
     case selectedImagesChanged([PhotoInfo])
     case backButtonTapped
@@ -57,7 +58,6 @@ public struct CreateEventProcessCore {
     case popupRightButtonTapped
     case completeButtonTapped
     case deleteSelectedPhoto(Int)
-    case onAppear
     
     // Internal Action
     case changeIsEventNamedStatus(Bool)
@@ -75,6 +75,15 @@ public struct CreateEventProcessCore {
   public var body: some Reducer<State, Action> {
     Reduce { state, action in
       switch action {
+      case .onAppear:
+        let currentDate = {
+          let formatter = DateFormatter()
+          formatter.dateFormat = "YY/MM/dd"
+          return formatter.string(from: Date())
+        }()
+        state.currentDate = currentDate
+        return .none
+        
       case .binding:
         return .none
         
@@ -82,11 +91,7 @@ public struct CreateEventProcessCore {
         state.text = text
         
         return .run { [state] send in
-          if state.text.isEmpty {
-            await send(.changeIsEventNamedStatus(false))
-          } else {
-            await send(.changeIsEventNamedStatus(true))
-          }
+          await send(.changeIsEventNamedStatus(state.text.isEmpty))
         }
         
       case let .selectedImagesChanged(imagesData):
@@ -118,21 +123,6 @@ public struct CreateEventProcessCore {
         return .run { send in
           await send(.changeIsPhotoSelected)
         }
-        
-      case let .deleteSelectedPhoto(index):
-        state.selectedPhotosInfo.remove(at: index)
-        return .run { send in
-          await send(.changeIsPhotoSelected)
-        }
-        
-      case .onAppear:
-        let currentDate = {
-          let formatter = DateFormatter()
-          formatter.dateFormat = "YY/MM/dd"
-          return formatter.string(from: Date())
-        }()
-        state.currentDate = currentDate
-        return .none
         
       case let .changeIsEventNamedStatus(status):
         state.isEventNamed = status
