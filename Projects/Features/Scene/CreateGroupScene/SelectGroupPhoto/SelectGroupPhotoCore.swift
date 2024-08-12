@@ -24,7 +24,6 @@ public struct SelectGroupPhotoCore {
     var keyword: GroupData.Keyword
     var nextButtonType: ButtonType
     var selectedPhotosInfo: [PhotoInfo]
-    var fileExtension: String = ""
 
     public init(
       userInfo: @autoclosure () -> UserInfo = .defaultValue,
@@ -32,8 +31,7 @@ public struct SelectGroupPhotoCore {
       groupName: String,
       keyword: GroupData.Keyword,
       nextButtonType: ButtonType = .inactive,
-      selectedPhotosInfo: [PhotoInfo] = [],
-      fileExtension: String = ""
+      selectedPhotosInfo: [PhotoInfo] = []
     ) {
       self._userInfo = Shared(wrappedValue: userInfo(), .inMemory("userInfo"))
       self._isGroupListUpdated = Shared(wrappedValue: isGroupListUpdated(), .inMemory("isGroupListUpdated"))
@@ -41,7 +39,6 @@ public struct SelectGroupPhotoCore {
       self.nextButtonType = nextButtonType
       self.keyword = keyword
       self.selectedPhotosInfo = selectedPhotosInfo
-      self.fileExtension = fileExtension
     }
   }
 

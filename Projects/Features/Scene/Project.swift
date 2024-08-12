@@ -12,6 +12,7 @@ let project = Project.make(
       dependencies: [
         .project(target: .coreKit, projectPath: .core),
         .project(target: .designSystem, projectPath: .designSystem),
+        .project(target: .lovebug, projectPath: .scene),
         .external(externalDependency: .composableArchitecture),
         .external(externalDependency: .nukeUI),
         .external(externalDependency: .lottie)
@@ -38,6 +39,7 @@ let project = Project.make(
         .project(target: .models, projectPath: .core),
         .project(target: .coreKit, projectPath: .core),
         .project(target: .designSystem, projectPath: .designSystem),
+        .project(target: .lovebug, projectPath: .scene),
         .external(externalDependency: .composableArchitecture),
         .external(externalDependency: .nukeUI),
         .external(externalDependency: .lottie)
@@ -64,9 +66,21 @@ let project = Project.make(
       dependencies: [
         .project(target: .coreKit, projectPath: .core),
         .project(target: .designSystem, projectPath: .designSystem),
+        .project(target: .lovebug, projectPath: .scene),
         .external(externalDependency: .composableArchitecture),
         .external(externalDependency: .nukeUI),
         .external(externalDependency: .lottie),
+      ]
+    ),
+    .make(
+      name: "Lovebug",
+      product: .framework,
+      bundleId: "com.mashup.gabbangzip.lovebug",
+      sources: ["Lovebug/**"],
+      dependencies: [
+        .project(target: .models, projectPath: .core),
+        .project(target: .designSystem, projectPath: .designSystem),
+        .external(externalDependency: .nukeUI)
       ]
     )
   ]

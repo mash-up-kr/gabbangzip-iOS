@@ -8,7 +8,7 @@
 
 import SwiftUI
 
-public enum ToastType {
+public enum ToastType: Equatable {
   case onlyText(String)
   case textWithCheckIcon(String)
   case textWithInfoIcon(String)

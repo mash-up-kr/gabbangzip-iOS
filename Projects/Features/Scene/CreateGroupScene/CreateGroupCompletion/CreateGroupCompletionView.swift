@@ -8,6 +8,7 @@
 
 import ComposableArchitecture
 import DesignSystem
+import Lovebug
 import Models
 import NukeUI
 import SwiftUI
@@ -37,12 +38,12 @@ public struct CreateGroupCompletionView: View {
           Tag(type: store.createdGroupInfo.keyword.tagType)
           
           PhotoWithFrame(
-            frame: store.createdGroupInfo.keyword.frame,
-            backgroundColor: store.createdGroupInfo.keyword.backgroundColor,
-            imageURLString: store.createdGroupInfo.groupImageURL,
-            isBackgroundClear: false
+            frameShape: store.createdGroupInfo.keyword.frame,
+            foregroundColor: store.createdGroupInfo.keyword.foregroundColor,
+            imageURLString: store.imageURLString
           )
           .padding(.init(top: 24, leading: 30, bottom: 26, trailing: 30))
+            
           
           Text(store.createdGroupInfo.groupName)
             .font(.head20)

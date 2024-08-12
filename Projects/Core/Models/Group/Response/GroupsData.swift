@@ -8,7 +8,7 @@
 
 import Foundation
 
-public struct GroupsData: Decodable, Equatable {
+public struct GroupsData: Decodable {
   public let groups: [GroupData]
 }
 
@@ -21,7 +21,7 @@ extension GroupsData {
         keyword: .school,
         status: .noPastAndCurrentEvent,
         statusDescription: "최근 업데이트 2일전",
-        recentEvent: .init(name: nil, date: nil),
+        recentEvent: .init(id: 0, name: nil, date: nil),
         cardFrontImageURL: "https://picsum.photos/200",
         cardBackImages: [
           CardBackImage(
@@ -36,7 +36,7 @@ extension GroupsData {
         keyword: .company,
         status: .beforeMyVote,
         statusDescription: "최근 업데이트 3일전",
-        recentEvent: .init(name: "이벤트", date: "2024-07-03T01:22:28.673Z"),
+        recentEvent: .init(id: 1, name: "이벤트", date: "2024-07-03T01:22:28.673Z"),
         cardFrontImageURL: "https://picsum.photos/200",
         cardBackImages: [
           CardBackImage(
@@ -51,7 +51,7 @@ extension GroupsData {
         keyword: .crew,
         status: .afterMyVote,
         statusDescription: "최근 업데이트 1일전",
-        recentEvent: .init(name: "이벤트", date: "2024-07-03T01:22:28.673Z"),
+        recentEvent: .init(id: 2, name: "이벤트", date: "2024-07-03T01:22:28.673Z"),
         cardFrontImageURL: "https://picsum.photos/200",
         cardBackImages: [
           CardBackImage(
@@ -66,7 +66,7 @@ extension GroupsData {
         keyword: .exercise,
         status: .beforeMyUpload,
         statusDescription: "최근 업데이트 23432일전",
-        recentEvent: .init(name: "이벤트", date: "2024-07-03T01:22:28.673Z"),
+        recentEvent: .init(id: 3, name: "이벤트", date: "2024-07-03T01:22:28.673Z"),
         cardFrontImageURL: "https://picsum.photos/200",
         cardBackImages: [
           CardBackImage(
@@ -81,7 +81,7 @@ extension GroupsData {
         keyword: .network,
         status: .afterMyUpload,
         statusDescription: "최근 업데이트 2232일전",
-        recentEvent: .init(name: "이벤트", date: "2024-07-03T01:22:28.673Z"),
+        recentEvent: .init(id: 4, name: "이벤트", date: "2024-07-03T01:22:28.673Z"),
         cardFrontImageURL: "https://picsum.photos/200",
         cardBackImages: [
           CardBackImage(
@@ -96,7 +96,7 @@ extension GroupsData {
         keyword: .school,
         status: .noCurrentEvent,
         statusDescription: "최근 업데이트 21일전",
-        recentEvent: .init(name: "이벤트", date: "2024-07-03T01:22:28.673Z"),
+        recentEvent: .init(id: 5, name: "이벤트", date: "2024-07-03T01:22:28.673Z"),
         cardFrontImageURL: "https://picsum.photos/200",
         cardBackImages: [
           CardBackImage(
@@ -123,7 +123,7 @@ extension GroupsData {
         keyword: .school,
         status: .eventCompleted,
         statusDescription: "최근 업데이트 44일전",
-        recentEvent: .init(name: "이벤트", date: "2024-07-03T01:22:28.673Z"),
+        recentEvent: .init(id: 6, name: "이벤트", date: "2024-07-03T01:22:28.673Z"),
         cardFrontImageURL: "https://picsum.photos/200",
         cardBackImages: [
           CardBackImage(
