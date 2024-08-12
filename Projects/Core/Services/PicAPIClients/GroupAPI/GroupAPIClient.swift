@@ -35,6 +35,19 @@ extension GroupAPIClient: DependencyKey {
           )
         }
       },
+      getGroupDetail: { accessToken, groupID in
+        let route = GroupAPI.getGroupDetail(accessToken: accessToken, groupID: groupID)
+        let request = Request<SuccessResponse<GroupDetailInfo>>(route: route)
+        do {
+          let response = try await NetworkManager.shared.send(request)
+          return response.value.data
+        } catch {
+          throw GroupAPIClientError(
+            code: .failToGetGroupDetail,
+            underlying: error
+          )
+        }
+      },
       joinGroup: { accessToken, code in
         let route = GroupAPI.joinGroup(accessToken: accessToken, code: code)
         let request = Request<SuccessResponse<GroupID>>(route: route)
@@ -59,18 +72,6 @@ extension GroupAPIClient: DependencyKey {
             code: .failToGetMemberList,
             underlying: error
           )
-        },
-      getGroupDetail: { accessToken, groupID in
-        let route = GroupAPI.getGroupDetail(accessToken: accessToken, groupID: groupID)
-        let request = Request<SuccessResponse<GroupDetailInfo>>(route: route)
-        do {
-          let response = try await NetworkManager.shared.send(request)
-          return response.value.data
-        } catch {
-          throw GroupAPIClientError(
-            code: .failToGetGroupDetail,
-            underlying: error
-          )
         }
       }
     )
@@ -81,14 +82,14 @@ extension GroupAPIClient: DependencyKey {
       getGroups: { _ in
         return GroupsData.mock
       },
+      getGroupDetail: { _, _ in
+        return GroupDetailInfo.mock
+      },
       joinGroup: { _, _ in
         return GroupID.mock
       },
       getMemberList: { _, _ in
         return MemberList.mock
-      },
-      getGroupDetail: { _, _ in
-        return GroupDetailInfo.mock
       }
     )
   }
