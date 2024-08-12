@@ -230,8 +230,8 @@ public struct MyPageCore {
         
       case .withdraw:
         return .run(
-          operation: { send in
-            let accessToken = try await self.keyChainClient.readUserInfo().accessToken
+          operation: { [state] send in
+            let accessToken = state.userInfo.accessToken
             _ = try await self.authAPIClient.withdrawAccount(accessToken)
             try await keyChainClient.deleteUserInfo()
             await send(.backToLogin)
