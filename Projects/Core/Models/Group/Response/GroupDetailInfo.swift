@@ -42,7 +42,7 @@ public struct GroupDetailInfo: Decodable {
       CardBackImage(imageURL: "https://24ai.tech/ru/wp-content/uploads/sites/4/2023/10/01_product_1_sdelat-kvadratnym-scaled.jpg", frame: .ghost),
       CardBackImage(imageURL: "https://24ai.tech/ru/wp-content/uploads/sites/4/2023/10/01_product_1_sdelat-kvadratnym-scaled.jpg", frame: .sexy)
     ],
-    history: History.listMomck
+    history: History.listMock
   )
   
   public init(
@@ -84,10 +84,27 @@ public struct History: Decodable, Identifiable, Equatable {
     id: 0,
     name: "모임 이름1",
     date: "2024.06.01",
-    images: [.mock]
+    images: [
+      .init(
+        imageURL: "https://picsum.photos/200",
+        frame: .snowman
+      ),
+      .init(
+        imageURL: "https://picsum.photos/201",
+        frame: .snowman
+      ),
+      .init(
+        imageURL: "https://picsum.photos/202",
+        frame: .snowman
+      ),
+      .init(
+        imageURL: "https://picsum.photos/203",
+        frame: .snowman
+      )
+    ]
   )
   
-  public static let listMomck: [History] = [
+  public static let listMock: [History] = [
     .init(
       id: 0,
       name: "모임 이름1",

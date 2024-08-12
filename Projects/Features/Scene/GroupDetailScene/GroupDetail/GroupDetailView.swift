@@ -49,7 +49,11 @@ public struct GroupDetailView: View {
     .scrollIndicators(.hidden)
     .background(DesignSystem.Colors.gray20)
     .sheet(isPresented: $store.showSheet) {
-      HistoryGridView(histories: store.groupDetail.history)
+      HistoryGridView(
+        histories: store.groupDetail.history,
+        keyword: store.groupDetail.keyword,
+        s3BucketDomain: store.s3BucketDomain
+      )
         .presentationDetents([.height(bottomSheetHeight), .large])
         .interactiveDismissDisabled()
         .presentationDragIndicator(.hidden)

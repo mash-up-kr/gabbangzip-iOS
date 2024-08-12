@@ -12,10 +12,18 @@ import SwiftUI
 
 struct HistoryGridView: View {
   private let histories: [History]
-  private let columns = [GridItem(spacing: 33), GridItem(spacing: 33)]
+  private let keyword: GroupData.Keyword
+  private let s3BucketDomain: String
+  private let columns = [GridItem(spacing: 9), GridItem(spacing: 9)]
   
-  init(histories: [History]) {
+  init(
+    histories: [History],
+    keyword: GroupData.Keyword,
+    s3BucketDomain: String
+  ) {
     self.histories = histories
+    self.keyword = keyword
+    self.s3BucketDomain = s3BucketDomain
   }
   
   var body: some View {
@@ -46,7 +54,11 @@ struct HistoryGridView: View {
   private var galleryView: some View {
     LazyVGrid(columns: columns, spacing: 16) {
       ForEach(histories) { history in
-        HistoryItemView(history: history)
+        HistoryItemView(
+          history: history,
+          keyword: keyword,
+          s3BucketDomain: s3BucketDomain
+        )
       }
     }
     .padding(.top, 17)
@@ -67,11 +79,9 @@ struct HistoryGridView: View {
 }
 
 #Preview {
-  Group {
-    HistoryGridView(histories: [])
-  }
-}
-
-#Preview {
-  HistoryGridView(histories: History.listMomck)
+  HistoryGridView(
+    histories: History.listMock,
+    keyword: .company,
+    s3BucketDomain: ""
+  )
 }
