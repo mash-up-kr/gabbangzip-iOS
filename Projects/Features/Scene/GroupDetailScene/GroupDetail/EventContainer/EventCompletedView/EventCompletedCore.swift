@@ -7,6 +7,7 @@
 //
 
 import ComposableArchitecture
+import Models
 import SwiftUI
 import UIKit
 
@@ -18,13 +19,25 @@ public struct EventCompletedCore {
   public struct State: Equatable {
     var showActivityView: Bool
     var capturedImage: UIImage?
+    var keyword: GroupData.Keyword
+    var recentEvent: RecentEvent
+    var s3BucketDomain: String
+    var cardBackImage: [CardBackImage]
     
     public init(
       showActivityView: Bool = false,
-      capturedImage: UIImage?
+      capturedImage: UIImage?,
+      keyword: GroupData.Keyword,
+      recentEvent: RecentEvent,
+      s3BucketDomain: String,
+      cardBackImage: [CardBackImage]
     ) {
       self.showActivityView = showActivityView
       self.capturedImage = capturedImage
+      self.keyword = keyword
+      self.recentEvent = recentEvent
+      self.s3BucketDomain = s3BucketDomain
+      self.cardBackImage = cardBackImage
     }
   }
 

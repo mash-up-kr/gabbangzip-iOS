@@ -7,6 +7,7 @@
 //
 
 import ComposableArchitecture
+import DesignSystem
 import Models
 import Services
 
@@ -18,7 +19,22 @@ public struct GroupDetailCore {
     var groupDetail: GroupDetailInfo
     var showSheet: Bool
     @Shared var userInfo: UserInfo
-    var eventCompletedState: EventCompletedCore.State = .init(capturedImage: nil)
+    var eventCompletedState: EventCompletedCore.State = .init(
+      capturedImage: nil,
+      keyword: .company,
+      recentEvent:  RecentEvent(
+        id: 0,
+        name: "테스트",
+        date: "2024-07-05T00:00:00Z"
+      ),
+      s3BucketDomain: "",
+      cardBackImage: [
+        CardBackImage(imageURL: "https://24ai.tech/ru/wp-content/uploads/sites/4/2023/10/01_product_1_sdelat-kvadratnym-scaled.jpg", frame: .clover),
+        CardBackImage(imageURL: "https://24ai.tech/ru/wp-content/uploads/sites/4/2023/10/01_product_1_sdelat-kvadratnym-scaled.jpg", frame: .flower),
+        CardBackImage(imageURL: "https://24ai.tech/ru/wp-content/uploads/sites/4/2023/10/01_product_1_sdelat-kvadratnym-scaled.jpg", frame: .ghost),
+        CardBackImage(imageURL: "https://24ai.tech/ru/wp-content/uploads/sites/4/2023/10/01_product_1_sdelat-kvadratnym-scaled.jpg", frame: .hamburger)
+      ]
+    )
 
     public init(
       groupID: Int,

@@ -8,6 +8,7 @@
 
 import ComposableArchitecture
 import DesignSystem
+import Lovebug
 import SwiftUI
 
 struct GroupContentView: View {
@@ -34,7 +35,7 @@ struct GroupContentView: View {
           backContent: {
             PhotoCard(status: store.keyword.convertToPhotoCardStatus()) {
               PhotoCardBackView(
-                recentEventData: store.recentEventDate,
+                recentEventDate: store.recentEventDate,
                 cardBackImages: store.cardBackImages ?? [],
                 recentEventName: store.recentEventName,
                 foregroundColor: store.keyword.foregroundColor,

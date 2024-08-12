@@ -9,6 +9,8 @@
 import Common
 import ComposableArchitecture
 import DesignSystem
+import Lovebug
+import Models
 import SwiftUI
 
 public struct EventCompletedView: View {
@@ -46,15 +48,14 @@ public struct EventCompletedView: View {
   }
   
   var completedImage: some View {
-    // TODO: loveBug 머지 후 수정 필요
-    PhotoCard(status: .crew) {
-      DesignSystem.Icons.hamburgerFrame
-        .resizable()
-        .aspectRatio(contentMode: .fit)
-        .foregroundStyle(DesignSystem.Colors.mayaBlue30)
-        .background(DesignSystem.Colors.gray0)
-        .padding(.horizontal, 30)
-        .padding(.vertical, 44)
+    PhotoCard(status: store.keyword.convertToPhotoCardStatus()) {
+      PhotoCardBackView(
+        recentEventDate: store.recentEvent.date ?? "",
+        cardBackImages: store.cardBackImage,
+        recentEventName: store.recentEvent.name ?? "",
+        foregroundColor: store.keyword.foregroundColor,
+        s3BucketDomain: store.s3BucketDomain
+      )
     }
   }
 }
@@ -63,7 +64,20 @@ public struct EventCompletedView: View {
   EventCompletedView(
     store: Store(
       initialState: .init(
-        capturedImage: DesignSystem.Images.emptyUIImage
+        capturedImage: DesignSystem.Images.emptyUIImage,
+        keyword: .company,
+        recentEvent: RecentEvent(
+          id: 0,
+          name: "테스트",
+          date: "2024.07.01"
+        ),
+        s3BucketDomain: "",
+        cardBackImage: [
+          CardBackImage(imageURL: "https://24ai.tech/ru/wp-content/uploads/sites/4/2023/10/01_product_1_sdelat-kvadratnym-scaled.jpg", frame: .clover),
+          CardBackImage(imageURL: "https://24ai.tech/ru/wp-content/uploads/sites/4/2023/10/01_product_1_sdelat-kvadratnym-scaled.jpg", frame: .flower),
+          CardBackImage(imageURL: "https://24ai.tech/ru/wp-content/uploads/sites/4/2023/10/01_product_1_sdelat-kvadratnym-scaled.jpg", frame: .ghost),
+          CardBackImage(imageURL: "https://24ai.tech/ru/wp-content/uploads/sites/4/2023/10/01_product_1_sdelat-kvadratnym-scaled.jpg", frame: .hamburger)
+        ]
       ),
       reducer: EventCompletedCore.init
     )

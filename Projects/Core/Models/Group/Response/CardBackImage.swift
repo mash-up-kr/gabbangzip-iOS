@@ -12,6 +12,11 @@ public struct CardBackImage: Decodable, Hashable {
   public let imageURL: String
   public let frame: Frame
   
+  public init(imageURL: String, frame: Frame) {
+    self.imageURL = imageURL
+    self.frame = frame
+  }
+  
   enum CodingKeys: String, CodingKey {
     case imageURL = "image_url"
     case frame
