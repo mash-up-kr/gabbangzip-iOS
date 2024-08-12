@@ -88,7 +88,7 @@ extension GroupAPIClient: DependencyKey {
         return MemberList.mock
       },
       getGroupDetail: { _, _ in
-        return GroupDetailInfo.historymock
+        return GroupDetailInfo.mock
       }
     )
   }

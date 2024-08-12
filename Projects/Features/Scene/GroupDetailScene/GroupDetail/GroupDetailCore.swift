@@ -10,6 +10,7 @@ import ComposableArchitecture
 import DesignSystem
 import Models
 import Services
+import UIKit
 
 @Reducer
 public struct GroupDetailCore {
@@ -22,7 +23,13 @@ public struct GroupDetailCore {
     var isToastPresented: Bool
     var toastType: ToastType
     var s3BucketDomain: String
-    var eventCompletedState: EventCompletedCore.State
+    var showActivityView: Bool
+    var capturedImage: UIImage?
+    
+    var isNeedEventCompletedTitle: Bool {
+      return groupDetail.status == .eventCompleted
+    }
+    
     @Shared var userInfo: UserInfo
 
     public init(
@@ -33,7 +40,8 @@ public struct GroupDetailCore {
       isToastPresented: Bool = false,
       toastType: ToastType,
       s3BucketDomain: String,
-      eventCompletedState: EventCompletedCore.State = .init(),
+      showActivityView: Bool,
+      capturedImage: UIImage?,
       userInfo: @autoclosure () -> UserInfo = .defaultValue
     ) {
       self.groupID = groupID
@@ -43,7 +51,8 @@ public struct GroupDetailCore {
       self.isToastPresented = isToastPresented
       self.toastType = toastType
       self.s3BucketDomain = s3BucketDomain
-      self.eventCompletedState = eventCompletedState
+      self.showActivityView = showActivityView
+      self.capturedImage = capturedImage
       self._userInfo = Shared(wrappedValue: userInfo(), .inMemory("userInfo"))
     }
   }
@@ -75,8 +84,6 @@ public struct GroupDetailCore {
     case backToHome
     case moveToMemberList
     case moveToVote
-    
-    case eventCompleted(EventCompletedCore.Action)
   }
 
   public var body: some Reducer<State, Action> {
@@ -87,6 +94,7 @@ public struct GroupDetailCore {
       case .binding:
         return .none
         
+      // View Action
       case .onAppear:
         return .run(
           operation: { [state] send in
@@ -106,7 +114,6 @@ public struct GroupDetailCore {
         switch status {
         case .beforeMyVote:
           return .send(.moveToVote)
-          
         case .afterMyVote, .afterMyUpload:
           return .run(
             operation: { [state] send in
@@ -115,8 +122,7 @@ public struct GroupDetailCore {
               }))
             }
           )
-          
-        case .beforeMyUpload, .noPastAndCurrentEvent, .noCurrentEvent, .eventCompleted:
+        default:
           return .none
         }
         
@@ -135,31 +141,24 @@ public struct GroupDetailCore {
           }
         }
         
-      case let .getGroupDetailResponse(.success(groupDetail)):
-        state.groupDetail = groupDetail
+      // Internal Action
+      case let .getGroupDetailResponse(.success(groupDetailInfo)):
+        state.groupDetail = groupDetailInfo
         
-        if state.groupDetail.status == .eventCompleted || state.groupDetail.status == .noCurrentEvent {
-          state.eventCompletedState = .init(
-            status: state.groupDetail.status,
-            capturedImage: nil,
-            keyword: state.groupDetail.keyword,
-            recentEvent: state.groupDetail.recentEventDetail.toRecentEvent,
-            s3BucketDomain: state.S3BucketDomain,
-            cardBackImage: state.groupDetail.cardBackImages
+        if state.groupDetail.status == .eventCompleted {
+          return .run(
+            operation: { [state] send in
+              await send(.putEventVisit(Result {
+                try await self.eventAPIClient.putEventVisit(
+                  accessToken: state.userInfo.accessToken,
+                  eventID: state.groupDetail.recentEventDetail.id
+                )
+              }))
+            }
           )
-          
-          if state.groupDetail.status == .eventCompleted {
-            return .run(
-              operation: { [state] send in
-                await send(.putEventVisit(Result {
-                  try await self.eventAPIClient.putEventVisit(accessToken: state.userInfo.accessToken, eventID: state.groupDetail.recentEventDetail.id)
-                }))
-              }
-            )
-          }
+        } else {
+          return .none
         }
-        
-        return .none
         
       case .getGroupDetailResponse(.failure):
         return .none
@@ -171,20 +170,20 @@ public struct GroupDetailCore {
         return .none
         
       case let .getUploadURLResponse(.success(fileUploadInfo), photoInfo):
-        return .run { send in
-          await send(.uploadFileToPresignedURLResponse(
-            Result {
+        return .run(
+          operation: { send in
+            await send(.uploadFileToPresignedURLResponse(Result {
               try await self.fileUploadAPIClient.uploadFile(
                 uploadURL: fileUploadInfo.uploadURL,
                 data: photoInfo.data,
                 fileExtension: photoInfo.fileExtension
               )
-            })
-          )
-        }
+            }))
+          }
+        )
         
-      case .getUploadURLResponse(.failure):
-        return .none
+      case .getUploadURLResponse(.failure, _):
+        return .send(.showToast(.imageUploadFail))
         
       case .uploadFileToPresignedURLResponse(.success):
         return .send(.showToast(.imageUploadSuccess))
@@ -197,6 +196,7 @@ public struct GroupDetailCore {
         state.toastType = detailToastType.type
         return .none
         
+      // Route Action
       case .backToHome:
         return .none
         
@@ -204,9 +204,6 @@ public struct GroupDetailCore {
         return .none
         
       case .moveToVote:
-        return .none
-        
-      case .eventCompleted:
         return .none
       }
     }

@@ -38,10 +38,7 @@ struct EventContainerView: View {
         store: store
       )
     case .noCurrentEvent, .eventCompleted:
-      EventCompletedView(store: store.scope(
-        state: \.eventCompletedState,
-        action: \.eventCompleted
-      ))
+      EventCompletedView(store: store)
     case .noPastAndCurrentEvent:
       // 해당 화면에 접근 불가능한 조건
       EmptyView()

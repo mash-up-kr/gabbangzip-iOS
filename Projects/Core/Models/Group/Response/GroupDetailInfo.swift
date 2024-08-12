@@ -28,7 +28,7 @@ public struct GroupDetailInfo: Decodable {
     case history
   }
   
-  public static let noHistorymock: GroupDetailInfo = .init(
+  public static let mock: GroupDetailInfo = .init(
     id: 0,
     name: "뛰뛰빵빵 가빵집🍞",
     keyword: .crew,
@@ -36,19 +36,12 @@ public struct GroupDetailInfo: Decodable {
     statusDescription: "모든 그룹원이 사진을 올리면 투표가 시작돼요",
     recentEventDetail: .mock,
     cardFrontImageURL: "https://24ai.tech/ru/wp-content/uploads/sites/4/2023/10/01_product_1_sdelat-kvadratnym-scaled.jpg",
-    cardBackImages: [],
-    history: []
-  )
-  
-  public static let historymock: GroupDetailInfo = .init(
-    id: 0,
-    name: "뛰뛰빵빵 가빵집🍞",
-    keyword: .crew,
-    status: .eventCompleted,
-    statusDescription: "모든 그룹원이 사진을 올리면 투표가 시작돼요",
-    recentEventDetail: .mock,
-    cardFrontImageURL: "https://24ai.tech/ru/wp-content/uploads/sites/4/2023/10/01_product_1_sdelat-kvadratnym-scaled.jpg",
-    cardBackImages: [],
+    cardBackImages: [
+      CardBackImage(imageURL: "https://24ai.tech/ru/wp-content/uploads/sites/4/2023/10/01_product_1_sdelat-kvadratnym-scaled.jpg", frame: .clover),
+      CardBackImage(imageURL: "https://24ai.tech/ru/wp-content/uploads/sites/4/2023/10/01_product_1_sdelat-kvadratnym-scaled.jpg", frame: .flower),
+      CardBackImage(imageURL: "https://24ai.tech/ru/wp-content/uploads/sites/4/2023/10/01_product_1_sdelat-kvadratnym-scaled.jpg", frame: .ghost),
+      CardBackImage(imageURL: "https://24ai.tech/ru/wp-content/uploads/sites/4/2023/10/01_product_1_sdelat-kvadratnym-scaled.jpg", frame: .sexy)
+    ],
     history: History.listMomck
   )
   

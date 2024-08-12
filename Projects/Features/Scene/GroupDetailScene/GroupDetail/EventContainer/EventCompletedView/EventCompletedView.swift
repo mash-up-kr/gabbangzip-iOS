@@ -14,15 +14,15 @@ import Models
 import SwiftUI
 
 public struct EventCompletedView: View {
-  @Bindable var store: StoreOf<EventCompletedCore>
+  @Bindable var store: StoreOf<GroupDetailCore>
   
-  public init(store: StoreOf<EventCompletedCore>) {
+  public init(store: StoreOf<GroupDetailCore>) {
     self.store = store
   }
   
   public var body: some View {
     VStack(spacing: 0) {
-      if store.isNeedTitle {
+      if store.isNeedEventCompletedTitle {
         Text("네컷 사진이 만들어졌어요!")
           .foregroundStyle(DesignSystem.Colors.gray80)
           .font(.head20)
@@ -33,9 +33,9 @@ public struct EventCompletedView: View {
       .padding(.vertical, 16)
       
       ShareButton(action: {
-        store.send(.shareButtonTapped)
+//        store.send(.shareButtonTapped)
         captureView(of: completedImage) { capturedImage in
-          store.send(.imageCaptured(capturedImage))
+//          store.send(.imageCaptured(capturedImage))
         }
       })
         .padding(.bottom, 32)
@@ -49,12 +49,12 @@ public struct EventCompletedView: View {
   }
   
   var completedImage: some View {
-    PhotoCard(status: store.keyword.convertToPhotoCardStatus()) {
+    PhotoCard(status: store.groupDetail.keyword.convertToPhotoCardStatus()) {
       PhotoCardBackView(
-        recentEventDate: store.recentEvent.date ?? "",
-        cardBackImages: store.cardBackImage,
-        recentEventName: store.recentEvent.name ?? "",
-        foregroundColor: store.keyword.foregroundColor,
+        recentEventDate: store.groupDetail.recentEventDetail.date,
+        cardBackImages: store.groupDetail.cardBackImages,
+        recentEventName: store.groupDetail.recentEventDetail.name,
+        foregroundColor: store.groupDetail.keyword.foregroundColor,
         s3BucketDomain: store.s3BucketDomain
       )
     }
@@ -63,25 +63,18 @@ public struct EventCompletedView: View {
 
 #Preview {
   EventCompletedView(
-    store: Store(
+    store: .init(
       initialState: .init(
-        status: .noCurrentEvent,
-        capturedImage: DesignSystem.Images.emptyUIImage,
-        keyword: .company,
-        recentEvent: RecentEvent(
-          id: 0,
-          name: "테스트",
-          date: "2024.07.01"
-        ),
+        groupID: 0,
+        groupDetail: .mock,
+        selectedPhotosInfo: Array<PhotoInfo>(),
+        toastType: .onlyText(""),
         s3BucketDomain: "",
-        cardBackImage: [
-          CardBackImage(imageURL: "https://24ai.tech/ru/wp-content/uploads/sites/4/2023/10/01_product_1_sdelat-kvadratnym-scaled.jpg", frame: .clover),
-          CardBackImage(imageURL: "https://24ai.tech/ru/wp-content/uploads/sites/4/2023/10/01_product_1_sdelat-kvadratnym-scaled.jpg", frame: .flower),
-          CardBackImage(imageURL: "https://24ai.tech/ru/wp-content/uploads/sites/4/2023/10/01_product_1_sdelat-kvadratnym-scaled.jpg", frame: .ghost),
-          CardBackImage(imageURL: "https://24ai.tech/ru/wp-content/uploads/sites/4/2023/10/01_product_1_sdelat-kvadratnym-scaled.jpg", frame: .hamburger)
-        ]
+        showActivityView: false,
+        capturedImage: nil
       ),
-      reducer: EventCompletedCore.init
+      reducer: {
+        GroupDetailCore.init()
+      })
     )
-  )
 }

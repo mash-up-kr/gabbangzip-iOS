@@ -69,10 +69,12 @@ public struct GroupDetailView: View {
     store: Store(
       initialState: .init(
         groupID: 0,
-        groupDetail: .noHistorymock,
+        groupDetail: .mock,
         selectedPhotosInfo: [],
         toastType: .onlyText(""),
-        s3BucketDomain: ""
+        s3BucketDomain: "",
+        showActivityView: false,
+        capturedImage: nil
       ),
       reducer: GroupDetailCore.init
     )
