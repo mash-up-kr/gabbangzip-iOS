@@ -71,7 +71,8 @@ public struct GroupDetailView: View {
         groupID: 0,
         groupDetail: .noHistorymock,
         selectedPhotosInfo: [],
-        toastType: .onlyText("")
+        toastType: .onlyText(""),
+        s3BucketDomain: ""
       ),
       reducer: GroupDetailCore.init
     )

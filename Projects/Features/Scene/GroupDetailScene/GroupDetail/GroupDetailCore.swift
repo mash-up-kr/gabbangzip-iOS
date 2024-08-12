@@ -21,24 +21,8 @@ public struct GroupDetailCore {
     var selectedPhotosInfo: [PhotoInfo]
     var isToastPresented: Bool
     var toastType: ToastType
-    // TODO: 수정 필요
-    var eventCompletedState: EventCompletedCore.State = .init(
-      status: .noCurrentEvent,
-      capturedImage: nil,
-      keyword: .company,
-      recentEvent:  RecentEvent(
-        id: 0,
-        name: "테스트",
-        date: "2024-07-05T00:00:00Z"
-      ),
-      s3BucketDomain: "",
-      cardBackImage: [
-        CardBackImage(imageURL: "https://24ai.tech/ru/wp-content/uploads/sites/4/2023/10/01_product_1_sdelat-kvadratnym-scaled.jpg", frame: .clover),
-        CardBackImage(imageURL: "https://24ai.tech/ru/wp-content/uploads/sites/4/2023/10/01_product_1_sdelat-kvadratnym-scaled.jpg", frame: .flower),
-        CardBackImage(imageURL: "https://24ai.tech/ru/wp-content/uploads/sites/4/2023/10/01_product_1_sdelat-kvadratnym-scaled.jpg", frame: .ghost),
-        CardBackImage(imageURL: "https://24ai.tech/ru/wp-content/uploads/sites/4/2023/10/01_product_1_sdelat-kvadratnym-scaled.jpg", frame: .hamburger)
-      ]
-    )
+    var s3BucketDomain: String
+    var eventCompletedState: EventCompletedCore.State
     @Shared var userInfo: UserInfo
 
     public init(
@@ -48,6 +32,8 @@ public struct GroupDetailCore {
       selectedPhotosInfo: [PhotoInfo],
       isToastPresented: Bool = false,
       toastType: ToastType,
+      s3BucketDomain: String,
+      eventCompletedState: EventCompletedCore.State = .init(),
       userInfo: @autoclosure () -> UserInfo = .defaultValue
     ) {
       self.groupID = groupID
@@ -56,6 +42,8 @@ public struct GroupDetailCore {
       self.selectedPhotosInfo = selectedPhotosInfo
       self.isToastPresented = isToastPresented
       self.toastType = toastType
+      self.s3BucketDomain = s3BucketDomain
+      self.eventCompletedState = eventCompletedState
       self._userInfo = Shared(wrappedValue: userInfo(), .inMemory("userInfo"))
     }
   }
@@ -174,14 +162,13 @@ public struct GroupDetailCore {
       case let .getUploadURLResponse(.success(fileUploadInfo), photoInfo):
         return .run { send in
           await send(.uploadFileToPresignedURLResponse(
-              Result {
-                try await self.fileUploadAPIClient.uploadFile(
-                  uploadURL: fileUploadInfo.uploadURL,
-                  data: photoInfo.data,
-                  fileExtension: photoInfo.fileExtension
-                )
-              }
-            )
+            Result {
+              try await self.fileUploadAPIClient.uploadFile(
+                uploadURL: fileUploadInfo.uploadURL,
+                data: photoInfo.data,
+                fileExtension: photoInfo.fileExtension
+              )
+            })
           )
         }
         

@@ -152,4 +152,12 @@ public struct RecentEventDetail: Codable {
     date: "2024.11.03",
     deadline: "6월 14일 월요일 12시 37분"
   )
+  
+  public var toRecentEvent: RecentEvent {
+    RecentEvent(
+      id: id,
+      name: name,
+      date: date
+    )
+  }
 }

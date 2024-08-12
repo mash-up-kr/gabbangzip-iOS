@@ -30,13 +30,13 @@ public struct EventCompletedCore {
     }
     
     public init(
-      status: GroupData.Status,
+      status: GroupData.Status = .noCurrentEvent,
       showActivityView: Bool = false,
-      capturedImage: UIImage?,
-      keyword: GroupData.Keyword,
-      recentEvent: RecentEvent,
-      s3BucketDomain: String,
-      cardBackImage: [CardBackImage]
+      capturedImage: UIImage? = nil,
+      keyword: GroupData.Keyword = .company,
+      recentEvent: RecentEvent = .init(id: 0, name: nil, date: nil),
+      s3BucketDomain: String = "",
+      cardBackImage: [CardBackImage] = []
     ) {
       self.status = status
       self.showActivityView = showActivityView
