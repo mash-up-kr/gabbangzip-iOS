@@ -54,6 +54,11 @@ public struct GroupDetailView: View {
         .presentationDragIndicator(.hidden)
         .presentationBackgroundInteraction(.enabled(upThrough: .large))
      }
+    .toast(
+      isPresented: $store.isToastPresented,
+      type: store.toastType,
+      time: 1.0
+    )
     .onAppear { store.send(.onAppear) }
     .background(DesignSystem.Colors.gray20)
   }
@@ -64,7 +69,9 @@ public struct GroupDetailView: View {
     store: Store(
       initialState: .init(
         groupID: 0,
-        groupDetail: .noHistorymock
+        groupDetail: .noHistorymock,
+        selectedPhotosInfo: [],
+        toastType: .onlyText("")
       ),
       reducer: GroupDetailCore.init
     )

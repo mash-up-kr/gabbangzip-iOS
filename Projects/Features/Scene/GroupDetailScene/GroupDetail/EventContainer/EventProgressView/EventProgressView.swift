@@ -6,6 +6,7 @@
 //  Copyright © 2024 com.mashup.gabbangzip. All rights reserved.
 //
 
+import ComposableArchitecture
 import DesignSystem
 import Lovebug
 import Models
@@ -15,14 +16,16 @@ import SwiftUI
 struct EventProgressView: View {
   private let groupDetail: GroupDetailInfo
   private var action: () -> Void
-  @State var photos: [PhotoInfo] = []
+  @Bindable var store: StoreOf<GroupDetailCore>
   
   init(
     groupDetail: GroupDetailInfo,
-    action: @escaping () -> Void
+    action: @escaping () -> Void,
+    store: StoreOf<GroupDetailCore>
   ) {
     self.groupDetail = groupDetail
     self.action = action
+    self.store = store
   }
   
   var body: some View {
@@ -56,7 +59,7 @@ struct EventProgressView: View {
       
       if groupDetail.status == .beforeMyUpload {
         GabbangzipPhotoPicker(
-          selectedPhotosInfo: $photos,
+          selectedPhotosInfo: $store.selectedPhotosInfo,
           isPresentedError: .constant(false),
           maxSelectedCount: .custom(4)) {
             SmallButton(
@@ -93,13 +96,4 @@ struct EventProgressView: View {
       return .stabbing
     }
   }
-}
-
-#Preview {
-  EventProgressView(
-    groupDetail: .noHistorymock,
-    action: {
-      print("tapped")
-    }
-  )
 }

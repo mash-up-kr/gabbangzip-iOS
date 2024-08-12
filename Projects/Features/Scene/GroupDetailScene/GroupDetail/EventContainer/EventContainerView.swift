@@ -38,7 +38,8 @@ struct EventContainerView: View {
         groupDetail: groupDetail,
         action: {
           action(groupDetail.status)
-        }
+        },
+        store: store
       )
     case .eventCompleted:
       EventCompletedView(store: store.scope(
