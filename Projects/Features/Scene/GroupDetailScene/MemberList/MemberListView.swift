@@ -28,22 +28,22 @@ struct MemberListView: View {
       )
       .padding(.bottom, 8)
       
-      ForEach(store.memberList, id: \.self) { member in
+      ForEach(store.memberList.members, id: \.id) { member in
         MemberView(
           member: member,
-          groupCategory: store.groupCategory
+          groupKeyword: store.groupKeyword
         )
       }
 
       VStack(spacing: 0) {
-        Text("그룹원을 추가하고 싶으세요?")
+        Text(store.inviteMemberMessage)
           .font(.body14)
           .foregroundStyle(DesignSystem.Colors.gray60)
           .padding(.bottom, 12)
         
         SmallButton(
-          type: .active,
-          smallButtonContentType: .copyLink
+          type: store.isFullCapacity ? .inactive : .active,
+          smallButtonContentType: .copyCode
         ) {
           store.send(.copyLinkButtonTapped)
         }
@@ -52,6 +52,7 @@ struct MemberListView: View {
       
       Spacer()
     }
+    .onAppear { store.send(.onAppear) }
   }
 }
 
@@ -59,9 +60,9 @@ struct MemberListView: View {
   MemberListView(
     store: Store(
       initialState: .init(
-        memberList: Member.mockList,
-        inviteLink: "링크",
-        groupCategory: .club
+        groupID: 0,
+        memberList: .mock,
+        groupKeyword: .company
       ),
       reducer: MemberListCore.init
     )
