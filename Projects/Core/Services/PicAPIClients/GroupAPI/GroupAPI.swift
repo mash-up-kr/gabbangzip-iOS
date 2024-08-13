@@ -19,8 +19,10 @@ public enum GroupAPI {
 extension GroupAPI: RouteType {
   public var path: String {
     switch self {
-    case .getGroups, .getGroupDetail:
+    case .getGroups:
       return "/api/v1/groups"
+    case let .getGroupDetail(_, groupID):
+      return "/api/v1/groups/\(groupID)"
     case .joinGroup:
       return "/api/v1/groups/join"
     case let .getMemberList(_, groupID):
@@ -39,10 +41,8 @@ extension GroupAPI: RouteType {
   
   public var query: [(String, String?)]? {
     switch self {
-    case .getGroups, .joinGroup, .getMemberList:
+    case .getGroups, .joinGroup, .getMemberList, .getGroupDetail:
       return nil
-    case let .getGroupDetail(_, groupID):
-      return [("groupId", String(groupID))]
     }
   }
   
