@@ -15,7 +15,7 @@ import SwiftUI
 struct EventContainerView: View {
   private let groupDetail: GroupDetailInfo
   private var action: (GroupData.Status) -> Void
-  @Bindable var store: StoreOf<GroupDetailCore>
+  private var store: StoreOf<GroupDetailCore>
   
   init(
     groupDetail: GroupDetailInfo,

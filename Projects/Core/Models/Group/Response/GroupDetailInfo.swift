@@ -133,7 +133,7 @@ public struct History: Decodable, Identifiable, Equatable {
   ]
 }
 
-public struct RecentEventDetail: Codable {
+public struct RecentEventDetail: Decodable {
   public let id: Int
   public let name: String
   public let date: String

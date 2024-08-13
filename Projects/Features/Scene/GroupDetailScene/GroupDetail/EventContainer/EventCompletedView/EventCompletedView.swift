@@ -33,8 +33,10 @@ public struct EventCompletedView: View {
       .padding(.vertical, 16)
       
       ShareButton(action: {
+        // TODO
 //        store.send(.shareButtonTapped)
         captureView(of: completedImage) { capturedImage in
+          // TODO
 //          store.send(.imageCaptured(capturedImage))
         }
       })
@@ -48,7 +50,7 @@ public struct EventCompletedView: View {
     )
   }
   
-  var completedImage: some View {
+  private var completedImage: some View {
     PhotoCard(status: store.groupDetail.keyword.convertToPhotoCardStatus()) {
       PhotoCardBackView(
         recentEventDate: store.groupDetail.recentEventDetail.date,

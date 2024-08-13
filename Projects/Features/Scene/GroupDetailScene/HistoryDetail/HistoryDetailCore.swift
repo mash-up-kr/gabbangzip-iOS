@@ -15,9 +15,7 @@ public struct HistoryDetailCore {
   public struct State: Equatable {
     var history: History
     
-    public init(
-      history: History
-    ) {
+    public init(history: History) {
       self.history = history
     }
   }

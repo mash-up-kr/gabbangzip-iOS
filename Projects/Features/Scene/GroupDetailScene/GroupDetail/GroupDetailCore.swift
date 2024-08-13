@@ -127,13 +127,11 @@ public struct GroupDetailCore {
         case .beforeMyVote:
           return .send(.moveToVote)
         case .afterMyVote, .afterMyUpload:
-          return .run(
-            operation: { [state] send in
-              await send(.postKook(Result {
-                try await self.pushAPIClienet.kook(state.userInfo.accessToken, state.groupDetail.recentEventDetail.id)
-              }))
-            }
-          )
+          return .run { [state] send in
+            await send(.postKook(Result {
+              try await self.pushAPIClienet.kook(accessToken: state.userInfo.accessToken, eventID: state.groupDetail.recentEventDetail.id)
+            }))
+          }
         default:
           return .none
         }

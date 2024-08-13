@@ -47,6 +47,7 @@ public struct GroupDetailView: View {
       }
     }
     .scrollIndicators(.hidden)
+    .background(DesignSystem.Colors.gray20)
     .sheet(isPresented: $store.showSheet) {
       HistoryGridView(histories: store.groupDetail.history)
         .presentationDetents([.height(bottomSheetHeight), .large])
@@ -60,7 +61,6 @@ public struct GroupDetailView: View {
       time: 1.0
     )
     .onAppear { store.send(.onAppear) }
-    .background(DesignSystem.Colors.gray20)
   }
 }
 
