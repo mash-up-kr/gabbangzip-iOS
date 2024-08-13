@@ -7,12 +7,11 @@
 //
 
 import DesignSystem
-import Lovebug
 import Models
 import SwiftUI
 
-struct PhotoCardBackView: View {
-  var recentEventData: String
+public struct PhotoCardBackView: View {
+  var recentEventDate: String
   var cardBackImages: [CardBackImage]
   var recentEventName: String
   var foregroundColor: Color
@@ -23,23 +22,23 @@ struct PhotoCardBackView: View {
     GridItem(.flexible(), spacing: 9)
   ]
   
-  init(
-    recentEventData: String,
+  public init(
+    recentEventDate: String,
     cardBackImages: [CardBackImage],
     recentEventName: String,
     foregroundColor: Color,
     s3BucketDomain: String
   ) {
-    self.recentEventData = recentEventData
+    self.recentEventDate = recentEventDate
     self.cardBackImages = cardBackImages
     self.recentEventName = recentEventName
     self.foregroundColor = foregroundColor
     self.s3BucketDomain = s3BucketDomain
   }
   
-  var body: some View {
+  public var body: some View {
     VStack(spacing: 16) {
-      Text(recentEventData)
+      Text(recentEventDate)
         .font(.body16)
         .foregroundStyle(DesignSystem.Colors.gray80)
       
@@ -63,7 +62,7 @@ struct PhotoCardBackView: View {
 
 #Preview {
   PhotoCardBackView(
-    recentEventData: "2024-07-05T00:00:00Z",
+    recentEventDate: "2024-07-05T00:00:00Z",
     cardBackImages: [],
     recentEventName: "우리의 믿음",
     foregroundColor: DesignSystem.Colors.conifer30,

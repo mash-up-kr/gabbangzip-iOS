@@ -1,5 +1,5 @@
 //
-//  EventDetailView.swift
+//  HistoryDetailView.swift
 //  GroupDetail
 //
 //  Created by 최혜린 on 7/6/24.
@@ -11,11 +11,11 @@ import DesignSystem
 import Models
 import SwiftUI
 
-public struct EventDetailView: View {
-  private let store: StoreOf<EventDetailCore>
+public struct HistoryDetailView: View {
+  private let store: StoreOf<HistoryDetailCore>
   private let background = DesignSystem.Colors.gray100
 
-  init(store: StoreOf<EventDetailCore>) {
+  init(store: StoreOf<HistoryDetailCore>) {
     self.store = store
   }
 
@@ -26,7 +26,7 @@ public struct EventDetailView: View {
       
       VStack {
         NavigationBar(
-          type: .titleWithBackButton(store.eventDetail.name, .left),
+          type: .titleWithBackButton(store.history.name, .left),
           isDarkMode: true,
           backButtonAction: {
             store.send(.backButtonTapped)
@@ -45,11 +45,11 @@ public struct EventDetailView: View {
 }
 
 #Preview {
-  EventDetailView(
+  HistoryDetailView(
     store: Store(initialState: .init(
-      eventDetail: .mock(state: .eventCompleted))
+      history: .mock)
     ) {
-      EventDetailCore()
+      HistoryDetailCore()
     }
   )
 }

@@ -1,5 +1,5 @@
 //
-//  EventDetailCore.swift
+//  HistoryDetailCore.swift
 //  GroupDetail
 //
 //  Created by 최혜린 on 7/6/24.
@@ -10,15 +10,13 @@ import ComposableArchitecture
 import Models
 
 @Reducer
-public struct EventDetailCore {
+public struct HistoryDetailCore {
   @ObservableState
   public struct State: Equatable {
-    var eventDetail: EventDetail
+    var history: History
     
-    public init(
-      eventDetail: EventDetail
-    ) {
-      self.eventDetail = eventDetail
+    public init(history: History) {
+      self.history = history
     }
   }
 

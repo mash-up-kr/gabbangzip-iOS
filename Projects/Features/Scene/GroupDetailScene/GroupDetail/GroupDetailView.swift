@@ -24,7 +24,7 @@ public struct GroupDetailView: View {
     ScrollView {
       VStack(spacing: 0) {
         NavigationBar(
-          type: .titleWithBackButtonAndIcon(store.groupDetail.groupName, DesignSystem.Icons.group),
+          type: .titleWithBackButtonAndIcon(store.groupDetail.name, DesignSystem.Icons.group),
           backButtonAction: {
             store.send(.backButtonTapped)
           },
@@ -33,11 +33,13 @@ public struct GroupDetailView: View {
           }
         )
         
-        EventContainerView(eventDetail: store.groupDetail.eventDetail) { state in
-          store.send(.eventContainerViewButtonTapped(state))
-        }
-        
-        dividerView
+        EventContainerView(
+          groupDetail: store.groupDetail,
+          action: { status in
+            store.send(.eventContainerViewButtonTapped(status))
+          },
+          store: store
+        )
       }
       .overlay(ViewHeightGeometry())
       .onPreferenceChange(ViewHeightKey.self) { height in
@@ -45,37 +47,35 @@ public struct GroupDetailView: View {
       }
     }
     .scrollIndicators(.hidden)
+    .background(DesignSystem.Colors.gray20)
     .sheet(isPresented: $store.showSheet) {
-      EventGridView(events: store.groupDetail.eventItems)
+      HistoryGridView(histories: store.groupDetail.history)
         .presentationDetents([.height(bottomSheetHeight), .large])
         .interactiveDismissDisabled()
         .presentationDragIndicator(.hidden)
         .presentationBackgroundInteraction(.enabled(upThrough: .large))
      }
-  }
-  
-  private var dividerView: some View {
-    Rectangle()
-      .foregroundStyle(DesignSystem.Colors.gray20)
-      .frame(height: 10)
-  }
-}
-
-// 이벤트 목록 빈 경우
-#Preview {
-  GroupDetailView(
-    store: Store(
-      initialState: .init(groupDetail: GroupDetail.emptyMock),
-      reducer: GroupDetailCore.init
+    .toast(
+      isPresented: $store.isToastPresented,
+      type: store.toastType,
+      time: 1.0
     )
-  )
+    .onAppear { store.send(.onAppear) }
+  }
 }
 
-// 이벤트 목록 있는 경우
 #Preview {
   GroupDetailView(
     store: Store(
-      initialState: .init(groupDetail: GroupDetail.mock),
+      initialState: .init(
+        groupID: 0,
+        groupDetail: .mock,
+        selectedPhotosInfo: [],
+        toastType: .onlyText(""),
+        s3BucketDomain: "",
+        showActivityView: false,
+        capturedImage: nil
+      ),
       reducer: GroupDetailCore.init
     )
   )

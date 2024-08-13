@@ -58,7 +58,7 @@ public struct CreateGroupCompletionView: View {
         .foregroundStyle(DesignSystem.Colors.gray60)
         .padding(.top, 16)
       
-      SmallButton(type: .active, smallButtonContentType: .copyLink, action: { store.send(.copyLinkButtonTapped) })
+      SmallButton(type: .active, smallButtonContentType: .copyCode, action: { store.send(.copyLinkButtonTapped) })
         .padding(.top, 8)
       
       Spacer()

@@ -53,7 +53,7 @@ extension GroupData {
     case hobby = "HOBBY"
     case littleMoim = "LITTLE_MOIM"
   }
-  
+
   public enum Status: String, Decodable {
     case noPastAndCurrentEvent = "NO_PAST_AND_CURRENT_EVENT"
     case noCurrentEvent = "NO_CURRENT_EVENT"

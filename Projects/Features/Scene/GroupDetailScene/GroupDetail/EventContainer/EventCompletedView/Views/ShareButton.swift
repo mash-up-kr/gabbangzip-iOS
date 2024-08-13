@@ -17,13 +17,17 @@ struct ShareButton: View {
   }
   
   var body: some View {
-    Image(uiImage: DesignSystem.Icons.shareUIImage)
-      .frame(width: 48, height: 48)
-      .background(DesignSystem.Colors.gray80)
-      .cornerRadius(14)
-      .onTapGesture {
-        action()
+    Button(
+      action: action,
+      label: {
+        Image(uiImage: DesignSystem.Icons.shareUIImage)
+          .resizable()
+          .frame(width: 20, height: 20)
+          .padding(14)
+          .background(DesignSystem.Colors.gray80)
+          .cornerRadius(14)
       }
+    )
   }
 }
 

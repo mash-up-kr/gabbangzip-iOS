@@ -6,65 +6,42 @@
 //  Copyright © 2024 com.mashup.gabbangzip. All rights reserved.
 //
 
+import ComposableArchitecture
 import DesignSystem
 import Models
 import NukeUI
 import SwiftUI
 
 struct EventContainerView: View {
-  private let eventDetail: EventDetail
-  private var action: (EventState) -> Void
+  private let groupDetail: GroupDetailInfo
+  private var action: (GroupData.Status) -> Void
+  private var store: StoreOf<GroupDetailCore>
   
   init(
-    eventDetail: EventDetail,
-    action: @escaping (EventState) -> Void
+    groupDetail: GroupDetailInfo,
+    action: @escaping (GroupData.Status) -> Void,
+    store: StoreOf<GroupDetailCore>
   ) {
-    self.eventDetail = eventDetail
+    self.groupDetail = groupDetail
     self.action = action
+    self.store = store
   }
   
   var body: some View {
-    switch eventDetail.state {
-    case .noCurrentEvent, .noPastAndCurrentEvent:
-      // TODO: 그룹 목록 썸네일 뷰로 대체 필요
-      Rectangle()
-        .fill(.red)
+    switch groupDetail.status {
     case .beforeMyUpload, .afterMyUpload, .beforeMyVote, .afterMyVote:
       EventProgressView(
-        eventDetail: eventDetail,
+        groupDetail: groupDetail,
         action: {
-          action(eventDetail.state)
-        }
+          action(groupDetail.status)
+        },
+        store: store
       )
-    case .eventCompleted:
-      // TODO: 그룹 목록 썸네일 뷰 + complete view 생성 필요
-      Rectangle()
-        .fill(.red)
+    case .noCurrentEvent, .eventCompleted:
+      EventCompletedView(store: store)
+    case .noPastAndCurrentEvent:
+      // 해당 화면에 접근 불가능한 조건
+      EmptyView()
     }
   }
-}
-
-// 진행 중인 이벤트 없는 경우
-#Preview {
-  EventContainerView(eventDetail: .mock(state: .noCurrentEvent)) { _ in }
-}
-
-// 사진 등록 진행 중, 내 pic 등록 전
-#Preview {
-  EventContainerView(eventDetail: .mock(state: .beforeMyUpload)) { _ in }
-}
-
-// 사진 등록 진행 중, 내 pic 등록 후
-#Preview {
-  EventContainerView(eventDetail: .mock(state: .afterMyUpload)) { _ in }
-}
-
-// 투표 진행 중, 투표 완료 전
-#Preview {
-  EventContainerView(eventDetail: .mock(state: .beforeMyVote)) { _ in }
-}
-
-// 투표 진행 중, 투표 완료 후
-#Preview {
-  EventContainerView(eventDetail: .mock(state: .afterMyVote)) { _ in }
 }
