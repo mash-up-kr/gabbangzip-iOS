@@ -48,10 +48,10 @@ public struct MainCoordinatorCore {
         state.routes.dismiss()
         
       case let .router(.routeAction(id: _, action: .groupList(.moveToGroupDetail(groupID)))):
-        state.routes.presentCover(.groupDetailCoordinator(.init(routes: [.root(.groupDetail(.init(groupID: groupID)), embedInNavigationView: true)])))
+        state.routes.push(.groupDetailCoordinator(.init(routes: [.root(.groupDetail(.init(groupID: groupID)))])))
         
       case .router(.routeAction(id: _, action: .groupDetailCoordinator(.router(.routeAction(id: _, action: .groupDetail(.backToHome)))))):
-        state.routes.dismiss()
+        state.routes.pop()
         
       default:
         break
