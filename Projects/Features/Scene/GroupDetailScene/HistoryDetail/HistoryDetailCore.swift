@@ -42,7 +42,7 @@ public struct HistoryDetailCore {
     Reduce { state, action in
       switch action {
       case .backButtonTapped:
-        return .none
+        return .send(.backToGroupDetail)
         
       case .backToGroupDetail:
         return .none
