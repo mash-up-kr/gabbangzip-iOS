@@ -94,7 +94,7 @@ public struct GroupCore {
     case uploadFileToPresignedURLResponse(Result<Void, Error>)
     
     public enum Delegate {
-      case headerButtonTapped
+      case headerButtonTapped(Int)
       case createEventButtonTapped
       case stabbingSuccessed
       case stabbingFailed
@@ -114,7 +114,7 @@ public struct GroupCore {
         return .none
         
       case .headerButtonTapped:
-        return .send(.delegate(.headerButtonTapped))
+        return .send(.delegate(.headerButtonTapped(state.id)))
         
       case .createEventButtonTapped:
         return .send(.delegate(.createEventButtonTapped))

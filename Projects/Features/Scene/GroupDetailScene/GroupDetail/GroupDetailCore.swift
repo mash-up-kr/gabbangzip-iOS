@@ -14,6 +14,8 @@ import UIKit
 
 @Reducer
 public struct GroupDetailCore {
+  public init() {}
+  
   @ObservableState
   public struct State: Equatable {
     var groupID: Int
@@ -46,14 +48,14 @@ public struct GroupDetailCore {
 
     public init(
       groupID: Int,
-      groupDetail: GroupDetailInfo,
+      groupDetail: GroupDetailInfo = .mock,
       showSheet: Bool = true,
-      selectedPhotosInfo: [PhotoInfo],
+      selectedPhotosInfo: [PhotoInfo] = [],
       isToastPresented: Bool = false,
-      toastType: ToastType,
-      s3BucketDomain: String,
-      showActivityView: Bool,
-      capturedImage: UIImage?,
+      toastType: ToastType = .onlyText(""),
+      s3BucketDomain: String = "",
+      showActivityView: Bool = false,
+      capturedImage: UIImage? = nil,
       userInfo: @autoclosure () -> UserInfo = .defaultValue
     ) {
       self.groupID = groupID

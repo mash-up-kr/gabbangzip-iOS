@@ -8,6 +8,7 @@
 
 import ComposableArchitecture
 import CreateGroupCoordinator
+import GroupDetailCoordinator
 import Main
 import MyPage
 import SwiftUI
@@ -31,6 +32,8 @@ public struct MainCoordinatorView: View {
         GroupListView(store: store)
       case let .joinGroup(store):
         JoinGroupView(store: store)
+      case let .groupDetailCoordinator(store):
+        GroupDetailCoordinatorView(store: store)
       }
     }
   }

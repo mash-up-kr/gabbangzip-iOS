@@ -7,7 +7,7 @@
 //
 
 import ComposableArchitecture
-import CreateGroup
+import GroupDetail
 import SwiftUI
 import TCACoordinators
 
@@ -22,7 +22,8 @@ public struct GroupDetailCoordinatorView: View {
     TCARouter(store.scope(state: \.routes, action: \.router)) { screen in
       Group {
         switch screen.case {
-
+        case let .groupDetail(store):
+          GroupDetailView(store: store)
         }
       }
       .toolbar(.hidden)

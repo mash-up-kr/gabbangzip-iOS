@@ -64,7 +64,7 @@ public struct GroupListCore {
     case moveToMyPage
     case moveToCreateGroup
     case moveToJoinGroup
-    case moveToGroupDetail
+    case moveToGroupDetail(Int)
     case moveToCreateEvent
     case moveToVote
   }
@@ -166,8 +166,8 @@ public struct GroupListCore {
       case let .groups(.element(id: _, action: .delegate(delegate))):
         return .run { send in
           switch delegate {
-          case .headerButtonTapped:
-            await send(.moveToGroupDetail)
+          case let .headerButtonTapped(groupID):
+            await send(.moveToGroupDetail(groupID))
           case .createEventButtonTapped:
             await send(.moveToCreateEvent)
           case .stabbingSuccessed:
