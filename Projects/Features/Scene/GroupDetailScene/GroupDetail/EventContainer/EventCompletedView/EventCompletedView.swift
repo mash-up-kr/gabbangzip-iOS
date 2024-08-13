@@ -33,11 +33,9 @@ public struct EventCompletedView: View {
       .padding(.vertical, 16)
       
       ShareButton(action: {
-        // TODO
-//        store.send(.shareButtonTapped)
         captureView(of: completedImage) { capturedImage in
-          // TODO
-//          store.send(.imageCaptured(capturedImage))
+          store.send(.imageCaptured(capturedImage))
+          store.send(.shareButtonTapped)
         }
       })
         .padding(.bottom, 32)

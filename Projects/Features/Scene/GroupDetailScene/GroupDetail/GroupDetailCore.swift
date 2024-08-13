@@ -86,6 +86,8 @@ public struct GroupDetailCore {
     case eventContainerViewButtonTapped(GroupData.Status)
     case selectedPhotos([PhotoInfo])
     case historyViewTapped(History)
+    case shareButtonTapped
+    case imageCaptured(UIImage?)
 
     // Internal Action
     case getGroupDetailResponse(Result<GroupDetailInfo, Error>)
@@ -157,6 +159,14 @@ public struct GroupDetailCore {
         
       case let .historyViewTapped(history):
         return .send(GroupDetailCore.Action.moveToHistoryDetail(history, state.groupDetail.keyword, state.s3BucketDomain))
+        
+      case .shareButtonTapped:
+        state.showActivityView = true
+        return .none
+        
+      case let .imageCaptured(image):
+        state.capturedImage = image
+        return .none
         
       // Internal Action
       case let .getGroupDetailResponse(.success(groupDetailInfo)):
