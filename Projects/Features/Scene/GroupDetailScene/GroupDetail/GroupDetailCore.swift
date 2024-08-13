@@ -19,7 +19,7 @@ public struct GroupDetailCore {
   @ObservableState
   public struct State: Equatable {
     var groupID: Int
-    var groupDetail: GroupDetailInfo
+    var groupDetail: GroupDetailInfo?
     var showSheet: Bool
     var selectedPhotosInfo: [PhotoInfo]
     var isToastPresented: Bool
@@ -28,27 +28,31 @@ public struct GroupDetailCore {
     var showActivityView: Bool
     var capturedImage: UIImage?
     var smallButtonType: SmallButtonContentType {
-      switch groupDetail.status {
-      case .noCurrentEvent, .noPastAndCurrentEvent, .eventCompleted:
+      if let groupDetail {
+        switch groupDetail.status {
+        case .noCurrentEvent, .noPastAndCurrentEvent, .eventCompleted:
+          return .generateEvent
+        case .beforeMyUpload:
+          return .uploadPIC
+        case .beforeMyVote:
+          return .vote
+        case .afterMyUpload, .afterMyVote:
+          return .stabbing
+        }
+      } else {
         return .generateEvent
-      case .beforeMyUpload:
-        return .uploadPIC
-      case .beforeMyVote:
-        return .vote
-      case .afterMyUpload, .afterMyVote:
-        return .stabbing
       }
     }
     
     var isNeedEventCompletedTitle: Bool {
-      return groupDetail.status == .eventCompleted
+      return groupDetail?.status == .eventCompleted
     }
     
     @Shared var userInfo: UserInfo
 
     public init(
       groupID: Int,
-      groupDetail: GroupDetailInfo = .mock,
+      groupDetail: GroupDetailInfo? = nil,
       showSheet: Bool = true,
       selectedPhotosInfo: [PhotoInfo] = [],
       isToastPresented: Bool = false,
@@ -101,7 +105,7 @@ public struct GroupDetailCore {
     case backToHome
     case moveToMemberList(Int)
     case moveToVote(Int)
-    case moveToHistoryDetail(History, GroupData.Keyword, String)
+    case moveToHistoryDetail(History, GroupData.Keyword?, String)
   }
 
   public var body: some Reducer<State, Action> {
@@ -131,11 +135,14 @@ public struct GroupDetailCore {
       case let .eventContainerViewButtonTapped(status):
         switch status {
         case .beforeMyVote:
-          return .send(.moveToVote(state.groupDetail.recentEventDetail.id))
+          return .send(.moveToVote(state.groupDetail?.recentEventDetail.id ?? 0))
         case .afterMyVote, .afterMyUpload:
           return .run { [state] send in
             await send(.postKook(Result {
-              try await self.pushAPIClienet.kook(accessToken: state.userInfo.accessToken, eventID: state.groupDetail.recentEventDetail.id)
+              try await self.pushAPIClienet.kook(
+                accessToken: state.userInfo.accessToken,
+                eventID: state.groupDetail?.recentEventDetail.id ?? 0
+              )
             }))
           }
         default:
@@ -158,7 +165,7 @@ public struct GroupDetailCore {
         }
         
       case let .historyViewTapped(history):
-        return .send(GroupDetailCore.Action.moveToHistoryDetail(history, state.groupDetail.keyword, state.s3BucketDomain))
+        return .send(GroupDetailCore.Action.moveToHistoryDetail(history, state.groupDetail?.keyword, state.s3BucketDomain))
         
       case .shareButtonTapped:
         state.showActivityView = true
@@ -172,13 +179,13 @@ public struct GroupDetailCore {
       case let .getGroupDetailResponse(.success(groupDetailInfo)):
         state.groupDetail = groupDetailInfo
         
-        if state.groupDetail.status == .eventCompleted {
+        if state.groupDetail?.status == .eventCompleted {
           return .run(
             operation: { [state] send in
               await send(.putEventVisit(Result {
                 try await self.eventAPIClient.putEventVisit(
                   accessToken: state.userInfo.accessToken,
-                  eventID: state.groupDetail.recentEventDetail.id
+                  eventID: state.groupDetail?.recentEventDetail.id ?? -1
                 )
               }))
             }

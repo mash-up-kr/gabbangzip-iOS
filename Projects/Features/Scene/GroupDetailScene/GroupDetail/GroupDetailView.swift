@@ -24,7 +24,7 @@ public struct GroupDetailView: View {
     ScrollView {
       VStack(spacing: 0) {
         NavigationBar(
-          type: .titleWithBackButtonAndIcon(store.groupDetail.name, DesignSystem.Icons.group),
+          type: .titleWithBackButtonAndIcon(store.groupDetail?.name ?? "", DesignSystem.Icons.group),
           backButtonAction: {
             store.send(.backButtonTapped)
           },
@@ -50,8 +50,8 @@ public struct GroupDetailView: View {
     .background(DesignSystem.Colors.gray20)
     .sheet(isPresented: $store.showSheet) {
       HistoryGridView(
-        histories: store.groupDetail.history,
-        keyword: store.groupDetail.keyword,
+        histories: store.groupDetail?.history,
+        keyword: store.groupDetail?.keyword,
         s3BucketDomain: store.s3BucketDomain,
         tapAction: { history in
           store.send(.historyViewTapped(history))

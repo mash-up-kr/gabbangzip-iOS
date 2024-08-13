@@ -35,18 +35,21 @@ public struct HistoryDetailView: View {
         )
         .padding(.bottom, 50)
         
-        PhotoCard(
-          status: store.keyword.convertToPhotoCardStatus()) {
+        if let keyword = store.keyword {
+          PhotoCard(
+            status: keyword.convertToPhotoCardStatus()
+          ) {
             PhotoCardBackView(
               recentEventDate: store.history.date,
               cardBackImages: store.history.images,
               recentEventName: store.history.name,
-              foregroundColor: store.keyword.foregroundColor,
+              foregroundColor: keyword.foregroundColor,
               s3BucketDomain: store.s3BucketDomain
             )
           }
-        
-        Spacer()
+
+          Spacer()
+        }
       }
     }
   }

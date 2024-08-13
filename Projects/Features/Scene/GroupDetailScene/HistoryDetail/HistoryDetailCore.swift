@@ -16,12 +16,12 @@ public struct HistoryDetailCore {
   @ObservableState
   public struct State: Equatable {
     var history: History
-    var keyword: GroupData.Keyword
+    var keyword: GroupData.Keyword?
     var s3BucketDomain: String
     
     public init(
       history: History,
-      keyword: GroupData.Keyword,
+      keyword: GroupData.Keyword?,
       s3BucketDomain: String
     ) {
       self.history = history
