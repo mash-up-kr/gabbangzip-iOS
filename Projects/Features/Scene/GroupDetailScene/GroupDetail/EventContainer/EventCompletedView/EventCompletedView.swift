@@ -53,7 +53,7 @@ public struct EventCompletedView: View {
     if let groupDetail = store.groupDetail {
       PhotoCard(status: groupDetail.keyword.convertToPhotoCardStatus()) {
         PhotoCardBackView(
-          recentEventDate: groupDetail.recentEventDetail.date,
+          recentEventDate: store.recentEventDateString,
           cardBackImages: groupDetail.cardBackImages,
           recentEventName: groupDetail.recentEventDetail.name,
           foregroundColor: groupDetail.keyword.foregroundColor,

@@ -28,9 +28,10 @@ struct EventProgressView: View {
     self.store = store
   }
   
+  // TODO: groupDetail 삭제 및 store로 대체
   var body: some View {
     VStack(spacing: 0) {
-      Text(groupDetail.recentEventDetail.date)
+      Text(store.recentEventDateString)
         .foregroundStyle(DesignSystem.Colors.gray80)
         .font(.body16)
         .padding(.bottom, 8)

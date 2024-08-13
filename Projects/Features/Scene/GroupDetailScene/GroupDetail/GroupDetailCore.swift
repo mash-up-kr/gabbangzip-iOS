@@ -48,6 +48,10 @@ public struct GroupDetailCore {
       return groupDetail?.status == .eventCompleted
     }
     
+    var recentEventDateString: String {
+      return groupDetail?.recentEventDetail.date.toGroupEventDateString() ?? ""
+    }
+    
     @Shared var userInfo: UserInfo
 
     public init(
