@@ -24,6 +24,14 @@ public struct GroupDetailCoordinatorView: View {
         switch screen.case {
         case let .groupDetail(store):
           GroupDetailView(store: store)
+        case let .historyDetail(store):
+          HistoryDetailView(store: store)
+        case let .memberList(store):
+          MemberListView(store: store)
+        case let .vote(store):
+          VoteView(store: store)
+        case let .voteComplete(store):
+          VoteCompleteView(store: store)
         }
       }
       .toolbar(.hidden)

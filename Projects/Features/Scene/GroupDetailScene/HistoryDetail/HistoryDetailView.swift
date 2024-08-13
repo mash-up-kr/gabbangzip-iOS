@@ -16,7 +16,7 @@ public struct HistoryDetailView: View {
   private let store: StoreOf<HistoryDetailCore>
   private let background = DesignSystem.Colors.gray100
 
-  init(store: StoreOf<HistoryDetailCore>) {
+  public init(store: StoreOf<HistoryDetailCore>) {
     self.store = store
   }
 

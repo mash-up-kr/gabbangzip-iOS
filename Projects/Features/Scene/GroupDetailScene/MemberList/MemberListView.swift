@@ -11,14 +11,14 @@ import DesignSystem
 import Models
 import SwiftUI
 
-struct MemberListView: View {
+public struct MemberListView: View {
   private let store: StoreOf<MemberListCore>
 
-  init(store: StoreOf<MemberListCore>) {
+  public init(store: StoreOf<MemberListCore>) {
     self.store = store
   }
 
-  var body: some View {
+  public var body: some View {
     VStack(spacing: 0) {
       NavigationBar(
         type: .titleWithBackButton("그룹원", .center),

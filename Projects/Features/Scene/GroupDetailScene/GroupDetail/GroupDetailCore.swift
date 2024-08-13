@@ -97,8 +97,8 @@ public struct GroupDetailCore {
 
     // Route Action
     case backToHome
-    case moveToMemberList
-    case moveToVote
+    case moveToMemberList(Int)
+    case moveToVote(Int)
     case moveToHistoryDetail(History, GroupData.Keyword, String)
   }
 
@@ -124,12 +124,12 @@ public struct GroupDetailCore {
         return .send(.backToHome)
         
       case .memberListButtonTapped:
-        return .send(.moveToMemberList)
+        return .send(.moveToMemberList(state.groupID))
         
       case let .eventContainerViewButtonTapped(status):
         switch status {
         case .beforeMyVote:
-          return .send(.moveToVote)
+          return .send(.moveToVote(state.groupDetail.recentEventDetail.id))
         case .afterMyVote, .afterMyUpload:
           return .run { [state] send in
             await send(.postKook(Result {

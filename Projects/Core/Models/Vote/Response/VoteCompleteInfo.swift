@@ -8,7 +8,6 @@
 
 import Foundation
 
-// TODO: 실제 API 수정 후 반영 필요
 public struct VoteCompleteInfo: Decodable, Equatable {
   public var eventID: Int
   public var keyword: GroupData.Keyword
@@ -17,7 +16,7 @@ public struct VoteCompleteInfo: Decodable, Equatable {
   enum CodingKeys: String, CodingKey {
     case eventID = "event_id"
     case keyword
-    case imageURL = "image_url"
+    case imageURL = "random_image_url"
   }
   
   public static let mock: VoteCompleteInfo = .init(

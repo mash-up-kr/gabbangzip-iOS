@@ -39,20 +39,20 @@ public struct VoteCore {
     
     public init(
       userInfo: @autoclosure () -> UserInfo = .defaultValue,
-      voteButtonState: VoteButtonState,
-      passsButtonState: VoteButtonState,
+      voteButtonState: VoteButtonState = .defaultState,
+      passsButtonState: VoteButtonState = .defaultState,
       eventID: Int,
-      voteOptions: [VoteOptionInfo],
-      pickedImageIDs: [Int],
-      swipeDirection: SwipeDirection,
-      isPopupPresented: Bool,
-      isToastPresented: Bool,
-      popupType: VotePopupType,
-      toastType: VoteToastType,
-      isFirstVoteDone: Bool,
-      isNeedGuideView: Bool,
-      isVoteButtonDisabled: Bool,
-      guideTypes: [GuideType]
+      voteOptions: [VoteOptionInfo] = [],
+      pickedImageIDs: [Int] = [],
+      swipeDirection: SwipeDirection = .defaultState,
+      isPopupPresented: Bool = false,
+      isToastPresented: Bool = false,
+      popupType: VotePopupType = .close,
+      toastType: VoteToastType = .error,
+      isFirstVoteDone: Bool = false,
+      isNeedGuideView: Bool = false,
+      isVoteButtonDisabled: Bool = false,
+      guideTypes: [GuideType] = [.pass, .vote]
     ) {
       self._userInfo = Shared(wrappedValue: userInfo(), .inMemory("userInfo"))
       self.voteButtonState = voteButtonState
@@ -100,6 +100,7 @@ public struct VoteCore {
     
     // Route Action
     case dismissVoteView
+    case moveToVoteComplete(VoteCompleteInfo)
   }
   
   @Dependency(\.mainQueue) var mainQueue
@@ -201,7 +202,7 @@ public struct VoteCore {
             userDefaultClient.set(.isFirstVoteDone, true)
           }
           
-          // TODO: 화면 이동
+          await send(.moveToVoteComplete(voteResult))
         }
         
       case .postVoteResult(.failure):
@@ -269,6 +270,9 @@ public struct VoteCore {
         return .none
         
       case .dismissVoteView:
+        return .none
+        
+      case .moveToVoteComplete:
         return .none
       }
     }

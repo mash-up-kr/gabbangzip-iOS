@@ -12,6 +12,8 @@ import Services
 
 @Reducer
 public struct MemberListCore {
+  public init() {}
+  
   @ObservableState
   public struct State: Equatable {
     var groupID: Int
@@ -27,8 +29,8 @@ public struct MemberListCore {
     
     public init(
       groupID: Int,
-      memberList: MemberList,
-      groupKeyword: GroupData.Keyword,
+      memberList: MemberList = .mock,
+      groupKeyword: GroupData.Keyword = .company,
       userInfo: @autoclosure () -> UserInfo = .defaultValue
     ) {
       self.groupID = groupID

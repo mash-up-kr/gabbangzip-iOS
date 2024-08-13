@@ -13,5 +13,9 @@ import TCACoordinators
 @Reducer(state: .equatable)
 public enum GroupDetailScreen {
   case groupDetail(GroupDetailCore)
+  case historyDetail(HistoryDetailCore)
+  case memberList(MemberListCore)
+  case vote(VoteCore)
+  case voteComplete(VoteCompleteCore)
 }
 
