@@ -45,7 +45,7 @@ public struct MemberListView: View {
           type: store.isFullCapacity ? .inactive : .active,
           smallButtonContentType: .copyCode
         ) {
-          store.send(.copyLinkButtonTapped)
+          store.send(.copyCodeButtonTapped)
         }
       }
       .padding(.top, 102)

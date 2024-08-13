@@ -45,7 +45,7 @@ public struct MemberListCore {
   public enum Action {
     // View Action
     case onAppear
-    case copyLinkButtonTapped
+    case copyCodeButtonTapped
     case backButtonTapped
     
     // Internal Action
@@ -69,7 +69,7 @@ public struct MemberListCore {
           }
         )
         
-      case .copyLinkButtonTapped:
+      case .copyCodeButtonTapped:
         return .run { [state] send in
           uiPasteBoardClient.copyTextToClipboard(state.memberList?.invitationCode ?? "")
         }
