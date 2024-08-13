@@ -62,20 +62,5 @@ extension GroupData {
     case beforeMyVote = "BEFORE_MY_VOTE"
     case afterMyVote = "AFTER_MY_VOTE"
     case eventCompleted = "EVENT_COMPLETED"
-    
-    public func message(time: String) -> String? {
-      switch self {
-      case .noPastAndCurrentEvent, .noCurrentEvent, .eventCompleted:
-        return nil
-      case .beforeMyUpload:
-        return "\(time)까지 내 PIC 등록을 완료해 주세요."
-      case .afterMyUpload:
-        return "아직 사진 추가를 하지 않은 친구가 있어요!"
-      case .beforeMyVote:
-        return "내 PIC을 고르고 네컷사진을 완성해 보세요."
-      case .afterMyVote:
-        return "아직 PIC을 고르지 않은 친구가 있어요!"
-      }
-    }
   }
 }
