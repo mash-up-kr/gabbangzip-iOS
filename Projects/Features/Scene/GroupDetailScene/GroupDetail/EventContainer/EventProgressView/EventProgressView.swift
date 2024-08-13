@@ -44,7 +44,7 @@ struct EventProgressView: View {
         .font(.text14)
         .foregroundStyle(DesignSystem.Colors.gray80)
         .padding(.bottom, 16)
-
+      
       PhotoWithFrame(
         frameShape: groupDetail.keyword.frame,
         foregroundColor: DesignSystem.Colors.gray20,
@@ -73,27 +73,12 @@ struct EventProgressView: View {
       } else {
         SmallButton(
           type: .active,
-          smallButtonContentType: convertToButtonType(from: groupDetail.status)
+          smallButtonContentType: store.smallButtonType
         ) {
           action()
         }
       }
     }
     .padding(.init(top: 16, leading: 0, bottom: 34, trailing: 0))
-  }
-  
-  private func convertToButtonType(
-    from state: GroupData.Status
-  ) -> SmallButtonContentType {
-    switch state {
-    case .noCurrentEvent, .noPastAndCurrentEvent, .eventCompleted:
-      return .generateEvent
-    case .beforeMyUpload:
-      return .uploadPIC
-    case .beforeMyVote:
-      return .vote
-    case .afterMyUpload, .afterMyVote:
-      return .stabbing
-    }
   }
 }
