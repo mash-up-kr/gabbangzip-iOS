@@ -25,6 +25,18 @@ public struct GroupDetailCore {
     var s3BucketDomain: String
     var showActivityView: Bool
     var capturedImage: UIImage?
+    var smallButtonType: SmallButtonContentType {
+      switch groupDetail.status {
+      case .noCurrentEvent, .noPastAndCurrentEvent, .eventCompleted:
+        return .generateEvent
+      case .beforeMyUpload:
+        return .uploadPIC
+      case .beforeMyVote:
+        return .vote
+      case .afterMyUpload, .afterMyVote:
+        return .stabbing
+      }
+    }
     
     var isNeedEventCompletedTitle: Bool {
       return groupDetail.status == .eventCompleted
