@@ -20,13 +20,23 @@ struct HistoryItemView: View {
   
   var body: some View {
     VStack(alignment: .leading, spacing: 0) {
-      LazyImage(url: URL(string: history.images.first!.imageURL)) { state in
-        if let image = state.image {
-          image.resizable()
-            .aspectRatio(contentMode: .fit)
+      if let firstImageURL = history.images.first?.imageURL,
+         let url = URL(string: firstImageURL) {
+        LazyImage(url: url) { state in
+          if let image = state.image {
+            image.resizable()
+              .aspectRatio(contentMode: .fit)
+          } else {
+            // 로딩 중 혹은 실패 시
+            placeHolder
+          }
         }
+        .padding(.bottom, 8)
+      } else {
+        // imageURL 미존재 시
+        placeHolder
+          .padding(.bottom, 8)
       }
-      .padding(.bottom, 8)
       
       Text(history.name)
         .font(.head18)
@@ -37,6 +47,11 @@ struct HistoryItemView: View {
         .font(.caption12)
         .foregroundStyle(DesignSystem.Colors.gray60)
     }
+  }
+  
+  // TODO: 디자인팀과 논의 필요
+  private var placeHolder: some View {
+    DesignSystem.Images.empty
   }
 }
 
