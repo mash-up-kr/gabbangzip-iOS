@@ -122,6 +122,7 @@ public struct GroupDetailCore {
         
       // View Action
       case .onAppear:
+        state.showSheet = true
         return .run(
           operation: { [state] send in
             await send(.getGroupDetailResponse(Result {
@@ -134,6 +135,7 @@ public struct GroupDetailCore {
         return .send(.backToHome)
         
       case .memberListButtonTapped:
+        state.showSheet = false
         return .send(.moveToMemberList(state.groupID))
         
       case let .eventContainerViewButtonTapped(status):
