@@ -85,6 +85,7 @@ public struct GroupDetailCore {
     case memberListButtonTapped
     case eventContainerViewButtonTapped(GroupData.Status)
     case selectedPhotos([PhotoInfo])
+    case historyViewTapped(History)
 
     // Internal Action
     case getGroupDetailResponse(Result<GroupDetailInfo, Error>)
@@ -98,6 +99,7 @@ public struct GroupDetailCore {
     case backToHome
     case moveToMemberList
     case moveToVote
+    case moveToHistoryDetail(History, GroupData.Keyword, String)
   }
 
   public var body: some Reducer<State, Action> {
@@ -152,6 +154,9 @@ public struct GroupDetailCore {
             )
           }
         }
+        
+      case let .historyViewTapped(history):
+        return .send(GroupDetailCore.Action.moveToHistoryDetail(history, state.groupDetail.keyword, state.s3BucketDomain))
         
       // Internal Action
       case let .getGroupDetailResponse(.success(groupDetailInfo)):
@@ -216,6 +221,9 @@ public struct GroupDetailCore {
         return .none
         
       case .moveToVote:
+        return .none
+        
+      case .moveToHistoryDetail:
         return .none
       }
     }

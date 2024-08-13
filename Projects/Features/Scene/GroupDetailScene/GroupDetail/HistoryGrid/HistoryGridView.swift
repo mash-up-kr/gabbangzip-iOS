@@ -15,15 +15,18 @@ struct HistoryGridView: View {
   private let keyword: GroupData.Keyword
   private let s3BucketDomain: String
   private let columns = [GridItem(spacing: 9), GridItem(spacing: 9)]
+  private let tapAction: (History) -> Void
   
   init(
     histories: [History],
     keyword: GroupData.Keyword,
-    s3BucketDomain: String
+    s3BucketDomain: String,
+    tapAction: @escaping (History) -> Void
   ) {
     self.histories = histories
     self.keyword = keyword
     self.s3BucketDomain = s3BucketDomain
+    self.tapAction = tapAction
   }
   
   var body: some View {
@@ -57,7 +60,10 @@ struct HistoryGridView: View {
         HistoryItemView(
           history: history,
           keyword: keyword,
-          s3BucketDomain: s3BucketDomain
+          s3BucketDomain: s3BucketDomain,
+          tapAction: { history in
+            tapAction(history)
+          }
         )
       }
     }
@@ -83,5 +89,5 @@ struct HistoryGridView: View {
     histories: History.listMock,
     keyword: .company,
     s3BucketDomain: ""
-  )
+  ) { _ in }
 }

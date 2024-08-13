@@ -17,15 +17,18 @@ struct HistoryItemView: View {
   private let columns = [GridItem(spacing: 12), GridItem(spacing: 12)]
   private let keyword: GroupData.Keyword
   private let s3BucketDomain: String
+  private let tapAction: (History) -> Void
   
   init(
     history: History,
     keyword: GroupData.Keyword,
-    s3BucketDomain: String
+    s3BucketDomain: String,
+    tapAction: @escaping (History) -> Void
   ) {
     self.history = history
     self.keyword = keyword
     self.s3BucketDomain = s3BucketDomain
+    self.tapAction = tapAction
   }
   
   var body: some View {
@@ -42,6 +45,7 @@ struct HistoryItemView: View {
         .font(.caption12)
         .foregroundStyle(DesignSystem.Colors.gray60)
     }
+    .onTapGesture { tapAction(history) }
   }
   
   var photoView: some View {
@@ -66,7 +70,7 @@ struct HistoryItemView: View {
       history: .mock,
       keyword: .company,
       s3BucketDomain: ""
-    )
+    ) { _ in }
   }
   .padding(.horizontal, 20)
 }

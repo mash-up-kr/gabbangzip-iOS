@@ -52,7 +52,10 @@ public struct GroupDetailView: View {
       HistoryGridView(
         histories: store.groupDetail.history,
         keyword: store.groupDetail.keyword,
-        s3BucketDomain: store.s3BucketDomain
+        s3BucketDomain: store.s3BucketDomain,
+        tapAction: { history in
+          store.send(.historyViewTapped(history))
+        }
       )
         .presentationDetents([.height(bottomSheetHeight), .large])
         .interactiveDismissDisabled()

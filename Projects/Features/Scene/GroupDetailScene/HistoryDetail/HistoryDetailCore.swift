@@ -11,6 +11,8 @@ import Models
 
 @Reducer
 public struct HistoryDetailCore {
+  public init() {}
+  
   @ObservableState
   public struct State: Equatable {
     var history: History
