@@ -59,7 +59,7 @@ public struct GroupDetailCore {
   
   @Dependency(\.groupAPIClient) var groupAPIClient
   @Dependency(\.eventAPIClient) var eventAPIClient
-  @Dependency(\.pushAPIClient) var pushAPIClienet
+  @Dependency(\.pushNotificationAPIClient) var pushAPIClienet
   @Dependency(\.fileUploadAPIClient) var fileUploadAPIClient
 
   public enum Action: BindableAction {
@@ -118,7 +118,7 @@ public struct GroupDetailCore {
           return .run(
             operation: { [state] send in
               await send(.postKook(Result {
-                try await self.pushAPIClienet.postKook(state.userInfo.accessToken, state.groupDetail.recentEventDetail.id)
+                try await self.pushAPIClienet.kook(state.userInfo.accessToken, state.groupDetail.recentEventDetail.id)
               }))
             }
           )
