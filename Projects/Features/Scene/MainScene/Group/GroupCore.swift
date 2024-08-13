@@ -31,7 +31,7 @@ public struct GroupCore {
     var selectedPhotosInfo: [PhotoInfo]
     var stabbingButtonType: SmallButtonType
     var hasNoEvent: Bool {
-      return status == .noPastAndCurrentEvent || status == .noCurrentEvent
+      return status == .noPastAndCurrentEvent
     }
     var hasCompletedEvent: Bool {
       return status == .noCurrentEvent || status == .eventCompleted
