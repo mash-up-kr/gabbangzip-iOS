@@ -204,8 +204,11 @@ public struct GroupDetailCore {
       case .putEventVisit:
         return .none
         
-      case .postKook:
-        return .none
+      case .postKook(.success):
+        return .send(.showToast(.kookSuccess))
+        
+      case .postKook(.failure):
+        return .send(.showToast(.kookFail))
         
       case let .getUploadURLResponse(.success(fileUploadInfo), photoInfo):
         return .run(
@@ -255,13 +258,21 @@ extension GroupDetailCore {
   public enum DetailToastType {
     case imageUploadSuccess
     case imageUploadFail
+    case kookSuccess
+    case kookFail
     
     var type: ToastType {
       switch self {
       case .imageUploadSuccess:
-        return .textWithCheckIcon("이미지 업로드 성공!")
+        return .textWithCheckIcon("내 PIC 올리기 완료!")
       case .imageUploadFail:
-        return .textWithInfoIcon("이미지 업로드 실패!")
+        // TODO: 디자이너와 문구 협의 필요
+        return .textWithInfoIcon("내 PIC 올리기 실패 :(")
+      case .kookSuccess:
+        return .onlyText("그룹원들을 쿡 찔렀어요!")
+      case .kookFail:
+        // TODO: 디자이너와 문구 협의 필요
+        return .onlyText("그룹원들을 쿡 찌르는데 실패했어요 :(")
       }
     }
   }
