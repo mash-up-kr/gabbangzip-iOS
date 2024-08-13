@@ -131,11 +131,7 @@ public struct CreateEventProcessCore {
         }
         
       case .changeIsPhotoSelected:
-        if state.selectedPhotosInfo.count == 4 {
-          state.isPhotoSelected = true
-        } else {
-          state.isPhotoSelected = false
-        }
+        state.isPhotoSelected = state.selectedPhotosInfo.count == 4 ? true : false
         return .run { send in
           await send(.checkCompleteButtonType)
         }
