@@ -115,17 +115,13 @@ public struct VoteCore {
         return .none
         
       case .onAppear:
-        return .run(
-          operation: { [state] send in
-            await send(.getVoteOptions(Result {
-              try await self.voteAPIClient.getVoteOptions(state.userInfo.accessToken, state.eventID)
-            }))
-            
-            await send(.checkFirstVote)
-          }, catch: { error, send in
+        return .run { [state] send in
+          await send(.getVoteOptions(Result {
+            try await self.voteAPIClient.getVoteOptions(state.userInfo.accessToken, state.eventID)
+          }))
           
-          }
-        )
+          await send(.checkFirstVote)
+        }
         
       case .passButtonTapped:
         return .run { send in
@@ -218,19 +214,15 @@ public struct VoteCore {
         return .none
         
       case .voteEnded:
-        return .run(
-          operation: { [state] send in
-            await send(.postVoteResult(Result {
-              try await self.voteAPIClient.postVoteResult(
-                state.userInfo.accessToken,
-                state.eventID,
-                state.pickedImageIDs
-              )
-            }))
-          }, catch: { error, send in
-          
-          }
-        )
+        return .run { [state] send in
+          await send(.postVoteResult(Result {
+            try await self.voteAPIClient.postVoteResult(
+              state.userInfo.accessToken,
+              state.eventID,
+              state.pickedImageIDs
+            )
+          }))
+        }
         
       case let .swipeCard(direction):
         state.swipeDirection = direction
@@ -247,18 +239,14 @@ public struct VoteCore {
         return .none
         
       case .checkFirstVote:
-        return .run(
-          operation: { send in
-            let isFirstVoteDone = try? userDefaultClient.bool(.isFirstVoteDone)
-            
-            if let isFirstVoteDone, !isFirstVoteDone {
-              await send(.updateIsFirstVoteDone(isFirstVoteDone))
-              await send(.updateIsNeedGuideView(isFirstVoteDone))
-            }
-          }, catch: { error, send in
+        return .run { send in
+          let isFirstVoteDone = try? userDefaultClient.bool(.isFirstVoteDone)
           
+          if let isFirstVoteDone, !isFirstVoteDone {
+            await send(.updateIsFirstVoteDone(isFirstVoteDone))
+            await send(.updateIsNeedGuideView(isFirstVoteDone))
           }
-        )
+        }
         
       case let .updateIsFirstVoteDone(isFirstVoteDone):
         state.isFirstVoteDone = isFirstVoteDone
