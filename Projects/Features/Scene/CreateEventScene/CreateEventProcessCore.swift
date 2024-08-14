@@ -24,10 +24,9 @@ public struct CreateEventCore {
     public var isEventNamed: Bool
     public var isPhotoSelected: Bool
     public var completeButtonType: ButtonType
-    public var recentEvent: RecentEvent
     public var selectedPhotosInfo: [PhotoInfo]
     public var recentEventDate: String {
-      return recentEvent.date?.toCreateEventDateString() ?? ""
+      return DateFormatter.createEvent.string(from: Date())
     }
     
     public init(
@@ -36,7 +35,6 @@ public struct CreateEventCore {
       isEventNamed: Bool = false,
       isPhotoSelected: Bool = false,
       completeButtonType: ButtonType = .inactive,
-      recentEvent: RecentEvent,
       selectedPhotosInfo: [PhotoInfo] = []
     ) {
       self.text = text
@@ -44,7 +42,6 @@ public struct CreateEventCore {
       self.isEventNamed = isEventNamed
       self.isPhotoSelected = isPhotoSelected
       self.completeButtonType = completeButtonType
-      self.recentEvent = recentEvent
       self.selectedPhotosInfo = selectedPhotosInfo
     }
   }
@@ -67,7 +64,7 @@ public struct CreateEventCore {
     case checkCompleteButtonType
     
     // Route Action
-    case moveToEventStart
+    case moveToHome
     case moveToGroupListWithEvent
   }
   
@@ -99,7 +96,7 @@ public struct CreateEventCore {
         
       case .popupLeftButtonTapped:
         return .run { send in
-          await send(.moveToEventStart)
+          await send(.moveToHome)
         }
         
       case .popupRightButtonTapped:
@@ -137,7 +134,7 @@ public struct CreateEventCore {
         }
         return .none
         
-      case .moveToEventStart:
+      case .moveToHome:
         return .none
         
       case .moveToGroupListWithEvent:
