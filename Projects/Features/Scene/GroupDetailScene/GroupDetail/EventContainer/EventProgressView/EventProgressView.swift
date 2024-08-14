@@ -56,7 +56,7 @@ struct EventProgressView: View {
       
       if store.groupDetail?.status == .beforeMyUpload {
         GabbangzipPhotoPicker(
-          selectedPhotosInfo: $store.selectedPhotosInfo,
+          selectedPhotosInfo: $store.selectedPhotosInfo.sending(\.selectedPhotos),
           isPresentedError: .constant(false),
           maxSelectedCount: .custom(4)) {
             SmallButton(
