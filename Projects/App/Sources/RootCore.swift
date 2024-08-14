@@ -53,6 +53,7 @@ public struct RootCore {
     case getGroupsResponse(Result<GroupsData, Error>)
     case logError(RootCoreError)
     case setDestination(Destination.State?)
+    case logError(RootCoreError)
   }
   
   @Dependency(\.authAPIClient) private var authAPIClient
@@ -170,10 +171,6 @@ public struct RootCore {
         return .run { send in
           logger.error("RootCore Error: \(error)")
         }
-        
-      case let .setDestination(destination):
-        state.destination = destination
-        return .none
       }
     }
     .ifLet(\.$destination, action: \.destination)
