@@ -78,11 +78,11 @@ let project = Project.make(
       bundleId: "com.mashup.gabbangzip.createEvent",
       sources: ["CreateEventScene/**"],
       dependencies: [
+        .project(target: .models, projectPath: .core),
         .project(target: .coreKit, projectPath: .core),
+        .project(target: .login, projectPath: .scene),
         .project(target: .designSystem, projectPath: .designSystem),
-        .external(externalDependency: .composableArchitecture),
-        .external(externalDependency: .nukeUI),
-        .external(externalDependency: .lottie),
+        .external(externalDependency: .composableArchitecture)
       ]
     ),
     .make(

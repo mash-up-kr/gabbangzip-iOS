@@ -16,7 +16,7 @@ public struct SelectPhoto: View {
     selectedPhotosInfo: [PhotoInfo],
     maxCount: Int
   ) {
-    self._selectedPhotosInfo = selectedPhotosInfo
+    self.selectedPhotosInfo = selectedPhotosInfo
     self.maxCount = maxCount
   }
   
