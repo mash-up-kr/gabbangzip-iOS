@@ -139,10 +139,7 @@ private struct VoteButtonView: View {
         voteButtonState: VoteButtonState.defaultState,
         passsButtonState: VoteButtonState.defaultState,
         eventID: 0,
-        voteOptions: [
-          VoteOptionInfo(optionID: 0, imageURL: "https://t1.daumcdn.net/cafeattach/1YVY7/391cac378245e0d2c7bba59d6efc7692baf88aa6"),
-          VoteOptionInfo(optionID: 1, imageURL: "https://i.namu.wiki/i/hq6niPhkN8EhXuIkCNx32AN614AxXcaxKQ1EnyFaHN41caJM7rPfkfppaGZNlpgmXWPbkD_MGTbmGE4_BOrIBg.webp")
-        ],
+        voteOptions: [],
         pickedImageIDs: [],
         swipeDirection: SwipeDirection.defaultState,
         isPopupPresented: false,

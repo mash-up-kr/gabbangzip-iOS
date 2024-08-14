@@ -22,7 +22,7 @@ public struct VoteCore {
     var voteButtonState: VoteButtonState
     var passButtonState: VoteButtonState
     var eventID: Int
-    var voteOptions: [VoteOptionInfo]
+    var voteOptions: [Option]
     var imageCount: Int {
       voteOptions.count
     }
@@ -36,13 +36,14 @@ public struct VoteCore {
     var isNeedGuideView: Bool
     var isVoteButtonDisabled: Bool
     var guideTypes: [GuideType]
+    var s3BucketDomain: String
     
     public init(
       userInfo: @autoclosure () -> UserInfo = .defaultValue,
       voteButtonState: VoteButtonState = .defaultState,
       passsButtonState: VoteButtonState = .defaultState,
       eventID: Int,
-      voteOptions: [VoteOptionInfo] = [],
+      voteOptions: [Option] = [],
       pickedImageIDs: [Int] = [],
       swipeDirection: SwipeDirection = .defaultState,
       isPopupPresented: Bool = false,
@@ -52,7 +53,8 @@ public struct VoteCore {
       isFirstVoteDone: Bool = false,
       isNeedGuideView: Bool = false,
       isVoteButtonDisabled: Bool = false,
-      guideTypes: [GuideType] = [.pass, .vote]
+      guideTypes: [GuideType] = [.pass, .vote],
+      s3BucketDomain: String = ""
     ) {
       self._userInfo = Shared(wrappedValue: userInfo(), .inMemory("userInfo"))
       self.voteButtonState = voteButtonState
@@ -69,6 +71,7 @@ public struct VoteCore {
       self.isNeedGuideView = isNeedGuideView
       self.isVoteButtonDisabled = isVoteButtonDisabled
       self.guideTypes = guideTypes
+      self.s3BucketDomain = s3BucketDomain
     }
   }
 
@@ -86,17 +89,18 @@ public struct VoteCore {
     case guideViewSwiped
     
     // Internal Action
-    case getVoteOptions(Result<[VoteOptionInfo], Error>)
+    case getVoteOptions(Result<VoteOptionInfo, Error>)
     case postVoteResult(Result<VoteCompleteInfo, Error>)
     case showToast(VoteToastType)
     case resetButtonState
     case voteEnded
     case swipeCard(SwipeDirection)
     case setToastPresented(Bool)
-    case setVoteOptions([VoteOptionInfo])
+    case setVoteOptions([Option])
     case checkFirstVote
     case updateIsFirstVoteDone(Bool)
     case updateIsNeedGuideView(Bool)
+    case setS3BucketDomain(String)
     
     // Route Action
     case dismissVoteView
@@ -116,6 +120,10 @@ public struct VoteCore {
         
       case .onAppear:
         return .run { [state] send in
+          if let s3BucketDomain = try? bundleClient.getValue(key: "S3BucketDomain") as? String {
+            await send(.setS3BucketDomain(s3BucketDomain))
+          }
+          
           await send(.getVoteOptions(Result {
             try await self.voteAPIClient.getVoteOptions(state.userInfo.accessToken, state.eventID)
           }))
@@ -175,14 +183,10 @@ public struct VoteCore {
         return .none
         
       case let .getVoteOptions(.success(voteOptions)):
-        return .run { send in
-          let voteOptionsWithDomain = voteOptions.map {
-            if let s3BucketDomain = try? bundleClient.getValue("S3BucketDomain") as? String {
-              let imageURLString = s3BucketDomain + $0.imageURL
-              return VoteOptionInfo(optionID: $0.optionID, imageURL: imageURLString)
-            } else {
-              return VoteOptionInfo.emptyItem
-            }
+        return .run { [state] send in
+          let voteOptionsWithDomain = voteOptions.options.map {
+            let imageURLString = state.s3BucketDomain + $0.imageURL
+            return Option(optionID: $0.optionID, imageURL: imageURLString)
           }
           
           await send(.setVoteOptions(voteOptionsWithDomain))
@@ -254,6 +258,10 @@ public struct VoteCore {
         
       case let .updateIsNeedGuideView(isFirstVoteDone):
         state.isNeedGuideView = !isFirstVoteDone
+        return .none
+        
+      case let .setS3BucketDomain(s3BucketDomain):
+        state.s3BucketDomain = s3BucketDomain
         return .none
         
       case .dismissVoteView:
