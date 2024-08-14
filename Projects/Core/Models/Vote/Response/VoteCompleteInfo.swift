@@ -15,7 +15,7 @@ public struct VoteCompleteInfo: Decodable, Equatable {
   
   enum CodingKeys: String, CodingKey {
     case eventID = "event_id"
-    case keyword
+    case keyword = "group_keyword"
     case imageURL = "random_image_url"
   }
   
