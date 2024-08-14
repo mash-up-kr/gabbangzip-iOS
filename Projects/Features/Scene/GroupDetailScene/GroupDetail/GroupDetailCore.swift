@@ -62,7 +62,7 @@ public struct GroupDetailCore {
     }
     
     var recentEventDeadLineString: String {
-      return groupDetail?.recentEventDetail.deadline.toGroupEventDateString(type: .deadLine) ?? ""
+      return groupDetail?.recentEventDetail.deadline.toGroupEventDateString(type: .deadline) ?? ""
     }
     
     var statusMessage: String {
