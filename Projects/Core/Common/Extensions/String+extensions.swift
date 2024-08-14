@@ -15,4 +15,11 @@ public extension String {
     }
     return DateFormatter.groupEvent.string(from: date)
   }
+  
+  func toCreateEventDateString() -> String? {
+    guard let date = DateFormatter.iso8601.date(from: self) else {
+      return nil
+    }
+    return DateFormatter.createEvent.string(from: date)
+  }
 }

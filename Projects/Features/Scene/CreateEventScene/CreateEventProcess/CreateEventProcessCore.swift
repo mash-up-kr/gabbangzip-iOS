@@ -24,8 +24,11 @@ public struct CreateEventProcessCore {
     public var isEventNamed: Bool
     public var isPhotoSelected: Bool
     public var completeButtonType: ButtonType
-    public var currentDate: String
+    public var recentEvent: RecentEvent
     public var selectedPhotosInfo: [PhotoInfo]
+    public var recentEventDate: String {
+      return recentEvent.date?.toCreateEventDateString() ?? ""
+    }
     
     public init(
       text: String = "",
@@ -33,7 +36,7 @@ public struct CreateEventProcessCore {
       isEventNamed: Bool = false,
       isPhotoSelected: Bool = false,
       completeButtonType: ButtonType = .inactive,
-      currentDate: String = "YY/MM/DD",
+      recentEvent: RecentEvent,
       selectedPhotosInfo: [PhotoInfo] = []
     ) {
       self.text = text
@@ -41,7 +44,7 @@ public struct CreateEventProcessCore {
       self.isEventNamed = isEventNamed
       self.isPhotoSelected = isPhotoSelected
       self.completeButtonType = completeButtonType
-      self.currentDate = currentDate
+      self.recentEvent = recentEvent
       self.selectedPhotosInfo = selectedPhotosInfo
     }
   }
@@ -50,7 +53,6 @@ public struct CreateEventProcessCore {
     case binding(BindingAction<State>)
     
     // View Action
-    case onAppear
     case textChanged(String)
     case selectedImagesChanged([PhotoInfo])
     case backButtonTapped
@@ -75,15 +77,6 @@ public struct CreateEventProcessCore {
   public var body: some Reducer<State, Action> {
     Reduce { state, action in
       switch action {
-      case .onAppear:
-        let currentDate = {
-          let formatter = DateFormatter()
-          formatter.dateFormat = "YY/MM/dd"
-          return formatter.string(from: Date())
-        }()
-        state.currentDate = currentDate
-        return .none
-        
       case .binding:
         return .none
         

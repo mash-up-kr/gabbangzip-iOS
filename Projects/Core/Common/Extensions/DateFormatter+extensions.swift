@@ -23,4 +23,10 @@ public extension DateFormatter {
     formatter.dateFormat = "yyyy.MM.dd"
     return formatter
   }()
+  
+  static let createEvent: DateFormatter = {
+    let formatter = DateFormatter()
+    formatter.dateFormat = "YY/MM/dd"
+    return formatter
+  }()
 }

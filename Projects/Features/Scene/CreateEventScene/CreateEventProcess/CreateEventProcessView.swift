@@ -53,7 +53,7 @@ public struct CreateEventProcessView: View {
           }
           .padding(.top, 24)
           
-          GabbangzipDate(date: store.currentDate)
+          GabbangzipDate(date: store.recentEventDate)
             .padding(.top, 16)
           
           HStack(spacing: 0) {
@@ -137,7 +137,6 @@ public struct CreateEventProcessView: View {
         }
       }
     }
-    .onAppear { store.send(.onAppear) }
     .popup(
       isPresented: $store.isExiting,
       title: CreateEventProcessViewNameSpace.popupTitle,
@@ -171,7 +170,7 @@ extension CreateEventProcessView {
 #Preview {
   CreateEventProcessView(
     store: Store(
-      initialState: CreateEventProcessCore.State(),
+      initialState: CreateEventProcessCore.State(recentEvent: .init(id: 0, name: "가빵", date: "")),
       reducer: CreateEventProcessCore.init
     )
   )
