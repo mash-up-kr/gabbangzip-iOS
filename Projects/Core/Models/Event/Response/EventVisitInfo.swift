@@ -6,8 +6,6 @@
 //  Copyright © 2024 com.mashup.gabbangzip. All rights reserved.
 //
 
-import Foundation
-
 public struct EventVisitInfo: Decodable {
   public var visited: Bool
   
