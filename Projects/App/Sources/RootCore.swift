@@ -50,8 +50,8 @@ public struct RootCore {
     case getUserInfoFromKeyChain(Result<UserInfo, Error>)
     case checkAccessToken(Result<TestInfo, Error>, userInfo: UserInfo)
     case refreshToken(Result<TokenInfo, Error>, userInfo: UserInfo)
-    case logError(RootCoreError)
     case setDestination(Destination.State?)
+    case logError(RootCoreError)
   }
   
   @Dependency(\.authAPIClient) private var authAPIClient
@@ -141,14 +141,13 @@ public struct RootCore {
         state.destination = .login(LoginCore.State())
         return .none
         
+      case let .setDestination(destination):
+        state.destination = destination
+        return .none
       case let .logError(error):
         return .run { send in
           logger.error("RootCore Error: \(error)")
         }
-        
-      case let .setDestination(destination):
-        state.destination = destination
-        return .none
       }
     }
     .ifLet(\.$destination, action: \.destination)

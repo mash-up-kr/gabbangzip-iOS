@@ -20,17 +20,16 @@ struct AppDelegateCore {
   enum Action {
     case didFinishLaunching
     
-    // KakaoSDK Setting
+    // KakaoSDK
     case setupKakaoSDK
     
-    // Firebase Setting
+    // Firebase
     case setupFirebase
     case configureFirebase
-    case checkRegisterToken
     case runFirebaseAutoInitialization
     case getDeviceToken(Data)
     
-    // NotificationCenter Setting
+    // NotificationCenter
     case setupNotificationCenter
     case configureNotificationCenterDelegate
     case requestNotificationCenterAuthorization
@@ -38,14 +37,13 @@ struct AppDelegateCore {
     case authorizationStatusResposne(Result<Void, Error>)
     
     case logError(AppDelegateCoreError)
-    case logFCMDescription(String)
   }
   
-  @Dependency(\.userNotificationClient) private var userNotificationClient
   @Dependency(\.bundleClient) private var bundleClient
-  @Dependency(\.kakaoLoginClient) private var kakaoLoginClient
   @Dependency(\.firebaseClient) private var firebaseClient
+  @Dependency(\.kakaoLoginClient) private var kakaoLoginClient
   @Dependency(\.uiApplicationClient) private var uiApplicationClient
+  @Dependency(\.userNotificationClient) private var userNotificationClient
   
   var body: some Reducer<State, Action> {
     Reduce { state, action in
@@ -69,7 +67,6 @@ struct AppDelegateCore {
         return .run { send in
           await send(.configureFirebase)
           await send(.setupNotificationCenter)
-          await send(.checkRegisterToken)
           await send(.runFirebaseAutoInitialization)
         }
         
@@ -147,11 +144,6 @@ struct AppDelegateCore {
         return .run { send in
           logger.error("AppDelegateCore Error: \(String(describing: error))")
         }
-        
-      case let .logFCMDescription(description):
-        return .run { send in
-          logger.debug("FCM registration token: \(String(describing: description))")
-        }
       }
     }
   }
@@ -165,7 +157,6 @@ public struct AppDelegateCoreError: GabbangzipError {
   
   public enum Code: Int {
     case failToStringTypeCasting
-    case failToGetRegisterToken
     case failToGetAuthorizationStatusResposne
   }
 }
