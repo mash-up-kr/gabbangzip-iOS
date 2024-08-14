@@ -81,7 +81,7 @@ public struct CreateEventCore {
         state.text = text
         
         return .run { [state] send in
-          await send(.changeIsEventNamedStatus(state.text.isEmpty))
+          await send(.changeIsEventNamedStatus(!state.text.isEmpty))
         }
         
       case let .selectedImagesChanged(imagesData):
@@ -127,11 +127,7 @@ public struct CreateEventCore {
         }
         
       case .checkCompleteButtonType:
-        if state.isEventNamed && state.isPhotoSelected {
-          state.completeButtonType = .active
-        } else {
-          state.completeButtonType = .inactive
-        }
+        state.completeButtonType = state.isEventNamed && state.isPhotoSelected ? .active : .inactive
         return .none
         
       case .moveToHome:

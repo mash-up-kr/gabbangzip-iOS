@@ -38,10 +38,13 @@ public struct MainCoordinatorCore {
       case .router(.routeAction(id: _, action: .home(.moveToCreateGroup))):
         state.routes.presentCover(.createGroupCoordinator(.init(routes: [.root(.createGroupStart(.init()), embedInNavigationView: true)])))
         
+      case .router(.routeAction(id: _, action: .home(.moveToCreateEvent))):
+        state.routes.push(.createEvent(.init()))
+        
       case .router(.routeAction(id: _, action: .home(.moveToJoinGroup))):
         state.routes.push(.joinGroup(.init()))
         
-      case .router(.routeAction(id: _, action: .joinGroup(.backToGroupList))):
+      case .router(.routeAction(id: _, action: .joinGroup(.backToHome))):
         state.routes.pop()
         
       case .router(.routeAction(id: _, action: .createGroupCoordinator(.router(.routeAction(id: _, action: .createGroupCompletion(.backToHome)))))):
@@ -51,6 +54,12 @@ public struct MainCoordinatorCore {
         state.routes.push(.groupDetailCoordinator(.init(routes: [.root(.groupDetail(.init(groupID: groupID)))])))
         
       case .router(.routeAction(id: _, action: .groupDetailCoordinator(.router(.routeAction(id: _, action: .groupDetail(.backToHome)))))):
+        state.routes.pop()
+        
+      case .router(.routeAction(id: _, action: .createEvent(.moveToHome))):
+        state.routes.pop()
+        
+      case .router(.routeAction(id: _, action: .createEvent(.moveToGroupListWithEvent))):
         state.routes.pop()
         
       default:
