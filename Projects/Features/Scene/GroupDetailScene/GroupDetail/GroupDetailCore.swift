@@ -56,7 +56,7 @@ public struct GroupDetailCore {
       showSheet: Bool = true,
       selectedPhotosInfo: [PhotoInfo] = [],
       isToastPresented: Bool = false,
-      toastType: ToastType = .onlyText(""),
+      toastType: ToastType = .onlyText("다시 시도해주세요."),
       s3BucketDomain: String = "",
       showActivityView: Bool = false,
       capturedImage: UIImage? = nil,
@@ -195,9 +195,12 @@ public struct GroupDetailCore {
         }
         
       case .getGroupDetailResponse(.failure):
+        state.isToastPresented = true
+        return .none
         return .none
         
-      case .putEventVisit:
+      case .putEventVisit(.failure):
+        state.isToastPresented = true
         return .none
         
       case .postKook:
