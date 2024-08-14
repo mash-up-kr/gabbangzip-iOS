@@ -7,6 +7,7 @@
 //
 
 import ComposableArchitecture
+import CreateEvent
 import CreateGroupCoordinator
 import GroupDetailCoordinator
 import Main
@@ -26,6 +27,8 @@ public struct MainCoordinatorView: View {
       switch screen.case {
       case let .createGroupCoordinator(store):
         CreateGroupCoordinatorView(store: store)
+      case let .createEvent(store):
+        CreateEventView(store: store)
       case let .myPage(store):
         MyPageView(store: store)
       case let .home(store):

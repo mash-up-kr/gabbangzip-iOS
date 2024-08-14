@@ -8,7 +8,7 @@
 
 import Foundation
 
-public struct PhotoInfo: Equatable {
+public struct PhotoInfo: Hashable {
   public let data: Data
   public let url: URL
   public var fileExtension: String {
