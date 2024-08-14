@@ -7,6 +7,7 @@
 //
 
 import ComposableArchitecture
+import Foundation
 import Models
 
 @Reducer
@@ -18,6 +19,10 @@ public struct HistoryDetailCore {
     var history: History
     var keyword: GroupData.Keyword?
     var s3BucketDomain: String
+    
+    var eventDate: String {
+      history.date.toGroupEventDateString(type: .eventDate) ?? ""
+    }
     
     public init(
       history: History,

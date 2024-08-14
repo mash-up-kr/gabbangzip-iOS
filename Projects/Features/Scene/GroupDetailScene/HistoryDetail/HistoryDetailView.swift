@@ -40,7 +40,7 @@ public struct HistoryDetailView: View {
             status: keyword.convertToPhotoCardStatus()
           ) {
             PhotoCardBackView(
-              recentEventDate: store.history.date,
+              recentEventDate: store.eventDate,
               cardBackImages: store.history.images,
               recentEventName: store.history.name,
               foregroundColor: keyword.foregroundColor,
