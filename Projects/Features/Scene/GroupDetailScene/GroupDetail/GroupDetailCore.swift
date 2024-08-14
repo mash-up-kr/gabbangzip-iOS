@@ -10,6 +10,7 @@ import ComposableArchitecture
 import DesignSystem
 import Models
 import Services
+import SwiftUI
 import UIKit
 
 @Reducer
@@ -48,8 +49,16 @@ public struct GroupDetailCore {
       return groupDetail?.status == .eventCompleted
     }
     
+    var frame: Image {
+      return groupDetail?.keyword.frame ?? DesignSystem.Icons.plusFrame
+    }
+    
     var recentEventDateString: String {
       return groupDetail?.recentEventDetail.date.toGroupEventDateString(type: .eventDate) ?? ""
+    }
+    
+    var recentEventName: String {
+      return groupDetail?.recentEventDetail.name ?? ""
     }
     
     var recentEventDeadLineString: String {

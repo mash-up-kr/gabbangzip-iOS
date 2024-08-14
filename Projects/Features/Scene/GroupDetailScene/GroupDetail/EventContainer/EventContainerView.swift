@@ -32,7 +32,6 @@ struct EventContainerView: View {
       switch groupDetail.status {
       case .beforeMyUpload, .afterMyUpload, .beforeMyVote, .afterMyVote:
         EventProgressView(
-          groupDetail: groupDetail,
           action: {
             action(groupDetail.status)
           },

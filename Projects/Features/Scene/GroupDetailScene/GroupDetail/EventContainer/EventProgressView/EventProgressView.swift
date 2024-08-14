@@ -14,21 +14,17 @@ import NukeUI
 import SwiftUI
 
 struct EventProgressView: View {
-  private let groupDetail: GroupDetailInfo
   private var action: () -> Void
   @Bindable var store: StoreOf<GroupDetailCore>
   
   init(
-    groupDetail: GroupDetailInfo,
     action: @escaping () -> Void,
     store: StoreOf<GroupDetailCore>
   ) {
-    self.groupDetail = groupDetail
     self.action = action
     self.store = store
   }
   
-  // TODO: groupDetail 삭제 및 store로 대체
   var body: some View {
     VStack(spacing: 0) {
       Text(store.recentEventDateString)
@@ -36,7 +32,7 @@ struct EventProgressView: View {
         .font(.body16)
         .padding(.bottom, 8)
       
-      Text(groupDetail.name)
+      Text(store.recentEventName)
         .foregroundStyle(DesignSystem.Colors.gray80)
         .font(.head20)
         .padding(.bottom, 8)
@@ -47,18 +43,19 @@ struct EventProgressView: View {
         .padding(.bottom, 16)
       
       PhotoWithFrame(
-        frameShape: groupDetail.keyword.frame,
+        frameShape: store.frame,
         foregroundColor: DesignSystem.Colors.gray20,
-        imageURLString: groupDetail.cardFrontImageURL
+        imageURLString: store.groupDetail?.cardFrontImageURL ?? ""
       )
       .padding(.horizontal, 76)
       
-      Text(groupDetail.statusDescription)
+      // TODO: 문구 수정 필요
+      Text(store.groupDetail?.statusDescription ?? "")
         .font(.caption12)
         .foregroundStyle(DesignSystem.Colors.gray60)
         .padding(.init(top: 24, leading: 0, bottom: 8, trailing: 0))
       
-      if groupDetail.status == .beforeMyUpload {
+      if store.groupDetail?.status == .beforeMyUpload {
         GabbangzipPhotoPicker(
           selectedPhotosInfo: $store.selectedPhotosInfo,
           isPresentedError: .constant(false),
