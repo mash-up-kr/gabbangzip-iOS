@@ -13,7 +13,7 @@ import Firebase
 public struct FirebaseClient: Sendable {
   public var configure: @Sendable () async -> Void
   public var runAutoInitialization: @Sendable () async -> Void
-  public var getDeviceToken: @Sendable (Data) async -> Void
+  public var setDeviceToken: @Sendable (Data) async -> Void
   public var checkRegistrationToken: @Sendable () async throws -> String
 }
 
@@ -26,7 +26,7 @@ extension FirebaseClient: DependencyKey {
       runAutoInitialization: {
         Messaging.messaging().isAutoInitEnabled = true
       },
-      getDeviceToken: { data in
+      setDeviceToken: { data in
         Messaging.messaging().apnsToken = data
       },
       checkRegistrationToken: {
