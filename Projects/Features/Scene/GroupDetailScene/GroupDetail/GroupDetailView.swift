@@ -54,21 +54,22 @@ public struct GroupDetailView: View {
         activityItems: [store.capturedImage]
       )
     )
-    // TODO: sheet -> custom으로 변경할 예정 ..
-//    .sheet(isPresented: $store.showSheet) {
-//      HistoryGridView(
-//        histories: store.groupDetail?.history,
-//        keyword: store.groupDetail?.keyword,
-//        s3BucketDomain: store.s3BucketDomain,
-//        tapAction: { history in
-//          store.send(.historyViewTapped(history))
-//        }
-//      )
-//        .presentationDetents([.height(bottomSheetHeight), .large])
-//        .interactiveDismissDisabled()
-//        .presentationDragIndicator(.hidden)
-//        .presentationBackgroundInteraction(.enabled(upThrough: .large))
-//     }
+    .overlay {
+      CustomBottomSheetView(
+        minHeight: bottomSheetHeight + UIScreen.bottomSafeArea,
+        maxHeight: UIScreen.main.bounds.height - UIScreen.topSafeArea,
+        content: {
+          HistoryGridView(
+            histories: store.groupDetail?.history,
+            keyword: store.groupDetail?.keyword,
+            s3BucketDomain: store.s3BucketDomain,
+            tapAction: { history in
+              store.send(.historyViewTapped(history))
+            }
+          )
+        }
+      )
+    }
     .toast(
       isPresented: $store.isToastPresented,
       type: store.toastType,

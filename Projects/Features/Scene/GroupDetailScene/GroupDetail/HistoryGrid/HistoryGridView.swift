@@ -31,12 +31,14 @@ struct HistoryGridView: View {
   
   var body: some View {
     ScrollView {
-      titleView
-      
-      if let histories, !histories.isEmpty {
-        galleryView
-      } else {
-        emptyView
+      VStack(spacing: 0) {
+        titleView
+        
+        if let histories, !histories.isEmpty {
+          galleryView
+        } else {
+          emptyView
+        }
       }
     }
     .padding(.horizontal, 16)
