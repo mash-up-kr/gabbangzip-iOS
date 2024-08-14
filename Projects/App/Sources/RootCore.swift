@@ -72,7 +72,7 @@ public struct RootCore {
         return .none
         
       case .destination(.presented(.login(.moveToHome))):
-        state.destination = .mainCoordinator(MainCoordinatorCore.State(routes: [.root(.groupList(GroupListCore.State()), embedInNavigationView: true)]))
+        state.destination = .mainCoordinator(MainCoordinatorCore.State(routes: [.root(.home(HomeCore.State()), embedInNavigationView: true)]))
         return .none
         
       case .destination:
@@ -108,7 +108,7 @@ public struct RootCore {
         
       case let .checkAccessToken(.success, userInfo):
         state.userInfo = userInfo
-        state.destination = .mainCoordinator(MainCoordinatorCore.State(routes: [.root(.groupList(GroupListCore.State()), embedInNavigationView: true)]))
+        state.destination = .mainCoordinator(MainCoordinatorCore.State(routes: [.root(.home(HomeCore.State()), embedInNavigationView: true)]))
         return .none
         
       case let .checkAccessToken(.failure, userInfo):
@@ -129,7 +129,7 @@ public struct RootCore {
         return .run(
           operation: { [newUserInfo] send in
             try await keyChainClient.updateUserInfo(newUserInfo)
-            await send(.setDestination(.mainCoordinator(MainCoordinatorCore.State(routes: [.root(.groupList(GroupListCore.State()), embedInNavigationView: true)]))))
+            await send(.setDestination(.mainCoordinator(MainCoordinatorCore.State(routes: [.root(.home(HomeCore.State()), embedInNavigationView: true)]))))
           },
           catch: { error, send in
             await send(.setDestination(.login(LoginCore.State())))

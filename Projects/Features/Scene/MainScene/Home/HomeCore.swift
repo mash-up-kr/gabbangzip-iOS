@@ -1,5 +1,5 @@
 //
-//  GroupListCore.swift
+//  HomeCore.swift
 //  Main
 //
 //  Created by YangJoonHyeok on 7/2/24.
@@ -12,14 +12,14 @@ import Models
 import Services
 
 @Reducer
-public struct GroupListCore {
+public struct HomeCore {
   public init() {}
   
   @ObservableState
   public struct State: Equatable {
     var groups: IdentifiedArrayOf<GroupCore.State>
     @Shared var userInfo: UserInfo
-    @Shared var isGroupListUpdated: Bool
+    @Shared var isHomeUpdated: Bool
     var floatingButtonExpanded: Bool
     var toastPresented: Bool
     var toastType: ToastType
@@ -27,14 +27,14 @@ public struct GroupListCore {
     public init(
       groups: IdentifiedArrayOf<GroupCore.State> = [],
       userInfo: @autoclosure () -> UserInfo = .defaultValue,
-      isGroupListUpdated: @autoclosure () -> Bool = false,
+      isHomeUpdated: @autoclosure () -> Bool = false,
       floatingButtonExpanded: Bool = false,
       toastPresented: Bool = false,
       toastType: ToastType = .onlyText("")
     ) {
       self.groups = groups
       self._userInfo = Shared(wrappedValue: userInfo(), .inMemory("userInfo"))
-      self._isGroupListUpdated = Shared(wrappedValue: isGroupListUpdated(), .inMemory("isGroupListUpdated"))
+      self._isHomeUpdated = Shared(wrappedValue: isHomeUpdated(), .inMemory("isHomeUpdated"))
       self.floatingButtonExpanded = floatingButtonExpanded
       self.toastPresented = toastPresented
       self.toastType = toastType
@@ -54,7 +54,7 @@ public struct GroupListCore {
     case getGroupsResponse(Result<GroupsData, Error>)
     case getS3BucketDomain(Result<String?, Error>)
     case floatingButtonExpandedChanged(Bool)
-    case isGroupListUpdatedChanged(Bool)
+    case isHomeUpdatedChanged(Bool)
     case showToastMessage(ToastType)
     
     // Child Action
@@ -80,8 +80,8 @@ public struct GroupListCore {
         return .concatenate([
           Effect.send(.fetchGroups),
           Effect.publisher {
-            state.$isGroupListUpdated.publisher
-              .map(Action.isGroupListUpdatedChanged)
+            state.$isHomeUpdated.publisher
+              .map(Action.isHomeUpdatedChanged)
           }
         ])
         
@@ -101,7 +101,7 @@ public struct GroupListCore {
         return .none
         
       case .fetchGroups:
-        state.isGroupListUpdated = false
+        state.isHomeUpdated = false
         return .run { [state] send in
           await send(.getGroupsResponse(Result {
             try await self.groupAPIClient.getGroups(state.userInfo.accessToken)
@@ -151,9 +151,9 @@ public struct GroupListCore {
         state.floatingButtonExpanded = value
         return .none
         
-      case let .isGroupListUpdatedChanged(isGroupListUpdated):
+      case let .isHomeUpdatedChanged(isHomeUpdated):
         return .run { send in
-          if isGroupListUpdated {
+          if isHomeUpdated {
             await send(.fetchGroups)
           }
         }

@@ -17,7 +17,7 @@ import TCACoordinators
 public enum MainScreen {
   case createGroupCoordinator(CreateGroupCoordinatorCore)
   case myPage(MyPageCore)
-  case groupList(GroupListCore)
+  case home(HomeCore)
   case joinGroup(JoinGroupCore)
   case groupDetailCoordinator(GroupDetailCoordinatorCore)
 }

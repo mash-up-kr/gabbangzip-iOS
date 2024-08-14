@@ -29,25 +29,25 @@ public struct MainCoordinatorCore {
   public var body: some Reducer<State, Action> {
     Reduce { state, action in
       switch action {
-      case .router(.routeAction(id: _, action: .groupList(.moveToMyPage))):
+      case .router(.routeAction(id: _, action: .home(.moveToMyPage))):
         state.routes.push(.myPage(.init()))
         
       case .router(.routeAction(id: _, action: .myPage(.backToHome))):
         state.routes.pop()
         
-      case .router(.routeAction(id: _, action: .groupList(.moveToCreateGroup))):
+      case .router(.routeAction(id: _, action: .home(.moveToCreateGroup))):
         state.routes.presentCover(.createGroupCoordinator(.init(routes: [.root(.createGroupStart(.init()), embedInNavigationView: true)])))
         
-      case .router(.routeAction(id: _, action: .groupList(.moveToJoinGroup))):
+      case .router(.routeAction(id: _, action: .home(.moveToJoinGroup))):
         state.routes.push(.joinGroup(.init()))
         
-      case .router(.routeAction(id: _, action: .joinGroup(.backToGroupList))):
+      case .router(.routeAction(id: _, action: .joinGroup(.backToHome))):
         state.routes.pop()
         
       case .router(.routeAction(id: _, action: .createGroupCoordinator(.router(.routeAction(id: _, action: .createGroupCompletion(.backToHome)))))):
         state.routes.dismiss()
         
-      case let .router(.routeAction(id: _, action: .groupList(.moveToGroupDetail(groupID)))):
+      case let .router(.routeAction(id: _, action: .home(.moveToGroupDetail(groupID)))):
         state.routes.push(.groupDetailCoordinator(.init(routes: [.root(.groupDetail(.init(groupID: groupID)))])))
         
       case .router(.routeAction(id: _, action: .groupDetailCoordinator(.router(.routeAction(id: _, action: .groupDetail(.backToHome)))))):

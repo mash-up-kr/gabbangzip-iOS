@@ -1,5 +1,5 @@
 //
-//  GroupListView.swift
+//  HomeView.swift
 //  Main
 //
 //  Created by YangJoonHyeok on 7/2/24.
@@ -12,10 +12,10 @@ import Models
 import NukeUI
 import SwiftUI
 
-public struct GroupListView: View {
-  @Bindable var store: StoreOf<GroupListCore>
+public struct HomeView: View {
+  @Bindable var store: StoreOf<HomeCore>
 
-  public init(store: StoreOf<GroupListCore>) {
+  public init(store: StoreOf<HomeCore>) {
     self.store = store
   }
 
@@ -61,10 +61,10 @@ public struct GroupListView: View {
 }
 
 #Preview {
-  GroupListView(
+  HomeView(
     store: Store(
       initialState: .init(),
-      reducer: GroupListCore.init
+      reducer: HomeCore.init
     )
   )
 }
