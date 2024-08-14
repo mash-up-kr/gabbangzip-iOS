@@ -47,7 +47,7 @@ public struct JoinGroupCore {
     case joinGroupResponse(Result<GroupID, Error>)
     
     // Route Action
-    case backToGroupList
+    case backToHome
   }
   
   @Dependency(\.groupAPIClient) var groupAPIClient
@@ -56,7 +56,7 @@ public struct JoinGroupCore {
     Reduce { state, action in
       switch action {
       case .backButtonTapped:
-        return .send(.backToGroupList)
+        return .send(.backToHome)
         
       case let .textChanged(text):
         state.text = text
@@ -74,7 +74,7 @@ public struct JoinGroupCore {
         return .none
         
       case .joinGroupResponse(.success):
-        return .send(.backToGroupList)
+        return .send(.backToHome)
         
       case let .joinGroupResponse(.failure(error)):
         return .run { send in
@@ -82,7 +82,7 @@ public struct JoinGroupCore {
           logger.error(error.localizedDescription)
         }
         
-      case .backToGroupList:
+      case .backToHome:
         return .none
       }
     }

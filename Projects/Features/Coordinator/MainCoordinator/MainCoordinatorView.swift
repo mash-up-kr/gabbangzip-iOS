@@ -28,8 +28,8 @@ public struct MainCoordinatorView: View {
         CreateGroupCoordinatorView(store: store)
       case let .myPage(store):
         MyPageView(store: store)
-      case let .groupList(store):
-        GroupListView(store: store)
+      case let .home(store):
+        HomeView(store: store)
       case let .joinGroup(store):
         JoinGroupView(store: store)
       case let .groupDetailCoordinator(store):
