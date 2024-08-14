@@ -72,13 +72,12 @@ public struct CreateEventProcessView: View {
           if !$store.selectedPhotosInfo.isEmpty {
             ScrollView(.horizontal) {
               HStack(spacing: 0) {
-              GabbangzipPhotoPicker(
-                selectedPhotosInfo: $store.selectedPhotosInfo.sending(\.selectedImagesChanged),
-                isPresentedError: .constant(false),
-                maxSelectedCount: .custom(4),
-                matching: .images
-              ) { SelectPhoto(selectedPhotosInfo: $store.selectedPhotosInfo, maxCount: 4) }
-              
+                GabbangzipPhotoPicker(
+                  selectedPhotosInfo: $store.selectedPhotosInfo.sending(\.selectedImagesChanged),
+                  maxSelectedCount: .custom(4),
+                  matching: .images
+                ) { SelectPhoto(selectedPhotosInfo: $store.selectedPhotosInfo, maxCount: 4) }
+                
                 ForEach(Array($store.selectedPhotosInfo.enumerated()), id: \.offset) { index, $photoInfo in
                   if let image = UIImage(data: photoInfo.data) {
                     ZStack(
@@ -100,7 +99,7 @@ public struct CreateEventProcessView: View {
                               .frame(width: 26, height: 26)
                           }
                         )
-                        .padding([.trailing], -8)
+                        .padding(.trailing, -8)
                       }
                     )
                     .padding(.leading, 8)
@@ -112,7 +111,6 @@ public struct CreateEventProcessView: View {
             HStack(spacing: 0) {
               GabbangzipPhotoPicker(
                 selectedPhotosInfo: $store.selectedPhotosInfo.sending(\.selectedImagesChanged),
-                isPresentedError: .constant(false),
                 maxSelectedCount: .custom(4),
                 matching: .images
               ) { SelectPhoto(selectedPhotosInfo: $store.selectedPhotosInfo, maxCount: 4) }

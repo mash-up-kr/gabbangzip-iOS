@@ -9,11 +9,11 @@
 import SwiftUI
 
 public struct SelectPhoto: View {
-  @Binding private var selectedPhotosInfo: [PhotoInfo]
+  private var selectedPhotosInfo: [PhotoInfo]
   private let maxCount: Int
   
   public init(
-    selectedPhotosInfo: Binding<[PhotoInfo]>,
+    selectedPhotosInfo: [PhotoInfo],
     maxCount: Int
   ) {
     self._selectedPhotosInfo = selectedPhotosInfo
@@ -54,6 +54,6 @@ public struct SelectPhoto: View {
 
 #Preview {
   VStack {
-    SelectPhoto(selectedPhotosInfo: .constant([]), maxCount: 4)
+    SelectPhoto(selectedPhotosInfo: [], maxCount: 4)
   }
 }
