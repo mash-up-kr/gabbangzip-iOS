@@ -49,7 +49,11 @@ public struct GroupDetailCore {
     }
     
     var recentEventDateString: String {
-      return groupDetail?.recentEventDetail.date.toGroupEventDateString() ?? ""
+      return groupDetail?.recentEventDetail.date.toGroupEventDateString(type: .eventDate) ?? ""
+    }
+    
+    var recentEventDeadLineString: String {
+      return groupDetail?.recentEventDetail.deadline.toGroupEventDateString(type: .deadLine) ?? ""
     }
     
     @Shared var userInfo: UserInfo

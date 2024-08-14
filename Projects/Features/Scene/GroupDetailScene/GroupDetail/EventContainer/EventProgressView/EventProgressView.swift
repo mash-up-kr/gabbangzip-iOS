@@ -41,7 +41,7 @@ struct EventProgressView: View {
         .font(.head20)
         .padding(.bottom, 8)
       
-      Text("\(groupDetail.recentEventDetail.deadline) PIC 종료")
+      Text("\(store.recentEventDeadLineString) PIC 종료")
         .font(.text14)
         .foregroundStyle(DesignSystem.Colors.gray80)
         .padding(.bottom, 16)

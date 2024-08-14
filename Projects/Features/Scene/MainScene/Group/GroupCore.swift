@@ -37,7 +37,7 @@ public struct GroupCore {
       return status == .noCurrentEvent || status == .eventCompleted
     }
     var recentEventDate: String {
-      return recentEvent.date?.toGroupEventDateString() ?? ""
+      return recentEvent.date?.toGroupEventDateString(type: .eventDate) ?? ""
     }
     var recentEventName: String {
       return recentEvent.name ?? ""

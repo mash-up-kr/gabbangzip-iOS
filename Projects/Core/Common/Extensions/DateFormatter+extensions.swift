@@ -8,6 +8,11 @@
 
 import Foundation
 
+public enum DateFormatterType {
+  case eventDate
+  case deadLine
+}
+
 public extension DateFormatter {
   static let iso8601: DateFormatter = {
     let formatter = DateFormatter()
@@ -17,6 +22,25 @@ public extension DateFormatter {
     formatter.locale = Locale(identifier: "ko_KR")
     return formatter
   }()
+
+  
+  static func iso8601(
+    _ type: DateFormatterType = .eventDate
+  ) -> DateFormatter {
+    let formatter = DateFormatter()
+    
+    switch type {
+    case .eventDate:
+      formatter.dateFormat = "yyyy-MM-dd'T'HH:mm:ss.SSS"
+    case .deadLine:
+      formatter.dateFormat = "yyyy-MM-dd'T'HH:mm:ss.SSSSSS"
+    }
+    
+    formatter.calendar = Calendar(identifier: .iso8601)
+    formatter.timeZone = TimeZone(abbreviation: "KST")
+    formatter.locale = Locale(identifier: "ko_KR")
+    return formatter
+  }
   
   static let groupEvent: DateFormatter = {
     let formatter = DateFormatter()
