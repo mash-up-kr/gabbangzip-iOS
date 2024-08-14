@@ -13,12 +13,12 @@ import NukeUI
 import SwiftUI
 
 struct EventContainerView: View {
-  private let groupDetail: GroupDetailInfo
+  private let groupDetail: GroupDetailInfo?
   private var action: (GroupData.Status) -> Void
   private var store: StoreOf<GroupDetailCore>
   
   init(
-    groupDetail: GroupDetailInfo,
+    groupDetail: GroupDetailInfo?,
     action: @escaping (GroupData.Status) -> Void,
     store: StoreOf<GroupDetailCore>
   ) {
@@ -28,19 +28,23 @@ struct EventContainerView: View {
   }
   
   var body: some View {
-    switch groupDetail.status {
-    case .beforeMyUpload, .afterMyUpload, .beforeMyVote, .afterMyVote:
-      EventProgressView(
-        groupDetail: groupDetail,
-        action: {
-          action(groupDetail.status)
-        },
-        store: store
-      )
-    case .noCurrentEvent, .eventCompleted:
-      EventCompletedView(store: store)
-    case .noPastAndCurrentEvent:
-      // 해당 화면에 접근 불가능한 조건
+    if let groupDetail {
+      switch groupDetail.status {
+      case .beforeMyUpload, .afterMyUpload, .beforeMyVote, .afterMyVote:
+        EventProgressView(
+          groupDetail: groupDetail,
+          action: {
+            action(groupDetail.status)
+          },
+          store: store
+        )
+      case .noCurrentEvent, .eventCompleted:
+        EventCompletedView(store: store)
+      case .noPastAndCurrentEvent:
+        // 해당 화면에 접근 불가능한 조건
+        EmptyView()
+      }
+    } else {
       EmptyView()
     }
   }

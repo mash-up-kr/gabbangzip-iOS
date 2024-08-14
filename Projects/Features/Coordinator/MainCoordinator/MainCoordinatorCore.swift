@@ -47,6 +47,12 @@ public struct MainCoordinatorCore {
       case .router(.routeAction(id: _, action: .createGroupCoordinator(.router(.routeAction(id: _, action: .createGroupCompletion(.backToHome)))))):
         state.routes.dismiss()
         
+      case let .router(.routeAction(id: _, action: .groupList(.moveToGroupDetail(groupID)))):
+        state.routes.push(.groupDetailCoordinator(.init(routes: [.root(.groupDetail(.init(groupID: groupID)))])))
+        
+      case .router(.routeAction(id: _, action: .groupDetailCoordinator(.router(.routeAction(id: _, action: .groupDetail(.backToHome)))))):
+        state.routes.pop()
+        
       default:
         break
       }

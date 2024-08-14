@@ -47,6 +47,7 @@ public enum TargetName: String {
   case appCoordinator = "AppCoordinator"
   case mainCoordinator = "MainCoordinator"
   case createGroupCoordinator = "CreateGroupCoordinator"
+  case groupDetailCoordinator = "GroupDetailCoordinator"
 }
 
 public enum ExternalDependency: String {

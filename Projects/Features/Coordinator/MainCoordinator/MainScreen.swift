@@ -8,6 +8,7 @@
 
 import ComposableArchitecture
 import CreateGroupCoordinator
+import GroupDetailCoordinator
 import Main
 import MyPage
 import TCACoordinators
@@ -18,4 +19,5 @@ public enum MainScreen {
   case myPage(MyPageCore)
   case groupList(GroupListCore)
   case joinGroup(JoinGroupCore)
+  case groupDetailCoordinator(GroupDetailCoordinatorCore)
 }

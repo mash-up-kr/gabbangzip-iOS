@@ -33,11 +33,9 @@ public struct EventCompletedView: View {
       .padding(.vertical, 16)
       
       ShareButton(action: {
-        // TODO
-//        store.send(.shareButtonTapped)
         captureView(of: completedImage) { capturedImage in
-          // TODO
-//          store.send(.imageCaptured(capturedImage))
+          store.send(.imageCaptured(capturedImage))
+          store.send(.shareButtonTapped)
         }
       })
         .padding(.bottom, 32)
@@ -50,15 +48,20 @@ public struct EventCompletedView: View {
     )
   }
   
+  @ViewBuilder
   private var completedImage: some View {
-    PhotoCard(status: store.groupDetail.keyword.convertToPhotoCardStatus()) {
-      PhotoCardBackView(
-        recentEventDate: store.groupDetail.recentEventDetail.date,
-        cardBackImages: store.groupDetail.cardBackImages,
-        recentEventName: store.groupDetail.recentEventDetail.name,
-        foregroundColor: store.groupDetail.keyword.foregroundColor,
-        s3BucketDomain: store.s3BucketDomain
-      )
+    if let groupDetail = store.groupDetail {
+      PhotoCard(status: groupDetail.keyword.convertToPhotoCardStatus()) {
+        PhotoCardBackView(
+          recentEventDate: groupDetail.recentEventDetail.date,
+          cardBackImages: groupDetail.cardBackImages,
+          recentEventName: groupDetail.recentEventDetail.name,
+          foregroundColor: groupDetail.keyword.foregroundColor,
+          s3BucketDomain: store.s3BucketDomain
+        )
+      }
+    } else {
+      EmptyView()
     }
   }
 }

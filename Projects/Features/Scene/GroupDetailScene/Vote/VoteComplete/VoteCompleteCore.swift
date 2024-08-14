@@ -11,6 +11,8 @@ import Models
 
 @Reducer
 public struct VoteCompleteCore {
+  public init() {}
+  
   @ObservableState
   public struct State: Equatable {
     var voteResult: VoteCompleteInfo
@@ -36,6 +38,7 @@ public struct VoteCompleteCore {
     case setImageURLString(String)
     
     // Route Action
+    case backToGroupDetail
   }
 
   public var body: some Reducer<State, Action> {
@@ -49,10 +52,13 @@ public struct VoteCompleteCore {
           }
         }
       case .completeButtonTapped:
-        return .none
+        return .send(.backToGroupDetail)
         
       case let .setImageURLString(imageURLString):
         state.imageURLString = imageURLString
+        return .none
+        
+      case .backToGroupDetail:
         return .none
       }
     }

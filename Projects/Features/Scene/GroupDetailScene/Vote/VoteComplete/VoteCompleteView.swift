@@ -15,7 +15,7 @@ import SwiftUI
 public struct VoteCompleteView: View {
   private let store: StoreOf<VoteCompleteCore>
 
-  init(store: StoreOf<VoteCompleteCore>) {
+  public init(store: StoreOf<VoteCompleteCore>) {
     self.store = store
   }
 

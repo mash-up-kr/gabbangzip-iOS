@@ -11,21 +11,32 @@ import Models
 import SwiftUI
 
 struct HistoryGridView: View {
-  private let histories: [History]
-  private let columns = [GridItem(spacing: 33), GridItem(spacing: 33)]
+  private let histories: [History]?
+  private let keyword: GroupData.Keyword?
+  private let s3BucketDomain: String
+  private let columns = [GridItem(spacing: 9), GridItem(spacing: 9)]
+  private let tapAction: (History) -> Void
   
-  init(histories: [History]) {
+  init(
+    histories: [History]?,
+    keyword: GroupData.Keyword?,
+    s3BucketDomain: String,
+    tapAction: @escaping (History) -> Void
+  ) {
     self.histories = histories
+    self.keyword = keyword
+    self.s3BucketDomain = s3BucketDomain
+    self.tapAction = tapAction
   }
   
   var body: some View {
     ScrollView {
       titleView
       
-      if histories.isEmpty {
-        emptyView
-      } else {
+      if let histories, !histories.isEmpty {
         galleryView
+      } else {
+        emptyView
       }
     }
     .padding(.horizontal, 16)
@@ -45,8 +56,17 @@ struct HistoryGridView: View {
   
   private var galleryView: some View {
     LazyVGrid(columns: columns, spacing: 16) {
-      ForEach(histories) { history in
-        HistoryItemView(history: history)
+      if let histories, let keyword {
+        ForEach(histories) { history in
+          HistoryItemView(
+            history: history,
+            keyword: keyword,
+            s3BucketDomain: s3BucketDomain,
+            tapAction: { history in
+              tapAction(history)
+            }
+          )
+        }
       }
     }
     .padding(.top, 17)
@@ -67,11 +87,9 @@ struct HistoryGridView: View {
 }
 
 #Preview {
-  Group {
-    HistoryGridView(histories: [])
-  }
-}
-
-#Preview {
-  HistoryGridView(histories: History.listMomck)
+  HistoryGridView(
+    histories: History.listMock,
+    keyword: .company,
+    s3BucketDomain: ""
+  ) { _ in }
 }

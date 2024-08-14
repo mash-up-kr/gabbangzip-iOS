@@ -14,10 +14,12 @@ import UIKit
 
 @Reducer
 public struct GroupDetailCore {
+  public init() {}
+  
   @ObservableState
   public struct State: Equatable {
     var groupID: Int
-    var groupDetail: GroupDetailInfo
+    var groupDetail: GroupDetailInfo?
     var showSheet: Bool
     var selectedPhotosInfo: [PhotoInfo]
     var isToastPresented: Bool
@@ -26,34 +28,38 @@ public struct GroupDetailCore {
     var showActivityView: Bool
     var capturedImage: UIImage?
     var smallButtonType: SmallButtonContentType {
-      switch groupDetail.status {
-      case .noCurrentEvent, .noPastAndCurrentEvent, .eventCompleted:
+      if let groupDetail {
+        switch groupDetail.status {
+        case .noCurrentEvent, .noPastAndCurrentEvent, .eventCompleted:
+          return .generateEvent
+        case .beforeMyUpload:
+          return .uploadPIC
+        case .beforeMyVote:
+          return .vote
+        case .afterMyUpload, .afterMyVote:
+          return .stabbing
+        }
+      } else {
         return .generateEvent
-      case .beforeMyUpload:
-        return .uploadPIC
-      case .beforeMyVote:
-        return .vote
-      case .afterMyUpload, .afterMyVote:
-        return .stabbing
       }
     }
     
     var isNeedEventCompletedTitle: Bool {
-      return groupDetail.status == .eventCompleted
+      return groupDetail?.status == .eventCompleted
     }
     
     @Shared var userInfo: UserInfo
 
     public init(
       groupID: Int,
-      groupDetail: GroupDetailInfo,
+      groupDetail: GroupDetailInfo? = nil,
       showSheet: Bool = true,
-      selectedPhotosInfo: [PhotoInfo],
+      selectedPhotosInfo: [PhotoInfo] = [],
       isToastPresented: Bool = false,
-      toastType: ToastType,
-      s3BucketDomain: String,
-      showActivityView: Bool,
-      capturedImage: UIImage?,
+      toastType: ToastType = .onlyText(""),
+      s3BucketDomain: String = "",
+      showActivityView: Bool = false,
+      capturedImage: UIImage? = nil,
       userInfo: @autoclosure () -> UserInfo = .defaultValue
     ) {
       self.groupID = groupID
@@ -83,6 +89,9 @@ public struct GroupDetailCore {
     case memberListButtonTapped
     case eventContainerViewButtonTapped(GroupData.Status)
     case selectedPhotos([PhotoInfo])
+    case historyViewTapped(History)
+    case shareButtonTapped
+    case imageCaptured(UIImage?)
 
     // Internal Action
     case getGroupDetailResponse(Result<GroupDetailInfo, Error>)
@@ -94,8 +103,9 @@ public struct GroupDetailCore {
 
     // Route Action
     case backToHome
-    case moveToMemberList
-    case moveToVote
+    case moveToMemberList(Int)
+    case moveToVote(Int)
+    case moveToHistoryDetail(History, GroupData.Keyword?, String)
   }
 
   public var body: some Reducer<State, Action> {
@@ -120,16 +130,19 @@ public struct GroupDetailCore {
         return .send(.backToHome)
         
       case .memberListButtonTapped:
-        return .send(.moveToMemberList)
+        return .send(.moveToMemberList(state.groupID))
         
       case let .eventContainerViewButtonTapped(status):
         switch status {
         case .beforeMyVote:
-          return .send(.moveToVote)
+          return .send(.moveToVote(state.groupDetail?.recentEventDetail.id ?? 0))
         case .afterMyVote, .afterMyUpload:
           return .run { [state] send in
             await send(.postKook(Result {
-              try await self.pushAPIClienet.kook(accessToken: state.userInfo.accessToken, eventID: state.groupDetail.recentEventDetail.id)
+              try await self.pushAPIClienet.kook(
+                accessToken: state.userInfo.accessToken,
+                eventID: state.groupDetail?.recentEventDetail.id ?? 0
+              )
             }))
           }
         default:
@@ -151,17 +164,28 @@ public struct GroupDetailCore {
           }
         }
         
+      case let .historyViewTapped(history):
+        return .send(GroupDetailCore.Action.moveToHistoryDetail(history, state.groupDetail?.keyword, state.s3BucketDomain))
+        
+      case .shareButtonTapped:
+        state.showActivityView = true
+        return .none
+        
+      case let .imageCaptured(image):
+        state.capturedImage = image
+        return .none
+        
       // Internal Action
       case let .getGroupDetailResponse(.success(groupDetailInfo)):
         state.groupDetail = groupDetailInfo
         
-        if state.groupDetail.status == .eventCompleted {
+        if state.groupDetail?.status == .eventCompleted {
           return .run(
             operation: { [state] send in
               await send(.putEventVisit(Result {
                 try await self.eventAPIClient.putEventVisit(
                   accessToken: state.userInfo.accessToken,
-                  eventID: state.groupDetail.recentEventDetail.id
+                  eventID: state.groupDetail?.recentEventDetail.id ?? -1
                 )
               }))
             }
@@ -214,6 +238,9 @@ public struct GroupDetailCore {
         return .none
         
       case .moveToVote:
+        return .none
+        
+      case .moveToHistoryDetail:
         return .none
       }
     }

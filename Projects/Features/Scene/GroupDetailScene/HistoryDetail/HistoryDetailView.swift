@@ -8,6 +8,7 @@
 
 import ComposableArchitecture
 import DesignSystem
+import Lovebug
 import Models
 import SwiftUI
 
@@ -15,7 +16,7 @@ public struct HistoryDetailView: View {
   private let store: StoreOf<HistoryDetailCore>
   private let background = DesignSystem.Colors.gray100
 
-  init(store: StoreOf<HistoryDetailCore>) {
+  public init(store: StoreOf<HistoryDetailCore>) {
     self.store = store
   }
 
@@ -34,11 +35,21 @@ public struct HistoryDetailView: View {
         )
         .padding(.bottom, 50)
         
-        // TODO: 이미지 생성 필요
-        RoundedRectangle(cornerRadius: 5)
-          .foregroundStyle(.red)
-        
-        Spacer()
+        if let keyword = store.keyword {
+          PhotoCard(
+            status: keyword.convertToPhotoCardStatus()
+          ) {
+            PhotoCardBackView(
+              recentEventDate: store.history.date,
+              cardBackImages: store.history.images,
+              recentEventName: store.history.name,
+              foregroundColor: keyword.foregroundColor,
+              s3BucketDomain: store.s3BucketDomain
+            )
+          }
+
+          Spacer()
+        }
       }
     }
   }
@@ -46,10 +57,15 @@ public struct HistoryDetailView: View {
 
 #Preview {
   HistoryDetailView(
-    store: Store(initialState: .init(
-      history: .mock)
-    ) {
-      HistoryDetailCore()
-    }
+    store: .init(
+      initialState: .init(
+        history: .mock,
+        keyword: .company,
+        s3BucketDomain: ""
+      ),
+      reducer: {
+        HistoryDetailCore()
+      }
+    )
   )
 }

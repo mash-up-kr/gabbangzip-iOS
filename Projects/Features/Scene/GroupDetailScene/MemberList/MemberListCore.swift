@@ -12,13 +12,15 @@ import Services
 
 @Reducer
 public struct MemberListCore {
+  public init() {}
+  
   @ObservableState
   public struct State: Equatable {
     var groupID: Int
-    var memberList: MemberList
+    var memberList: MemberList?
     var groupKeyword: GroupData.Keyword
     var isFullCapacity: Bool {
-      memberList.members.count == 4
+      memberList?.members.count == 4
     }
     var inviteMemberMessage: String {
       isFullCapacity ? "그룹 최대 인원은 4명이에요." : "그룹원을 추가하고 싶으세요?"
@@ -27,8 +29,8 @@ public struct MemberListCore {
     
     public init(
       groupID: Int,
-      memberList: MemberList,
-      groupKeyword: GroupData.Keyword,
+      memberList: MemberList? = nil,
+      groupKeyword: GroupData.Keyword = .company,
       userInfo: @autoclosure () -> UserInfo = .defaultValue
     ) {
       self.groupID = groupID
@@ -69,7 +71,7 @@ public struct MemberListCore {
         
       case .copyLinkButtonTapped:
         return .run { [state] send in
-          uiPasteBoardClient.copyTextToClipboard(state.memberList.invitationCode)
+          uiPasteBoardClient.copyTextToClipboard(state.memberList?.invitationCode ?? "")
         }
         
       case .backButtonTapped:
