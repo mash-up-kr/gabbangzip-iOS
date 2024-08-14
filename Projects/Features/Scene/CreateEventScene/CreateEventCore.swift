@@ -65,7 +65,7 @@ public struct CreateEventCore {
     
     // Route Action
     case moveToHome
-    case moveToGroupListWithEvent
+    case moveToHomeWithEvent
   }
   
   @Dependency(\.bundleClient) var bundleClient
@@ -105,7 +105,7 @@ public struct CreateEventCore {
         
       case .completeButtonTapped:
         return .run { send in
-          await send(.moveToGroupListWithEvent)
+          await send(.moveToHomeWithEvent)
         }
         
       case let .deleteSelectedPhoto(index):
@@ -133,7 +133,7 @@ public struct CreateEventCore {
       case .moveToHome:
         return .none
         
-      case .moveToGroupListWithEvent:
+      case .moveToHomeWithEvent:
         return .none
       }
     }

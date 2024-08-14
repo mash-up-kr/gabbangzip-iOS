@@ -59,7 +59,7 @@ public struct MainCoordinatorCore {
       case .router(.routeAction(id: _, action: .createEvent(.moveToHome))):
         state.routes.pop()
         
-      case .router(.routeAction(id: _, action: .createEvent(.moveToGroupListWithEvent))):
+      case .router(.routeAction(id: _, action: .createEvent(.moveToHomeWithEvent))):
         state.routes.pop()
         
       default:
