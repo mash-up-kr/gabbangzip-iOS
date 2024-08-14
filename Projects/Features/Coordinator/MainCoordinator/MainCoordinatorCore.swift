@@ -47,8 +47,14 @@ public struct MainCoordinatorCore {
       case .router(.routeAction(id: _, action: .createGroupCoordinator(.router(.routeAction(id: _, action: .createGroupCompletion(.backToHome)))))):
         state.routes.dismiss()
         
-      case .router(.routeAction(id: _, action: .createEvent)):
-        break
+      case .router(.routeAction(id: _, action: .groupList(.moveToCreateEvent))):
+        state.routes.push(.createEvent(.init()))
+        
+      case .router(.routeAction(id: _, action: .createEvent(.moveToHome))):
+        state.routes.dismiss()
+        
+      case .router(.routeAction(id: _, action: .createEvent(.moveToGroupListWithEvent))):
+        state.routes.dismiss()
         
       default:
         break

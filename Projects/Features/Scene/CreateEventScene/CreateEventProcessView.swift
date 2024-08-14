@@ -168,7 +168,7 @@ extension CreateEventView {
 #Preview {
   CreateEventView(
     store: Store(
-      initialState: CreateEventCore.State(recentEvent: .init(id: 0, name: "가빵", date: "")),
+      initialState: CreateEventCore.State.init(),
       reducer: CreateEventCore.init
     )
   )
