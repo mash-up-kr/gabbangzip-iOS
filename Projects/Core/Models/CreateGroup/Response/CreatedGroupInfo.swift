@@ -6,8 +6,6 @@
 //  Copyright © 2024 com.mashup.gabbangzip. All rights reserved.
 //
 
-import Foundation
-
 public struct CreatedGroupInfo: Decodable, Equatable {
   public let id: Int
   public let groupName: String

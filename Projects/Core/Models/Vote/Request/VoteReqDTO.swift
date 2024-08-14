@@ -6,8 +6,6 @@
 //  Copyright © 2024 com.mashup.gabbangzip. All rights reserved.
 //
 
-import Foundation
-
 public struct VoteReqDTO: Encodable {
   public let eventID: Int
   public let likedOptionIDs: [Int]
