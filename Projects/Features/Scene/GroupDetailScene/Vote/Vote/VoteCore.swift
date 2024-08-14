@@ -161,17 +161,16 @@ public struct VoteCore {
         }
 
       case .exitButtonTapped:
-        state.isPopupPresented = true
         state.popupType = .close
+        state.isPopupPresented = true
         return .none
         
       case .popupLeftButtonTapped:
-        state.isPopupPresented = false
-        return .none
+        return .send(.dismissVoteView)
         
       case .popupRightButtonTapped:
         state.isPopupPresented = false
-        return .send(.dismissVoteView)
+        return .none
         
       case .guideViewSwiped:
         if !state.guideTypes.isEmpty {
