@@ -48,7 +48,7 @@ public struct EventCompletedView: View {
       PhotoCard(status: groupDetail.keyword.convertToPhotoCardStatus()) {
         PhotoCardBackView(
           recentEventDate: store.recentEventDateString,
-          cardBackImages: groupDetail.cardBackImages,
+          cardBackImages: groupDetail.cardBackImages ?? [],
           recentEventName: groupDetail.recentEventDetail.name,
           foregroundColor: groupDetail.keyword.foregroundColor,
           s3BucketDomain: store.s3BucketDomain

@@ -16,7 +16,7 @@ public struct GroupDetailInfo: Decodable {
   public let statusDescription: String
   public let recentEventDetail: RecentEventDetail
   public let cardFrontImageURL: String
-  public let cardBackImages: [CardBackImage]
+  public let cardBackImages: [CardBackImage]?
   public let history: [History]
 
   enum CodingKeys: String, CodingKey {
