@@ -1,5 +1,5 @@
 //
-//  CreateEventProcessCore.swift
+//  CreateEventCore.swift
 //  CreateEvent
 //
 //  Created by Hyun A Song on 8/8/24.
@@ -14,7 +14,7 @@ import Models
 import Services
 
 @Reducer
-public struct CreateEventProcessCore {
+public struct CreateEventCore {
   public init() {}
   
   @ObservableState

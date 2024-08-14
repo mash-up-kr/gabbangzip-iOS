@@ -1,5 +1,5 @@
 //
-//  CreateEventProcessView.swift
+//  CreateEventView.swift
 //  CreateEvent
 //
 //  Created by Hyun A Song on 8/8/24.
@@ -12,10 +12,10 @@ import Models
 import NukeUI
 import SwiftUI
 
-public struct CreateEventProcessView: View {
-  @Bindable var store: StoreOf<CreateEventProcessCore>
+public struct CreateEventView: View {
+  @Bindable var store: StoreOf<CreateEventCore>
   
-  public init(store: StoreOf<CreateEventProcessCore>) {
+  public init(store: StoreOf<CreateEventCore>) {
     self.store = store
   }
   
@@ -23,13 +23,13 @@ public struct CreateEventProcessView: View {
     VStack(spacing: 0) {
       VStack(spacing: 0) {
         NavigationBar(
-          type: .titleWithBackButton(CreateEventProcessViewNameSpace.navigationTitle, .center),
+          type: .titleWithBackButton(CreateEventViewNameSpace.navigationTitle, .center),
           backButtonAction: { store.send(.backButtonTapped) }
         )
         
         VStack(spacing: 0) {
           HStack(spacing: 0) {
-            Text(CreateEventProcessViewNameSpace.eventTitle)
+            Text(CreateEventViewNameSpace.eventTitle)
               .font(.head18)
               .foregroundStyle(DesignSystem.Colors.gray80)
             
@@ -39,13 +39,13 @@ public struct CreateEventProcessView: View {
           
           GabbangzipInput(
             text: $store.text.sending(\.textChanged),
-            placeholderText: CreateEventProcessViewNameSpace.eventTitlePlaceHolder,
+            placeholderText: CreateEventViewNameSpace.eventTitlePlaceHolder,
             maxLength: 10
           )
           .padding(.top, 16)
           
           HStack(spacing: 0) {
-            Text(CreateEventProcessViewNameSpace.eventDate)
+            Text(CreateEventViewNameSpace.eventDate)
               .font(.head18)
               .foregroundStyle(DesignSystem.Colors.gray80)
             
@@ -57,7 +57,7 @@ public struct CreateEventProcessView: View {
             .padding(.top, 16)
           
           HStack(spacing: 0) {
-            Text(CreateEventProcessViewNameSpace.eventPicture)
+            Text(CreateEventViewNameSpace.eventPicture)
               .font(.head18)
               .foregroundStyle(DesignSystem.Colors.gray80)
             
@@ -76,7 +76,7 @@ public struct CreateEventProcessView: View {
                   selectedPhotosInfo: $store.selectedPhotosInfo.sending(\.selectedImagesChanged),
                   maxSelectedCount: .custom(4),
                   matching: .images
-                ) { SelectPhoto(selectedPhotosInfo: $store.selectedPhotosInfo, maxCount: 4) }
+                ) { SelectPhoto(selectedPhotosInfo: store.selectedPhotosInfo, maxCount: 4) }
                 
                 ForEach(Array($store.selectedPhotosInfo.enumerated()), id: \.offset) { index, $photoInfo in
                   if let image = UIImage(data: photoInfo.data) {
@@ -113,7 +113,7 @@ public struct CreateEventProcessView: View {
                 selectedPhotosInfo: $store.selectedPhotosInfo.sending(\.selectedImagesChanged),
                 maxSelectedCount: .custom(4),
                 matching: .images
-              ) { SelectPhoto(selectedPhotosInfo: $store.selectedPhotosInfo, maxCount: 4) }
+              ) { SelectPhoto(selectedPhotosInfo: store.selectedPhotosInfo, maxCount: 4) }
               
               Spacer()
             }
@@ -121,14 +121,14 @@ public struct CreateEventProcessView: View {
           
           Spacer()
           
-          Text(CreateEventProcessViewNameSpace.notice)
+          Text(CreateEventViewNameSpace.notice)
             .font(.text14)
             .foregroundStyle(DesignSystem.Colors.gray60)
             .padding(.bottom, 16)
           
           GabbangzipBottomButton(
             type: store.completeButtonType,
-            title: CreateEventProcessViewNameSpace.complete,
+            title: CreateEventViewNameSpace.complete,
             action: { store.send(.completeButtonTapped) }
           )
           .padding(.horizontal, 16)
@@ -137,19 +137,19 @@ public struct CreateEventProcessView: View {
     }
     .popup(
       isPresented: $store.isExiting,
-      title: CreateEventProcessViewNameSpace.popupTitle,
-      description: CreateEventProcessViewNameSpace.popupDescription,
-      leftButtonTitle: CreateEventProcessViewNameSpace.popupLeftButtonTitle,
+      title: CreateEventViewNameSpace.popupTitle,
+      description: CreateEventViewNameSpace.popupDescription,
+      leftButtonTitle: CreateEventViewNameSpace.popupLeftButtonTitle,
       leftButtonAction: { store.send(.popupLeftButtonTapped) },
-      rightButtonTitle: CreateEventProcessViewNameSpace.popupRightButtonTitle,
+      rightButtonTitle: CreateEventViewNameSpace.popupRightButtonTitle,
       rightButtonAction: { store.send(.popupRightButtonTapped) }
     )
   }
 }
 
-// MARK: - CreateEventProcessViewNameSpace
-extension CreateEventProcessView {
-  fileprivate enum CreateEventProcessViewNameSpace {
+// MARK: - CreateEventViewNameSpace
+extension CreateEventView {
+  fileprivate enum CreateEventViewNameSpace {
     static let navigationTitle = "이벤트 만들기"
     static let eventTitle = "이벤트 한줄 요약"
     static let eventTitlePlaceHolder = "이벤트를 한줄로 요약해주세요."
@@ -166,10 +166,10 @@ extension CreateEventProcessView {
 }
 
 #Preview {
-  CreateEventProcessView(
+  CreateEventView(
     store: Store(
-      initialState: CreateEventProcessCore.State(recentEvent: .init(id: 0, name: "가빵", date: "")),
-      reducer: CreateEventProcessCore.init
+      initialState: CreateEventCore.State(recentEvent: .init(id: 0, name: "가빵", date: "")),
+      reducer: CreateEventCore.init
     )
   )
 }

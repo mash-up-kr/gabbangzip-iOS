@@ -23,8 +23,8 @@ let project = Project.make(
         .project(target: .main, projectPath: .scene),
         .project(target: .myPage, projectPath: .scene),
         .project(target: .login, projectPath: .scene),
+        .project(target: .createEvent, projectPath: .scene),
         .target(name: .createGroupCoordinator),
-        .target(name: .createEventCoordinator),
         .external(externalDependency: .composableArchitecture),
         .external(externalDependency: .tcaCoordinators),
       ]
@@ -36,19 +36,6 @@ let project = Project.make(
       sources: ["CreateGroupCoordinator/**"],
       dependencies: [
         .project(target: .createGroup, projectPath: .scene),
-        .external(externalDependency: .composableArchitecture),
-        .external(externalDependency: .tcaCoordinators),
-      ]
-    ),
-    .make(
-      name: "CreateEventCoordinator",
-      product: .staticLibrary,
-      bundleId: "com.mashup.gabbangzip.createEventCoordinator",
-      sources: ["CreateEventCoordinator/**"],
-      dependencies: [
-        .project(target: .createEvent, projectPath: .scene),
-        .project(target: .groupDetail, projectPath: .scene),
-        .project(target: .main, projectPath: .scene),
         .external(externalDependency: .composableArchitecture),
         .external(externalDependency: .tcaCoordinators),
       ]
