@@ -26,7 +26,6 @@ public struct ViewHeightGeometry: View {
       Color.clear
         .preference(
           key: ViewHeightKey.self,
-          // TODO: UIScreen 사용하지 않는 방향으로 개선 예정
           value: geometry.size.height
         )
     }
