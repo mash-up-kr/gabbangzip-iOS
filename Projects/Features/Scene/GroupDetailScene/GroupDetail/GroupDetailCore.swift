@@ -65,6 +65,10 @@ public struct GroupDetailCore {
       return groupDetail?.recentEventDetail.deadline.toGroupEventDateString(type: .deadLine) ?? ""
     }
     
+    var statusMessage: String {
+      return groupDetail?.status.message ?? ""
+    }
+    
     @Shared var userInfo: UserInfo
 
     public init(

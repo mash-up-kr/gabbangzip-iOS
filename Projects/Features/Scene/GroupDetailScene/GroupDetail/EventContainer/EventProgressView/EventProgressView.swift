@@ -49,8 +49,7 @@ struct EventProgressView: View {
       )
       .padding(.horizontal, 76)
       
-      // TODO: 문구 수정 필요
-      Text(store.groupDetail?.statusDescription ?? "")
+      Text(store.statusMessage)
         .font(.caption12)
         .foregroundStyle(DesignSystem.Colors.gray60)
         .padding(.init(top: 24, leading: 0, bottom: 8, trailing: 0))
