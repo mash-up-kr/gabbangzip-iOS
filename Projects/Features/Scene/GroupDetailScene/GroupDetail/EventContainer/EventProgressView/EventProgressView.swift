@@ -45,7 +45,7 @@ struct EventProgressView: View {
       PhotoWithFrame(
         frameShape: store.frame,
         foregroundColor: DesignSystem.Colors.gray20,
-        imageURLString: store.groupDetail?.cardFrontImageURL ?? ""
+        imageURLString: store.cardFrontImageURLString
       )
       .padding(.horizontal, 76)
       

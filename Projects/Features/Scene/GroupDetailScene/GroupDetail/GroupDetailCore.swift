@@ -69,6 +69,10 @@ public struct GroupDetailCore {
       return groupDetail?.status.message ?? ""
     }
     
+    var cardFrontImageURLString: String {
+      return s3BucketDomain + (groupDetail?.cardFrontImageURL ?? "")
+    }
+    
     @Shared var userInfo: UserInfo
 
     public init(
@@ -96,6 +100,7 @@ public struct GroupDetailCore {
     }
   }
   
+  @Dependency(\.bundleClient) var bundleClient
   @Dependency(\.groupAPIClient) var groupAPIClient
   @Dependency(\.eventAPIClient) var eventAPIClient
   @Dependency(\.pushNotificationAPIClient) var pushAPIClienet
@@ -115,6 +120,7 @@ public struct GroupDetailCore {
     case imageCaptured(UIImage?)
 
     // Internal Action
+    case setS3BucketDomain(String)
     case getGroupDetailResponse(Result<GroupDetailInfo, Error>)
     case putEventVisit(Result<EventVisitInfo, Error>)
     case postKook(Result<KookInfo, Error>)
@@ -142,6 +148,10 @@ public struct GroupDetailCore {
         state.showSheet = true
         return .run(
           operation: { [state] send in
+            if let s3BucketDomain = try? bundleClient.getValue(key: "S3BucketDomain") as? String {
+              await send(.setS3BucketDomain(s3BucketDomain))
+            }
+            
             await send(.getGroupDetailResponse(Result {
               try await self.groupAPIClient.getGroupDetail(state.userInfo.accessToken, state.groupID)
             }))
@@ -196,6 +206,10 @@ public struct GroupDetailCore {
         
       case let .imageCaptured(image):
         state.capturedImage = image
+        return .none
+        
+      case let .setS3BucketDomain(s3BucketDomain):
+        state.s3BucketDomain = s3BucketDomain
         return .none
         
       // Internal Action
