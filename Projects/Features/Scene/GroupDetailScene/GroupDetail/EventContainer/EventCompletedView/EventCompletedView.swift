@@ -40,12 +40,6 @@ public struct EventCompletedView: View {
       })
         .padding(.bottom, 32)
     }
-    .background(
-      ActivityView(
-        isPresented: $store.showActivityView,
-        activityItems: [store.capturedImage]
-      )
-    )
   }
   
   @ViewBuilder

@@ -48,20 +48,27 @@ public struct GroupDetailView: View {
     }
     .scrollIndicators(.hidden)
     .background(DesignSystem.Colors.gray20)
-    .sheet(isPresented: $store.showSheet) {
-      HistoryGridView(
-        histories: store.groupDetail?.history,
-        keyword: store.groupDetail?.keyword,
-        s3BucketDomain: store.s3BucketDomain,
-        tapAction: { history in
-          store.send(.historyViewTapped(history))
-        }
+    .background(
+      ActivityView(
+        isPresented: $store.showActivityView,
+        activityItems: [store.capturedImage]
       )
-        .presentationDetents([.height(bottomSheetHeight), .large])
-        .interactiveDismissDisabled()
-        .presentationDragIndicator(.hidden)
-        .presentationBackgroundInteraction(.enabled(upThrough: .large))
-     }
+    )
+    // TODO: sheet -> custom으로 변경할 예정 ..
+//    .sheet(isPresented: $store.showSheet) {
+//      HistoryGridView(
+//        histories: store.groupDetail?.history,
+//        keyword: store.groupDetail?.keyword,
+//        s3BucketDomain: store.s3BucketDomain,
+//        tapAction: { history in
+//          store.send(.historyViewTapped(history))
+//        }
+//      )
+//        .presentationDetents([.height(bottomSheetHeight), .large])
+//        .interactiveDismissDisabled()
+//        .presentationDragIndicator(.hidden)
+//        .presentationBackgroundInteraction(.enabled(upThrough: .large))
+//     }
     .toast(
       isPresented: $store.isToastPresented,
       type: store.toastType,
