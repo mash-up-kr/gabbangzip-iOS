@@ -128,6 +128,7 @@ public struct VoteCore {
             try await self.voteAPIClient.getVoteOptions(state.userInfo.accessToken, state.eventID)
           }))
           
+          // TODO: 첫 투표 가이드 안보이는 현상 수정 필요
           await send(.checkFirstVote)
         }
         
