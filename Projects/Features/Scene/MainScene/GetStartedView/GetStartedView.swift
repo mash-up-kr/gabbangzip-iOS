@@ -1,6 +1,6 @@
 //
 //  GetStartedView.swift
-//  CreateGroup
+//  Main
 //
 //  Created by YangJoonHyeok on 7/9/24.
 //  Copyright © 2024 com.mashup.gabbangzip. All rights reserved.
@@ -41,6 +41,13 @@ public struct GetStartedView: View {
           .foregroundStyle(DesignSystem.Colors.gray60)
           .padding(.bottom, 16)
         
+        GabbangzipBottomButton(
+          type: .secondary,
+          title: "초대코드 입력하기",
+          action: { store.send(.inviteCodeButtonTapped) }
+        )
+        .padding(.horizontal, 16)
+        .padding(.bottom, 12)
         
         GabbangzipBottomButton(
           type: .active,

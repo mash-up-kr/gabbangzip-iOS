@@ -64,7 +64,7 @@ public enum ButtonType {
     case .active, .inactive:
       return DesignSystem.Colors.gray0
     case .secondary:
-      return DesignSystem.Colors.gray60
+      return DesignSystem.Colors.gray80
     }
   }
   

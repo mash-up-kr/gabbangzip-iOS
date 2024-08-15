@@ -1,6 +1,6 @@
 //
 //  GetStartedCore.swift
-//  CreateGroup
+//  Main
 //
 //  Created by YangJoonHyeok on 7/9/24.
 //  Copyright © 2024 com.mashup.gabbangzip. All rights reserved.
@@ -19,9 +19,11 @@ public struct GetStartedCore {
   public enum Action {
     // View Action
     case createGroupButtonTapped
+    case inviteCodeButtonTapped
     
     // Route Action
     case moveToSetGroupName
+    case moveToJoinGroup
   }
 
   public var body: some Reducer<State, Action> {
@@ -30,7 +32,13 @@ public struct GetStartedCore {
       case .createGroupButtonTapped:
         return .send(.moveToSetGroupName)
         
+      case .inviteCodeButtonTapped:
+        return .none
+        
       case .moveToSetGroupName:
+        return .none
+        
+      case .moveToJoinGroup:
         return .none
       }
     }
