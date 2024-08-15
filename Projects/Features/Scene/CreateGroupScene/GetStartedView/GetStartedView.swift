@@ -1,5 +1,5 @@
 //
-//  CreateGroupStartView.swift
+//  GetStartedView.swift
 //  CreateGroup
 //
 //  Created by YangJoonHyeok on 7/9/24.
@@ -10,10 +10,10 @@ import ComposableArchitecture
 import DesignSystem
 import SwiftUI
 
-public struct CreateGroupStartView: View {
-  private let store: StoreOf<CreateGroupStartCore>
+public struct GetStartedView: View {
+  private let store: StoreOf<GetStartedCore>
 
-  public init(store: StoreOf<CreateGroupStartCore>) {
+  public init(store: StoreOf<GetStartedCore>) {
     self.store = store
   }
 
@@ -55,10 +55,10 @@ public struct CreateGroupStartView: View {
 }
 
 #Preview {
-  CreateGroupStartView(
+  GetStartedView(
     store: Store(
       initialState: .init(),
-      reducer: CreateGroupStartCore.init
+      reducer: GetStartedCore.init
     )
   )
 }

@@ -1,5 +1,5 @@
 //
-//  CreateGroupStartCore.swift
+//  GetStartedCore.swift
 //  CreateGroup
 //
 //  Created by YangJoonHyeok on 7/9/24.
@@ -9,7 +9,7 @@
 import ComposableArchitecture
 
 @Reducer
-public struct CreateGroupStartCore {
+public struct GetStartedCore {
   public init() {}
   
   public struct State: Equatable {
