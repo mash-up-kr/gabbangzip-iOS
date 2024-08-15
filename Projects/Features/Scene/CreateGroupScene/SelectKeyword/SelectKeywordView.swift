@@ -104,7 +104,7 @@ public struct SelectKeywordView: View {
 #Preview {
   SelectKeywordView(
     store: Store(
-      initialState: .init(groupName: "test"),
+      initialState: .init(groupName: "test", isFromGetStarted: true),
       reducer: SelectKeywordCore.init
     )
   )
