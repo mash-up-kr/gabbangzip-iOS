@@ -40,7 +40,9 @@ public struct SetGroupNameCore {
     case setNextButtonType(ButtonType)
     
     // Route Action
-    case moveToSelectKeyword(String)
+    case moveToSelectKeyword(groupName: String, isFromGetStarted: Bool)
+    case backToHome
+    case backToGetStarted
   }
   
   public var body: some Reducer<State, Action> {
@@ -58,16 +60,26 @@ public struct SetGroupNameCore {
         }
         
       case .nextButtonTapped:
-        return .send(.moveToSelectKeyword(state.text))
+        return .send(.moveToSelectKeyword(groupName: state.text, isFromGetStarted: state.isFromGetStarted))
         
       case .backButtonTapped:
-        return .none
+        if state.isFromGetStarted {
+          return .send(.backToGetStarted)
+        } else {
+          return .send(.backToHome)
+        }
         
       case let .setNextButtonType(value):
         state.nextButtonType = value
         return .none
         
       case .moveToSelectKeyword:
+        return .none
+        
+      case .backToHome:
+        return .none
+        
+      case .backToGetStarted:
         return .none
       }
     }

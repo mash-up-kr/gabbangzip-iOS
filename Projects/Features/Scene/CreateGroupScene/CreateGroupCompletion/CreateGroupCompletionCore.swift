@@ -21,15 +21,18 @@ public struct CreateGroupCompletionCore {
     var createdGroupInfo: CreatedGroupInfo
     var imageURLString: String
     var toastPresented: Bool
+    var isFromGetStarted: Bool
     
     public init(
       createdGroupInfo: CreatedGroupInfo,
       imageURLString: String = "",
-      toastPresented: Bool = false
+      toastPresented: Bool = false,
+      isFromGetStarted: Bool
     ) {
       self.createdGroupInfo = createdGroupInfo
       self.imageURLString = imageURLString
       self.toastPresented = toastPresented
+      self.isFromGetStarted = isFromGetStarted
     }
   }
 
@@ -45,6 +48,7 @@ public struct CreateGroupCompletionCore {
     
     // Route Action
     case backToHome
+    case goToHome
   }
   
   @Dependency(\.bundleClient) var bundleClient
@@ -62,7 +66,7 @@ public struct CreateGroupCompletionCore {
         }
       
       case .completeButtonTapped:
-        return .send(.backToHome)
+        return .send(state.isFromGetStarted ? .goToHome : .backToHome)
         
       case .copyLinkButtonTapped:
         state.toastPresented = true
@@ -82,6 +86,8 @@ public struct CreateGroupCompletionCore {
       case .backToHome:
         return .none
         
+      case .goToHome:
+        return .none
       }
     }
   }

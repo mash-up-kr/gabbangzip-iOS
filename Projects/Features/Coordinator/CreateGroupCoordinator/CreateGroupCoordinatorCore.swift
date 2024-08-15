@@ -29,17 +29,17 @@ public struct CreateGroupCoordinatorCore {
   public var body: some Reducer<State, Action> {
     Reduce { state, action in
       switch action {
-      case let .router(.routeAction(id: _, action: .setGroupName(.moveToSelectKeyword(groupName)))):
-        state.routes.push(.selectKeyword(.init(groupName: groupName)))
+      case let .router(.routeAction(id: _, action: .setGroupName(.moveToSelectKeyword(groupName, isFromGetStarted)))):
+        state.routes.push(.selectKeyword(.init(groupName: groupName, isFromGetStarted: isFromGetStarted)))
         
-      case let .router(.routeAction(id: _, action: .selectKeyword(.moveToSelectGroupPhoto(groupName, selectedKeyword)))):
-        state.routes.push(.selectGroupPhoto(.init(groupName: groupName, keyword: selectedKeyword)))
+      case let .router(.routeAction(id: _, action: .selectKeyword(.moveToSelectGroupPhoto(groupName, selectedKeyword, isFromGetStarted)))):
+        state.routes.push(.selectGroupPhoto(.init(groupName: groupName, keyword: selectedKeyword, isFromGetStarted: isFromGetStarted)))
         
       case .router(.routeAction(id: _, action: .selectKeyword(.backToSetGroupName))):
         state.routes.pop()
         
-      case let .router(.routeAction(id: _, action: .selectGroupPhoto(.moveToCreateGroupCompletion(createdGroupInfo)))):
-        state.routes.push(.createGroupCompletion(.init(createdGroupInfo: createdGroupInfo)))
+      case let .router(.routeAction(id: _, action: .selectGroupPhoto(.moveToCreateGroupCompletion(createdGroupInfo, isFromGetStarted)))):
+        state.routes.push(.createGroupCompletion(.init(createdGroupInfo: createdGroupInfo, isFromGetStarted: isFromGetStarted)))
         break
         
       case .router(.routeAction(id: _, action: .selectGroupPhoto(.backToSelectKeyword))):

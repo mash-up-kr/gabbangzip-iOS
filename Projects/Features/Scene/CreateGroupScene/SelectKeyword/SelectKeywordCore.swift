@@ -24,6 +24,7 @@ public struct SelectKeywordCore {
     var networkKeywordButtonSelected: Bool
     var exerciseKeywordButtonSelected: Bool
     var hobbyKeywordButtonSelected: Bool
+    var isFromGetStarted: Bool
     
     public init(
       groupName: String,
@@ -34,7 +35,8 @@ public struct SelectKeywordCore {
       littleMoimKeywordButtonSelected: Bool = false,
       networkKeywordButtonSelected: Bool = false,
       exerciseKeywordButtonSelected: Bool = false,
-      hobbyKeywordButtonSelected: Bool = false
+      hobbyKeywordButtonSelected: Bool = false,
+      isFromGetStarted: Bool
     ) {
       self.groupName = groupName
       self.selectedKeyword = selectedKeyword
@@ -45,6 +47,7 @@ public struct SelectKeywordCore {
       self.networkKeywordButtonSelected = networkKeywordButtonSelected
       self.exerciseKeywordButtonSelected = exerciseKeywordButtonSelected
       self.hobbyKeywordButtonSelected = hobbyKeywordButtonSelected
+      self.isFromGetStarted = isFromGetStarted
     }
   }
 
@@ -58,7 +61,7 @@ public struct SelectKeywordCore {
     case updateKeywordSelection(keyword: GroupData.Keyword, isSelected: Bool)
     
     // Route Action
-    case moveToSelectGroupPhoto(String, GroupData.Keyword)
+    case moveToSelectGroupPhoto(groupName: String, keyword: GroupData.Keyword, isFromGetStarted: Bool)
     case backToSetGroupName
   }
 
@@ -66,7 +69,7 @@ public struct SelectKeywordCore {
     Reduce { state, action in
       switch action {
       case .nextButtonTapped:
-        return .send(.moveToSelectGroupPhoto(state.groupName, state.selectedKeyword))
+        return .send(.moveToSelectGroupPhoto(groupName: state.groupName, keyword: state.selectedKeyword, isFromGetStarted: state.isFromGetStarted))
         
       case .backButtonTapped:
         return .send(.backToSetGroupName)

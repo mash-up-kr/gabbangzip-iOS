@@ -42,13 +42,22 @@ public struct MainCoordinatorCore {
         state.routes.push(.createEvent(.init()))
         
       case .router(.routeAction(id: _, action: .home(.moveToJoinGroup))):
-        state.routes.push(.joinGroup(.init()))
+        state.routes.push(.joinGroup(.init(isFromGetStarted: false)))
         
       case .router(.routeAction(id: _, action: .joinGroup(.backToHome))):
         state.routes.pop()
         
+      case .router(.routeAction(id: _, action: .createGroupCoordinator(.router(.routeAction(id: _, action: .setGroupName(.backToHome)))))):
+        state.routes.dismiss()
+        
+      case .router(.routeAction(id: _, action: .createGroupCoordinator(.router(.routeAction(id: _, action: .setGroupName(.backToGetStarted)))))):
+        state.routes.pop()
+        
       case .router(.routeAction(id: _, action: .createGroupCoordinator(.router(.routeAction(id: _, action: .createGroupCompletion(.backToHome)))))):
         state.routes.dismiss()
+        
+      case .router(.routeAction(id: _, action: .createGroupCoordinator(.router(.routeAction(id: _, action: .createGroupCompletion(.goToHome)))))):
+        state.routes.push(.home(.init()))
         
       case let .router(.routeAction(id: _, action: .home(.moveToGroupDetail(groupID)))):
         state.routes.push(.groupDetailCoordinator(.init(routes: [.root(.groupDetail(.init(groupID: groupID)))])))
@@ -63,7 +72,7 @@ public struct MainCoordinatorCore {
         state.routes.pop()
         
       case .router(.routeAction(id: _, action: .getStarted(.moveToJoinGroup))):
-        state.routes.push(.joinGroup(.init()))
+        state.routes.push(.joinGroup(.init(isFromGetStarted: true)))
         
       case .router(.routeAction(id: _, action: .getStarted(.moveToSetGroupName))):
         state.routes.push(.createGroupCoordinator(.init(routes: [.root(.setGroupName(.init(isFromGetStarted: true)), embedInNavigationView: true)])))
