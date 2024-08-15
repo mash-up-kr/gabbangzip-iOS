@@ -9,7 +9,7 @@
 import SwiftUI
 
 public struct DisableSwipeBackModifier: ViewModifier {
-  @State var userInteractionDisabled: Bool
+  @State private var userInteractionDisabled: Bool
   
   public init(userInteractionDisabled: Bool = false) {
     self.userInteractionDisabled = userInteractionDisabled
