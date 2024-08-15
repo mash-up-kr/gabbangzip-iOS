@@ -75,6 +75,10 @@ public struct RootCore {
         state.destination = .mainCoordinator(MainCoordinatorCore.State(routes: [.root(.home(HomeCore.State()), embedInNavigationView: true)]))
         return .none
         
+      case .destination(.presented(.login(.moveToGetStarted))):
+        state.destination = .mainCoordinator(MainCoordinatorCore.State(routes: [.root(.getStarted(.init()), embedInNavigationView: true)]))
+        return .none
+        
       case .destination:
         return .none
         

@@ -49,17 +49,20 @@ public struct LoginCore {
     case checkUserInformationResponse(Result<User, Error>)
     case loginResponse(Result<PICUserInfo, Error>)
     case saveUserInfoToKeychain(Result<Void, Error>)
+    case getGroupsResponse(Result<GroupsData, Error>)
     case showError(Bool)
     case logError(LoginCoreError)
     
     // Route Action
     case moveToHome
+    case moveToGetStarted
   }
   
   @Dependency(\.kakaoLoginClient) private var kakaoLoginClient
   @Dependency(\.authAPIClient) private var authAPIClient
   @Dependency(\.keyChainClient) private var keyChainClient
   @Dependency(\.userDefaultsClient) private var userDefaultsClient
+  @Dependency(\.groupAPIClient) private var groupAPIClient
   
   public var body: some Reducer<State, Action> {
     BindingReducer()
@@ -128,7 +131,9 @@ public struct LoginCore {
         state.userInfo = userInfo
         return .run { send in
           await send(.saveUserInfoToKeychain(Result { try await self.keyChainClient.createUserInfo(userInfo) }))
-          await send(.moveToHome)
+          await send(.getGroupsResponse(Result {
+            try await self.groupAPIClient.getGroups(userInfo.accessToken)
+          }))
         }
         
       case .loginResponse(.failure):
@@ -145,6 +150,14 @@ public struct LoginCore {
           await send(.logError(LoginCoreError(code: .failToSaveUserInfoToKeychain)))
         }
         
+      case let .getGroupsResponse(.success(groupsData)):
+        let isMemberOfAnyGroup = !groupsData.groups.isEmpty
+        return .send(isMemberOfAnyGroup ? .moveToHome : .moveToGetStarted)
+        
+      case .getGroupsResponse(.failure):
+        // TODO: - 서버의 에러 메시지 형식 및 에러 수집 방식에 대한 논의 후 수정
+        return .none
+        
       case let .showError(isPresented):
         state.isPresented = isPresented
         return .none
@@ -155,6 +168,9 @@ public struct LoginCore {
         }
         
       case .moveToHome:
+        return .none
+        
+      case .moveToGetStarted:
         return .none
       }
     }
