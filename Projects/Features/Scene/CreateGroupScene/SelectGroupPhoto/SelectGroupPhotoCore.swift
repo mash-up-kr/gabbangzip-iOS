@@ -72,8 +72,8 @@ public struct SelectGroupPhotoCore {
               .getUploadURLResponse(
                 Result {
                   try await self.fileUploadAPIClient.getUploadURL(
-                    accessToken: state.userInfo.accessToken,
-                    fileExtension: photoInfo.fileExtension)
+                    state.userInfo.accessToken,
+                    photoInfo.fileExtension)
                 }, photoInfo
               )
             )
@@ -96,9 +96,9 @@ public struct SelectGroupPhotoCore {
             .uploadFileToPresignedURLResponse(
               Result {
                 try await self.fileUploadAPIClient.uploadFile(
-                  uploadURL: fileUploadInfo.uploadURL,
-                  data: photoInfo.data,
-                  fileExtension: photoInfo.fileExtension)
+                  fileUploadInfo.uploadURL,
+                  photoInfo.data,
+                  photoInfo.fileExtension)
               },
               fileUploadInfo
             )
@@ -114,10 +114,10 @@ public struct SelectGroupPhotoCore {
         return .run { [state] send in
           await send(.createGroupResponse(Result {
             try await self.createGroupAPIClient.createGroup(
-              accessToken: state.userInfo.accessToken,
-              groupName: state.groupName,
-              keyword: state.keyword.rawValue,
-              groupImageURL: fileUploadInfo.fileID
+              state.userInfo.accessToken,
+              state.groupName,
+              state.keyword.rawValue,
+              fileUploadInfo.fileID
             )
           }))
         }
