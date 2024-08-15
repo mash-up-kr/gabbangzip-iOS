@@ -36,7 +36,7 @@ public struct MainCoordinatorCore {
         state.routes.pop()
         
       case .router(.routeAction(id: _, action: .home(.moveToCreateGroup))):
-        state.routes.presentCover(.createGroupCoordinator(.init(routes: [.root(.createGroupStart(.init()), embedInNavigationView: true)])))
+        state.routes.presentCover(.createGroupCoordinator(.init(routes: [.root(.setGroupName(.init(isFromGetStarted: false)), embedInNavigationView: true)])))
         
       case .router(.routeAction(id: _, action: .home(.moveToCreateEvent))):
         state.routes.push(.createEvent(.init()))
@@ -61,6 +61,12 @@ public struct MainCoordinatorCore {
         
       case .router(.routeAction(id: _, action: .createEvent(.moveToHomeWithEvent))):
         state.routes.pop()
+        
+      case .router(.routeAction(id: _, action: .getStarted(.moveToJoinGroup))):
+        state.routes.push(.joinGroup(.init()))
+        
+      case .router(.routeAction(id: _, action: .getStarted(.moveToSetGroupName))):
+        state.routes.push(.createGroupCoordinator(.init(routes: [.root(.setGroupName(.init(isFromGetStarted: true)), embedInNavigationView: true)])))
         
       default:
         break

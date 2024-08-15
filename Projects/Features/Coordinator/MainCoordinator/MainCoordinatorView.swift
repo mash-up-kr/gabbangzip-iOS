@@ -37,6 +37,8 @@ public struct MainCoordinatorView: View {
         JoinGroupView(store: store)
       case let .groupDetailCoordinator(store):
         GroupDetailCoordinatorView(store: store)
+      case let .getStarted(store):
+        GetStartedView(store: store)
       }
     }
   }

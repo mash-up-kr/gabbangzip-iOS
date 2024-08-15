@@ -17,13 +17,16 @@ public struct SetGroupNameCore {
   public struct State: Equatable {
     var text: String
     var nextButtonType: ButtonType
+    var isFromGetStarted: Bool
     
     public init(
       text: String = "",
-      nextButtonType: ButtonType = .inactive
+      nextButtonType: ButtonType = .inactive,
+      isFromGetStarted: Bool
     ) {
       self.text = text
       self.nextButtonType = nextButtonType
+      self.isFromGetStarted = isFromGetStarted
     }
   }
   

@@ -22,4 +22,5 @@ public enum MainScreen {
   case home(HomeCore)
   case joinGroup(JoinGroupCore)
   case groupDetailCoordinator(GroupDetailCoordinatorCore)
+  case getStarted(GetStartedCore)
 }
