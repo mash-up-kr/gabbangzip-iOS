@@ -29,14 +29,8 @@ public struct CreateGroupCoordinatorCore {
   public var body: some Reducer<State, Action> {
     Reduce { state, action in
       switch action {
-      case .router(.routeAction(id: _, action: .createGroupStart(.moveToSetGroupName))):
-        state.routes.push(.setGroupName(.init()))
-        
       case let .router(.routeAction(id: _, action: .setGroupName(.moveToSelectKeyword(groupName)))):
         state.routes.push(.selectKeyword(.init(groupName: groupName)))
-        
-      case .router(.routeAction(id: _, action: .setGroupName(.backToCreateGroupStart))):
-        state.routes.pop()
         
       case let .router(.routeAction(id: _, action: .selectKeyword(.moveToSelectGroupPhoto(groupName, selectedKeyword)))):
         state.routes.push(.selectGroupPhoto(.init(groupName: groupName, keyword: selectedKeyword)))
