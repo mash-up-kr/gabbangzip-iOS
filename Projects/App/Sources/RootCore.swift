@@ -144,6 +144,7 @@ public struct RootCore {
       case let .setDestination(destination):
         state.destination = destination
         return .none
+        
       case let .logError(error):
         return .run { send in
           logger.error("RootCore Error: \(error)")

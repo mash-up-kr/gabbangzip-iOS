@@ -75,14 +75,6 @@ struct AppDelegateCore {
           await firebaseClient.configure()
         }
         
-      case .checkRegisterToken:
-        return .run { send in
-          let token = try await firebaseClient.checkRegistrationToken()
-          await send(.logFCMDescription(token))
-        } catch: { _, send in
-          await send(.logError(AppDelegateCoreError(code: .failToGetRegisterToken)))
-        }
-        
       case .runFirebaseAutoInitialization:
         return .run { send in
           await firebaseClient.runAutoInitialization()
@@ -90,7 +82,7 @@ struct AppDelegateCore {
         
       case let .getDeviceToken(deviceToken):
         return .run { send in
-          await firebaseClient.getDeviceToken(deviceToken)
+          await firebaseClient.setDeviceToken(deviceToken)
         }
         
       case .setupNotificationCenter:
