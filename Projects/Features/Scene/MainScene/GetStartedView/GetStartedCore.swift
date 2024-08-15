@@ -33,7 +33,7 @@ public struct GetStartedCore {
         return .send(.moveToSetGroupName)
         
       case .inviteCodeButtonTapped:
-        return .none
+        return .send(.moveToJoinGroup)
         
       case .moveToSetGroupName:
         return .none
