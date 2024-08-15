@@ -155,8 +155,7 @@ public struct LoginCore {
         return .send(isMemberOfAnyGroup ? .moveToHome : .moveToGetStarted)
         
       case .getGroupsResponse(.failure):
-        // TODO: - 서버의 에러 메시지 형식 및 에러 수집 방식에 대한 논의 후 수정
-        return .none
+        return .send(.moveToHome)
         
       case let .showError(isPresented):
         state.isPresented = isPresented
