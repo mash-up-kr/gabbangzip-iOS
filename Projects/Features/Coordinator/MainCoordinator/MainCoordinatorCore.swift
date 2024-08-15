@@ -47,6 +47,12 @@ public struct MainCoordinatorCore {
       case .router(.routeAction(id: _, action: .joinGroup(.backToHome))):
         state.routes.pop()
         
+      case .router(.routeAction(id: _, action: .joinGroup(.backToGetStarted))):
+        state.routes.pop()
+        
+      case .router(.routeAction(id: _, action: .joinGroup(.goToHome))):
+        state.routes.push(.home(.init()))
+        
       case .router(.routeAction(id: _, action: .createGroupCoordinator(.router(.routeAction(id: _, action: .setGroupName(.backToHome)))))):
         state.routes.dismiss()
         
