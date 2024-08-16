@@ -61,6 +61,7 @@ public struct CreateEventView: View {
       .padding(.horizontal, 16)
       .navigationBarHidden(true)
     }
+    .toast(isPresented: $store.isErrorPresented, type: .onlyText("다시 시도해주세요."))
     .popup(
       isPresented: $store.isExiting,
       title: CreateEventViewNameSpace.popupTitle,

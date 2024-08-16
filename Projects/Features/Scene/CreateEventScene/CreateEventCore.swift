@@ -21,6 +21,7 @@ public struct CreateEventCore {
   public struct State: Equatable {
     public var text: String
     public var isExiting: Bool
+    public var isErrorPresented: Bool
     public var isEventNamed: Bool
     public var isPhotoSelected: Bool
     public var completeButtonType: ButtonType
@@ -32,6 +33,7 @@ public struct CreateEventCore {
     public init(
       text: String = "",
       isExiting: Bool = false,
+      isErrorPresented: Bool = false,
       isEventNamed: Bool = false,
       isPhotoSelected: Bool = false,
       completeButtonType: ButtonType = .inactive,
@@ -39,6 +41,7 @@ public struct CreateEventCore {
     ) {
       self.text = text
       self.isExiting = isExiting
+      self.isErrorPresented = isErrorPresented
       self.isEventNamed = isEventNamed
       self.isPhotoSelected = isPhotoSelected
       self.completeButtonType = completeButtonType
@@ -62,6 +65,7 @@ public struct CreateEventCore {
     case changeIsEventNamedStatus(Bool)
     case changeIsPhotoSelected
     case checkCompleteButtonType
+    case setToastPresented(Bool)
     
     // Route Action
     case moveToHome
@@ -130,6 +134,16 @@ public struct CreateEventCore {
         state.completeButtonType = state.isEventNamed && state.isPhotoSelected ? .active : .inactive
         return .none
         
+      case let .setToastPresented(isPresented):
+        state.isErrorPresented = isPresented
+        return .none
+        
+        
+      case let .logError(error):
+        return .run { send in
+          logger.error("CreateEvent Error: \(error)")
+        }
+        
       case .moveToHome:
         return .none
         
@@ -137,5 +151,17 @@ public struct CreateEventCore {
         return .none
       }
     }
+  }
+}
+
+// MARK: - CreateEventCoreError
+public struct CreateEventCoreError: GabbangzipError {
+  public var userInfo: [String: Any] = [:]
+  public var code: Code
+  public var underlying: Error?
+  
+  public enum Code: Int {
+    case failToGetUploadURLResponse
+    case failToUploadEventImage
   }
 }
