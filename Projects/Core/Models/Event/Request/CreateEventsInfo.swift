@@ -6,7 +6,7 @@
 //  Copyright © 2024 com.mashup.gabbangzip. All rights reserved.
 //
 
-public struct CreateEventsInfo: Decodable, Equatable {
+public struct CreateEventsInfo: Encodable {
   public let groupID: Int
   public let description: String
   public let date: String
