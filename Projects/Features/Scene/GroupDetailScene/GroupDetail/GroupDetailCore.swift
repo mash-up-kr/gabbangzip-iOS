@@ -197,6 +197,8 @@ public struct GroupDetailCore {
       case .getGroupDetailResponse(.failure):
         state.isToastPresented = true
         return .none
+        
+      case .putEventVisit(.success):
         return .none
         
       case .putEventVisit(.failure):
