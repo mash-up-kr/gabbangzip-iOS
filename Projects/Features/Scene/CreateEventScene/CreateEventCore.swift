@@ -75,6 +75,12 @@ public struct CreateEventCore {
     case changeIsPhotoSelected
     case checkCompleteButtonType
     case setToastPresented(Bool)
+    case getUploadURLResponse(Result<FileUploadInfo, Error>, PhotoInfo)
+    case uploadFileToPresignedURLResponse(Result<Void, Error>)
+    case createEventResponse
+    case checkEvent(Result<EventInfo, Error>)
+    case uploadEventImage(Result<EventImageInfo, Error>)
+    case logError(Error)
     
     // Route Action
     case moveToHome
@@ -82,6 +88,8 @@ public struct CreateEventCore {
   }
   
   @Dependency(\.bundleClient) var bundleClient
+  @Dependency(\.eventAPIClient) var eventAPIClient
+  @Dependency(\.fileUploadAPIClient) var fileUploadAPIClient
   @Dependency(\.uiPasteBoardClient) var uiPasteBoardClient
   
   public var body: some Reducer<State, Action> {
@@ -117,8 +125,30 @@ public struct CreateEventCore {
         return .none
         
       case .completeButtonTapped:
-        return .run { send in
-          await send(.moveToHomeWithEvent)
+        return .run { [state] send in
+          guard state.isPhotoSelected else {
+            await send(.setToastPresented(true))
+            return
+          }
+          
+          await withTaskGroup(of: Void.self) { taskGroup in
+            for photo in state.selectedPhotosInfo {
+              taskGroup.addTask {
+                await send(.getUploadURLResponse(
+                  Result {
+                    let result = try await fileUploadAPIClient.getUploadURL(
+                      state.userInfo.accessToken,
+                      photo.fileExtension
+                    )
+                    return result
+                  },
+                  photo)
+                )
+              }
+            }
+          }
+        } catch: { error, send in
+          await send(.logError(CreateEventCoreError(code: .failToUploadURL, underlying: error)))
         }
         
       case let .deleteSelectedPhoto(index):
@@ -147,8 +177,75 @@ public struct CreateEventCore {
         state.isErrorPresented = isPresented
         return .none
         
+      case let .getUploadURLResponse(.success(fileUploadInfo), photoInfo):
+        return .run { send in
+          await send(.uploadFileToPresignedURLResponse(Result {
+            try await fileUploadAPIClient.uploadFile(
+              uploadURL: fileUploadInfo.uploadURL,
+              data: photoInfo.data,
+              fileExtension: photoInfo.fileExtension
+            )
+          }))
+        }
+        
+      case .getUploadURLResponse(.failure, _):
+        return .run { send in
+          await send(.logError(CreateEventCoreError(code: .failToGetUploadURLResponse)))
+        }
+        
+      case .uploadFileToPresignedURLResponse(.success):
+        return .run { send in
+          await send(.createEventResponse)
+        }
+        
+      case .uploadFileToPresignedURLResponse(.failure):
+        return .run { send in
+          await send(.logError(CreateEventCoreError(code: .failTeUploadFileToPresignedURLResponse)))
+        }
+        
+      case .createEventResponse:
+        return .run { [state] send in
+          let pictures = state.selectedPhotosInfo.map{ $0.fileExtension }
+          await send(.checkEvent(Result {
+            try await eventAPIClient.createEvent(
+              accessToken: state.userInfo.accessToken,
+              groupID: state.groupID,
+              description: state.text,
+              date: state.uploadEventDate,
+              pictures: pictures
+            )
+          }))
+        }
+        
+      case let .checkEvent(.success(eventInfo)):
+        return .run { [state] send in
+          let pictures = state.selectedPhotosInfo.map{ $0.url.description }
+          await send(.uploadEventImage(Result {
+            try await eventAPIClient.uploadEventImages(
+              accessToken: state.userInfo.accessToken,
+              eventID: eventInfo.eventID,
+              imageURL: pictures
+            )
+          }))
+        }
+        
+      case .checkEvent(.failure):
+        return .run { send in
+          await send(.logError(CreateEventCoreError(code: .failToCheckEvent)))
+        }
+        
+      case .uploadEventImage(.success):
+        return .run { send in
+          await send(.moveToHomeWithEvent)
+        }
+        
+      case .uploadEventImage(.failure):
+        return .run { send in
+          await send(.logError(CreateEventCoreError(code: .failToUploadEventImage)))
+        }
         
       case let .logError(error):
+        state.isErrorPresented = true
         return .run { send in
           logger.error("CreateEvent Error: \(error)")
         }
@@ -170,7 +267,11 @@ public struct CreateEventCoreError: GabbangzipError {
   public var underlying: Error?
   
   public enum Code: Int {
+    case failToUploadURL
     case failToGetUploadURLResponse
+    case failTeUploadFileToPresignedURLResponse
+    case failToCreateEventResponse
     case failToUploadEventImage
+    case failToCheckEvent
   }
 }
