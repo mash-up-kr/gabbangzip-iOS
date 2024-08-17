@@ -24,6 +24,7 @@ public struct SelectGroupPhotoCore {
     var keyword: GroupData.Keyword
     var nextButtonType: ButtonType
     var selectedPhotosInfo: [PhotoInfo]
+    var isFromGetStarted: Bool
 
     public init(
       userInfo: @autoclosure () -> UserInfo = .defaultValue,
@@ -31,7 +32,8 @@ public struct SelectGroupPhotoCore {
       groupName: String,
       keyword: GroupData.Keyword,
       nextButtonType: ButtonType = .inactive,
-      selectedPhotosInfo: [PhotoInfo] = []
+      selectedPhotosInfo: [PhotoInfo] = [],
+      isFromGetStarted: Bool
     ) {
       self._userInfo = Shared(wrappedValue: userInfo(), .inMemory("userInfo"))
       self._isHomeUpdated = Shared(wrappedValue: isHomeUpdated(), .inMemory("isHomeUpdated"))
@@ -39,6 +41,7 @@ public struct SelectGroupPhotoCore {
       self.nextButtonType = nextButtonType
       self.keyword = keyword
       self.selectedPhotosInfo = selectedPhotosInfo
+      self.isFromGetStarted = isFromGetStarted
     }
   }
 
@@ -54,7 +57,7 @@ public struct SelectGroupPhotoCore {
     case createGroupResponse(Result<CreatedGroupInfo, Error>)
     
     // Route Action
-    case moveToCreateGroupCompletion(CreatedGroupInfo)
+    case moveToCreateGroupCompletion(createdGroupInfo: CreatedGroupInfo, isFromGetStarted: Bool)
     case backToSelectKeyword
   }
   
@@ -129,7 +132,7 @@ public struct SelectGroupPhotoCore {
         
       case let .createGroupResponse(.success(createdGroupInfo)):
         state.isHomeUpdated = true
-        return .send(.moveToCreateGroupCompletion(createdGroupInfo))
+        return .send(.moveToCreateGroupCompletion(createdGroupInfo: createdGroupInfo, isFromGetStarted: state.isFromGetStarted))
         
       case let .createGroupResponse(.failure(error)):
         return .run { send in

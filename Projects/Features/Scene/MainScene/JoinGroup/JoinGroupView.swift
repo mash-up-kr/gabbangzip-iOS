@@ -57,7 +57,7 @@ public struct JoinGroupView: View {
 #Preview {
   JoinGroupView(
     store: Store(
-      initialState: .init(),
+      initialState: .init(isFromGetStarted: true),
       reducer: JoinGroupCore.init
     )
   )

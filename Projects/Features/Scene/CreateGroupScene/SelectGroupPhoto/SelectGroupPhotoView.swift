@@ -107,7 +107,7 @@ extension SelectGroupPhotoView {
 #Preview {
   SelectGroupPhotoView(
     store: Store(
-      initialState: .init(groupName: "그룹명열글자입니다요", keyword: .school),
+      initialState: .init(groupName: "그룹명열글자입니다요", keyword: .school, isFromGetStarted: true),
       reducer: SelectGroupPhotoCore.init
     )
   )

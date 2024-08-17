@@ -12,7 +12,6 @@ import TCACoordinators
 
 @Reducer(state: .equatable)
 public enum CreateGroupScreen {
-  case createGroupStart(CreateGroupStartCore)
   case setGroupName(SetGroupNameCore)
   case selectKeyword(SelectKeywordCore)
   case selectGroupPhoto(SelectGroupPhotoCore)

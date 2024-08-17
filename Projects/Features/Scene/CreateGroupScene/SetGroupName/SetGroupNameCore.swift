@@ -17,13 +17,16 @@ public struct SetGroupNameCore {
   public struct State: Equatable {
     var text: String
     var nextButtonType: ButtonType
+    var isFromGetStarted: Bool
     
     public init(
       text: String = "",
-      nextButtonType: ButtonType = .inactive
+      nextButtonType: ButtonType = .inactive,
+      isFromGetStarted: Bool
     ) {
       self.text = text
       self.nextButtonType = nextButtonType
+      self.isFromGetStarted = isFromGetStarted
     }
   }
   
@@ -37,8 +40,9 @@ public struct SetGroupNameCore {
     case setNextButtonType(ButtonType)
     
     // Route Action
-    case moveToSelectKeyword(String)
-    case backToCreateGroupStart
+    case moveToSelectKeyword(groupName: String, isFromGetStarted: Bool)
+    case backToHome
+    case backToGetStarted
   }
   
   public var body: some Reducer<State, Action> {
@@ -56,10 +60,14 @@ public struct SetGroupNameCore {
         }
         
       case .nextButtonTapped:
-        return .send(.moveToSelectKeyword(state.text))
+        return .send(.moveToSelectKeyword(groupName: state.text, isFromGetStarted: state.isFromGetStarted))
         
       case .backButtonTapped:
-        return .send(.backToCreateGroupStart)
+        if state.isFromGetStarted {
+          return .send(.backToGetStarted)
+        } else {
+          return .send(.backToHome)
+        }
         
       case let .setNextButtonType(value):
         state.nextButtonType = value
@@ -68,7 +76,10 @@ public struct SetGroupNameCore {
       case .moveToSelectKeyword:
         return .none
         
-      case .backToCreateGroupStart:
+      case .backToHome:
+        return .none
+        
+      case .backToGetStarted:
         return .none
       }
     }

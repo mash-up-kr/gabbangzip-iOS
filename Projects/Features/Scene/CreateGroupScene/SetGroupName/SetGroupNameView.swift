@@ -61,7 +61,7 @@ public struct SetGroupNameView: View {
 #Preview {
   SetGroupNameView(
     store: Store(
-      initialState: .init(),
+      initialState: .init(isFromGetStarted: true),
       reducer: SetGroupNameCore.init
     )
   )

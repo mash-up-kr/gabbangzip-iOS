@@ -50,6 +50,7 @@ public struct RootCore {
     case getUserInfoFromKeyChain(Result<UserInfo, Error>)
     case checkAccessToken(Result<TestInfo, Error>, userInfo: UserInfo)
     case refreshToken(Result<TokenInfo, Error>, userInfo: UserInfo)
+    case getGroupsResponse(Result<GroupsData, Error>)
     case logError(RootCoreError)
     case setDestination(Destination.State?)
   }
@@ -58,6 +59,7 @@ public struct RootCore {
   @Dependency(\.kakaoLoginClient) private var kakaoLoginClient
   @Dependency(\.keyChainClient) private var keyChainClient
   @Dependency(\.userDefaultsClient) private var userDefaultsClient
+  @Dependency(\.groupAPIClient) private var groupAPIClient
   
   public var body: some Reducer<State, Action> {
     BindingReducer()
@@ -73,6 +75,10 @@ public struct RootCore {
         
       case .destination(.presented(.login(.moveToHome))):
         state.destination = .mainCoordinator(MainCoordinatorCore.State(routes: [.root(.home(HomeCore.State()), embedInNavigationView: true)]))
+        return .none
+        
+      case .destination(.presented(.login(.moveToGetStarted))):
+        state.destination = .mainCoordinator(MainCoordinatorCore.State(routes: [.root(.getStarted(.init()), embedInNavigationView: true)]))
         return .none
         
       case .destination:
@@ -108,8 +114,11 @@ public struct RootCore {
         
       case let .checkAccessToken(.success, userInfo):
         state.userInfo = userInfo
-        state.destination = .mainCoordinator(MainCoordinatorCore.State(routes: [.root(.home(HomeCore.State()), embedInNavigationView: true)]))
-        return .none
+        return .run { send in
+          await send(.getGroupsResponse(Result {
+            try await self.groupAPIClient.getGroups(userInfo.accessToken)
+          }))
+        }
         
       case let .checkAccessToken(.failure, userInfo):
         return .run { send in
@@ -129,7 +138,9 @@ public struct RootCore {
         return .run(
           operation: { [newUserInfo] send in
             try await keyChainClient.updateUserInfo(newUserInfo)
-            await send(.setDestination(.mainCoordinator(MainCoordinatorCore.State(routes: [.root(.home(HomeCore.State()), embedInNavigationView: true)]))))
+            await send(.getGroupsResponse(Result {
+              try await self.groupAPIClient.getGroups(newUserInfo.accessToken)
+            }))
           },
           catch: { error, send in
             await send(.setDestination(.login(LoginCore.State())))
@@ -139,6 +150,20 @@ public struct RootCore {
         
       case .refreshToken(.failure, _):
         state.destination = .login(LoginCore.State())
+        return .none
+        
+      case let .getGroupsResponse(.success(groupsData)):
+        let isMemberOfAnyGroup = !groupsData.groups.isEmpty
+        if isMemberOfAnyGroup {
+          state.destination = .mainCoordinator(MainCoordinatorCore.State(routes: [.root(.home(HomeCore.State()), embedInNavigationView: true)]))
+        } else {
+          state.destination = .mainCoordinator(MainCoordinatorCore.State(routes: [.root(.getStarted(GetStartedCore.State()), embedInNavigationView: true)]))
+        }
+        
+        return .none
+        
+      case .getGroupsResponse(.failure):
+        state.destination = .mainCoordinator(MainCoordinatorCore.State(routes: [.root(.home(HomeCore.State()), embedInNavigationView: true)]))
         return .none
         
       case let .logError(error):

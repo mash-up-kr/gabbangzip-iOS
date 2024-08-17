@@ -6,6 +6,7 @@
 //  Copyright © 2024 com.mashup.gabbangzip. All rights reserved.
 //
 
+import Common
 import ComposableArchitecture
 import DesignSystem
 import Models
@@ -35,6 +36,7 @@ public struct HomeView: View {
       }
     }
     .background(DesignSystem.Colors.gray0)
+    .disableSwipeBack()
     .onAppear { store.send(.onAppear) }
     .toast(
       isPresented: $store.toastPresented.sending(\.toastPresentedChanged),

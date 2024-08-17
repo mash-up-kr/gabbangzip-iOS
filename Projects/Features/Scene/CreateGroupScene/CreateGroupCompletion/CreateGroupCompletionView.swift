@@ -94,7 +94,8 @@ public struct CreateGroupCompletionView: View {
           groupImageURL: "pic/9c8f3f24-6ed2-4a2e-8af5-52aeff93b230.jpeg",
           invitationCode: "ttat"
         ),
-        imageURLString: "https://pic-api-bucket.s3.ap-northeast-2.amazonaws.com/pic/9c8f3f24-6ed2-4a2e-8af5-52aeff93b230.jpeg"
+        imageURLString: "https://pic-api-bucket.s3.ap-northeast-2.amazonaws.com/pic/9c8f3f24-6ed2-4a2e-8af5-52aeff93b230.jpeg",
+        isFromGetStarted: true
       ),
       reducer: CreateGroupCompletionCore.init
     )
