@@ -28,6 +28,7 @@ public struct CreateEventCore {
     public var isPhotoSelected: Bool
     public var completeButtonType: ButtonType
     public var selectedPhotosInfo: [PhotoInfo]
+    public var imageURL: [String]
     public var recentEventDate: String {
       return DateFormatter.createEvent.string(from: Date())
     }
@@ -44,7 +45,8 @@ public struct CreateEventCore {
       isEventNamed: Bool = false,
       isPhotoSelected: Bool = false,
       completeButtonType: ButtonType = .inactive,
-      selectedPhotosInfo: [PhotoInfo] = []
+      selectedPhotosInfo: [PhotoInfo] = [],
+      imageURL: [String] = []
     ) {
       self._userInfo = Shared(wrappedValue: userInfo(), .inMemory("userInfo"))
       self.groupID = groupID
@@ -55,6 +57,7 @@ public struct CreateEventCore {
       self.isPhotoSelected = isPhotoSelected
       self.completeButtonType = completeButtonType
       self.selectedPhotosInfo = selectedPhotosInfo
+      self.imageURL = imageURL
     }
   }
   
@@ -77,9 +80,7 @@ public struct CreateEventCore {
     case setToastPresented(Bool)
     case getUploadURLResponse(Result<FileUploadInfo, Error>, PhotoInfo)
     case uploadFileToPresignedURLResponse(Result<Void, Error>)
-    case createEventResponse
-    case checkEvent(Result<EventInfo, Error>)
-    case uploadEventImage(Result<EventImageInfo, Error>)
+    case createEvent(Result<EventInfo, Error>)
     case logError(Error)
     
     // Route Action
@@ -178,14 +179,19 @@ public struct CreateEventCore {
         return .none
         
       case let .getUploadURLResponse(.success(fileUploadInfo), photoInfo):
+        state.imageURL.append(fileUploadInfo.fileID)
         return .run { send in
-          await send(.uploadFileToPresignedURLResponse(Result {
-            try await fileUploadAPIClient.uploadFile(
-              uploadURL: fileUploadInfo.uploadURL,
-              data: photoInfo.data,
-              fileExtension: photoInfo.fileExtension
+          await send(
+            .uploadFileToPresignedURLResponse(
+              Result {
+                try await fileUploadAPIClient.uploadFile(
+                  uploadURL: fileUploadInfo.uploadURL,
+                  data: photoInfo.data,
+                  fileExtension: photoInfo.fileExtension
+                )
+              }
             )
-          }))
+          )
         }
         
       case .getUploadURLResponse(.failure, _):
@@ -194,8 +200,16 @@ public struct CreateEventCore {
         }
         
       case .uploadFileToPresignedURLResponse(.success):
-        return .run { send in
-          await send(.createEventResponse)
+        return .run { [state] send in
+          await send(.createEvent(Result {
+            try await eventAPIClient.createEvent(
+              accessToken: state.userInfo.accessToken,
+              groupID: state.groupID,
+              description: state.text,
+              date: state.uploadEventDate,
+              pictures: state.imageURL
+            )
+          }))
         }
         
       case .uploadFileToPresignedURLResponse(.failure):
@@ -203,45 +217,14 @@ public struct CreateEventCore {
           await send(.logError(CreateEventCoreError(code: .failTeUploadFileToPresignedURLResponse)))
         }
         
-      case .createEventResponse:
-        return .run { [state] send in
-          let pictures = state.selectedPhotosInfo.map{ $0.fileExtension }
-          await send(.checkEvent(Result {
-            try await eventAPIClient.createEvent(
-              accessToken: state.userInfo.accessToken,
-              groupID: state.groupID,
-              description: state.text,
-              date: state.uploadEventDate,
-              pictures: pictures
-            )
-          }))
-        }
-        
-      case let .checkEvent(.success(eventInfo)):
-        return .run { [state] send in
-          let pictures = state.selectedPhotosInfo.map{ $0.url.description }
-          await send(.uploadEventImage(Result {
-            try await eventAPIClient.uploadEventImages(
-              accessToken: state.userInfo.accessToken,
-              eventID: eventInfo.eventID,
-              imageURL: pictures
-            )
-          }))
-        }
-        
-      case .checkEvent(.failure):
-        return .run { send in
-          await send(.logError(CreateEventCoreError(code: .failToCheckEvent)))
-        }
-        
-      case .uploadEventImage(.success):
+      case let .createEvent(.success(eventInfo)):
         return .run { send in
           await send(.moveToHomeWithEvent)
         }
         
-      case .uploadEventImage(.failure):
+      case .createEvent(.failure):
         return .run { send in
-          await send(.logError(CreateEventCoreError(code: .failToUploadEventImage)))
+          await send(.logError(CreateEventCoreError(code: .failToCheckEvent)))
         }
         
       case let .logError(error):
@@ -270,7 +253,6 @@ public struct CreateEventCoreError: GabbangzipError {
     case failToUploadURL
     case failToGetUploadURLResponse
     case failTeUploadFileToPresignedURLResponse
-    case failToCreateEventResponse
     case failToUploadEventImage
     case failToCheckEvent
   }
