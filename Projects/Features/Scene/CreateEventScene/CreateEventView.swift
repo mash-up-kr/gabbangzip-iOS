@@ -42,9 +42,12 @@ public struct CreateEventView: View {
           .padding(.top, 16)
         
         EventView(text: CreateEventViewNameSpace.eventPicture)
-        
-        EventPicturePickerView(store: store)
-        
+      }
+      .padding(.horizontal, 16)
+      
+      EventPicturePickerView(store: store)
+      
+      VStack(spacing: 0) {
         Spacer()
         
         Text(CreateEventViewNameSpace.notice)
@@ -59,8 +62,8 @@ public struct CreateEventView: View {
         )
       }
       .padding(.horizontal, 16)
-      .navigationBarHidden(true)
     }
+    .navigationBarHidden(true)
     .toast(isPresented: $store.isErrorPresented, type: .onlyText("다시 시도해주세요."))
     .popup(
       isPresented: $store.isExiting,
@@ -180,6 +183,8 @@ fileprivate struct EventPicturePickerView: View {
               .padding(.leading, 8)
             }
           }
+          
+          Spacer()
         }
       }
     } else {
