@@ -7,15 +7,11 @@
 //
 
 public struct EventInfo: Decodable {
-  public let eventID: Int
+  public let id: Int
   
-  public init(eventID: Int) {
-    self.eventID = eventID
+  public init(id: Int) {
+    self.id = id
   }
   
-  enum CodingKeys: String, CodingKey {
-    case eventID = "id"
-  }
-  
-  public static let mock: EventInfo = .init(eventID: 0)
+  public static let mock: EventInfo = .init(id: 0)
 }
