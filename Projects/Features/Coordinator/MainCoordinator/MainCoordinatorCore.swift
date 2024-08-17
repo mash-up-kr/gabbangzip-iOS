@@ -38,8 +38,8 @@ public struct MainCoordinatorCore {
       case .router(.routeAction(id: _, action: .home(.moveToCreateGroup))):
         state.routes.presentCover(.createGroupCoordinator(.init(routes: [.root(.setGroupName(.init(isFromGetStarted: false)), embedInNavigationView: true)])))
         
-      case .router(.routeAction(id: _, action: .home(.moveToCreateEvent))):
-        state.routes.push(.createEvent(.init()))
+      case let .router(.routeAction(id: _, action: .home(.moveToCreateEvent(groupID)))):
+        state.routes.push(.createEvent(.init(groupID: groupID)))
         
       case .router(.routeAction(id: _, action: .home(.moveToJoinGroup))):
         state.routes.push(.joinGroup(.init(isFromGetStarted: false)))

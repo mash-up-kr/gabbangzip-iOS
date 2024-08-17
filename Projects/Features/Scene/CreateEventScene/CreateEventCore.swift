@@ -19,6 +19,8 @@ public struct CreateEventCore {
   
   @ObservableState
   public struct State: Equatable {
+    @Shared var userInfo: UserInfo
+    public var groupID: Int
     public var text: String
     public var isExiting: Bool
     public var isErrorPresented: Bool
@@ -29,8 +31,13 @@ public struct CreateEventCore {
     public var recentEventDate: String {
       return DateFormatter.createEvent.string(from: Date())
     }
+    public var uploadEventDate: String {
+      return DateFormatter.iso8601.string(from: Date())
+    }
     
     public init(
+      userInfo: @autoclosure () -> UserInfo = .defaultValue,
+      groupID: Int = -1,
       text: String = "",
       isExiting: Bool = false,
       isErrorPresented: Bool = false,
@@ -39,6 +46,8 @@ public struct CreateEventCore {
       completeButtonType: ButtonType = .inactive,
       selectedPhotosInfo: [PhotoInfo] = []
     ) {
+      self._userInfo = Shared(wrappedValue: userInfo(), .inMemory("userInfo"))
+      self.groupID = groupID
       self.text = text
       self.isExiting = isExiting
       self.isErrorPresented = isErrorPresented

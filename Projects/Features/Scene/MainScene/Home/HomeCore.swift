@@ -65,7 +65,7 @@ public struct HomeCore {
     case moveToCreateGroup
     case moveToJoinGroup
     case moveToGroupDetail(Int)
-    case moveToCreateEvent
+    case moveToCreateEvent(Int)
     case moveToVote
   }
   
@@ -168,8 +168,8 @@ public struct HomeCore {
           switch delegate {
           case let .headerButtonTapped(groupID):
             await send(.moveToGroupDetail(groupID))
-          case .createEventButtonTapped:
-            await send(.moveToCreateEvent)
+          case let .createEventButtonTapped(groupID):
+            await send(.moveToCreateEvent(groupID))
           case .stabbingSuccessed:
             await send(.showToastMessage(.textWithCheckIcon("쿡찌르기 성공!")))
           case .stabbingFailed:
