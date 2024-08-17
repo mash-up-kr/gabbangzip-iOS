@@ -11,7 +11,7 @@ import Foundation
 public extension DateFormatter {
   static let iso8601: DateFormatter = {
     let formatter = DateFormatter()
-    formatter.dateFormat = "yyyy-MM-dd'T'HH:mm:ss.SSSXXXXX"
+    formatter.dateFormat = "yyyy-MM-dd'T'HH:mm:ss.SSS'Z'"
     formatter.calendar = Calendar(identifier: .iso8601)
     formatter.timeZone = TimeZone(abbreviation: "KST")
     formatter.locale = Locale(identifier: "ko_KR")
