@@ -70,14 +70,13 @@ extension EventAPI: RouteType {
   
   public var headers: [String: String]? {
     switch self {
-    case let .putEventVisit(accessToken, eventID):
+    case let .putEventVisit(accessToken: accessToken, eventID: _),
+      let .createEvent(accessToken: accessToken, groupID: _, description: _, date: _, pictures: _),
+      let .uploadEventImages(accessToken: accessToken, eventID: _, imageURLs: _):
       let headers: [String: String]? = [
         "Authorization": "Bearer \(accessToken)"
       ]
       return headers
-    case let .createEvent(accessToken: accessToken, groupID: _, description: _, date: _, pictures: _),
-      let .uploadEventImages(accessToken: accessToken, eventID: _, imageURLs: _):
-      return ["Authorization": "Bearer \(accessToken)"]
     }
   }
 }
