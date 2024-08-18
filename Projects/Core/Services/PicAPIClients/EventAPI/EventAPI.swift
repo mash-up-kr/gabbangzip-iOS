@@ -13,7 +13,7 @@ import Models
 public enum EventAPI {
   case putEventVisit(accessToken: String, eventID: Int)
   case createEvent(accessToken: String, groupID: Int, description: String, date: String, pictures: [String])
-  case uploadEventImages(accessToken: String, eventID: Int, imageURL: [String])
+  case uploadEventImages(accessToken: String, eventID: Int, imageURLs: [String])
 }
 
 extension EventAPI: RouteType {
@@ -59,10 +59,10 @@ extension EventAPI: RouteType {
         pictures: pictures
       )
       return body
-    case let .uploadEventImages(_, eventID, imageURL):
+    case let .uploadEventImages(_, eventID, imageURLs):
       let body = UploadEventImageInfo(
         eventID: eventID,
-        imageURL: imageURL
+        imageURLs: imageURLs
       )
       return body
     }
@@ -76,7 +76,7 @@ extension EventAPI: RouteType {
       ]
       return headers
     case let .createEvent(accessToken: accessToken, groupID: _, description: _, date: _, pictures: _),
-      let .uploadEventImages(accessToken: accessToken, eventID: _, imageURL: _):
+      let .uploadEventImages(accessToken: accessToken, eventID: _, imageURLs: _):
       return ["Authorization": "Bearer \(accessToken)"]
     }
   }

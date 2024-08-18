@@ -27,7 +27,7 @@ public struct EventAPIClient: Sendable {
   public var uploadEventImages: @Sendable (
     _ accessToken: String,
     _ eventID: Int,
-    _ imageURL: [String]) async throws -> EventImageInfo
+    _ imageURLs: [String]) async throws -> EventImageInfo
 }
 
 extension EventAPIClient: DependencyKey {
@@ -65,11 +65,11 @@ extension EventAPIClient: DependencyKey {
           )
         }
       },
-      uploadEventImages: { accessToken, eventID, imageURL in
+      uploadEventImages: { accessToken, eventID, imageURLs in
         let route = EventAPI.uploadEventImages(
           accessToken: accessToken,
           eventID: eventID,
-          imageURL: imageURL
+          imageURLs: imageURLs
         )
         let request = Request<SuccessResponse<EventImageInfo>>(route: route)
         do {
@@ -93,7 +93,7 @@ extension EventAPIClient: DependencyKey {
       createEvent: { accessToken, groupID, description, date, pictures in
         return EventInfo.mock
       },
-      uploadEventImages: { accessToken, eventID, imageURL in
+      uploadEventImages: { accessToken, eventID, imageURLs in
         return EventImageInfo.mock
       }
     )
