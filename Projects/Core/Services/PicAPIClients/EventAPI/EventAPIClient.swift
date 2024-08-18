@@ -87,13 +87,13 @@ extension EventAPIClient: DependencyKey {
   
   public static var previewValue: EventAPIClient {
     return EventAPIClient(
-      putEventVisit: { accessToken, eventID in
+      putEventVisit: { _, _ in
         return EventVisitInfo.mock
       },
-      createEvent: { accessToken, groupID, description, date, pictures in
+      createEvent: { _, _, _, _, _ in
         return EventInfo.mock
       },
-      uploadEventImages: { accessToken, eventID, imageURLs in
+      uploadEventImages: { _, _, _ in
         return EventImageInfo.mock
       }
     )

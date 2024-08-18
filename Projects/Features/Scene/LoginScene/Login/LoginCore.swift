@@ -23,20 +23,20 @@ public struct LoginCore {
     public var isPresented: Bool
     public var kakaoUser: KaKaoUserInfo
     public var kakaoIdToken: KakaoToken
-    public var FCMToken: String
+    public var fcmToken: String
     
     public init(
       userInfo: @autoclosure () -> UserInfo = .defaultValue,
       isPresented: Bool = false,
       kakaoUser: KaKaoUserInfo = KaKaoUserInfo(),
       kakaoIdToken: KakaoToken = KakaoToken(),
-      FCMToken: String = ""
+      fcmToken: String = ""
     ) {
       self._userInfo = Shared(wrappedValue: userInfo(), .inMemory("userInfo"))
       self.isPresented = isPresented
       self.kakaoUser = kakaoUser
       self.kakaoIdToken = kakaoIdToken
-      self.FCMToken = FCMToken
+      self.fcmToken = fcmToken
     }
   }
   
@@ -150,7 +150,7 @@ public struct LoginCore {
         }
         
       case let .getFCMToken(token):
-        state.FCMToken = token
+        state.fcmToken = token
         return .run { send in
           await send(.postFCMToken)
         }
@@ -160,7 +160,7 @@ public struct LoginCore {
           await send(.responseFCMToken(Result {
             try await self.pushNotificationAPIClient.registerFCMToken(
               state.userInfo.accessToken,
-              state.FCMToken
+              state.fcmToken
             )
           }))
         }

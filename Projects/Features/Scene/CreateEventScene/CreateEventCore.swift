@@ -201,15 +201,19 @@ public struct CreateEventCore {
         
       case .uploadFileToPresignedURLResponse(.success):
         return .run { [state] send in
-          await send(.createEvent(Result {
-            try await eventAPIClient.createEvent(
-              accessToken: state.userInfo.accessToken,
-              groupID: state.groupID,
-              description: state.text,
-              date: state.uploadEventDate,
-              pictures: state.imageURL
+          await send(
+            .createEvent(
+              Result {
+                try await eventAPIClient.createEvent(
+                  accessToken: state.userInfo.accessToken,
+                  groupID: state.groupID,
+                  description: state.text,
+                  date: state.uploadEventDate,
+                  pictures: state.imageURL
+                )
+              }
             )
-          }))
+          )
         }
         
       case .uploadFileToPresignedURLResponse(.failure):
