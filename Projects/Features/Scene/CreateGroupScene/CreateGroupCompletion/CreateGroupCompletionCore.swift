@@ -59,7 +59,7 @@ public struct CreateGroupCompletionCore {
       switch action {
       case .onAppear:
         return .run { [state] send in
-          if let s3BucketDomain = try? bundleClient.getValue(key: "S3BucketDomain") as? String {
+          if let s3BucketDomain = try? bundleClient.getValue("S3BucketDomain") as? String {
             let imageURLString = s3BucketDomain + state.createdGroupInfo.groupImageURL
             await send(.setImageURLString(imageURLString))
           }

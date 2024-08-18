@@ -6,8 +6,6 @@
 //  Copyright © 2024 com.mashup.gabbangzip. All rights reserved.
 //
 
-import Foundation
-
 public struct RegisteredFCMToken: Decodable {
   public let registeredToken: String
   

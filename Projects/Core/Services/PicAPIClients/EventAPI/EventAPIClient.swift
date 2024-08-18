@@ -13,7 +13,21 @@ import Models
 
 @DependencyClient
 public struct EventAPIClient: Sendable {
-  public var putEventVisit: @Sendable (_ accessToken: String, _ eventID: Int) async throws -> EventVisitInfo
+  public var putEventVisit: @Sendable (
+    _ accessToken: String,
+    _ eventID: Int
+  ) async throws -> EventVisitInfo
+  public var createEvent: @Sendable (
+    _ accessToken: String,
+    _ groupID: Int,
+    _ description: String,
+    _ date: String,
+    _ pictures: [String]
+  ) async throws -> EventInfo
+  public var uploadEventImages: @Sendable (
+    _ accessToken: String,
+    _ eventID: Int,
+    _ imageURLs: [String]) async throws -> EventImageInfo
 }
 
 extension EventAPIClient: DependencyKey {
@@ -31,14 +45,56 @@ extension EventAPIClient: DependencyKey {
             underlying: error
           )
         }
+      },
+      createEvent: { accessToken, groupID, description, date, pictures in
+        let route = EventAPI.createEvent(
+          accessToken: accessToken,
+          groupID: groupID,
+          description: description,
+          date: date,
+          pictures: pictures
+        )
+        let request = Request<SuccessResponse<EventInfo>>(route: route)
+        do {
+          let response = try await NetworkManager.shared.send(request)
+          return response.value.data
+        } catch {
+          throw EventAPIClientError(
+            code: .failToCreateEvent,
+            underlying: error
+          )
+        }
+      },
+      uploadEventImages: { accessToken, eventID, imageURLs in
+        let route = EventAPI.uploadEventImages(
+          accessToken: accessToken,
+          eventID: eventID,
+          imageURLs: imageURLs
+        )
+        let request = Request<SuccessResponse<EventImageInfo>>(route: route)
+        do {
+          let response = try await NetworkManager.shared.send(request)
+          return response.value.data
+        } catch {
+          throw EventAPIClientError(
+            code: .failTpUploadEventImage,
+            underlying: error
+          )
+        }
       }
     )
   }
   
   public static var previewValue: EventAPIClient {
     return EventAPIClient(
-      putEventVisit: { accessToken, eventID in
+      putEventVisit: { _, _ in
         return EventVisitInfo.mock
+      },
+      createEvent: { _, _, _, _, _ in
+        return EventInfo.mock
+      },
+      uploadEventImages: { _, _, _ in
+        return EventImageInfo.mock
       }
     )
   }
@@ -56,8 +112,10 @@ public struct EventAPIClientError: GabbangzipError {
   public var userInfo: [String: Any] = [:]
   public var code: APIResponseError
   public var underlying: Error?
-
+  
   public enum APIResponseError: Int {
     case failToPutEventVisit
+    case failToCreateEvent
+    case failTpUploadEventImage
   }
 }
