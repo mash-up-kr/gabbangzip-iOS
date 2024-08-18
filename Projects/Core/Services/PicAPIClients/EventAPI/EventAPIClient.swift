@@ -14,6 +14,7 @@ import Models
 @DependencyClient
 public struct EventAPIClient: Sendable {
   public var putEventVisit: @Sendable (_ accessToken: String, _ eventID: Int) async throws -> EventVisitInfo
+  public var postImages: @Sendable (_ accessToken: String, _ eventID: Int, _ imageURLs: [String]) async throws -> ImageUploadInfo
 }
 
 extension EventAPIClient: DependencyKey {
@@ -31,6 +32,18 @@ extension EventAPIClient: DependencyKey {
             underlying: error
           )
         }
+      },
+      postImages: { accessToken, eventID, imageURLs in
+        let route = EventAPI.postImages(accessToken: accessToken, eventID: eventID, imageURLs: imageURLs)
+        let request = Request<SuccessResponse<ImageUploadInfo>>(route: route)
+        do {
+          let response = try await NetworkManager.shared.send(request)
+          return response.value.data
+        } catch {
+          throw EventAPIClientError(
+            code: .failToPostImageURLs
+          )
+        }
       }
     )
   }
@@ -39,6 +52,9 @@ extension EventAPIClient: DependencyKey {
     return EventAPIClient(
       putEventVisit: { accessToken, eventID in
         return EventVisitInfo.mock
+      },
+      postImages: { _, _, _ in
+        return ImageUploadInfo.mock
       }
     )
   }
@@ -59,5 +75,6 @@ public struct EventAPIClientError: GabbangzipError {
 
   public enum APIResponseError: Int {
     case failToPutEventVisit
+    case failToPostImageURLs
   }
 }

@@ -125,7 +125,8 @@ public struct GroupDetailCore {
     case putEventVisit(Result<EventVisitInfo, Error>)
     case postKook(Result<KookInfo, Error>)
     case getUploadURLResponse(Result<FileUploadInfo, Error>, PhotoInfo)
-    case uploadFileToPresignedURLResponse(Result<Void, Error>)
+    case uploadFileToPresignedURLResponse(Result<Void, Error>, FileUploadInfo)
+    case uploadImageURL(Result<ImageUploadInfo, Error>)
     case showToast(DetailToastType)
 
     // Route Action
@@ -252,17 +253,31 @@ public struct GroupDetailCore {
                 data: photoInfo.data,
                 fileExtension: photoInfo.fileExtension
               )
-            }))
+            }, fileUploadInfo))
           }
         )
         
       case .getUploadURLResponse(.failure, _):
         return .send(.showToast(.imageUploadFail))
         
-      case .uploadFileToPresignedURLResponse(.success):
+      case let .uploadFileToPresignedURLResponse(.success, fileUploadInfo):
+        return .run { [state] send in
+          await send(.uploadImageURL(Result {
+            try await self.eventAPIClient.postImages(
+              accessToken: state.userInfo.accessToken,
+              eventID: state.groupDetail?.recentEventDetail.id ?? 0,
+              imageURLs: [fileUploadInfo.fileID]
+            )
+          }))
+        }
+        
+      case .uploadFileToPresignedURLResponse(.failure, _):
+        return .send(.showToast(.imageUploadFail))
+        
+      case .uploadImageURL(.success):
         return .send(.showToast(.imageUploadSuccess))
         
-      case .uploadFileToPresignedURLResponse(.failure):
+      case .uploadImageURL(.failure):
         return .send(.showToast(.imageUploadFail))
         
       case let .showToast(detailToastType):

@@ -6,11 +6,13 @@
 //  Copyright © 2024 com.mashup.gabbangzip. All rights reserved.
 //
 
+import Models
 import Foundation
 import Get
 
 public enum EventAPI {
   case putEventVisit(accessToken: String, eventID: Int)
+  case postImages(accessToken: String, eventID: Int, imageURLs: [String])
 }
 
 extension EventAPI: RouteType {
@@ -18,6 +20,8 @@ extension EventAPI: RouteType {
     switch self {
     case .putEventVisit:
       return "/api/v1/events/visit"
+    case .postImages:
+      return "/api/v1/events/images"
     }
   }
   
@@ -25,12 +29,14 @@ extension EventAPI: RouteType {
     switch self {
     case .putEventVisit:
       return .put
+    case .postImages:
+      return .post
     }
   }
   
   public var query: [(String, String?)]? {
     switch self {
-    case .putEventVisit:
+    case .putEventVisit, .postImages:
       return nil
     }
   }
@@ -42,12 +48,18 @@ extension EventAPI: RouteType {
         "event_id": eventID
       ]
       return body
+    case let .postImages(_, eventID, imageURLs):
+      let body: ImageUploadReqDTO = .init(
+        eventID: eventID,
+        imageURLs: imageURLs
+      )
+      return body
     }
   }
   
   public var headers: [String: String]? {
     switch self {
-    case let .putEventVisit(accessToken, eventID):
+    case let .putEventVisit(accessToken, _), let .postImages(accessToken, _, _):
       let headers: [String: String]? = [
         "Authorization": "Bearer \(accessToken)"
       ]
