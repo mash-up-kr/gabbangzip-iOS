@@ -19,26 +19,29 @@ public struct SelectGroupPhotoCore {
   @ObservableState
   public struct State: Equatable {
     @Shared var userInfo: UserInfo
-    @Shared var isGroupListUpdated: Bool
+    @Shared var isHomeUpdated: Bool
     var groupName: String
     var keyword: GroupData.Keyword
     var nextButtonType: ButtonType
     var selectedPhotosInfo: [PhotoInfo]
+    var isFromGetStarted: Bool
 
     public init(
       userInfo: @autoclosure () -> UserInfo = .defaultValue,
-      isGroupListUpdated: @autoclosure () -> Bool = false,
+      isHomeUpdated: @autoclosure () -> Bool = false,
       groupName: String,
       keyword: GroupData.Keyword,
       nextButtonType: ButtonType = .inactive,
-      selectedPhotosInfo: [PhotoInfo] = []
+      selectedPhotosInfo: [PhotoInfo] = [],
+      isFromGetStarted: Bool
     ) {
       self._userInfo = Shared(wrappedValue: userInfo(), .inMemory("userInfo"))
-      self._isGroupListUpdated = Shared(wrappedValue: isGroupListUpdated(), .inMemory("isGroupListUpdated"))
+      self._isHomeUpdated = Shared(wrappedValue: isHomeUpdated(), .inMemory("isHomeUpdated"))
       self.groupName = groupName
       self.nextButtonType = nextButtonType
       self.keyword = keyword
       self.selectedPhotosInfo = selectedPhotosInfo
+      self.isFromGetStarted = isFromGetStarted
     }
   }
 
@@ -54,7 +57,7 @@ public struct SelectGroupPhotoCore {
     case createGroupResponse(Result<CreatedGroupInfo, Error>)
     
     // Route Action
-    case moveToCreateGroupCompletion(CreatedGroupInfo)
+    case moveToCreateGroupCompletion(createdGroupInfo: CreatedGroupInfo, isFromGetStarted: Bool)
     case backToSelectKeyword
   }
   
@@ -72,8 +75,9 @@ public struct SelectGroupPhotoCore {
               .getUploadURLResponse(
                 Result {
                   try await self.fileUploadAPIClient.getUploadURL(
-                    accessToken: state.userInfo.accessToken,
-                    fileExtension: photoInfo.fileExtension)
+                    state.userInfo.accessToken,
+                    photoInfo.fileExtension
+                  )
                 }, photoInfo
               )
             )
@@ -96,9 +100,9 @@ public struct SelectGroupPhotoCore {
             .uploadFileToPresignedURLResponse(
               Result {
                 try await self.fileUploadAPIClient.uploadFile(
-                  uploadURL: fileUploadInfo.uploadURL,
-                  data: photoInfo.data,
-                  fileExtension: photoInfo.fileExtension)
+                  fileUploadInfo.uploadURL,
+                  photoInfo.data,
+                  photoInfo.fileExtension)
               },
               fileUploadInfo
             )
@@ -114,10 +118,10 @@ public struct SelectGroupPhotoCore {
         return .run { [state] send in
           await send(.createGroupResponse(Result {
             try await self.createGroupAPIClient.createGroup(
-              accessToken: state.userInfo.accessToken,
-              groupName: state.groupName,
-              keyword: state.keyword.rawValue,
-              groupImageURL: fileUploadInfo.fileID
+              state.userInfo.accessToken,
+              state.groupName,
+              state.keyword.rawValue,
+              fileUploadInfo.fileID
             )
           }))
         }
@@ -128,8 +132,8 @@ public struct SelectGroupPhotoCore {
         }
         
       case let .createGroupResponse(.success(createdGroupInfo)):
-        state.isGroupListUpdated = true
-        return .send(.moveToCreateGroupCompletion(createdGroupInfo))
+        state.isHomeUpdated = true
+        return .send(.moveToCreateGroupCompletion(createdGroupInfo: createdGroupInfo, isFromGetStarted: state.isFromGetStarted))
         
       case let .createGroupResponse(.failure(error)):
         return .run { send in

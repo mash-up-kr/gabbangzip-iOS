@@ -19,27 +19,30 @@ public struct LoginCore {
   
   @ObservableState
   public struct State: Equatable {
+    @Shared var userInfo: UserInfo
     public var isPresented: Bool
     public var kakaoUser: KaKaoUserInfo
     public var kakaoIdToken: KakaoToken
-    @Shared var userInfo: UserInfo
+    public var fcmToken: String
     
     public init(
+      userInfo: @autoclosure () -> UserInfo = .defaultValue,
       isPresented: Bool = false,
       kakaoUser: KaKaoUserInfo = KaKaoUserInfo(),
       kakaoIdToken: KakaoToken = KakaoToken(),
-      userInfo: @autoclosure () -> UserInfo = .defaultValue
+      fcmToken: String = ""
     ) {
+      self._userInfo = Shared(wrappedValue: userInfo(), .inMemory("userInfo"))
       self.isPresented = isPresented
       self.kakaoUser = kakaoUser
       self.kakaoIdToken = kakaoIdToken
-      self._userInfo = Shared(wrappedValue: userInfo(), .inMemory("userInfo"))
+      self.fcmToken = fcmToken
     }
   }
   
   public enum Action: BindableAction {
     case binding(BindingAction<State>)
-
+    
     // View Action
     case loginButtonTapped
     
@@ -48,18 +51,26 @@ public struct LoginCore {
     case loginWithKakaoAccountResponse(Result<String?, Error>)
     case checkUserInformationResponse(Result<User, Error>)
     case loginResponse(Result<PICUserInfo, Error>)
+    case getFCMToken(String)
+    case postFCMToken
+    case responseFCMToken(Result<RegisteredFCMToken, Error>)
     case saveUserInfoToKeychain(Result<Void, Error>)
+    case getGroupsResponse(Result<GroupsData, Error>)
     case showError(Bool)
     case logError(LoginCoreError)
     
     // Route Action
     case moveToHome
+    case moveToGetStarted
   }
   
-  @Dependency(\.kakaoLoginClient) private var kakaoLoginClient
   @Dependency(\.authAPIClient) private var authAPIClient
+  @Dependency(\.firebaseClient) private var firebaseClient
+  @Dependency(\.kakaoLoginClient) private var kakaoLoginClient
   @Dependency(\.keyChainClient) private var keyChainClient
   @Dependency(\.userDefaultsClient) private var userDefaultsClient
+  @Dependency(\.pushNotificationAPIClient) private var pushNotificationAPIClient
+  @Dependency(\.groupAPIClient) private var groupAPIClient
   
   public var body: some Reducer<State, Action> {
     BindingReducer()
@@ -107,10 +118,14 @@ public struct LoginCore {
           if let idToken = state.kakaoIdToken.idToken,
              let nickname = state.kakaoUser.nickname,
              let profileImageUrl = state.kakaoUser.profileImageUrl?.absoluteString {
+            let token = try await firebaseClient.checkRegistrationToken()
+            await send(.getFCMToken(token))
             await send(.loginResponse(Result { try await authAPIClient.login(idToken, nickname, profileImageUrl) }))
           } else {
             await send(.loginResponse(.failure(LoginCoreError(code: .failToCheckUserInformation))))
           }
+        } catch: { error,send in
+          await send(.loginResponse(.failure(LoginCoreError(code: .failToRegistrationToken, underlying: error))))
         }
         
       case .checkUserInformationResponse(.failure):
@@ -128,13 +143,39 @@ public struct LoginCore {
         state.userInfo = userInfo
         return .run { send in
           await send(.saveUserInfoToKeychain(Result { try await self.keyChainClient.createUserInfo(userInfo) }))
-          await send(.moveToHome)
+          await send(.getGroupsResponse(Result {
+            try await self.groupAPIClient.getGroups(userInfo.accessToken)
+          }))
         }
         
       case .loginResponse(.failure):
         return .run { send in
           await send(.logError(LoginCoreError(code: .failToLogin)))
           await send(.showError(true))
+        }
+        
+      case let .getFCMToken(token):
+        state.fcmToken = token
+        return .run { send in
+          await send(.postFCMToken)
+        }
+        
+      case .postFCMToken:
+        return .run { [state] send in
+          await send(.responseFCMToken(Result {
+            try await self.pushNotificationAPIClient.registerFCMToken(
+              state.userInfo.accessToken,
+              state.fcmToken
+            )
+          }))
+        }
+        
+      case .responseFCMToken(.success):
+        return .none
+        
+      case .responseFCMToken(.failure):
+        return .run { send in
+          await send(.logError(LoginCoreError(code: .failToPostFCMToken)))
         }
         
       case .saveUserInfoToKeychain(.success):
@@ -144,6 +185,13 @@ public struct LoginCore {
         return .run { send in
           await send(.logError(LoginCoreError(code: .failToSaveUserInfoToKeychain)))
         }
+        
+      case let .getGroupsResponse(.success(groupsData)):
+        let isMemberOfAnyGroup = !groupsData.groups.isEmpty
+        return .send(isMemberOfAnyGroup ? .moveToHome : .moveToGetStarted)
+        
+      case .getGroupsResponse(.failure):
+        return .send(.moveToHome)
         
       case let .showError(isPresented):
         state.isPresented = isPresented
@@ -155,6 +203,9 @@ public struct LoginCore {
         }
         
       case .moveToHome:
+        return .none
+        
+      case .moveToGetStarted:
         return .none
       }
     }
@@ -168,8 +219,10 @@ public struct LoginCoreError: GabbangzipError {
   public var underlying: Error?
   
   public enum Code: Int {
+    case failToRegistrationToken
     case failToCheckUserInformation
     case failToLogin
+    case failToPostFCMToken
     case failToSaveUserInfoToKeychain
   }
 }

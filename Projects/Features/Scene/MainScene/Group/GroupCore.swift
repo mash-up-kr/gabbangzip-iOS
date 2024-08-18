@@ -95,7 +95,7 @@ public struct GroupCore {
     
     public enum Delegate {
       case headerButtonTapped(Int)
-      case createEventButtonTapped
+      case createEventButtonTapped(Int)
       case stabbingSuccessed
       case stabbingFailed
       case imageUploadSuccessed
@@ -117,7 +117,7 @@ public struct GroupCore {
         return .send(.delegate(.headerButtonTapped(state.id)))
         
       case .createEventButtonTapped:
-        return .send(.delegate(.createEventButtonTapped))
+        return .send(.delegate(.createEventButtonTapped(state.id)))
         
       case .stabbingButtonTapped:
         return .run { [state] send in

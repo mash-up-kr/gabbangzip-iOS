@@ -56,7 +56,7 @@ public struct MemberListCore {
   }
   
   @Dependency(\.uiPasteBoardClient) var uiPasteBoardClient
-
+  
   public var body: some Reducer<State, Action> {
     Reduce { state, action in
       switch action {

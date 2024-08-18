@@ -1,6 +1,6 @@
 //
-//  CreateGroupStartView.swift
-//  CreateGroup
+//  GetStartedView.swift
+//  Main
 //
 //  Created by YangJoonHyeok on 7/9/24.
 //  Copyright © 2024 com.mashup.gabbangzip. All rights reserved.
@@ -10,10 +10,10 @@ import ComposableArchitecture
 import DesignSystem
 import SwiftUI
 
-public struct CreateGroupStartView: View {
-  private let store: StoreOf<CreateGroupStartCore>
+public struct GetStartedView: View {
+  private let store: StoreOf<GetStartedCore>
 
-  public init(store: StoreOf<CreateGroupStartCore>) {
+  public init(store: StoreOf<GetStartedCore>) {
     self.store = store
   }
 
@@ -41,6 +41,13 @@ public struct CreateGroupStartView: View {
           .foregroundStyle(DesignSystem.Colors.gray60)
           .padding(.bottom, 16)
         
+        GabbangzipBottomButton(
+          type: .secondary,
+          title: "초대코드 입력하기",
+          action: { store.send(.inviteCodeButtonTapped) }
+        )
+        .padding(.horizontal, 16)
+        .padding(.bottom, 12)
         
         GabbangzipBottomButton(
           type: .active,
@@ -55,10 +62,10 @@ public struct CreateGroupStartView: View {
 }
 
 #Preview {
-  CreateGroupStartView(
+  GetStartedView(
     store: Store(
       initialState: .init(),
-      reducer: CreateGroupStartCore.init
+      reducer: GetStartedCore.init
     )
   )
 }

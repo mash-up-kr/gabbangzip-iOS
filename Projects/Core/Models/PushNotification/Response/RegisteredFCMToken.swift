@@ -6,16 +6,14 @@
 //  Copyright © 2024 com.mashup.gabbangzip. All rights reserved.
 //
 
-import Foundation
-
 public struct RegisteredFCMToken: Decodable {
-  public let registedToken: String
+  public let registeredToken: String
   
   enum CodingKeys: String, CodingKey {
-    case registedToken = "registed_token"
+    case registeredToken = "registered_token"
   }
 }
 
 extension RegisteredFCMToken {
-  public static let mock = Self(registedToken: "")
+  public static let mock = Self(registeredToken: "")
 }

@@ -35,6 +35,10 @@ public extension View {
   func draggable(isActive: Binding<(Bool, SwipeDirection)>) -> some View {
     self.modifier(DraggableViewModifier(isActive: isActive))
   }
+  
+  func disableSwipeBack() -> some View {
+    self.modifier(DisableSwipeBackModifier())
+  }
 }
 
 fileprivate struct RoundCorners: Shape {

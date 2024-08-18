@@ -17,6 +17,7 @@ public extension DateFormatter {
   static let iso8601: DateFormatter = {
     let formatter = DateFormatter()
     formatter.dateFormat = "yyyy-MM-dd'T'HH:mm:ss.SSS"
+    //formatter.dateFormat = "yyyy-MM-dd'T'HH:mm:ss.SSS'Z'"
     formatter.calendar = Calendar(identifier: .iso8601)
     formatter.timeZone = TimeZone(abbreviation: "KST")
     formatter.locale = Locale(identifier: "ko_KR")
@@ -51,6 +52,12 @@ public extension DateFormatter {
   static let deadline: DateFormatter = {
     let formatter = DateFormatter()
     formatter.dateFormat = "M월 d일 EEEE H시 m분"
+    return formatter
+  }()
+
+  static let createEvent: DateFormatter = {
+    let formatter = DateFormatter()
+    formatter.dateFormat = "YY/MM/dd"
     return formatter
   }()
 }

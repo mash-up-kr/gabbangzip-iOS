@@ -20,6 +20,7 @@ public struct JoinGroupCore {
     @Shared var userInfo: UserInfo
     var text: String
     var toastPresented: Bool
+    var isFromGetStarted: Bool
     var nextButtonType: ButtonType {
       text.isEmpty ? .inactive : .active
     }
@@ -27,11 +28,13 @@ public struct JoinGroupCore {
     public init(
       userInfo: @autoclosure () -> UserInfo = .defaultValue,
       text: String = "",
-      toastPresented: Bool = false
+      toastPresented: Bool = false,
+      isFromGetStarted: Bool
     ) {
       self._userInfo = Shared(wrappedValue: userInfo(), .inMemory("userInfo"))
       self.text = text
       self.toastPresented = toastPresented
+      self.isFromGetStarted = isFromGetStarted
     }
   }
   
@@ -47,7 +50,9 @@ public struct JoinGroupCore {
     case joinGroupResponse(Result<GroupID, Error>)
     
     // Route Action
-    case backToGroupList
+    case backToHome
+    case backToGetStarted
+    case goToHome
   }
   
   @Dependency(\.groupAPIClient) var groupAPIClient
@@ -56,7 +61,7 @@ public struct JoinGroupCore {
     Reduce { state, action in
       switch action {
       case .backButtonTapped:
-        return .send(.backToGroupList)
+        return .send(state.isFromGetStarted ? .backToGetStarted : .backToHome)
         
       case let .textChanged(text):
         state.text = text
@@ -74,7 +79,7 @@ public struct JoinGroupCore {
         return .none
         
       case .joinGroupResponse(.success):
-        return .send(.backToGroupList)
+        return .send(state.isFromGetStarted ? .goToHome : .backToHome)
         
       case let .joinGroupResponse(.failure(error)):
         return .run { send in
@@ -82,7 +87,13 @@ public struct JoinGroupCore {
           logger.error(error.localizedDescription)
         }
         
-      case .backToGroupList:
+      case .backToHome:
+        return .none
+        
+      case .backToGetStarted:
+        return .none
+        
+      case .goToHome:
         return .none
       }
     }

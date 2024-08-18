@@ -81,7 +81,7 @@ public struct GroupDetailCore {
       showSheet: Bool = true,
       selectedPhotosInfo: [PhotoInfo] = [],
       isToastPresented: Bool = false,
-      toastType: ToastType = .onlyText(""),
+      toastType: ToastType = .onlyText("다시 시도해주세요."),
       s3BucketDomain: String = "",
       showActivityView: Bool = false,
       capturedImage: UIImage? = nil,
@@ -174,8 +174,8 @@ public struct GroupDetailCore {
           return .run { [state] send in
             await send(.postKook(Result {
               try await self.pushAPIClienet.kook(
-                accessToken: state.userInfo.accessToken,
-                eventID: state.groupDetail?.recentEventDetail.id ?? 0
+                state.userInfo.accessToken,
+                state.groupDetail?.recentEventDetail.id ?? 0
               )
             }))
           }
@@ -199,7 +199,11 @@ public struct GroupDetailCore {
         }
         
       case let .historyViewTapped(history):
-        return .send(GroupDetailCore.Action.moveToHistoryDetail(history, state.groupDetail?.keyword, state.s3BucketDomain))
+        return .send(GroupDetailCore.Action.moveToHistoryDetail(
+          history,
+          state.groupDetail?.keyword,
+          state.s3BucketDomain
+        ))
         
       case .shareButtonTapped:
         state.showActivityView = true
@@ -222,8 +226,8 @@ public struct GroupDetailCore {
             operation: { [state] send in
               await send(.putEventVisit(Result {
                 try await self.eventAPIClient.putEventVisit(
-                  accessToken: state.userInfo.accessToken,
-                  eventID: state.groupDetail?.recentEventDetail.id ?? -1
+                  state.userInfo.accessToken,
+                  state.groupDetail?.recentEventDetail.id ?? -1
                 )
               }))
             }
@@ -233,9 +237,14 @@ public struct GroupDetailCore {
         }
         
       case .getGroupDetailResponse(.failure):
+        state.isToastPresented = true
         return .none
         
-      case .putEventVisit:
+      case .putEventVisit(.success):
+        return .none
+        
+      case .putEventVisit(.failure):
+        state.isToastPresented = true
         return .none
         
       case .postKook(.success):

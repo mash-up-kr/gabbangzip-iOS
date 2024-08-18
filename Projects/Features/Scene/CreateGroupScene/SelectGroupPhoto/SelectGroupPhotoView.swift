@@ -75,7 +75,9 @@ extension SelectGroupPhotoView {
     for keyword: GroupData.Keyword,
     selectedPhotosInfo: [PhotoInfo]
   ) -> some View {
-    let galleryIcon = selectedPhotosInfo.isEmpty ? DesignSystem.Icons.galleryPlusBlack : DesignSystem.Icons.galleryWhite
+    let galleryIcon = selectedPhotosInfo.isEmpty 
+    ? DesignSystem.Icons.galleryPlusBlack
+    : DesignSystem.Icons.galleryWhite
     
     return keyword.frame
       .resizable()
@@ -105,7 +107,7 @@ extension SelectGroupPhotoView {
 #Preview {
   SelectGroupPhotoView(
     store: Store(
-      initialState: .init(groupName: "그룹명열글자입니다요", keyword: .school),
+      initialState: .init(groupName: "그룹명열글자입니다요", keyword: .school, isFromGetStarted: true),
       reducer: SelectGroupPhotoCore.init
     )
   )

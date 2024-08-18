@@ -1,21 +1,22 @@
 //
-//  GroupListView.swift
+//  HomeView.swift
 //  Main
 //
 //  Created by YangJoonHyeok on 7/2/24.
 //  Copyright © 2024 com.mashup.gabbangzip. All rights reserved.
 //
 
+import Common
 import ComposableArchitecture
 import DesignSystem
 import Models
 import NukeUI
 import SwiftUI
 
-public struct GroupListView: View {
-  @Bindable var store: StoreOf<GroupListCore>
+public struct HomeView: View {
+  @Bindable var store: StoreOf<HomeCore>
 
-  public init(store: StoreOf<GroupListCore>) {
+  public init(store: StoreOf<HomeCore>) {
     self.store = store
   }
 
@@ -35,6 +36,7 @@ public struct GroupListView: View {
       }
     }
     .background(DesignSystem.Colors.gray0)
+    .disableSwipeBack()
     .onAppear { store.send(.onAppear) }
     .toast(
       isPresented: $store.toastPresented.sending(\.toastPresentedChanged),
@@ -61,10 +63,10 @@ public struct GroupListView: View {
 }
 
 #Preview {
-  GroupListView(
+  HomeView(
     store: Store(
       initialState: .init(),
-      reducer: GroupListCore.init
+      reducer: HomeCore.init
     )
   )
 }

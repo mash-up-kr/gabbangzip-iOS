@@ -22,8 +22,6 @@ public struct CreateGroupCoordinatorView: View {
     TCARouter(store.scope(state: \.routes, action: \.router)) { screen in
       Group {
         switch screen.case {
-        case let .createGroupStart(store):
-          CreateGroupStartView(store: store)
         case let .setGroupName(store):
           SetGroupNameView(store: store)
         case let .selectKeyword(store):
