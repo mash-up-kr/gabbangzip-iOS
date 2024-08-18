@@ -76,7 +76,8 @@ public struct SelectGroupPhotoCore {
                 Result {
                   try await self.fileUploadAPIClient.getUploadURL(
                     state.userInfo.accessToken,
-                    photoInfo.fileExtension)
+                    photoInfo.fileExtension
+                  )
                 }, photoInfo
               )
             )
