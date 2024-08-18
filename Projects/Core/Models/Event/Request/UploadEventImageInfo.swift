@@ -8,18 +8,18 @@
 
 public struct UploadEventImageInfo: Encodable {
   public let eventID: Int
-  public let imageURL: [String]
+  public let imageURLs: [String]
   
   public init(
     eventID: Int,
-    imageURL: [String]
+    imageURLs: [String]
   ) {
     self.eventID = eventID
-    self.imageURL = imageURL
+    self.imageURLs = imageURLs
   }
   
   enum CodingKeys: String, CodingKey {
     case eventID = "event_id"
-    case imageURL = "image_urls"
+    case imageURLs = "image_urls"
   }
 }
