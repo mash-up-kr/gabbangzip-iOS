@@ -149,7 +149,8 @@ private struct VoteButtonView: View {
         isFirstVoteDone: false,
         isNeedGuideView: true,
         isVoteButtonDisabled: false,
-        guideTypes: [GuideType.vote, GuideType.pass]
+        guideTypes: [GuideType.vote, GuideType.pass],
+        isFromMain: false
       ),
       reducer: VoteCore.init
     )

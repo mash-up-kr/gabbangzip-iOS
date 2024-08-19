@@ -66,7 +66,7 @@ public struct HomeCore {
     case moveToJoinGroup
     case moveToGroupDetail(Int)
     case moveToCreateEvent(Int)
-    case moveToVote
+    case moveToVote(Int)
   }
   
   @Dependency(\.groupAPIClient) var groupAPIClient
@@ -179,8 +179,8 @@ public struct HomeCore {
             await send(.fetchGroups)
           case .imageUploadFailed:
             await send(.showToastMessage(.textWithInfoIcon("이미지 업로드 실패!")))
-          case .selectPICButtonTapped:
-            await send(.moveToVote)
+          case let .selectPICButtonTapped(eventID):
+            await send(.moveToVote(eventID))
           }
         }
         

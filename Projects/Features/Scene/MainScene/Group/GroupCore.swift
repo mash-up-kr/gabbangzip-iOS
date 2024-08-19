@@ -100,7 +100,7 @@ public struct GroupCore {
       case stabbingFailed
       case imageUploadSuccessed
       case imageUploadFailed
-      case selectPICButtonTapped
+      case selectPICButtonTapped(Int)
     }
   }
   
@@ -130,7 +130,7 @@ public struct GroupCore {
         }
         
       case .selectPICButtonTapped:
-        return .send(.delegate(.selectPICButtonTapped))
+        return .send(.delegate(.selectPICButtonTapped(state.recentEvent.id)))
         
       case let .selectedPhotosInfo(photosInfo):
         return .run { [state] send in

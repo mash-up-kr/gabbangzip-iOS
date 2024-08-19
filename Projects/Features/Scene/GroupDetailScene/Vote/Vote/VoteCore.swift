@@ -37,6 +37,7 @@ public struct VoteCore {
     var isVoteButtonDisabled: Bool
     var guideTypes: [GuideType]
     var s3BucketDomain: String
+    var isFromMain: Bool
     
     public init(
       userInfo: @autoclosure () -> UserInfo = .defaultValue,
@@ -54,7 +55,8 @@ public struct VoteCore {
       isNeedGuideView: Bool = false,
       isVoteButtonDisabled: Bool = false,
       guideTypes: [GuideType] = [.pass, .vote],
-      s3BucketDomain: String = ""
+      s3BucketDomain: String = "",
+      isFromMain: Bool
     ) {
       self._userInfo = Shared(wrappedValue: userInfo(), .inMemory("userInfo"))
       self.voteButtonState = voteButtonState
@@ -72,6 +74,7 @@ public struct VoteCore {
       self.isVoteButtonDisabled = isVoteButtonDisabled
       self.guideTypes = guideTypes
       self.s3BucketDomain = s3BucketDomain
+      self.isFromMain = isFromMain
     }
   }
 
@@ -103,8 +106,9 @@ public struct VoteCore {
     case setS3BucketDomain(String)
     
     // Route Action
-    case dismissVoteView
-    case moveToVoteComplete(VoteCompleteInfo)
+    case backToMainView
+    case backToGroupDetailView
+    case moveToVoteComplete(VoteCompleteInfo, Bool)
   }
   
   @Dependency(\.mainQueue) var mainQueue
@@ -171,7 +175,11 @@ public struct VoteCore {
         return .none
         
       case .popupLeftButtonTapped:
-        return .send(.dismissVoteView)
+        if state.isFromMain {
+          return .send(.backToMainView)
+        } else {
+          return .send(.backToGroupDetailView)
+        }
         
       case .popupRightButtonTapped:
         state.isPopupPresented = false
@@ -202,7 +210,7 @@ public struct VoteCore {
             userDefaultClient.set(.isFirstVoteDone, true)
           }
           
-          await send(.moveToVoteComplete(voteResult))
+          await send(.moveToVoteComplete(voteResult, state.isFromMain))
         }
         
       case .postVoteResult(.failure):
@@ -265,7 +273,7 @@ public struct VoteCore {
         state.s3BucketDomain = s3BucketDomain
         return .none
         
-      case .dismissVoteView:
+      case .backToMainView, .backToGroupDetailView:
         return .none
         
       case .moveToVoteComplete:
