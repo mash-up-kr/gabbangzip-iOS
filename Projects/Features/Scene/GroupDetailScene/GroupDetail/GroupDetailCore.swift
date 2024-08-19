@@ -23,6 +23,8 @@ public struct GroupDetailCore {
     var groupDetail: GroupDetailInfo?
     var showSheet: Bool
     var selectedPhotosInfo: [PhotoInfo]
+    var selectedImageURLs: [String]
+    var isImageUploaded: Bool
     var isToastPresented: Bool
     var toastType: ToastType
     var s3BucketDomain: String
@@ -73,6 +75,10 @@ public struct GroupDetailCore {
       return s3BucketDomain + (groupDetail?.cardFrontImageURL ?? "")
     }
     
+    var isAllPhotoAdded: Bool {
+      return selectedPhotosInfo.count == 4
+    }
+    
     @Shared var userInfo: UserInfo
 
     public init(
@@ -85,6 +91,8 @@ public struct GroupDetailCore {
       s3BucketDomain: String = "",
       showActivityView: Bool = false,
       capturedImage: UIImage? = nil,
+      selectedImageURLs: [String] = [],
+      isImageUploaded: Bool = false,
       userInfo: @autoclosure () -> UserInfo = .defaultValue
     ) {
       self.groupID = groupID
@@ -96,6 +104,8 @@ public struct GroupDetailCore {
       self.s3BucketDomain = s3BucketDomain
       self.showActivityView = showActivityView
       self.capturedImage = capturedImage
+      self.selectedImageURLs = selectedImageURLs
+      self.isImageUploaded = isImageUploaded
       self._userInfo = Shared(wrappedValue: userInfo(), .inMemory("userInfo"))
     }
   }
@@ -125,9 +135,10 @@ public struct GroupDetailCore {
     case putEventVisit(Result<EventVisitInfo, Error>)
     case postKook(Result<KookInfo, Error>)
     case getUploadURLResponse(Result<FileUploadInfo, Error>, PhotoInfo)
-    case uploadFileToPresignedURLResponse(Result<Void, Error>, FileUploadInfo)
+    case uploadFileToPresignedURLResponse(Result<Void, Error>)
     case uploadImageURL(Result<ImageUploadInfo, Error>)
     case showToast(DetailToastType)
+    case checkAllPhotoAdded
 
     // Route Action
     case backToHome
@@ -184,19 +195,11 @@ public struct GroupDetailCore {
         }
         
       case let .selectedPhotos(photosInfo):
-        return .run { [state] send in
-          if let firstPhotoInfo = photosInfo[safe: 0] {
-            await send(.getUploadURLResponse(
-              Result {
-                try await self.fileUploadAPIClient.getUploadURL(
-                  state.userInfo.accessToken,
-                  firstPhotoInfo.fileExtension
-                )
-              },
-              firstPhotoInfo)
-            )
-          }
+        if let firstPhotoInfo = photosInfo.first {
+          state.selectedPhotosInfo.append(firstPhotoInfo)
         }
+        
+        return .send(.checkAllPhotoAdded)
         
       case let .historyViewTapped(history):
         return .send(GroupDetailCore.Action.moveToHistoryDetail(
@@ -254,33 +257,38 @@ public struct GroupDetailCore {
         return .send(.showToast(.kookFail))
         
       case let .getUploadURLResponse(.success(fileUploadInfo), photoInfo):
-        return .run(
-          operation: { send in
-            await send(.uploadFileToPresignedURLResponse(Result {
-              try await self.fileUploadAPIClient.uploadFile(
-                uploadURL: fileUploadInfo.uploadURL,
-                data: photoInfo.data,
-                fileExtension: photoInfo.fileExtension
-              )
-            }, fileUploadInfo))
-          }
-        )
-        
-      case .getUploadURLResponse(.failure, _):
-        return .send(.showToast(.imageUploadFail))
-        
-      case let .uploadFileToPresignedURLResponse(.success, fileUploadInfo):
-        return .run { [state] send in
-          await send(.uploadImageURL(Result {
-            try await self.eventAPIClient.postImages(
-              accessToken: state.userInfo.accessToken,
-              eventID: state.groupDetail?.recentEventDetail.id ?? 0,
-              imageURLs: [fileUploadInfo.fileID]
+        state.selectedImageURLs.append(fileUploadInfo.fileID)
+        return .run { send in
+          await send(.uploadFileToPresignedURLResponse(Result {
+            try await self.fileUploadAPIClient.uploadFile(
+              uploadURL: fileUploadInfo.uploadURL,
+              data: photoInfo.data,
+              fileExtension: photoInfo.fileExtension
             )
           }))
         }
         
-      case .uploadFileToPresignedURLResponse(.failure, _):
+      case .getUploadURLResponse(.failure, _):
+        return .send(.showToast(.imageUploadFail))
+        
+      case .uploadFileToPresignedURLResponse(.success):
+        if !state.isImageUploaded {
+          state.isImageUploaded = true
+          
+          return .run { [state] send in
+            await send(.uploadImageURL(Result {
+              try await self.eventAPIClient.postImages(
+                accessToken: state.userInfo.accessToken,
+                eventID: state.groupDetail?.recentEventDetail.id ?? 0,
+                imageURLs: state.selectedImageURLs
+              )
+            }))
+          }
+        } else {
+          return .none
+        }
+        
+      case .uploadFileToPresignedURLResponse(.failure):
         return .send(.showToast(.imageUploadFail))
         
       case .uploadImageURL(.success):
@@ -292,6 +300,30 @@ public struct GroupDetailCore {
       case let .showToast(detailToastType):
         state.isToastPresented = true
         state.toastType = detailToastType.type
+        return .none
+        
+      case .checkAllPhotoAdded:
+        if state.isAllPhotoAdded {
+          return .run { [state] send in
+            await withTaskGroup(of: Void.self) { taskGroup in
+              
+              for photo in state.selectedPhotosInfo {
+                taskGroup.addTask {
+                  await send(.getUploadURLResponse(
+                    Result {
+                      let result = try await self.fileUploadAPIClient.getUploadURL(
+                        accessToken: state.userInfo.accessToken,
+                        fileExtension: photo.fileExtension
+                      )
+                      return result
+                    }
+                    , photo))
+                }
+              }
+            }
+            
+          }
+        }
         return .none
         
       // Route Action
