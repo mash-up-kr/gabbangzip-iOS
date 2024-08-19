@@ -31,14 +31,14 @@ public struct EventCompletedView: View {
       completedImage
       .padding(.horizontal, 41.5)
       .padding(.vertical, 16)
-      
-      ShareButton(action: {
-        captureView(of: completedImage) { capturedImage in
-          store.send(.imageCaptured(capturedImage))
-          store.send(.shareButtonTapped)
-        }
-      })
-        .padding(.bottom, 32)
+//      TODO: 공유하기 이미지 캡쳐 추후 확인 필요
+//      ShareButton(action: {
+//        captureView(of: completedImage) { capturedImage in
+//          store.send(.imageCaptured(capturedImage))
+//          store.send(.shareButtonTapped)
+//        }
+//      })
+      .padding(.bottom, 32)
     }
   }
   
