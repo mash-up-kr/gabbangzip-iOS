@@ -272,7 +272,7 @@ public struct GroupDetailCore {
         return .send(.showToast(.imageUploadFail))
         
       case .uploadFileToPresignedURLResponse(.success):
-        if !state.isImageUploaded {
+        if !state.isImageUploaded && state.selectedImageURLs.count == 4 {
           state.isImageUploaded = true
           
           return .run { [state] send in
