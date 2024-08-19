@@ -23,11 +23,19 @@ public struct GroupView: View {
   public var body: some View {
     VStack(spacing: 16) {
       if store.hasNoEvent {
-        GroupHeaderView(title: "이벤트를 만들어 보세요!", isButtonStyle: false)
+        GroupHeaderView(
+          title: store.name,
+          isButtonStyle: false
+        )
       } else {
         Button(
           action: { store.send(.headerButtonTapped) },
-          label: { GroupHeaderView(title: store.name, isButtonStyle: true) }
+          label: {
+            GroupHeaderView(
+              title: store.name,
+              isButtonStyle: true
+            )
+          }
         )
       }
 
