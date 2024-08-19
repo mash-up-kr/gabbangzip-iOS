@@ -57,6 +57,12 @@ public struct GroupView: View {
           .padding(.top, 8)
       }
     }
+    .photosPicker(
+      isPresented: $store.photosPickerPresented.sending(\.photosPickerPresentedChanged),
+      selection: $store.selectedPickerItems.sending(\.selectedPickerItemsChanged),
+      maxSelectionCount: 4,
+      matching: .images
+    )
   }
 }
 

@@ -10,6 +10,7 @@ import Common
 import ComposableArchitecture
 import DesignSystem
 import Models
+import _PhotosUI_SwiftUI
 
 @Reducer
 public struct GroupCore {
@@ -31,6 +32,8 @@ public struct GroupCore {
     var selectedPhotosInfo: [PhotoInfo]
     var selectedImageURLs: [String]
     var stabbingButtonType: SmallButtonType
+    var photosPickerPresented: Bool
+    var selectedPickerItems: [PhotosPickerItem]
     var hasNoEvent: Bool {
       return status == .noPastAndCurrentEvent
     }
@@ -67,7 +70,9 @@ public struct GroupCore {
       s3BucketDomain: String = "",
       selectedPhotosInfo: [PhotoInfo] = [],
       selectedImageURLs: [String] = [],
-      stabbingButtonType: SmallButtonType = .active
+      stabbingButtonType: SmallButtonType = .active,
+      photosPickerPresented: Bool = false,
+      selectedPickerItems: [PhotosPickerItem] = []
     ) {
       self._userInfo = userInfo
       self.id = id
@@ -83,6 +88,8 @@ public struct GroupCore {
       self.selectedPhotosInfo = selectedPhotosInfo
       self.selectedImageURLs = selectedImageURLs
       self.stabbingButtonType = stabbingButtonType
+      self.photosPickerPresented = photosPickerPresented
+      self.selectedPickerItems = selectedPickerItems
     }
   }
 
@@ -95,14 +102,12 @@ public struct GroupCore {
     case createEventButtonTapped
     case stabbingButtonTapped
     case selectPICButtonTapped
-    case selectedPhotosInfo([PhotoInfo])
+    case galleryButtonTapped
+    case photosPickerPresentedChanged(Bool)
+    case selectedPickerItemsChanged([PhotosPickerItem])
     
     // Internal Action
     case kookResponse(Result<KookInfo, Error>)
-    case getUploadURLResponse(Result<FileUploadInfo, Error>, PhotoInfo)
-    case uploadFileToPresignedURLResponse(Result<Void, Error>)
-    case checkAllPhotoAdded
-    case uploadImageURL(Result<ImageUploadInfo, Error>)
     
     public enum Delegate {
       case headerButtonTapped(Int)
@@ -144,12 +149,83 @@ public struct GroupCore {
       case .selectPICButtonTapped:
         return .send(.delegate(.selectPICButtonTapped(state.recentEvent.id)))
         
-      case let .selectedPhotosInfo(photosInfo):
-        if let firstPhotoInfo = photosInfo.first {
-          state.selectedPhotosInfo.append(firstPhotoInfo)
-        }
+      case .galleryButtonTapped:
+        state.photosPickerPresented = true
+        return .none
         
-        return .send(.checkAllPhotoAdded)
+      case let .photosPickerPresentedChanged(value):
+        state.photosPickerPresented = value
+        return .none
+        
+      case let .selectedPickerItemsChanged(value):
+        return .run(
+          operation: { [state] send in
+            if !value.isEmpty {
+              var selectedPhotosInfo: [PhotoInfo] = []
+              var selectedImageURLs: [String] = []
+              
+              try await withThrowingTaskGroup(of: PhotoInfo.self) { group in
+                for photo in value {
+                  group.addTask {
+                    async let dataResult = photo.loadTransferable(type: Data.self)
+                    async let urlResult = photo.loadTransferable(type: DataURL.self)
+                    
+                    let (data, dataUrl) = try await (dataResult, urlResult)
+                    
+                    guard let imageData = data, let dataUrl = dataUrl else {
+                      throw NSError(
+                        domain: "PhotoPickerError",
+                        code: 0,
+                        userInfo: [NSLocalizedDescriptionKey: "Failed to load image data or URL"]
+                      )
+                    }
+                    
+                    return PhotoInfo(data: imageData, url: dataUrl.url)
+                  }
+                }
+                
+                for try await selectedPhotoInfo in group {
+                  selectedPhotosInfo.append(selectedPhotoInfo)
+                }
+              }
+              
+              try await withThrowingTaskGroup(of: String.self) { group in
+                for selectedPhoto in selectedPhotosInfo {
+                  group.addTask {
+                    let fileUploadInfo = try await self.fileUploadAPIClient.getUploadURL(
+                      accessToken: state.userInfo.accessToken,
+                      fileExtension: selectedPhoto.fileExtension
+                    )
+                    
+                    try await self.fileUploadAPIClient.uploadFile(
+                      uploadURL: fileUploadInfo.uploadURL,
+                      data: selectedPhoto.data,
+                      fileExtension: selectedPhoto.fileExtension
+                    )
+                    
+                    return fileUploadInfo.fileID
+                  }
+                }
+                
+                for try await fileID in group {
+                  selectedImageURLs.append(fileID)
+                }
+              }
+              
+              _ = try await self.eventAPIClient.postImages(
+                accessToken: state.userInfo.accessToken,
+                eventID: state.recentEvent.id,
+                imageURLs: selectedImageURLs
+              )
+              
+              await send(.delegate(.imageUploadSuccessed))
+            }
+          },
+          catch: { error, send in
+            logger.error(error.localizedDescription)
+            await send(.delegate(.imageUploadFailed))
+          }
+        )
         
       case .kookResponse(.success):
         state.stabbingButtonType = .inactive
@@ -159,82 +235,6 @@ public struct GroupCore {
         return .run { send in
           logger.error(error.localizedDescription)
           await send(.delegate(.stabbingFailed))
-        }
-        
-      case let .getUploadURLResponse(.success(fileUploadInfo), photoInfo):
-        state.selectedImageURLs.append(fileUploadInfo.fileID)
-        return .run { send in
-          await send(
-            .uploadFileToPresignedURLResponse(
-              Result {
-                try await self.fileUploadAPIClient.uploadFile(
-                  uploadURL: fileUploadInfo.uploadURL,
-                  data: photoInfo.data,
-                  fileExtension: photoInfo.fileExtension
-                )
-              }
-            )
-          )
-        }
-        
-      case let .getUploadURLResponse(.failure(error), _):
-        return .run { send in
-          logger.error(error.localizedDescription)
-          await send(.delegate(.imageUploadFailed))
-        }
-        
-      case .uploadFileToPresignedURLResponse(.success):
-          return .run { [state] send in
-            if state.isAllPhotoUploaded {
-            await send(.uploadImageURL(Result {
-              try await self.eventAPIClient.postImages(
-                accessToken: state.userInfo.accessToken,
-                eventID: state.recentEvent.id,
-                imageURLs: state.selectedImageURLs
-              )
-            }))
-          }
-        }
-        
-      case let .uploadFileToPresignedURLResponse(.failure(error)):
-        return .run { send in
-          logger.error(error.localizedDescription)
-          await send(.delegate(.imageUploadFailed))
-        }
-        
-      case .checkAllPhotoAdded:
-        if state.isAllPhotoAdded {
-          return .run { [state] send in
-            await withTaskGroup(of: Void.self) { taskGroup in
-              
-              for photo in state.selectedPhotosInfo {
-                taskGroup.addTask {
-                  await send(.getUploadURLResponse(
-                    Result {
-                      let result = try await self.fileUploadAPIClient.getUploadURL(
-                        accessToken: state.userInfo.accessToken,
-                        fileExtension: photo.fileExtension
-                      )
-                      return result
-                    }
-                    , photo))
-                }
-              }
-            }
-            
-          }
-        }
-        return .none
-        
-      case .uploadImageURL(.success):
-        return .run { send in
-          await send(.delegate(.imageUploadSuccessed))
-        }
-        
-      case let .uploadImageURL(.failure(error)):
-        return .run { send in
-          logger.error(error.localizedDescription)
-          await send(.delegate(.imageUploadFailed))
         }
       }
     }
