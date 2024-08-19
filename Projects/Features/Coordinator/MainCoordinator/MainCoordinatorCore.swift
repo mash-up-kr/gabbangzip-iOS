@@ -68,6 +68,9 @@ public struct MainCoordinatorCore {
       case let .router(.routeAction(id: _, action: .home(.moveToVote(eventID)))):
         state.routes.push(.groupDetailCoordinator(.init(routes: [.root(.vote(.init(eventID: eventID, isFromMain: true)))])))
         
+      case let .router(.routeAction(id: _, action: .groupDetailCoordinator(.router(.routeAction(id: _, action: .vote(.moveToVoteCompleteFromMain(voteCompleteInfo, isFromMain))))))):
+        state.routes.push(.groupDetailCoordinator(.init(routes: [.root(.voteComplete(.init(voteResult: voteCompleteInfo, isFromMain: isFromMain)))])))
+        
       case let .router(.routeAction(id: _, action: .home(.moveToGroupDetail(groupID)))):
         state.routes.push(.groupDetailCoordinator(.init(routes: [.root(.groupDetail(.init(groupID: groupID)))])))
 
@@ -75,7 +78,7 @@ public struct MainCoordinatorCore {
         state.routes.pop()
         
       case .router(.routeAction(id: _, action: .groupDetailCoordinator(.router(.routeAction(id: _, action: .voteComplete(.backToMain)))))):
-        state.routes.popToRoot()
+        state.routes.pop(2)
         
       case .router(.routeAction(id: _, action: .groupDetailCoordinator(.router(.routeAction(id: _, action: .groupDetail(.backToHome)))))):
         state.routes.pop()

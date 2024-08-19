@@ -108,7 +108,8 @@ public struct VoteCore {
     // Route Action
     case backToMainView
     case backToGroupDetailView
-    case moveToVoteComplete(VoteCompleteInfo, Bool)
+    case moveToVoteCompleteFromMain(VoteCompleteInfo, Bool)
+    case moveToVoteCompleteFromDetail(VoteCompleteInfo, Bool)
   }
   
   @Dependency(\.mainQueue) var mainQueue
@@ -210,7 +211,11 @@ public struct VoteCore {
             userDefaultClient.set(.isFirstVoteDone, true)
           }
           
-          await send(.moveToVoteComplete(voteResult, state.isFromMain))
+          if state.isFromMain {
+            await send(.moveToVoteCompleteFromMain(voteResult, state.isFromMain))
+          } else {
+            await send(.moveToVoteCompleteFromDetail(voteResult, state.isFromMain))
+          }
         }
         
       case .postVoteResult(.failure):
@@ -276,7 +281,7 @@ public struct VoteCore {
       case .backToMainView, .backToGroupDetailView:
         return .none
         
-      case .moveToVoteComplete:
+      case .moveToVoteCompleteFromMain, .moveToVoteCompleteFromDetail:
         return .none
       }
     }

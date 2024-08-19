@@ -47,7 +47,7 @@ public struct GroupDetailCoordinatorCore {
       case .router(.routeAction(id: _, action: .vote(.backToGroupDetailView))):
         state.routes.pop()
         
-      case let .router(.routeAction(id: _, action: .vote(.moveToVoteComplete(voteCompleteInfo, isFromMain)))):
+      case let .router(.routeAction(id: _, action: .vote(.moveToVoteCompleteFromDetail(voteCompleteInfo, isFromMain)))):
         state.routes.push(.voteComplete(.init(voteResult: voteCompleteInfo, isFromMain: isFromMain)))
         
       case .router(.routeAction(id: _, action: .voteComplete(.backToGroupDetail))):
