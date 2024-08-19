@@ -354,14 +354,10 @@ extension GroupDetailCore {
       switch self {
       case .imageUploadSuccess:
         return .textWithCheckIcon("내 PIC 올리기 완료!")
-      case .imageUploadFail:
-        // TODO: 디자이너와 문구 협의 필요
-        return .textWithInfoIcon("내 PIC 올리기 실패 :(")
+      case .imageUploadFail, .kookFail:
+        return .textWithInfoIcon("잠시 후 다시 시도해 주세요")
       case .kookSuccess:
         return .onlyText("그룹원들을 쿡 찔렀어요!")
-      case .kookFail:
-        // TODO: 디자이너와 문구 협의 필요
-        return .onlyText("그룹원들을 쿡 찌르는데 실패했어요 :(")
       }
     }
   }
