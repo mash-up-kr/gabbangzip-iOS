@@ -8,10 +8,10 @@
 
 import SwiftUI
 
-struct DataURL: Transferable {
-  let url: URL
+public struct DataURL: Transferable {
+  public let url: URL
   
-  static var transferRepresentation: some TransferRepresentation {
+  public static var transferRepresentation: some TransferRepresentation {
     FileRepresentation(
       contentType: .data,
       exporting: { data in
