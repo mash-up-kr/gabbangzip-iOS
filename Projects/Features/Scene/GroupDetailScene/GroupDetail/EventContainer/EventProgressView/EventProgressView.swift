@@ -55,18 +55,12 @@ struct EventProgressView: View {
         .padding(.init(top: 24, leading: 0, bottom: 8, trailing: 0))
       
       if store.groupDetail?.status == .beforeMyUpload {
-        GabbangzipPhotoPicker(
-          selectedPhotosInfo: $store.selectedPhotosInfo.sending(\.selectedPhotos),
-          isPresentedError: .constant(false),
-          maxSelectedCount: .custom(4)) {
-            SmallButton(
-              type: .active,
-              smallButtonContentType: .uploadPIC
-            ) {
-              action()
-            }
-            .disabled(true)
-          }
+        SmallButton(
+          type: .active,
+          smallButtonContentType: .uploadPIC
+        ) {
+          store.send(.galleryButtonTapped)
+        }
       } else {
         SmallButton(
           type: .active,

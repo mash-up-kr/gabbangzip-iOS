@@ -6,12 +6,14 @@
 //  Copyright © 2024 com.mashup.gabbangzip. All rights reserved.
 //
 
+import Common
 import ComposableArchitecture
 import DesignSystem
 import Models
 import Services
 import SwiftUI
 import UIKit
+import _PhotosUI_SwiftUI
 
 @Reducer
 public struct GroupDetailCore {
@@ -30,6 +32,9 @@ public struct GroupDetailCore {
     var s3BucketDomain: String
     var showActivityView: Bool
     var capturedImage: UIImage?
+    var photosPickerPresented: Bool
+    var selectedPickerItems: [PhotosPickerItem]
+
     var smallButtonType: SmallButtonContentType {
       if let groupDetail {
         switch groupDetail.status {
@@ -75,10 +80,6 @@ public struct GroupDetailCore {
       return s3BucketDomain + (groupDetail?.cardFrontImageURL ?? "")
     }
     
-    var isAllPhotoAdded: Bool {
-      return selectedPhotosInfo.count == 4
-    }
-    
     @Shared var userInfo: UserInfo
 
     public init(
@@ -93,7 +94,9 @@ public struct GroupDetailCore {
       capturedImage: UIImage? = nil,
       selectedImageURLs: [String] = [],
       isImageUploaded: Bool = false,
-      userInfo: @autoclosure () -> UserInfo = .defaultValue
+      userInfo: @autoclosure () -> UserInfo = .defaultValue,
+      photosPickerPresented: Bool = false,
+      selectedPickerItems: [PhotosPickerItem] = []
     ) {
       self.groupID = groupID
       self.groupDetail = groupDetail
@@ -107,6 +110,8 @@ public struct GroupDetailCore {
       self.selectedImageURLs = selectedImageURLs
       self.isImageUploaded = isImageUploaded
       self._userInfo = Shared(wrappedValue: userInfo(), .inMemory("userInfo"))
+      self.photosPickerPresented = photosPickerPresented
+      self.selectedPickerItems = selectedPickerItems
     }
   }
   
@@ -124,9 +129,9 @@ public struct GroupDetailCore {
     case backButtonTapped
     case memberListButtonTapped
     case eventContainerViewButtonTapped(GroupData.Status)
-    case selectedPhotos([PhotoInfo])
     case historyViewTapped(History)
     case shareButtonTapped
+    case galleryButtonTapped
     case imageCaptured(UIImage?)
 
     // Internal Action
@@ -134,11 +139,9 @@ public struct GroupDetailCore {
     case getGroupDetailResponse(Result<GroupDetailInfo, Error>)
     case putEventVisit(Result<EventVisitInfo, Error>)
     case postKook(Result<KookInfo, Error>)
-    case getUploadURLResponse(Result<FileUploadInfo, Error>, PhotoInfo)
-    case uploadFileToPresignedURLResponse(Result<Void, Error>)
-    case uploadImageURL(Result<ImageUploadInfo, Error>)
     case showToast(DetailToastType)
-    case checkAllPhotoAdded
+    case photosPickerPresentedChanged(Bool)
+    case selectedPickerItemsChanged([PhotosPickerItem])
 
     // Route Action
     case backToHome
@@ -194,13 +197,6 @@ public struct GroupDetailCore {
           return .none
         }
         
-      case let .selectedPhotos(photosInfo):
-        if let firstPhotoInfo = photosInfo.first {
-          state.selectedPhotosInfo.append(firstPhotoInfo)
-        }
-        
-        return .send(.checkAllPhotoAdded)
-        
       case let .historyViewTapped(history):
         return .send(GroupDetailCore.Action.moveToHistoryDetail(
           history,
@@ -210,6 +206,10 @@ public struct GroupDetailCore {
         
       case .shareButtonTapped:
         state.showActivityView = true
+        return .none
+        
+      case .galleryButtonTapped:
+        state.photosPickerPresented = true
         return .none
         
       case let .imageCaptured(image):
@@ -256,76 +256,11 @@ public struct GroupDetailCore {
       case .postKook(.failure):
         return .send(.showToast(.kookFail))
         
-      case let .getUploadURLResponse(.success(fileUploadInfo), photoInfo):
-        state.selectedImageURLs.append(fileUploadInfo.fileID)
-        return .run { send in
-          await send(.uploadFileToPresignedURLResponse(Result {
-            try await self.fileUploadAPIClient.uploadFile(
-              uploadURL: fileUploadInfo.uploadURL,
-              data: photoInfo.data,
-              fileExtension: photoInfo.fileExtension
-            )
-          }))
-        }
-        
-      case .getUploadURLResponse(.failure, _):
-        return .send(.showToast(.imageUploadFail))
-        
-      case .uploadFileToPresignedURLResponse(.success):
-        if !state.isImageUploaded && state.selectedImageURLs.count == 4 {
-          state.isImageUploaded = true
-          
-          return .run { [state] send in
-            await send(.uploadImageURL(Result {
-              try await self.eventAPIClient.postImages(
-                accessToken: state.userInfo.accessToken,
-                eventID: state.groupDetail?.recentEventDetail.id ?? 0,
-                imageURLs: state.selectedImageURLs
-              )
-            }))
-          }
-        } else {
-          return .none
-        }
-        
-      case .uploadFileToPresignedURLResponse(.failure):
-        return .send(.showToast(.imageUploadFail))
-        
-      case .uploadImageURL(.success):
-        return .send(.showToast(.imageUploadSuccess))
-        
-      case .uploadImageURL(.failure):
-        return .send(.showToast(.imageUploadFail))
-        
       case let .showToast(detailToastType):
         state.isToastPresented = true
         state.toastType = detailToastType.type
         return .none
-        
-      case .checkAllPhotoAdded:
-        if state.isAllPhotoAdded {
-          return .run { [state] send in
-            await withTaskGroup(of: Void.self) { taskGroup in
-              
-              for photo in state.selectedPhotosInfo {
-                taskGroup.addTask {
-                  await send(.getUploadURLResponse(
-                    Result {
-                      let result = try await self.fileUploadAPIClient.getUploadURL(
-                        accessToken: state.userInfo.accessToken,
-                        fileExtension: photo.fileExtension
-                      )
-                      return result
-                    }
-                    , photo))
-                }
-              }
-            }
-            
-          }
-        }
-        return .none
-        
+
       // Route Action
       case .backToHome:
         return .none
@@ -338,6 +273,81 @@ public struct GroupDetailCore {
         
       case .moveToHistoryDetail:
         return .none
+        
+      case let .photosPickerPresentedChanged(value):
+        state.photosPickerPresented = value
+        return .none
+        
+      case let .selectedPickerItemsChanged(value):
+        state.selectedPickerItems = value
+        return .run(
+          operation: { [state] send in
+            if !value.isEmpty {
+              var selectedPhotosInfo: [PhotoInfo] = []
+              var selectedImageURLs: [String] = []
+              
+              try await withThrowingTaskGroup(of: PhotoInfo.self) { group in
+                for photo in value {
+                  group.addTask {
+                    async let dataResult = photo.loadTransferable(type: Data.self)
+                    async let urlResult = photo.loadTransferable(type: DataURL.self)
+                    
+                    let (data, dataUrl) = try await (dataResult, urlResult)
+                    
+                    guard let imageData = data, let dataUrl = dataUrl else {
+                      throw NSError(
+                        domain: "PhotoPickerError",
+                        code: 0,
+                        userInfo: [NSLocalizedDescriptionKey: "Failed to load image data or URL"]
+                      )
+                    }
+                    
+                    return PhotoInfo(data: imageData, url: dataUrl.url)
+                  }
+                }
+                
+                for try await selectedPhotoInfo in group {
+                  selectedPhotosInfo.append(selectedPhotoInfo)
+                }
+              }
+              
+              try await withThrowingTaskGroup(of: String.self) { group in
+                for selectedPhoto in selectedPhotosInfo {
+                  group.addTask {
+                    let fileUploadInfo = try await self.fileUploadAPIClient.getUploadURL(
+                      accessToken: state.userInfo.accessToken,
+                      fileExtension: selectedPhoto.fileExtension
+                    )
+                    
+                    try await self.fileUploadAPIClient.uploadFile(
+                      uploadURL: fileUploadInfo.uploadURL,
+                      data: selectedPhoto.data,
+                      fileExtension: selectedPhoto.fileExtension
+                    )
+                    
+                    return fileUploadInfo.fileID
+                  }
+                }
+                
+                for try await fileID in group {
+                  selectedImageURLs.append(fileID)
+                }
+              }
+              
+              _ = try await self.eventAPIClient.postImages(
+                accessToken: state.userInfo.accessToken,
+                eventID: state.groupDetail?.recentEventDetail.id ?? 0,
+                imageURLs: selectedImageURLs
+              )
+              
+              await send(.showToast(.imageUploadSuccess))
+            }
+          },
+          catch: { error, send in
+            logger.error(error.localizedDescription)
+            await send(.showToast(.imageUploadFail))
+          }
+        )
       }
     }
   }

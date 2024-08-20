@@ -70,6 +70,12 @@ public struct GroupDetailView: View {
         }
       )
     }
+    .photosPicker(
+      isPresented: $store.photosPickerPresented.sending(\.photosPickerPresentedChanged),
+      selection: $store.selectedPickerItems.sending(\.selectedPickerItemsChanged),
+      maxSelectionCount: 4,
+      matching: .images
+    )
     .toast(
       isPresented: $store.isToastPresented,
       type: store.toastType,
