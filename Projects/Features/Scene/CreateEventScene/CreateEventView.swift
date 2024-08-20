@@ -152,7 +152,7 @@ fileprivate struct EventPicturePickerView: View {
         HStack(spacing: 0) {
           GabbangzipPhotoPicker(
             selectedPhotosInfo: $store.selectedPhotosInfo.sending(\.selectedImagesChanged),
-            maxSelectedCount: .custom(8),
+            maxSelectedCount: .four,
             matching: .images
           ) { SelectPhoto(selectedPhotosInfo: store.selectedPhotosInfo, maxCount: 4) }
           
