@@ -22,11 +22,13 @@ class GabbangzipAPIClientDelegate: APIClientDelegate {
     let rawData = String(data: data, encoding: .utf8) ?? "Decoding data to string failed"
     
     #if DEBUG
+    logger.debug("------------------------------------------------------------------------")
     logger.debug("\nHTTP Headers❓\n\(task.currentRequest?.allHTTPHeaderFields?.description ?? "No HTTP Headers")\n")
     logger.debug("\nHTTP Method❓\n\(task.currentRequest?.httpMethod?.description ?? "No HTTP Method")\n")
     logger.debug("\nHTTP Body❓\n\(task.currentRequest?.httpBody?.description ?? "No HTTP Body")\n")
     logger.debug("\nURL❓\n\(task.currentRequest?.url?.absoluteString ?? "No URL")\n")
     logger.debug("\nResponse❓\n\(rawData)\n")
+    logger.debug("------------------------------------------------------------------------")
     #endif
     
     switch response.statusCode {

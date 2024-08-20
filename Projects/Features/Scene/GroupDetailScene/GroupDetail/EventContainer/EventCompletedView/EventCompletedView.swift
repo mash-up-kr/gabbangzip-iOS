@@ -31,21 +31,15 @@ public struct EventCompletedView: View {
       completedImage
       .padding(.horizontal, 41.5)
       .padding(.vertical, 16)
-      
-      ShareButton(action: {
-        captureView(of: completedImage) { capturedImage in
-          store.send(.imageCaptured(capturedImage))
-          store.send(.shareButtonTapped)
-        }
-      })
-        .padding(.bottom, 32)
+//      TODO: 공유하기 이미지 캡쳐 추후 확인 필요
+//      ShareButton(action: {
+//        captureView(of: completedImage) { capturedImage in
+//          store.send(.imageCaptured(capturedImage))
+//          store.send(.shareButtonTapped)
+//        }
+//      })
+      .padding(.bottom, 32)
     }
-    .background(
-      ActivityView(
-        isPresented: $store.showActivityView,
-        activityItems: [store.capturedImage]
-      )
-    )
   }
   
   @ViewBuilder
@@ -53,8 +47,8 @@ public struct EventCompletedView: View {
     if let groupDetail = store.groupDetail {
       PhotoCard(status: groupDetail.keyword.convertToPhotoCardStatus()) {
         PhotoCardBackView(
-          recentEventDate: groupDetail.recentEventDetail.date,
-          cardBackImages: groupDetail.cardBackImages,
+          recentEventDate: store.recentEventDateString,
+          cardBackImages: groupDetail.cardBackImages ?? [],
           recentEventName: groupDetail.recentEventDetail.name,
           foregroundColor: groupDetail.keyword.foregroundColor,
           s3BucketDomain: store.s3BucketDomain

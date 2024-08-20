@@ -69,18 +69,10 @@ struct GroupContentView: View {
         if let buttonType = store.status.smallButtonContentType {
           switch store.status {
           case .beforeMyUpload:
-            GabbangzipPhotoPicker(
-              selectedPhotosInfo: $store.selectedPhotosInfo.sending(\.selectedPhotosInfo),
-              maxSelectedCount: .custom(4),
-              matching: .images,
-              content: {
-                SmallButton(
-                  type: .active,
-                  smallButtonContentType: buttonType,
-                  action: {}
-                )
-                .disabled(true)
-              }
+            SmallButton(
+              type: store.stabbingButtonType,
+              smallButtonContentType: buttonType,
+              action: { store.send(.galleryButtonTapped) }
             )
           case .afterMyUpload, .afterMyVote:
             SmallButton(

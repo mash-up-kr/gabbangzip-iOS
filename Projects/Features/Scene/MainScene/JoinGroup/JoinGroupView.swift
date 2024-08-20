@@ -33,7 +33,7 @@ public struct JoinGroupView: View {
       GabbangzipInput(
         text: $store.text.sending(\.textChanged),
         placeholderText: "예) A12B0EHQ",
-        maxLength: 10
+        maxLength: 8
       )
       .padding(.horizontal, 16)
       

@@ -14,62 +14,53 @@ import NukeUI
 import SwiftUI
 
 struct EventProgressView: View {
-  private let groupDetail: GroupDetailInfo
   private var action: () -> Void
   @Bindable var store: StoreOf<GroupDetailCore>
   
   init(
-    groupDetail: GroupDetailInfo,
     action: @escaping () -> Void,
     store: StoreOf<GroupDetailCore>
   ) {
-    self.groupDetail = groupDetail
     self.action = action
     self.store = store
   }
   
   var body: some View {
     VStack(spacing: 0) {
-      Text(groupDetail.recentEventDetail.date)
+      Text(store.recentEventDateString)
         .foregroundStyle(DesignSystem.Colors.gray80)
         .font(.body16)
         .padding(.bottom, 8)
       
-      Text(groupDetail.name)
+      Text(store.recentEventName)
         .foregroundStyle(DesignSystem.Colors.gray80)
         .font(.head20)
         .padding(.bottom, 8)
       
-      Text("\(groupDetail.recentEventDetail.deadline) PIC 종료")
+      Text("\(store.recentEventDeadLineString) PIC 종료")
         .font(.text14)
         .foregroundStyle(DesignSystem.Colors.gray80)
         .padding(.bottom, 16)
       
       PhotoWithFrame(
-        frameShape: groupDetail.keyword.frame,
+        frameShape: store.frame,
         foregroundColor: DesignSystem.Colors.gray20,
-        imageURLString: groupDetail.cardFrontImageURL
+        imageURLString: store.cardFrontImageURLString
       )
       .padding(.horizontal, 76)
       
-      Text(groupDetail.statusDescription)
+      Text(store.statusMessage)
         .font(.caption12)
         .foregroundStyle(DesignSystem.Colors.gray60)
         .padding(.init(top: 24, leading: 0, bottom: 8, trailing: 0))
       
-      if groupDetail.status == .beforeMyUpload {
-        GabbangzipPhotoPicker(
-          selectedPhotosInfo: $store.selectedPhotosInfo,
-          isPresentedError: .constant(false),
-          maxSelectedCount: .custom(4)) {
-            SmallButton(
-              type: .active,
-              smallButtonContentType: .uploadPIC
-            ) {
-              action()
-            }
-            .disabled(true)
-          }
+      if store.groupDetail?.status == .beforeMyUpload {
+        SmallButton(
+          type: .active,
+          smallButtonContentType: .uploadPIC
+        ) {
+          store.send(.galleryButtonTapped)
+        }
       } else {
         SmallButton(
           type: .active,

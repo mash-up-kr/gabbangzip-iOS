@@ -13,7 +13,7 @@ import NukeUI
 import SwiftUI
 
 struct VoteSwipeView: View {
-  var voteOptions: [VoteOptionInfo]
+  var voteOptions: [Option]
   var voteOptionCount: Int
   var swipeDirection: SwipeDirection
   
@@ -98,16 +98,7 @@ private struct CardView: View {
 
 #Preview {
   VoteSwipeView(
-    voteOptions: [
-      .init(
-        optionID: 0,
-        imageURL: "https://t1.daumcdn.net/cafeattach/1YVY7/391cac378245e0d2c7bba59d6efc7692baf88aa6"
-      ),
-      .init(
-        optionID: 1,
-        imageURL: "https://i.namu.wiki/i/hq6niPhkN8EhXuIkCNx32AN614AxXcaxKQ1EnyFaHN41caJM7rPfkfppaGZNlpgmXWPbkD_MGTbmGE4_BOrIBg.webp"
-      )
-    ],
+    voteOptions: [],
     voteOptionCount: 2,
     swipeDirection: .defaultState,
     swipeAction: { _, _ in}

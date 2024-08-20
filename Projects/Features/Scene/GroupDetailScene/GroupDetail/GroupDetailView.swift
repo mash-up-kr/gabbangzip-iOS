@@ -48,20 +48,34 @@ public struct GroupDetailView: View {
     }
     .scrollIndicators(.hidden)
     .background(DesignSystem.Colors.gray20)
-    .sheet(isPresented: $store.showSheet) {
-      HistoryGridView(
-        histories: store.groupDetail?.history,
-        keyword: store.groupDetail?.keyword,
-        s3BucketDomain: store.s3BucketDomain,
-        tapAction: { history in
-          store.send(.historyViewTapped(history))
+    .background(
+      ActivityView(
+        isPresented: $store.showActivityView,
+        activityItems: [store.capturedImage]
+      )
+    )
+    .overlay {
+      CustomBottomSheetView(
+        minHeight: bottomSheetHeight + UIScreen.bottomSafeArea,
+        maxHeight: UIScreen.main.bounds.height - UIScreen.topSafeArea,
+        content: {
+          HistoryGridView(
+            histories: store.groupDetail?.history,
+            keyword: store.groupDetail?.keyword,
+            s3BucketDomain: store.s3BucketDomain,
+            tapAction: { history in
+              store.send(.historyViewTapped(history))
+            }
+          )
         }
       )
-        .presentationDetents([.height(bottomSheetHeight), .large])
-        .interactiveDismissDisabled()
-        .presentationDragIndicator(.hidden)
-        .presentationBackgroundInteraction(.enabled(upThrough: .large))
-     }
+    }
+    .photosPicker(
+      isPresented: $store.photosPickerPresented.sending(\.photosPickerPresentedChanged),
+      selection: $store.selectedPickerItems.sending(\.selectedPickerItemsChanged),
+      maxSelectionCount: 4,
+      matching: .images
+    )
     .toast(
       isPresented: $store.isToastPresented,
       type: store.toastType,

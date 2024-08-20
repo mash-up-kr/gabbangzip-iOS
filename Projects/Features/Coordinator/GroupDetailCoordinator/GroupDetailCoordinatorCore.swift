@@ -36,7 +36,7 @@ public struct GroupDetailCoordinatorCore {
         state.routes.push(.memberList(.init(groupID: groupID)))
         
       case let .router(.routeAction(id: _, action: .groupDetail(.moveToVote(eventID)))):
-        state.routes.presentCover(.vote(.init(eventID: eventID)), embedInNavigationView: true)
+        state.routes.push(.vote(.init(eventID: eventID, isFromMain: false)))
         
       case .router(.routeAction(id: _, action: .historyDetail(.backToGroupDetail))):
         state.routes.pop()
@@ -44,14 +44,14 @@ public struct GroupDetailCoordinatorCore {
       case .router(.routeAction(id: _, action: .memberList(.backToGroupDetail))):
         state.routes.pop()
         
-      case .router(.routeAction(id: _, action: .vote(.dismissVoteView))):
-        state.routes.dismiss()
+      case .router(.routeAction(id: _, action: .vote(.backToGroupDetailView))):
+        state.routes.pop()
         
-      case let .router(.routeAction(id: _, action: .vote(.moveToVoteComplete(voteCompleteInfo)))):
-        state.routes.push(.voteComplete(.init(voteResult: voteCompleteInfo)))
+      case let .router(.routeAction(id: _, action: .vote(.moveToVoteCompleteFromDetail(voteCompleteInfo, isFromMain)))):
+        state.routes.push(.voteComplete(.init(voteResult: voteCompleteInfo, isFromMain: isFromMain)))
         
       case .router(.routeAction(id: _, action: .voteComplete(.backToGroupDetail))):
-        state.routes.dismiss()
+        state.routes.popToRoot()
         
       default:
         break

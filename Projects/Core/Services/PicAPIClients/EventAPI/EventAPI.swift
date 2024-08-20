@@ -13,7 +13,7 @@ import Models
 public enum EventAPI {
   case putEventVisit(accessToken: String, eventID: Int)
   case createEvent(accessToken: String, groupID: Int, description: String, date: String, pictures: [String])
-  case uploadEventImages(accessToken: String, eventID: Int, imageURLs: [String])
+  case postImages(accessToken: String, eventID: Int, imageURLs: [String])
 }
 
 extension EventAPI: RouteType {
@@ -23,7 +23,7 @@ extension EventAPI: RouteType {
       return "/api/v1/events/visit"
     case .createEvent:
       return "/api/v1/events"
-    case .uploadEventImages:
+    case .postImages:
       return "/api/v1/events/images"
     }
   }
@@ -32,14 +32,14 @@ extension EventAPI: RouteType {
     switch self {
     case .putEventVisit:
       return .put
-    case .createEvent, .uploadEventImages:
+    case .createEvent, .postImages:
       return .post
     }
   }
   
   public var query: [(String, String?)]? {
     switch self {
-    case .putEventVisit, .createEvent, .uploadEventImages:
+    case .putEventVisit, .createEvent, .postImages:
       return nil
     }
   }
@@ -59,8 +59,8 @@ extension EventAPI: RouteType {
         pictures: pictures
       )
       return body
-    case let .uploadEventImages(_, eventID, imageURLs):
-      let body = UploadEventImageInfo(
+    case let .postImages(_, eventID, imageURLs):
+      let body: ImageUploadReqDTO = .init(
         eventID: eventID,
         imageURLs: imageURLs
       )
@@ -70,9 +70,9 @@ extension EventAPI: RouteType {
   
   public var headers: [String: String]? {
     switch self {
-    case let .putEventVisit(accessToken: accessToken, eventID: _),
-      let .createEvent(accessToken: accessToken, groupID: _, description: _, date: _, pictures: _),
-      let .uploadEventImages(accessToken: accessToken, eventID: _, imageURLs: _):
+    case let .putEventVisit(accessToken, _),
+      let .createEvent(accessToken, _, _, _, _),
+      let .postImages(accessToken, _, _):
       let headers: [String: String]? = [
         "Authorization": "Bearer \(accessToken)"
       ]

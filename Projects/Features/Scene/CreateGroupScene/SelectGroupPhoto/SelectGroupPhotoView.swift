@@ -34,26 +34,26 @@ public struct SelectGroupPhotoView: View {
         .padding(.horizontal, 16)
         .padding(.vertical, 32)
       
-      GabbangzipPhotoPicker(
-        selectedPhotosInfo: $store.selectedPhotosInfo.sending(\.selectedImagesChanged),
-        isPresentedError: .constant(false),
-        maxSelectedCount: .single,
-        matching: .images
-      ) {
-        PhotoCard(status: store.keyword.convertToPhotoCardStatus()) {
-          VStack(spacing: 0) {
-            Tag(type: store.keyword.tagType)
-            
-            photoInFrame(for: store.keyword, selectedPhotosInfo: store.selectedPhotosInfo)
-              .padding(.init(top: 24, leading: 30, bottom: 26, trailing: 30))
-            
-            Text(store.groupName)
-              .font(.head20)
-              .foregroundStyle(DesignSystem.Colors.gray80)
-              .padding(.bottom, 12)
+      Button(
+        action: {
+          store.send(.frameCardButtonTapped)
+        },
+        label: {
+          PhotoCard(status: store.keyword.convertToPhotoCardStatus()) {
+            VStack(spacing: 0) {
+              Tag(type: store.keyword.tagType)
+              
+              photoInFrame(for: store.keyword, selectedPhotoInfo: store.selectedPhotoInfo)
+                .padding(.init(top: 24, leading: 30, bottom: 26, trailing: 30))
+              
+              Text(store.groupName)
+                .font(.head20)
+                .foregroundStyle(DesignSystem.Colors.gray80)
+                .padding(.bottom, 12)
+            }
           }
         }
-      }
+      )
       .padding(.horizontal, 42)
       
       Spacer()
@@ -66,6 +66,12 @@ public struct SelectGroupPhotoView: View {
       .padding(.horizontal, 16)
       .padding(.bottom, 12)
     }
+    .photosPicker(
+      isPresented: $store.photosPickerPresented.sending(\.photosPickerPresentedChanged),
+      selection: $store.selectedPickerItems.sending(\.selectedPickerItemsChanged),
+      maxSelectionCount: 1,
+      matching: .images
+    )
   }
 }
 
@@ -73,9 +79,9 @@ extension SelectGroupPhotoView {
   @MainActor
   private func photoInFrame(
     for keyword: GroupData.Keyword,
-    selectedPhotosInfo: [PhotoInfo]
+    selectedPhotoInfo: PhotoInfo?
   ) -> some View {
-    let galleryIcon = selectedPhotosInfo.isEmpty 
+    let galleryIcon = selectedPhotoInfo == nil
     ? DesignSystem.Icons.galleryPlusBlack
     : DesignSystem.Icons.galleryWhite
     
@@ -84,8 +90,7 @@ extension SelectGroupPhotoView {
       .aspectRatio(contentMode: .fit)
       .foregroundStyle(keyword.foregroundColor)
       .background {
-        if let firstPhotoInfo = selectedPhotosInfo[safe: 0],
-           let image = UIImage(data: firstPhotoInfo.data) {
+        if let selectedPhotoInfo, let image = UIImage(data: selectedPhotoInfo.data) {
           Image(uiImage: image)
             .resizable()
             .aspectRatio(contentMode: .fill)

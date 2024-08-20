@@ -9,10 +9,16 @@
 import Foundation
 
 public extension String {
-  func toGroupEventDateString() -> String? {
-    guard let date = DateFormatter.iso8601.date(from: self) else {
+  func toGroupEventDateString(type: DateFormatterType) -> String? {
+    guard let date = DateFormatter.iso8601(type).date(from: self) else {
       return nil
     }
-    return DateFormatter.groupEvent.string(from: date)
+    
+    switch type {
+    case .eventDate:
+      return DateFormatter.groupEvent.string(from: date)
+    case .deadline:
+      return DateFormatter.deadline.string(from: date)
+    }
   }
 }

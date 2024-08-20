@@ -14,7 +14,7 @@ public struct GroupDetailInfo: Decodable {
   public let statusDescription: String
   public let recentEventDetail: RecentEventDetail
   public let cardFrontImageURL: String
-  public let cardBackImages: [CardBackImage]
+  public let cardBackImages: [CardBackImage]?
   public let history: [History]
 
   enum CodingKeys: String, CodingKey {
@@ -128,6 +128,144 @@ public struct History: Decodable, Identifiable, Equatable {
     ),
     .init(
       id: 1,
+      name: "모임 이름2",
+      date: "2024.06.01",
+      images: [
+        .init(
+          imageURL: "https://picsum.photos/200",
+          frame: .snowman
+        ),
+        .init(
+          imageURL: "https://picsum.photos/201",
+          frame: .snowman
+        ),
+        .init(
+          imageURL: "https://picsum.photos/202",
+          frame: .snowman
+        ),
+        .init(
+          imageURL: "https://picsum.photos/203",
+          frame: .snowman
+        )
+      ]
+    ),
+    .init(
+      id: 2,
+      name: "모임 이름2",
+      date: "2024.06.01",
+      images: [
+        .init(
+          imageURL: "https://picsum.photos/200",
+          frame: .snowman
+        ),
+        .init(
+          imageURL: "https://picsum.photos/201",
+          frame: .snowman
+        ),
+        .init(
+          imageURL: "https://picsum.photos/202",
+          frame: .snowman
+        ),
+        .init(
+          imageURL: "https://picsum.photos/203",
+          frame: .snowman
+        )
+      ]
+    ),
+    .init(
+      id: 3,
+      name: "모임 이름2",
+      date: "2024.06.01",
+      images: [
+        .init(
+          imageURL: "https://picsum.photos/200",
+          frame: .snowman
+        ),
+        .init(
+          imageURL: "https://picsum.photos/201",
+          frame: .snowman
+        ),
+        .init(
+          imageURL: "https://picsum.photos/202",
+          frame: .snowman
+        ),
+        .init(
+          imageURL: "https://picsum.photos/203",
+          frame: .snowman
+        )
+      ]
+    ),
+    .init(
+      id: 4,
+      name: "모임 이름2",
+      date: "2024.06.01",
+      images: [
+        .init(
+          imageURL: "https://picsum.photos/200",
+          frame: .snowman
+        ),
+        .init(
+          imageURL: "https://picsum.photos/201",
+          frame: .snowman
+        ),
+        .init(
+          imageURL: "https://picsum.photos/202",
+          frame: .snowman
+        ),
+        .init(
+          imageURL: "https://picsum.photos/203",
+          frame: .snowman
+        )
+      ]
+    ),
+    .init(
+      id: 5,
+      name: "모임 이름2",
+      date: "2024.06.01",
+      images: [
+        .init(
+          imageURL: "https://picsum.photos/200",
+          frame: .snowman
+        ),
+        .init(
+          imageURL: "https://picsum.photos/201",
+          frame: .snowman
+        ),
+        .init(
+          imageURL: "https://picsum.photos/202",
+          frame: .snowman
+        ),
+        .init(
+          imageURL: "https://picsum.photos/203",
+          frame: .snowman
+        )
+      ]
+    ),
+    .init(
+      id: 6,
+      name: "모임 이름2",
+      date: "2024.06.01",
+      images: [
+        .init(
+          imageURL: "https://picsum.photos/200",
+          frame: .snowman
+        ),
+        .init(
+          imageURL: "https://picsum.photos/201",
+          frame: .snowman
+        ),
+        .init(
+          imageURL: "https://picsum.photos/202",
+          frame: .snowman
+        ),
+        .init(
+          imageURL: "https://picsum.photos/203",
+          frame: .snowman
+        )
+      ]
+    ),
+    .init(
+      id: 7,
       name: "모임 이름2",
       date: "2024.06.01",
       images: [

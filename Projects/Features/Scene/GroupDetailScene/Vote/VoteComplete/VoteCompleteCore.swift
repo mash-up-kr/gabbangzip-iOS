@@ -17,13 +17,16 @@ public struct VoteCompleteCore {
   public struct State: Equatable {
     var voteResult: VoteCompleteInfo
     var imageURLString: String
+    var isFromMain: Bool
 
     public init(
       voteResult: VoteCompleteInfo,
-      imageURLString: String = ""
+      imageURLString: String = "",
+      isFromMain: Bool
     ) {
       self.voteResult = voteResult
       self.imageURLString = imageURLString
+      self.isFromMain = isFromMain
     }
   }
   
@@ -39,6 +42,7 @@ public struct VoteCompleteCore {
     
     // Route Action
     case backToGroupDetail
+    case backToMain
   }
 
   public var body: some Reducer<State, Action> {
@@ -52,13 +56,20 @@ public struct VoteCompleteCore {
           }
         }
       case .completeButtonTapped:
-        return .send(.backToGroupDetail)
+        if state.isFromMain {
+          return .send(.backToMain)
+        } else {
+          return .send(.backToGroupDetail)
+        }
         
       case let .setImageURLString(imageURLString):
         state.imageURLString = imageURLString
         return .none
         
       case .backToGroupDetail:
+        return .none
+        
+      case .backToMain:
         return .none
       }
     }

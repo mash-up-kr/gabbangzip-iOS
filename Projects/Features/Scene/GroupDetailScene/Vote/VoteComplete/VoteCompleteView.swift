@@ -65,7 +65,8 @@ public struct VoteCompleteView: View {
   VoteCompleteView(
     store: Store(initialState: .init(
         voteResult: VoteCompleteInfo.mock,
-        imageURLString: "https://24ai.tech/ru/wp-content/uploads/sites/4/2023/10/01_product_1_sdelat-kvadratnym-scaled.jpg"
+        imageURLString: "https://24ai.tech/ru/wp-content/uploads/sites/4/2023/10/01_product_1_sdelat-kvadratnym-scaled.jpg",
+        isFromMain: false
       )
     ) {
       VoteCompleteCore()
