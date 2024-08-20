@@ -79,7 +79,7 @@ public struct CreateEventCore {
     case checkCompleteButtonType
     case setToastPresented(Bool)
     case getUploadURLResponse(Result<FileUploadInfo, Error>, PhotoInfo)
-    case uploadFileToPresignedURLResponse(Result<Void, Error>)
+    case uploadFileToPresignedURLResponse
     case createEvent(Result<EventInfo, Error>)
     case logError(Error)
     
@@ -180,18 +180,17 @@ public struct CreateEventCore {
         
       case let .getUploadURLResponse(.success(fileUploadInfo), photoInfo):
         state.imageURL.append(fileUploadInfo.fileID)
-        return .run { send in
-          await send(
-            .uploadFileToPresignedURLResponse(
-              Result {
-                try await fileUploadAPIClient.uploadFile(
-                  uploadURL: fileUploadInfo.uploadURL,
-                  data: photoInfo.data,
-                  fileExtension: photoInfo.fileExtension
-                )
-              }
-            )
+        return .run { [state] send in
+          try await fileUploadAPIClient.uploadFile(
+            uploadURL: fileUploadInfo.uploadURL,
+            data: photoInfo.data,
+            fileExtension: photoInfo.fileExtension
           )
+          if state.imageURL.count == 4 {
+            await send(.uploadFileToPresignedURLResponse)
+          }
+        } catch: { error, send in
+          await send(.logError(CreateEventCoreError(code: .failTeUploadFileToPresignedURLResponse)))
         }
         
       case .getUploadURLResponse(.failure, _):
@@ -199,7 +198,7 @@ public struct CreateEventCore {
           await send(.logError(CreateEventCoreError(code: .failToGetUploadURLResponse)))
         }
         
-      case .uploadFileToPresignedURLResponse(.success):
+      case .uploadFileToPresignedURLResponse:
         return .run { [state] send in
           await send(
             .createEvent(
@@ -214,11 +213,6 @@ public struct CreateEventCore {
               }
             )
           )
-        }
-        
-      case .uploadFileToPresignedURLResponse(.failure):
-        return .run { send in
-          await send(.logError(CreateEventCoreError(code: .failTeUploadFileToPresignedURLResponse)))
         }
         
       case let .createEvent(.success(eventInfo)):

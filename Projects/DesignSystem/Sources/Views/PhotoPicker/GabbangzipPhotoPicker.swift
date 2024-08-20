@@ -20,7 +20,6 @@ public struct GabbangzipPhotoPicker<Content: View>: View {
     } else {
       return selectedPhotosInfo.count >= maxSelectedCount.rawValue
     }
-    
   }
   private var availableSelectedCount: Int {
     if case .single = maxSelectedCount {
@@ -36,7 +35,7 @@ public struct GabbangzipPhotoPicker<Content: View>: View {
   public init(
     selectedPhotosInfo: Binding<[PhotoInfo]>,
     isPresentedError: Binding<Bool> = .constant(false),
-    maxSelectedCount: MaxSelectedCountType = .multiple,
+    maxSelectedCount: MaxSelectedCountType = .four,
     matching: PHPickerFilter = .images,
     photoLibrary: PHPhotoLibrary = .shared(),
     content: @escaping () -> Content
