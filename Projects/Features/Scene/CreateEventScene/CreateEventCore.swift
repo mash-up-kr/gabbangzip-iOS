@@ -26,6 +26,7 @@ public struct CreateEventCore {
     public var isErrorPresented: Bool
     public var isEventNamed: Bool
     public var isPhotoSelected: Bool
+    public var isTouchedOnce: Bool
     public var completeButtonType: ButtonType
     public var selectedPhotosInfo: [PhotoInfo]
     public var imageURL: [String]
@@ -44,6 +45,7 @@ public struct CreateEventCore {
       isErrorPresented: Bool = false,
       isEventNamed: Bool = false,
       isPhotoSelected: Bool = false,
+      isTouchedOnce: Bool = false,
       completeButtonType: ButtonType = .inactive,
       selectedPhotosInfo: [PhotoInfo] = [],
       imageURL: [String] = []
@@ -55,6 +57,7 @@ public struct CreateEventCore {
       self.isErrorPresented = isErrorPresented
       self.isEventNamed = isEventNamed
       self.isPhotoSelected = isPhotoSelected
+      self.isTouchedOnce = isTouchedOnce
       self.completeButtonType = completeButtonType
       self.selectedPhotosInfo = selectedPhotosInfo
       self.imageURL = imageURL
@@ -76,6 +79,7 @@ public struct CreateEventCore {
     // Internal Action
     case changeIsEventNamedStatus(Bool)
     case changeIsPhotoSelected
+    case changeIsTouchedOnce(Bool)
     case checkCompleteButtonType
     case setToastPresented(Bool)
     case getUploadURLResponse(Result<FileUploadInfo, Error>, PhotoInfo)
@@ -170,8 +174,16 @@ public struct CreateEventCore {
           await send(.checkCompleteButtonType)
         }
         
+      case let .changeIsTouchedOnce(status):
+        state.isTouchedOnce = status
+        return .run { send in
+          await send(.checkCompleteButtonType)
+        }
+        
       case .checkCompleteButtonType:
-        state.completeButtonType = state.isEventNamed && state.isPhotoSelected ? .active : .inactive
+        state.completeButtonType = state.isEventNamed && state.isPhotoSelected && !state.isTouchedOnce 
+                                    ? .active 
+                                    : .inactive
         return .none
         
       case let .setToastPresented(isPresented):
@@ -200,6 +212,7 @@ public struct CreateEventCore {
         
       case .uploadFileToPresignedURLResponse:
         return .run { [state] send in
+          await send(.changeIsTouchedOnce(true))
           await send(
             .createEvent(
               Result {
@@ -213,6 +226,9 @@ public struct CreateEventCore {
               }
             )
           )
+        } catch: { error, send in
+          await send(.changeIsTouchedOnce(false))
+          await send(.logError(CreateEventCoreError(code: .failToUploadEventImage)))
         }
         
       case let .createEvent(.success(eventInfo)):
