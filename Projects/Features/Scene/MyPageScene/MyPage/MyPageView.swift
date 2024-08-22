@@ -28,11 +28,14 @@ public struct MyPageView: View {
         }
       )
       
-      SettingTitleView(
-        text: store.userInfo.nickname,
-        font: .head20,
-        verticalPadding: 16
-      )
+      // TEST: - 앱 심사용 숨김
+      if !Bool.forAppReview {
+        SettingTitleView(
+          text: store.userInfo.nickname,
+          font: .head20,
+          verticalPadding: 16
+        )
+      }
       
       SeparatorView(height: 16, padding: 16)
       
@@ -74,22 +77,27 @@ public struct MyPageView: View {
         )
       }
       
-      Button(
-        action: {
-          store.send(.showPopup(true, .logout))
-        }, label: {
-          SettingTitleView(text: MyPageNameSpace.logout)
-        }
-      )
+      // TEST: - 앱 심사용 숨김
+      if !Bool.forAppReview {
+        Button(
+          action: {
+            store.send(.showPopup(true, .logout))
+          }, label: {
+            SettingTitleView(text: MyPageNameSpace.logout)
+          }
+        )
+      }
       
-      
-      Button(
-        action: {
-          store.send(.showPopup(true, .withdraw))
-        }, label: {
-          SettingTitleView(text: MyPageNameSpace.withdraw)
-        }
-      )
+      // TEST: - 앱 심사용 숨김
+      if !Bool.forAppReview {
+        Button(
+          action: {
+            store.send(.showPopup(true, .withdraw))
+          }, label: {
+            SettingTitleView(text: MyPageNameSpace.withdraw)
+          }
+        )
+      }
       
       Spacer()
     }

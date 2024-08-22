@@ -61,3 +61,18 @@ public extension DateFormatter {
     return formatter
   }()
 }
+
+// TEST: - 앱 심사용 테스트 코드
+public extension Bool {
+  static let forAppReview: Bool = {
+    let dateFormatter = DateFormatter()
+    dateFormatter.dateFormat = "yyyy-MM-dd HH:mm:ss"
+    dateFormatter.timeZone = TimeZone(identifier: "Asia/Seoul")
+    
+    guard let deadline = dateFormatter.date(from: "2024-08-24 14:00:00") else {
+      return false
+    }
+    
+    return Date() < deadline
+  }()
+}

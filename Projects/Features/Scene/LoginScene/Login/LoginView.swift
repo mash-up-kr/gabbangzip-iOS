@@ -6,6 +6,7 @@
 //  Copyright © 2024 com.mashup.gabbangzip. All rights reserved.
 //
 
+import Common
 import ComposableArchitecture
 import DesignSystem
 import SwiftUI
@@ -43,19 +44,39 @@ public struct LoginView: View {
       
       Spacer()
       
-      Button(
-        action: {
-          store.send(.loginButtonTapped)
-        },
-        label: {
-          DesignSystem.Icons.kakao
-            .resizable()
-            .scaledToFit()
-            .padding(.horizontal, 16)
-            .padding(.bottom, 60)
-            .frame(width: UIScreen.main.bounds.size.width)
-        }
-      )
+      if !Bool.forAppReview {
+        Button(
+          action: {
+            store.send(.loginButtonTapped)
+          },
+          label: {
+            DesignSystem.Icons.kakao
+              .resizable()
+              .scaledToFit()
+              .padding(.horizontal, 16)
+              .padding(.bottom, 60)
+              .frame(width: UIScreen.main.bounds.size.width)
+          }
+        )
+      }
+      
+      // TEST: - 앱 심사용 테스트 코드
+      if Bool.forAppReview {
+        Button(
+          action: {
+            store.send(.testLoginButtonTapped)
+          },
+          label: {
+            Text("시작하기")
+              .font(.text22)
+              .foregroundColor(.white)
+              .frame(width: UIScreen.main.bounds.size.width - 100)
+              .frame(height: 50)
+              .background(DesignSystem.Colors.conifer)
+              .clipShape(RoundedRectangle(cornerRadius: 10))
+          }
+        )
+      }
     }
     .toast(
       isPresented: $store.isPresented,

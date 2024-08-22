@@ -6,6 +6,7 @@
 //  Copyright © 2024 com.mashup.gabbangzip. All rights reserved.
 //
 
+import Common
 import DesignSystem
 import Models
 import SwiftUI
@@ -29,9 +30,16 @@ struct MemberView: View {
       .frame(width: 24, height: 24)
       .padding(.init(top: 20, leading: 24, bottom: 20, trailing: 16))
       
-      Text(member.nickname)
-        .font(.head16)
-        .foregroundStyle(DesignSystem.Colors.gray80)
+      // TEST: - 앱 심사용 테스트 코드
+      if member.nickname == "테스트계정" && Bool.forAppReview {
+        Text("방장 ⭐️")
+          .font(.head16)
+          .foregroundStyle(DesignSystem.Colors.gray80)
+      } else {
+        Text(member.nickname)
+          .font(.head16)
+          .foregroundStyle(DesignSystem.Colors.gray80)
+      }
       
       Spacer()
     }

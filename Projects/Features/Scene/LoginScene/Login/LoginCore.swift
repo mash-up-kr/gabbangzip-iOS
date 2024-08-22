@@ -45,6 +45,7 @@ public struct LoginCore {
     
     // View Action
     case loginButtonTapped
+    case testLoginButtonTapped
     
     // Internal Action
     case loginWithKakaoTalkResponse(Result<String?, Error>)
@@ -87,6 +88,27 @@ public struct LoginCore {
           } else {
             await send(.loginWithKakaoAccountResponse(Result { try await self.kakaoLoginClient.loginWithKakaoAccount() }))
           }
+        }
+        
+      // TEST: - 앱 심사용 테스트 코드
+      // swiftlint:disable line_length
+      case .testLoginButtonTapped:
+        state.kakaoUser.nickname = "테스트계정"
+        state.kakaoUser.profileImageUrl = URL(string: "https://img1.kakaocdn.net/thumb/R640x640.q70/?fname=https://t1.kakaocdn.net/account_images/default_profile.jpeg")
+        state.kakaoIdToken.idToken = "eyJraWQiOiI5ZjI1MmRhZGQ1ZjIzM2Y5M2QyZmE1MjhkMTJmZWEiLCJ0eXAiOiJKV1QiLCJhbGciOiJSUzI1NiJ9.eyJhdWQiOiI3ODBkODIwZDA3NDZhZmZlZWIyNTFhZGYwYWRlNjA3NSIsInN1YiI6IjM2NjM1MTc1MjgiLCJhdXRoX3RpbWUiOjE3MjQyODUyMTksImlzcyI6Imh0dHBzOi8va2F1dGgua2FrYW8uY29tIiwibmlja25hbWUiOiLthYzsiqTtirjqs4TsoJUiLCJleHAiOjE3MjQzMjg0MTksImlhdCI6MTcyNDI4NTIxOSwicGljdHVyZSI6Imh0dHBzOi8vaW1nMS5rYWthb2Nkbi5uZXQvdGh1bWIvUjExMHgxMTAucTcwLz9mbmFtZT1odHRwczovL3QxLmtha2FvY2RuLm5ldC9hY2NvdW50X2ltYWdlcy9kZWZhdWx0X3Byb2ZpbGUuanBlZyJ9.AE-s4nm9hBu_RSUw-j6_yNU8Sx_cRfEqNdxJwPuXa2LOEYNItrshyADjBfhfZhfk0o6jvL-tDzAPxN9yDiHBW0MFKjzxJDYihDHZ1vh-bVLP2FQDgaA-txgWr9OG5oQZ180L3THeDvRpUTNcGvh85SYqEAk7IuFTSqmC1J2HZv_yL2vjF2khFkCeMAXe5N9Y8ga6jhdIQ3jH86YjD-mlqiq6kDNzuNbzy5odotj4Lcbgc7Q5occbRgzShC4FX_q676DG0MEJaGvhQqIeSoxn9iXUmJKlN_anNA_MTqfcfdM3zRn8MqkHDA0m4Hfogv3ss_oyOfKlsLzo_YuGt9iodg"
+        return .run { [state] send in
+          if let idToken = state.kakaoIdToken.idToken,
+             let nickname = state.kakaoUser.nickname,
+             let profileImageUrl = state.kakaoUser.profileImageUrl?.absoluteString {
+            let token = try await firebaseClient.checkRegistrationToken()
+            await send(.getFCMToken(token))
+            await send(.loginResponse(Result { try await
+              authAPIClient.login(idToken, nickname, profileImageUrl) }))
+          } else {
+            await send(.loginResponse(.failure(LoginCoreError(code: .failToCheckUserInformation))))
+          }
+        } catch: { error,send in
+          await send(.loginResponse(.failure(LoginCoreError(code: .failToRegistrationToken, underlying: error))))
         }
         
       case let .loginWithKakaoTalkResponse(.success(idToken)):
