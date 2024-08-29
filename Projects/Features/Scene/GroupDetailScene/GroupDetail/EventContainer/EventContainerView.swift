@@ -37,7 +37,9 @@ struct EventContainerView: View {
           },
           store: store
         )
-      case .noCurrentEvent, .eventCompleted:
+      case .noCurrentEvent:
+        EventDefaultView(store: store)
+      case .eventCompleted:
         EventCompletedView(store: store)
       case .noPastAndCurrentEvent:
         // 해당 화면에 접근 불가능한 조건
