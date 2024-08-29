@@ -145,7 +145,7 @@ public struct GroupDetailCore {
 
     // Route Action
     case backToHome
-    case moveToMemberList(Int)
+    case moveToMemberList(Int, GroupData.Keyword)
     case moveToVote(Int)
     case moveToHistoryDetail(History, GroupData.Keyword?, String)
   }
@@ -178,7 +178,7 @@ public struct GroupDetailCore {
         
       case .memberListButtonTapped:
         state.showSheet = false
-        return .send(.moveToMemberList(state.groupID))
+        return .send(.moveToMemberList(state.groupID, state.groupDetail?.keyword ?? .company))
         
       case let .eventContainerViewButtonTapped(status):
         switch status {

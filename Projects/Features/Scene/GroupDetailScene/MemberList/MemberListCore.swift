@@ -30,7 +30,7 @@ public struct MemberListCore {
     public init(
       groupID: Int,
       memberList: MemberList? = nil,
-      groupKeyword: GroupData.Keyword = .company,
+      groupKeyword: GroupData.Keyword,
       userInfo: @autoclosure () -> UserInfo = .defaultValue
     ) {
       self.groupID = groupID
