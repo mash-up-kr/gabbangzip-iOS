@@ -139,6 +139,7 @@ public struct GroupDetailCore {
     case showToast(DetailToastType)
     case photosPickerPresentedChanged(Bool)
     case selectedPickerItemsChanged([PhotosPickerItem])
+    case reloadGroupDetail
 
     // Route Action
     case backToHome
@@ -342,6 +343,7 @@ public struct GroupDetailCore {
               )
               
               await send(.showToast(.imageUploadSuccess))
+              await send(.reloadGroupDetail)
             }
           },
           catch: { error, send in
@@ -349,6 +351,13 @@ public struct GroupDetailCore {
             await send(.showToast(.imageUploadFail))
           }
         )
+        
+      case .reloadGroupDetail:
+        return .run { [state] send in
+          await send(.getGroupDetailResponse(Result {
+            try await self.groupAPIClient.getGroupDetail(state.userInfo.accessToken, state.groupID)
+          }))
+        }
         
       case .moveToCreateEvent:
         return .none
