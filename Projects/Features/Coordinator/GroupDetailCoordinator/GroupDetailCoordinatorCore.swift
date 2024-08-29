@@ -32,11 +32,20 @@ public struct GroupDetailCoordinatorCore {
       case let .router(.routeAction(id: _, action: .groupDetail(.moveToHistoryDetail(history, keyword, domain)))):
         state.routes.push(.historyDetail(.init(history: history, keyword: keyword, s3BucketDomain: domain)))
         
-      case let .router(.routeAction(id: _, action: .groupDetail(.moveToMemberList(groupID)))):
-        state.routes.push(.memberList(.init(groupID: groupID)))
+      case let .router(.routeAction(id: _, action: .groupDetail(.moveToMemberList(groupID, groupKeyword)))):
+        state.routes.push(.memberList(.init(groupID: groupID, groupKeyword: groupKeyword)))
         
       case let .router(.routeAction(id: _, action: .groupDetail(.moveToVote(eventID)))):
         state.routes.push(.vote(.init(eventID: eventID, isFromMain: false)))
+        
+      case let .router(.routeAction(id: _, action: .groupDetail(.moveToCreateEvent(groupID)))):
+        state.routes.push(.createEvent(.init(groupID: groupID)))
+        
+      case .router(.routeAction(id: _, action: .createEvent(.moveToHome))):
+        state.routes.pop()
+        
+      case .router(.routeAction(id: _, action: .createEvent(.moveToHomeWithEvent))):
+        state.routes.pop()
         
       case .router(.routeAction(id: _, action: .historyDetail(.backToGroupDetail))):
         state.routes.pop()

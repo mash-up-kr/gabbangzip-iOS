@@ -1,8 +1,8 @@
 //
-//  EventCompletedView.swift
+//  EventDefaultView.swift
 //  GroupDetail
 //
-//  Created by hyerin on 8/11/24.
+//  Created by hyerin on 8/29/24.
 //  Copyright © 2024 com.mashup.gabbangzip. All rights reserved.
 //
 
@@ -13,7 +13,7 @@ import Lovebug
 import Models
 import SwiftUI
 
-public struct EventCompletedView: View {
+public struct EventDefaultView: View {
   @Bindable var store: StoreOf<GroupDetailCore>
   
   public init(store: StoreOf<GroupDetailCore>) {
@@ -22,27 +22,17 @@ public struct EventCompletedView: View {
   
   public var body: some View {
     VStack(spacing: 0) {
-      Text("네컷 사진이 만들어졌어요!")
-        .foregroundStyle(DesignSystem.Colors.gray80)
-        .font(.head20)
-      
       completedImage
       .padding(.horizontal, 41.5)
       .padding(.vertical, 16)
-//      TODO: 공유하기 이미지 캡쳐 추후 확인 필요
-//      ShareButton(action: {
-//        captureView(of: completedImage) { capturedImage in
-//          store.send(.imageCaptured(capturedImage))
-//          store.send(.shareButtonTapped)
-//        }
-//      })
+
+      SmallButton(
+        type: .active,
+        smallButtonContentType: .generateEvent
+      ) {
+        store.send(.createEventButtonTapped)
+      }
       .padding(.bottom, 32)
-    }
-    .overlay {
-      LottieView(
-        type: .confetti,
-        loopMode: .playOnce
-      )
     }
   }
   

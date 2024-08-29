@@ -7,6 +7,7 @@
 //
 
 import ComposableArchitecture
+import CreateEvent
 import GroupDetail
 import SwiftUI
 import TCACoordinators
@@ -32,6 +33,8 @@ public struct GroupDetailCoordinatorView: View {
           VoteView(store: store)
         case let .voteComplete(store):
           VoteCompleteView(store: store)
+        case let .createEvent(store):
+          CreateEventView(store: store)
         }
       }
       .toolbar(.hidden)

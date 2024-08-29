@@ -12,7 +12,7 @@ import Models
 import SwiftUI
 
 public struct MemberListView: View {
-  private let store: StoreOf<MemberListCore>
+  @Bindable private var store: StoreOf<MemberListCore>
 
   public init(store: StoreOf<MemberListCore>) {
     self.store = store
@@ -52,6 +52,10 @@ public struct MemberListView: View {
       
       Spacer()
     }
+    .toast(
+      isPresented: $store.toastPresented,
+      type: store.toastType.toast
+    )
     .onAppear { store.send(.onAppear) }
   }
 }

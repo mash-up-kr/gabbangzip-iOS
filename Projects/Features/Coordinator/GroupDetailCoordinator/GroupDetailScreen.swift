@@ -7,6 +7,7 @@
 //
 
 import ComposableArchitecture
+import CreateEvent
 import GroupDetail
 import TCACoordinators
 
@@ -17,5 +18,6 @@ public enum GroupDetailScreen {
   case memberList(MemberListCore)
   case vote(VoteCore)
   case voteComplete(VoteCompleteCore)
+  case createEvent(CreateEventCore)
 }
 

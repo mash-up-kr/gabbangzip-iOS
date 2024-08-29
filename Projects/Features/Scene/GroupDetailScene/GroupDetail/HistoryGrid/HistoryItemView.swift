@@ -41,7 +41,7 @@ struct HistoryItemView: View {
         .foregroundStyle(DesignSystem.Colors.gray80)
         .padding(.bottom, 4)
       
-      Text(history.date)
+      Text(history.date.toGroupEventDateString(type: .eventDate) ?? "")
         .font(.caption12)
         .foregroundStyle(DesignSystem.Colors.gray60)
     }

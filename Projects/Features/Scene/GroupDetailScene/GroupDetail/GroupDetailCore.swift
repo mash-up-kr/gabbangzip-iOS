@@ -51,11 +51,7 @@ public struct GroupDetailCore {
         return .generateEvent
       }
     }
-    
-    var isNeedEventCompletedTitle: Bool {
-      return groupDetail?.status == .eventCompleted
-    }
-    
+
     var frame: Image {
       return groupDetail?.keyword.frame ?? DesignSystem.Icons.plusFrame
     }
@@ -133,6 +129,7 @@ public struct GroupDetailCore {
     case shareButtonTapped
     case galleryButtonTapped
     case imageCaptured(UIImage?)
+    case createEventButtonTapped
 
     // Internal Action
     case setS3BucketDomain(String)
@@ -142,12 +139,14 @@ public struct GroupDetailCore {
     case showToast(DetailToastType)
     case photosPickerPresentedChanged(Bool)
     case selectedPickerItemsChanged([PhotosPickerItem])
+    case reloadGroupDetail
 
     // Route Action
     case backToHome
-    case moveToMemberList(Int)
+    case moveToMemberList(Int, GroupData.Keyword)
     case moveToVote(Int)
     case moveToHistoryDetail(History, GroupData.Keyword?, String)
+    case moveToCreateEvent(Int)
   }
 
   public var body: some Reducer<State, Action> {
@@ -178,7 +177,7 @@ public struct GroupDetailCore {
         
       case .memberListButtonTapped:
         state.showSheet = false
-        return .send(.moveToMemberList(state.groupID))
+        return .send(.moveToMemberList(state.groupID, state.groupDetail?.keyword ?? .company))
         
       case let .eventContainerViewButtonTapped(status):
         switch status {
@@ -215,6 +214,9 @@ public struct GroupDetailCore {
       case let .imageCaptured(image):
         state.capturedImage = image
         return .none
+        
+      case .createEventButtonTapped:
+        return .send(.moveToCreateEvent(state.groupID))
         
       case let .setS3BucketDomain(s3BucketDomain):
         state.s3BucketDomain = s3BucketDomain
@@ -341,6 +343,7 @@ public struct GroupDetailCore {
               )
               
               await send(.showToast(.imageUploadSuccess))
+              await send(.reloadGroupDetail)
             }
           },
           catch: { error, send in
@@ -348,6 +351,16 @@ public struct GroupDetailCore {
             await send(.showToast(.imageUploadFail))
           }
         )
+        
+      case .reloadGroupDetail:
+        return .run { [state] send in
+          await send(.getGroupDetailResponse(Result {
+            try await self.groupAPIClient.getGroupDetail(state.userInfo.accessToken, state.groupID)
+          }))
+        }
+        
+      case .moveToCreateEvent:
+        return .none
       }
     }
   }
