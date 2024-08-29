@@ -40,6 +40,14 @@ public struct EventCompletedView: View {
 //      })
       .padding(.bottom, 32)
     }
+    .overlay {
+      if store.isNeedEventCompletedTitle {
+        LottieView(
+          type: .confetti,
+          loopMode: .playOnce
+        )
+      }
+    }
   }
   
   @ViewBuilder
