@@ -59,6 +59,9 @@ public struct HomeView: View {
       .padding(.trailing, 16)
       .padding(.bottom, 24)
     }
+    .onTapGesture {
+      store.send(.screenTapped)
+    }
   }
 }
 
