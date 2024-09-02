@@ -44,6 +44,7 @@ public struct HomeCore {
   public enum Action {
     // View Action
     case onAppear
+    case screenTapped
     case joinGroupButtonTapped
     case createGroupButtonTapped
     case myPageButtonTapped
@@ -56,6 +57,7 @@ public struct HomeCore {
     case floatingButtonExpandedChanged(Bool)
     case isHomeUpdatedChanged(Bool)
     case showToastMessage(ToastType)
+    case setFloatingButtonExpanded(Bool)
     
     // Child Action
     case groups(IdentifiedActionOf<GroupCore>)
@@ -84,6 +86,12 @@ public struct HomeCore {
               .map(Action.isHomeUpdatedChanged)
           }
         ])
+        
+      case .screenTapped:
+        return .run { send in
+          await send(.setFloatingButtonExpanded(false))
+        }
+        .animation(.default)
         
       case .joinGroupButtonTapped:
         state.floatingButtonExpanded = false
@@ -161,6 +169,10 @@ public struct HomeCore {
       case let .showToastMessage(toastType):
         state.toastType = toastType
         state.toastPresented = true
+        return .none
+        
+      case let .setFloatingButtonExpanded(value):
+        state.floatingButtonExpanded = value
         return .none
         
       case let .groups(.element(id: _, action: .delegate(delegate))):
