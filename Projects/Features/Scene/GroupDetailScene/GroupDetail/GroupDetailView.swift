@@ -23,15 +23,7 @@ public struct GroupDetailView: View {
   public var body: some View {
     ScrollView {
       VStack(spacing: 0) {
-        NavigationBar(
-          type: .titleWithBackButtonAndIcon(store.groupDetail?.name ?? "", DesignSystem.Icons.group),
-          backButtonAction: {
-            store.send(.backButtonTapped)
-          },
-          rightIconAction: {
-            store.send(.memberListButtonTapped)
-          }
-        )
+        navigationBar
         
         EventContainerView(
           groupDetail: store.groupDetail,
@@ -46,6 +38,7 @@ public struct GroupDetailView: View {
         self.bottomSheetHeight = UIScreen.main.bounds.height - height - UIScreen.topSafeArea - UIScreen.bottomSafeArea
       }
     }
+    .scrollDisabled(true)
     .scrollIndicators(.hidden)
     .background(DesignSystem.Colors.gray20)
     .background(
@@ -82,6 +75,33 @@ public struct GroupDetailView: View {
       time: 1.0
     )
     .onAppear { store.send(.onAppear) }
+  }
+  
+  private var navigationBar: some View {
+    if store.canGenerateEvent {
+      return NavigationBar(
+        type: .titleWithBackButtonAndTwoIcon(store.groupDetail?.name ?? "", DesignSystem.Icons.plus, DesignSystem.Icons.group),
+        backButtonAction: {
+          store.send(.backButtonTapped)
+        },
+        firstRightIconAction: {
+          store.send(.createEventButtonTapped)
+        },
+        secondRightIconAction: {
+          store.send(.memberListButtonTapped)
+        }
+      )
+    } else {
+      return NavigationBar(
+        type: .titleWithBackButtonAndIcon(store.groupDetail?.name ?? "", DesignSystem.Icons.group),
+        backButtonAction: {
+          store.send(.backButtonTapped)
+        },
+        rightIconAction: {
+          store.send(.memberListButtonTapped)
+        }
+      )
+    }
   }
 }
 

@@ -20,6 +20,8 @@ public enum NavigationBarType {
   case logoAndTwoIcon(Image, Image)
   // Back 버튼 + 타이틀 + 아이콘 조합
   case titleWithBackButtonAndIcon(String, Image)
+  // Back 버튼 + 타이틀 + 아이콘 두 개 조합
+  case titleWithBackButtonAndTwoIcon(String, Image, Image)
 }
 
 public enum NavigationTitleAlignment {
