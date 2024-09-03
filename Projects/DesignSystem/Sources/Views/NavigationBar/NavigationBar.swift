@@ -70,6 +70,16 @@ public struct NavigationBar: View {
         backButtonIconAction: backButtonAction,
         rightIconAction: rightIconAction
       )
+      
+    case let .titleWithBackButtonAndTwoIcon(title, firstIcon, secondIcon):
+      TitleWithBackButtonAndTwoIconView(
+        title: title,
+        firstRightIcon: firstIcon,
+        secondRightIcon: secondIcon,
+        backButtonIconAction: backButtonAction,
+        firstRightIconAction: firstRightIconAction,
+        secondRightIconAction: secondRightIconAction
+      )
     }
   }
 }
@@ -310,6 +320,80 @@ fileprivate struct TitleWithBackButtonAndIconView: View {
         },
         label: {
           rightIcon
+            .resizable()
+            .frame(width: 26, height: 26)
+        }
+      )
+      .padding(.trailing, 17.5)
+    }
+    .frame(height: 56)
+  }
+}
+
+// MARK: - Title + BackButton + Two Icons
+fileprivate struct TitleWithBackButtonAndTwoIconView: View {
+  private var title: String
+  private var firstRightIcon: Image
+  private var secondRightIcon: Image
+  private var backButtonIconAction: () -> Void
+  private var firstRightIconAction: () -> Void
+  private var secondRightIconAction: () -> Void
+  
+  fileprivate init(
+    title: String,
+    firstRightIcon: Image = DesignSystem.Icons.group,
+    secondRightIcon: Image = DesignSystem.Icons.plus,
+    backButtonIconAction: @escaping () -> Void,
+    firstRightIconAction: @escaping () -> Void,
+    secondRightIconAction: @escaping () -> Void
+  ) {
+    self.title = title
+    self.firstRightIcon = firstRightIcon
+    self.secondRightIcon = secondRightIcon
+    self.backButtonIconAction = backButtonIconAction
+    self.firstRightIconAction = firstRightIconAction
+    self.secondRightIconAction = secondRightIconAction
+  }
+  
+  fileprivate var body: some View {
+    HStack(spacing: 6) {
+      Button(
+        action: {
+          backButtonIconAction()
+        },
+        label: {
+          DesignSystem.Icons.back
+            .resizable()
+            .frame(width: 26, height: 26)
+            .tint(.black)
+        }
+      )
+      .padding(.leading, 17.5)
+      
+      Text(title)
+        .font(.body16)
+        .foregroundStyle(DesignSystem.Colors.gray100)
+      
+      Spacer()
+      
+      Button(
+        action: {
+          firstRightIconAction()
+        },
+        label: {
+          firstRightIcon
+            .resizable()
+            .frame(width: 26, height: 26)
+        }
+      )
+      .padding(.trailing, 14)
+      
+      Button(
+        action: {
+          secondRightIconAction()
+        },
+        label: {
+          secondRightIcon
             .resizable()
             .frame(width: 26, height: 26)
         }

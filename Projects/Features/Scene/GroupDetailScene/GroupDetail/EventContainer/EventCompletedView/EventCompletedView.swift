@@ -22,13 +22,16 @@ public struct EventCompletedView: View {
   
   public var body: some View {
     VStack(spacing: 0) {
-      Text("네컷 사진이 만들어졌어요!")
-        .foregroundStyle(DesignSystem.Colors.gray80)
-        .font(.head20)
+      if store.isNeedEventCompletedTitle {
+        Text("네컷 사진이 만들어졌어요!")
+          .foregroundStyle(DesignSystem.Colors.gray80)
+          .font(.head20)
+      }
       
       completedImage
       .padding(.horizontal, 41.5)
       .padding(.vertical, 16)
+      
 //      TODO: 공유하기 이미지 캡쳐 추후 확인 필요
 //      ShareButton(action: {
 //        captureView(of: completedImage) { capturedImage in
@@ -39,10 +42,12 @@ public struct EventCompletedView: View {
       .padding(.bottom, 32)
     }
     .overlay {
-      LottieView(
-        type: .confetti,
-        loopMode: .playOnce
-      )
+      if store.isNeedEventCompletedTitle {
+        LottieView(
+          type: .confetti,
+          loopMode: .playOnce
+        )
+      }
     }
   }
   

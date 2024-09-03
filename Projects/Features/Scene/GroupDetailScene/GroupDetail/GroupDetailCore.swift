@@ -76,6 +76,14 @@ public struct GroupDetailCore {
       return s3BucketDomain + (groupDetail?.cardFrontImageURL ?? "")
     }
     
+    var canGenerateEvent: Bool {
+      return groupDetail?.status == .eventCompleted || groupDetail?.status == .noCurrentEvent
+    }
+    
+    var isNeedEventCompletedTitle: Bool {
+      return groupDetail?.status == .eventCompleted
+    }
+    
     @Shared var userInfo: UserInfo
 
     public init(
