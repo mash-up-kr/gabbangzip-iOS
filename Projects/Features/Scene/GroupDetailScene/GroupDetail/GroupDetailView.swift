@@ -38,6 +38,7 @@ public struct GroupDetailView: View {
         self.bottomSheetHeight = UIScreen.main.bounds.height - height - UIScreen.topSafeArea - UIScreen.bottomSafeArea
       }
     }
+    .scrollDisabled(true)
     .scrollIndicators(.hidden)
     .background(DesignSystem.Colors.gray20)
     .background(
