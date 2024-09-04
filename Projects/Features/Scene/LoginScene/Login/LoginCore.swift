@@ -6,6 +6,7 @@
 //  Copyright © 2024 com.mashup.gabbangzip. All rights reserved.
 //
 
+import AuthenticationServices
 import Common
 import ComposableArchitecture
 import Foundation
@@ -44,13 +45,15 @@ public struct LoginCore {
     case binding(BindingAction<State>)
     
     // View Action
-    case loginButtonTapped
+    case kakaoLoginButtonTapped
+    case appleSignInCompleted(Result<ASAuthorization, any Error>)
     
     // Internal Action
     case loginWithKakaoTalkResponse(Result<String?, Error>)
     case loginWithKakaoAccountResponse(Result<String?, Error>)
     case checkUserInformationResponse(Result<User, Error>)
-    case loginResponse(Result<PICUserInfo, Error>)
+    case kakaoLoginResponse(Result<PICUserInfo, Error>)
+    case appleLoginResponse(Result<PICUserInfo, Error>)
     case getFCMToken(String)
     case postFCMToken
     case responseFCMToken(Result<RegisteredFCMToken, Error>)
@@ -80,12 +83,42 @@ public struct LoginCore {
       case .binding:
         return .none
         
-      case .loginButtonTapped:
+      case .kakaoLoginButtonTapped:
         return .run { send in
           if kakaoLoginClient.isKakaoTalkLoginAvailable() {
             await send(.loginWithKakaoTalkResponse(Result { try await self.kakaoLoginClient.loginWithKakaoTalk() }))
           } else {
             await send(.loginWithKakaoAccountResponse(Result { try await self.kakaoLoginClient.loginWithKakaoAccount() }))
+          }
+        }
+        
+      case let .appleSignInCompleted(result):
+        return .run { send in
+          switch result {
+          case let .success(authorization):
+            if let userCredential = authorization.credential as? ASAuthorizationAppleIDCredential,
+               let idToken = userCredential.identityToken,
+               let encodedIdToken = String(data: idToken, encoding: .utf8) {
+              
+              let fullNameString: String? = {
+                if let fullName = userCredential.fullName {
+                  let formatter = PersonNameComponentsFormatter()
+                  return formatter.string(from: fullName)
+                } else {
+                  return nil
+                }
+              }()
+              
+              await send(.appleLoginResponse(Result {
+                try await authAPIClient.appleLogin(
+                  idToken: encodedIdToken,
+                  fullName: fullNameString,
+                  user: userCredential.user
+                )
+              }))
+            }
+          case let .failure(error):
+            await send(.showError(true))
           }
         }
         
@@ -120,12 +153,12 @@ public struct LoginCore {
              let profileImageUrl = state.kakaoUser.profileImageUrl?.absoluteString {
             let token = try await firebaseClient.checkRegistrationToken()
             await send(.getFCMToken(token))
-            await send(.loginResponse(Result { try await authAPIClient.login(idToken, nickname, profileImageUrl) }))
+            await send(.kakaoLoginResponse(Result { try await authAPIClient.kakaoLogin(idToken, nickname, profileImageUrl) }))
           } else {
-            await send(.loginResponse(.failure(LoginCoreError(code: .failToCheckUserInformation))))
+            await send(.kakaoLoginResponse(.failure(LoginCoreError(code: .failToCheckUserInformation))))
           }
         } catch: { error,send in
-          await send(.loginResponse(.failure(LoginCoreError(code: .failToRegistrationToken, underlying: error))))
+          await send(.kakaoLoginResponse(.failure(LoginCoreError(code: .failToRegistrationToken, underlying: error))))
         }
         
       case .checkUserInformationResponse(.failure):
@@ -133,7 +166,7 @@ public struct LoginCore {
           await send(.showError(true))
         }
         
-      case let .loginResponse(.success(user)):
+      case let .kakaoLoginResponse(.success(user)):
         let userInfo = UserInfo(
           userID: user.userID,
           nickname: user.nickname,
@@ -148,7 +181,28 @@ public struct LoginCore {
           }))
         }
         
-      case .loginResponse(.failure):
+      case .kakaoLoginResponse(.failure):
+        return .run { send in
+          await send(.logError(LoginCoreError(code: .failToLogin)))
+          await send(.showError(true))
+        }
+        
+      case let .appleLoginResponse(.success(user)):
+        let userInfo = UserInfo(
+          userID: user.userID,
+          nickname: user.nickname,
+          accessToken: user.accessToken,
+          refreshToken: user.refreshToken
+        )
+        state.userInfo = userInfo
+        return .run { send in
+          await send(.saveUserInfoToKeychain(Result { try await self.keyChainClient.createUserInfo(userInfo) }))
+          await send(.getGroupsResponse(Result {
+            try await self.groupAPIClient.getGroups(userInfo.accessToken)
+          }))
+        }
+        
+      case .appleLoginResponse(.failure):
         return .run { send in
           await send(.logError(LoginCoreError(code: .failToLogin)))
           await send(.showError(true))

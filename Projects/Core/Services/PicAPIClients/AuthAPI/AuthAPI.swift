@@ -12,7 +12,7 @@ import Get
 import Models
 
 public enum AuthAPI {
-  case login(
+  case kakaoLogin(
     idToken: String,
     provider: String,
     nickname: String,
@@ -21,12 +21,17 @@ public enum AuthAPI {
   case refresh(refreshToken: String)
   case testToken(accessToken: String)
   case delete(accessToken: String)
+  case appleLogin(
+    idToken: String,
+    fullName: String?,
+    user: String
+  )
 }
 
 extension AuthAPI: RouteType {
   public var path: String {
     switch self {
-    case .login:
+    case .kakaoLogin:
       return "/api/v1/auth/login"
     case .refresh:
       return "/api/v1/auth/token"
@@ -34,12 +39,14 @@ extension AuthAPI: RouteType {
       return "/api/test"
     case .delete:
       return "/api/v1/user"
+    case .appleLogin:
+      return "/api/v1/auth/apple-login"
     }
   }
   
   public var method: HTTPMethod {
     switch self {
-    case .login:
+    case .kakaoLogin:
       return .post
     case .refresh:
       return .post
@@ -47,12 +54,14 @@ extension AuthAPI: RouteType {
       return .get
     case .delete:
       return .delete
+    case .appleLogin:
+      return .post
     }
   }
   
   public var query: [(String, String?)]? {
     switch self {
-    case .login:
+    case .kakaoLogin:
       return nil
     case .refresh:
       return nil
@@ -60,12 +69,14 @@ extension AuthAPI: RouteType {
       return nil
     case .delete:
       return nil
+    case .appleLogin:
+      return nil
     }
   }
   
   public var body: Encodable? {
     switch self {
-    case let .login(idToken, provider, nickname, profileImage):
+    case let .kakaoLogin(idToken, provider, nickname, profileImage):
       let body = KakaoLogin(
         idToken: idToken,
         provider: provider,
@@ -79,12 +90,18 @@ extension AuthAPI: RouteType {
       return nil
     case .delete:
       return nil
+    case let .appleLogin(idToken, fullName, user):
+      return [
+        "id_token": idToken,
+        "full_name": fullName,
+        "user": user
+      ]
     }
   }
   
   public var headers: [String: String]? {
     switch self {
-    case .login:
+    case .kakaoLogin:
       return nil
     case .refresh:
       return nil
@@ -98,6 +115,8 @@ extension AuthAPI: RouteType {
         "Authorization": "Bearer \(accessToken)"
       ]
       return headers
+    case .appleLogin:
+      return nil
     }
   }
 }

@@ -13,7 +13,7 @@ import Models
 
 @DependencyClient
 public struct AuthAPIClient: Sendable {
-  public var login: @Sendable (
+  public var kakaoLogin: @Sendable (
     _ idToken: String,
     _ nickname: String,
     _ profileImage: String
@@ -21,14 +21,19 @@ public struct AuthAPIClient: Sendable {
   public var refreshToken: @Sendable (_ refreshToken: String) async throws -> TokenInfo
   public var testToken: @Sendable (_ accessToken: String) async throws -> TestInfo
   public var withdrawAccount: @Sendable (_ accessToken: String) async throws -> DeleteUserInfo
+  public var appleLogin: @Sendable (
+    _ idToken: String,
+    _ fullName: String?,
+    _ user: String
+  ) async throws -> PICUserInfo
 }
 
 extension AuthAPIClient: DependencyKey {
   public static var liveValue: AuthAPIClient {
     return AuthAPIClient(
-      login: { idToken, nickname, profileImage in
+      kakaoLogin: { idToken, nickname, profileImage in
         let provider = "KAKAO"
-        let route = AuthAPI.login(
+        let route = AuthAPI.kakaoLogin(
           idToken: idToken,
           provider: provider,
           nickname: nickname,
@@ -75,6 +80,21 @@ extension AuthAPIClient: DependencyKey {
         } catch {
           throw AuthAPIClientError(code: .failToDeleteUserInformation)
         }
+      },
+      appleLogin: { idToken, fullName, user in
+        let route = AuthAPI.appleLogin(
+          idToken: idToken,
+          fullName: fullName,
+          user: user
+        )
+        let request = Request<SuccessResponse<PICUserInfo>>(route: route)
+        do {
+          let response = try await NetworkManager.shared.send(request)
+          
+          return response.value.data
+        } catch {
+          throw AuthAPIClientError(code: .failToAppleLogin)
+        }
       }
     )
   }
@@ -97,5 +117,6 @@ public struct AuthAPIClientError: GabbangzipError {
     case failToGetTokenInformation
     case failToTest
     case failToDeleteUserInformation
+    case failToAppleLogin
   }
 }
