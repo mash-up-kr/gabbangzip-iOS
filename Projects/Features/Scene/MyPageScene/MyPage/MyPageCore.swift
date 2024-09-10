@@ -136,6 +136,8 @@ public struct MyPageCore {
     case showError(Bool, State.MyPageError)
     case withdraw
     case logError(Error)
+    case revokeAppleID
+    case withdrawAccount
     
     // Route Action
     case backToHome
@@ -229,6 +231,22 @@ public struct MyPageCore {
         return .none
         
       case .withdraw:
+        return .run(
+          operation: { [state] send in
+            let loginType = state.userInfo.loginType
+            switch loginType {
+            case .kakao:
+              await send(.withdrawAccount)
+            case .apple:
+              await send(.revokeAppleID)
+            }
+          }
+        )
+        
+      case .revokeAppleID:
+        return .none
+        
+      case .withdrawAccount:
         return .run(
           operation: { [state] send in
             let accessToken = state.userInfo.accessToken
