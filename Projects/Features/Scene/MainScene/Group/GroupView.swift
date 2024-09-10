@@ -74,7 +74,8 @@ public struct GroupView: View {
           userID: 1,
           nickname: "james",
           accessToken: "",
-          refreshToken: ""
+          refreshToken: "",
+          loginType: .apple
         )),
         id: 0,
         name: "test",
