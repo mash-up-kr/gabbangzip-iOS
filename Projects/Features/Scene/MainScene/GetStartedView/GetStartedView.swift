@@ -51,7 +51,7 @@ public struct GetStartedView: View {
         
         GabbangzipBottomButton(
           type: .active,
-          title: "그룹 만들기",
+          title: "여섯명 그룹 만들기",
           action: { store.send(.createGroupButtonTapped) }
         )
         .padding(.horizontal, 16)
