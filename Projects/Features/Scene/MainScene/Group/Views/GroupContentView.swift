@@ -74,6 +74,10 @@ struct GroupContentView: View {
               smallButtonContentType: buttonType,
               action: { store.send(.galleryButtonTapped) }
             )
+            
+            Text("내 PIC은 네장까지 올릴 수 있어요")
+              .font(.text14)
+              .foregroundStyle(DesignSystem.Colors.gray60)
           case .afterMyUpload, .afterMyVote:
             SmallButton(
               type: store.stabbingButtonType,
