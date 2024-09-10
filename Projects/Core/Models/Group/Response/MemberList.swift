@@ -30,6 +30,9 @@ public struct Member: Decodable, Hashable {
   public static let mockList: [Member] = [
     Member(id: 0, nickname: "혜린"),
     Member(id: 1, nickname: "현아"),
-    Member(id: 2, nickname: "준혁")
+    Member(id: 2, nickname: "준혁"),
+    Member(id: 3, nickname: "혜린"),
+    Member(id: 4, nickname: "현아"),
+    Member(id: 5, nickname: "준혁")
   ]
 }
