@@ -32,6 +32,7 @@ struct FloatingButton<Content>: View where Content: View {
       .background(DesignSystem.Colors.gray0)
       .cornerRadius(16)
       .opacity(isExpanded ? 1 : 0)
+      .shadow(radius: 10)
       
       Button(
         action: {
@@ -49,6 +50,7 @@ struct FloatingButton<Content>: View where Content: View {
             .background(isExpanded ? DesignSystem.Colors.gray0 : DesignSystem.Colors.gray80)
             .clipShape(Circle())
             .rotationEffect(.degrees(isExpanded ? 45 : 0))
+            .shadow(radius: 10)
         }
       )
     }
@@ -59,5 +61,4 @@ struct FloatingButton<Content>: View where Content: View {
     FloatingOptionButton(title: "그룹 들어가기", icon: DesignSystem.Icons.groupIn, action: {})
     FloatingOptionButton(title: "그룹 만들기", icon: DesignSystem.Icons.groupPlus, action: {})
   }
-  .background(.gray)
 }
