@@ -62,4 +62,5 @@ public enum ExternalDependency: String {
   case firebaseAnalytics = "FirebaseAnalytics"
   case firebaseMessaging = "FirebaseMessaging"
   case multipartFormDataKit = "MultipartFormDataKit"
+  case swiftJWT = "SwiftJWT"
 }
