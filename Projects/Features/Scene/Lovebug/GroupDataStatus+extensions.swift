@@ -13,7 +13,7 @@ public extension GroupData.Status {
   var smallButtonContentType: SmallButtonContentType? {
     switch self {
     case .beforeMyUpload:
-      return .gallery
+      return .uploadPIC
     case .afterMyUpload, .afterMyVote:
       return .stabbing
     case .beforeMyVote:
