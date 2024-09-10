@@ -171,7 +171,8 @@ public struct LoginCore {
           userID: user.userID,
           nickname: user.nickname,
           accessToken: user.accessToken,
-          refreshToken: user.refreshToken
+          refreshToken: user.refreshToken,
+          loginType: .kakao
         )
         state.userInfo = userInfo
         return .run { send in
@@ -192,7 +193,8 @@ public struct LoginCore {
           userID: user.userID,
           nickname: user.nickname,
           accessToken: user.accessToken,
-          refreshToken: user.refreshToken
+          refreshToken: user.refreshToken,
+          loginType: .apple
         )
         state.userInfo = userInfo
         return .run { send in
