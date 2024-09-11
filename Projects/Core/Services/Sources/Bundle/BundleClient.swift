@@ -13,6 +13,7 @@ import Foundation
 public struct BundleClient: Sendable {
   public var getValue: @Sendable (_ key: String) throws -> Any
   public var getCurrentVersion: @Sendable () throws -> String = { "0.0.0" }
+  public var getBundleID: @Sendable () throws -> String = { "com.mashup.gabbangzip" }
 }
 
 extension BundleClient: DependencyKey {
@@ -30,6 +31,13 @@ extension BundleClient: DependencyKey {
           throw BundleClientError(code: .noCurrentVersion)
         }
         return version
+      },
+      getBundleID: {
+        guard let dictionary = Bundle.main.infoDictionary,
+              let bundleID = dictionary["CFBundleIdentifier"] as? String else {
+          throw BundleClientError(code: .noBundleID)
+        }
+        return bundleID
       }
     )
   }
@@ -65,5 +73,6 @@ public struct BundleClientError: GabbangzipError {
   public enum Code: Int {
     case noValueForKey
     case noCurrentVersion
+    case noBundleID
   }
 }

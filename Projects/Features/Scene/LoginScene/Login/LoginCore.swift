@@ -61,6 +61,9 @@ public struct LoginCore {
     case getGroupsResponse(Result<GroupsData, Error>)
     case showError(Bool)
     case logError(LoginCoreError)
+    case requestAppleToken(String, String)
+    case tokenResponse(Result<AppleTokenInfo, Error>)
+    case saveAppleRefreshTokenToKeyChain(Result<Void, Error>)
     
     // Route Action
     case moveToHome
@@ -74,6 +77,8 @@ public struct LoginCore {
   @Dependency(\.userDefaultsClient) private var userDefaultsClient
   @Dependency(\.pushNotificationAPIClient) private var pushNotificationAPIClient
   @Dependency(\.groupAPIClient) private var groupAPIClient
+  @Dependency(\.appleLoginAPIClient) private var appleLoginAPIClient
+  @Dependency(\.bundleClient) private var bundleClient
   
   public var body: some Reducer<State, Action> {
     BindingReducer()
@@ -97,6 +102,8 @@ public struct LoginCore {
           switch result {
           case let .success(authorization):
             if let userCredential = authorization.credential as? ASAuthorizationAppleIDCredential,
+               let authorizationCode = userCredential.authorizationCode,
+               let encodedAuthorizationCode = String(data: authorizationCode, encoding: .utf8),
                let idToken = userCredential.identityToken,
                let encodedIdToken = String(data: idToken, encoding: .utf8) {
               
@@ -109,6 +116,7 @@ public struct LoginCore {
                 }
               }()
               
+              try await send(.requestAppleToken(bundleClient.getBundleID(), encodedAuthorizationCode))
               await send(.appleLoginResponse(Result {
                 try await authAPIClient.appleLogin(
                   idToken: encodedIdToken,
@@ -258,6 +266,27 @@ public struct LoginCore {
           logger.error("MyPage Error: \(error)")
         }
         
+      case let .requestAppleToken(bundleID, authorizationCode):
+        return .run { send in
+          await send(.tokenResponse(Result { try await self.appleLoginAPIClient.requestToken(bundleID, authorizationCode) }))
+        }
+        
+      case let .tokenResponse(.success(appleTokenInfo)):
+        return .none
+        
+      case .tokenResponse(.failure):
+        return .run { send in
+          await send(.logError(LoginCoreError(code: .failToGetToken)))
+        }
+        
+      case .saveAppleRefreshTokenToKeyChain(.success):
+        return .none
+        
+      case .saveAppleRefreshTokenToKeyChain(.failure):
+        return .run { send in
+          await send(.logError(LoginCoreError(code: .failToSaveAppleRefreshTokenToKeyChain)))
+        }
+        
       case .moveToHome:
         return .none
         
@@ -280,5 +309,7 @@ public struct LoginCoreError: GabbangzipError {
     case failToLogin
     case failToPostFCMToken
     case failToSaveUserInfoToKeychain
+    case failToGetToken
+    case failToSaveAppleRefreshTokenToKeyChain
   }
 }
