@@ -54,7 +54,7 @@ extension AppleLoginAPI: RouteType {
         ("client_id", clientID),
         ("client_secret", clientSecret),
         ("code", authorizationCode),
-        ("grant_type", "autorization_code")
+        ("grant_type", "authorization_code")
       ]
     }
   }
