@@ -30,7 +30,7 @@ public struct AppleNetworkManager {
       baseURL: URL(
         string: "https://appleid.apple.com"
       ),
-      delegate: GabbangzipAPIClientDelegate()
+      delegate: GabbangzipAppleAPIClientDelegate()
     )
   )
 }
