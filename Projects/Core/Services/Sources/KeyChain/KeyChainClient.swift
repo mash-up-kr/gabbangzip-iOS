@@ -145,11 +145,7 @@ extension KeyChainClient: DependencyKey {
         let status = SecItemDelete(query)
         
         switch status {
-        case errSecNoSuchKeychain:
-          throw KeyChainClientError(code: .failToDelete)
-        case errSecItemNotFound:
-          throw KeyChainClientError(code: .failToDelete)
-        case noErr:
+        case errSecNoSuchKeychain, errSecItemNotFound, noErr:
           break
         default:
           throw KeyChainClientError(code: .failToDelete)

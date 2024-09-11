@@ -272,7 +272,6 @@ public struct LoginCore {
         }
         
       case let .tokenResponse(.success(appleTokenInfo)):
-        return .none
         return .run { send in
           await send(.saveAppleRefreshTokenToKeyChain(Result { try await keyChainClient.createRefreshToken(appleTokenInfo.refreshToken) }))
         }

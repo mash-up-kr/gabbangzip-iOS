@@ -212,6 +212,7 @@ public struct MyPageCore {
         return .run(
           operation: { send in
             try await keyChainClient.deleteUserInfo()
+            try await keyChainClient.deleteRefreshToken()
             await send(.backToLogin)
           },
           catch: { error, send in
