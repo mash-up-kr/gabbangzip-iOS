@@ -61,7 +61,6 @@ public struct LoginCore {
     case getGroupsResponse(Result<GroupsData, Error>)
     case showError(Bool)
     case logError(LoginCoreError)
-    case requestAppleToken(String, String)
     case tokenResponse(Result<AppleTokenInfo, Error>)
     case saveAppleRefreshTokenToKeyChain(Result<Void, Error>)
     
@@ -116,7 +115,7 @@ public struct LoginCore {
                 }
               }()
               
-              try await send(.requestAppleToken(bundleClient.getBundleID(), encodedAuthorizationCode))
+              await send(.tokenResponse(Result { try await self.appleLoginAPIClient.requestToken(bundleClient.getBundleID(), encodedAuthorizationCode) }))
               await send(.appleLoginResponse(Result {
                 try await authAPIClient.appleLogin(
                   idToken: encodedIdToken,
@@ -125,7 +124,7 @@ public struct LoginCore {
                 )
               }))
             }
-          case let .failure(error):
+          case .failure:
             await send(.showError(true))
           }
         }
@@ -265,12 +264,7 @@ public struct LoginCore {
         return .run { send in
           logger.error("MyPage Error: \(error)")
         }
-        
-      case let .requestAppleToken(bundleID, authorizationCode):
-        return .run { send in
-          await send(.tokenResponse(Result { try await self.appleLoginAPIClient.requestToken(bundleID, authorizationCode) }))
-        }
-        
+
       case let .tokenResponse(.success(appleTokenInfo)):
         return .run { send in
           await send(.saveAppleRefreshTokenToKeyChain(Result { try await keyChainClient.createRefreshToken(appleTokenInfo.refreshToken) }))
