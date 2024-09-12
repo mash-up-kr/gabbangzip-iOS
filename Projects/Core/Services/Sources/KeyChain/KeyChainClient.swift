@@ -109,7 +109,7 @@ extension KeyChainClient: DependencyKey {
         case errSecSuccess:
           break
         case errSecDuplicateItem:
-          try updateKey(.userInfo, encodedData)
+          try updateKey(.refreshToken, encodedData)
         default:
           throw KeyChainClientError(code: .failToCreate)
         }
@@ -133,7 +133,7 @@ extension KeyChainClient: DependencyKey {
             throw KeyChainClientError(code: .failToGetData)
           }
         default:
-          throw KeyChainClientError(code: .failToRead)
+          throw KeyChainClientError(userInfo: ["status": status], code: .failToRead)
         }
       },
       deleteRefreshToken: {
