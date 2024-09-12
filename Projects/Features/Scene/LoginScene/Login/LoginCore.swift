@@ -61,7 +61,6 @@ public struct LoginCore {
     case getGroupsResponse(Result<GroupsData, Error>)
     case showError(Bool)
     case logError(LoginCoreError)
-    case tokenResponse(Result<AppleTokenInfo, Error>)
     case saveAppleRefreshTokenToKeyChain(Result<Void, Error>)
     
     // Route Action
@@ -97,37 +96,45 @@ public struct LoginCore {
         }
         
       case let .appleSignInCompleted(result):
-        return .run { send in
-          switch result {
-          case let .success(authorization):
-            if let userCredential = authorization.credential as? ASAuthorizationAppleIDCredential,
-               let authorizationCode = userCredential.authorizationCode,
-               let encodedAuthorizationCode = String(data: authorizationCode, encoding: .utf8),
-               let idToken = userCredential.identityToken,
-               let encodedIdToken = String(data: idToken, encoding: .utf8) {
-              
-              let fullNameString: String? = {
-                if let fullName = userCredential.fullName {
-                  let formatter = PersonNameComponentsFormatter()
-                  return formatter.string(from: fullName)
-                } else {
-                  return nil
-                }
-              }()
-              
-              await send(.tokenResponse(Result { try await self.appleLoginAPIClient.requestToken(bundleClient.getBundleID(), encodedAuthorizationCode) }))
-              await send(.appleLoginResponse(Result {
-                try await authAPIClient.appleLogin(
-                  idToken: encodedIdToken,
-                  fullName: fullNameString,
-                  user: userCredential.user
-                )
-              }))
+        return .run(
+          operation: { send in
+            switch result {
+            case let .success(authorization):
+              if let userCredential = authorization.credential as? ASAuthorizationAppleIDCredential,
+                 let authorizationCode = userCredential.authorizationCode,
+                 let encodedAuthorizationCode = String(data: authorizationCode, encoding: .utf8),
+                 let idToken = userCredential.identityToken,
+                 let encodedIdToken = String(data: idToken, encoding: .utf8) {
+                
+                let fullNameString: String? = {
+                  if let fullName = userCredential.fullName {
+                    let formatter = PersonNameComponentsFormatter()
+                    return formatter.string(from: fullName)
+                  } else {
+                    return nil
+                  }
+                }()
+                
+                let appleTokenInfo = try await self.appleLoginAPIClient.requestToken(bundleClient.getBundleID(), encodedAuthorizationCode)
+                try await keyChainClient.createRefreshToken(appleTokenInfo.refreshToken)
+                
+                await send(.appleLoginResponse(Result {
+                  try await authAPIClient.appleLogin(
+                    idToken: encodedIdToken,
+                    fullName: fullNameString,
+                    user: userCredential.user
+                  )
+                }))
+              }
+            case .failure:
+              await send(.showError(true))
             }
-          case .failure:
+          },
+          catch: { error, send in
+            await send(.logError(LoginCoreError(code: .failToLogin, underlying: error)))
             await send(.showError(true))
           }
-        }
+        )
         
       case let .loginWithKakaoTalkResponse(.success(idToken)):
         state.kakaoIdToken.idToken = idToken
@@ -262,17 +269,7 @@ public struct LoginCore {
         
       case let .logError(error):
         return .run { send in
-          logger.error("MyPage Error: \(error)")
-        }
-
-      case let .tokenResponse(.success(appleTokenInfo)):
-        return .run { send in
-          await send(.saveAppleRefreshTokenToKeyChain(Result { try await keyChainClient.createRefreshToken(appleTokenInfo.refreshToken) }))
-        }
-        
-      case .tokenResponse(.failure):
-        return .run { send in
-          await send(.logError(LoginCoreError(code: .failToGetToken)))
+          logger.error("Login Error: \(error)")
         }
         
       case .saveAppleRefreshTokenToKeyChain(.success):
