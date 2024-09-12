@@ -47,7 +47,8 @@ extension AppleLoginAPI: RouteType {
       return [
         ("client_id", clientID),
         ("client_secret", clientSecret),
-        ("token", token)
+        ("token", token),
+        ("token_type_hint", "refresh_token")
       ]
     case let .requestToken(clientID, clientSecret, authorizationCode):
       return [
