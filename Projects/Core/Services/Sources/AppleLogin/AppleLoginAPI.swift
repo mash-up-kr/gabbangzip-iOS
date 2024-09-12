@@ -77,4 +77,3 @@ extension AppleLoginAPI: RouteType {
     }
   }
 }
-
