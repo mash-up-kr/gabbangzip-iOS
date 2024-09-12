@@ -32,7 +32,7 @@ extension AppleLoginAPIClient: DependencyKey {
           let response = try await AppleNetworkManager.shared.send(request)
           return response.value
         } catch {
-          throw AppleLoginAPIClientError(code: .failToRequestToken)
+          throw AppleLoginAPIClientError(code: .failToRequestToken, underlying: error)
         }
       },
       revoke: { clientID, token in
