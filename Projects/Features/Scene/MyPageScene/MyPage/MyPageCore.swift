@@ -136,9 +136,8 @@ public struct MyPageCore {
     case showError(Bool, State.MyPageError)
     case withdraw
     case logError(Error)
-    case revokeAppleID(Result<String, Error>)
+    case revokeAppleID
     case withdrawAccount
-    case getRefreshToken
     case revokeAppleIDResponse(Result<Void, Error>)
     
     // Route Action
@@ -242,28 +241,33 @@ public struct MyPageCore {
             case .kakao:
               await send(.withdrawAccount)
             case .apple:
-              await send(.getRefreshToken)
+              await send(.revokeAppleID)
             }
           }
         )
         
-      case let .revokeAppleID(.success(token)):
-        return .run { send in
-          await send(.revokeAppleIDResponse(Result { try await self.appleLoginAPIClient.revoke(clientID: self.bundleClient.getBundleID(), token: token) }))
-        }
-        
-      case .revokeAppleID(.failure):
-        return .run { send in
-          await send(.logError(MyPageCoreError(code: .failToReadRefreshToken)))
-        }
+      case .revokeAppleID:
+        return .run(
+          operation: { send in
+            let refreshToken = try await self.keyChainClient.readRefreshToken()
+            await send(.revokeAppleIDResponse(Result { try await self.appleLoginAPIClient.revoke(clientID: self.bundleClient.getBundleID(), token: refreshToken) }))
+          },
+          catch: { error, send in
+            await send(.logError(MyPageCoreError(code: .failToReadRefreshToken, underlying: error)))
+            await send(.showError(true, .withdraw))
+          }
+        )
         
       case .revokeAppleIDResponse(.success):
         return .run { send in
           await send(.withdrawAccount)
         }
         
-      case .revokeAppleIDResponse(.failure):
-        return .none
+      case let .revokeAppleIDResponse(.failure(error)):
+        return .run { send in
+          await send(.logError(MyPageCoreError(code: .failToRevokeAppleID, underlying: error)))
+          await send(.showError(true, .withdraw))
+        }
         
       case .withdrawAccount:
         return .run(
@@ -283,11 +287,6 @@ public struct MyPageCore {
       case let .logError(error):
         return .run { send in
           logger.error("MyPage Error: \(error)")
-        }
-        
-      case .getRefreshToken:
-        return .run { send in
-          await send(.revokeAppleID(Result { try await self.keyChainClient.readRefreshToken() }))
         }
         
       case .backToHome:
@@ -313,5 +312,6 @@ public struct MyPageCoreError: GabbangzipError {
     case failToLogout
     case failToWithdraw
     case failToReadRefreshToken
+    case failToRevokeAppleID
   }
 }
