@@ -142,6 +142,7 @@ xcuserdata
 *.xcodeproj
 *.xcworkspace
 GoogleService-Info.plist
+*.p8
 
 ### Tuist derived files ###
 graph.dot

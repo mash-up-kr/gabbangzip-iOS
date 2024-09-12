@@ -9,6 +9,7 @@
 import ComposableArchitecture
 import DesignSystem
 import SwiftUI
+import _AuthenticationServices_SwiftUI
 
 public struct LoginView: View {
   @Bindable public var store: StoreOf<LoginCore>
@@ -45,17 +46,29 @@ public struct LoginView: View {
       
       Button(
         action: {
-          store.send(.loginButtonTapped)
+          store.send(.kakaoLoginButtonTapped)
         },
         label: {
           DesignSystem.Icons.kakao
             .resizable()
             .scaledToFit()
             .padding(.horizontal, 16)
-            .padding(.bottom, 60)
-            .frame(width: UIScreen.main.bounds.size.width)
         }
       )
+      
+      SignInWithAppleButton(
+        .signIn,
+        onRequest: { request in
+          request.requestedScopes = [.fullName, .email]
+        },
+        onCompletion: { result in
+          store.send(.appleSignInCompleted(result))
+        }
+      )
+      .frame(height: 50)
+      .padding(.horizontal, 16)
+      .padding(.top, 8)
+      .padding(.bottom, 60)
     }
     .toast(
       isPresented: $store.isPresented,

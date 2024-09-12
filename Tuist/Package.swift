@@ -27,6 +27,7 @@ let package = Package(
     .package(url: "https://github.com/kean/Get.git", from: "2.2.0"),
     .package(url: "https://github.com/Kuniwak/MultipartFormDataKit.git", from: "1.0.1"),
     .package(url: "https://github.com/kakao/kakao-ios-sdk", from: "2.22.2"),
-    .package(url: "https://github.com/firebase/firebase-ios-sdk.git", from: "8.0.0")
+    .package(url: "https://github.com/firebase/firebase-ios-sdk.git", from: "8.0.0"),
+    .package(url: "https://github.com/Kitura/Swift-JWT.git", from: "4.0.0")
   ]
 )

@@ -25,7 +25,8 @@ let project = Project.make(
       name: "Services",
       product: .framework,
       bundleId: "com.mashup.gabbangzip.services",
-      sources: ["Services/**"],
+      sources: ["Services/Sources/**"],
+      resources: ["Services/Resources/**"],
       dependencies: [
         .external(externalDependency: .get),
         .external(externalDependency: .composableArchitecture),
@@ -33,9 +34,10 @@ let project = Project.make(
         .external(externalDependency: .firebaseAnalytics),
         .external(externalDependency: .firebaseMessaging),
         .external(externalDependency: .multipartFormDataKit),
+        .external(externalDependency: .swiftJWT),
         .target(name: .models)
-			],
-			settings: .settings(base: ["OTHER_LDFLAGS": "-ObjC"])),
+    ],
+    settings: .settings(base: ["OTHER_LDFLAGS": "-ObjC"])),
     .make(
       name: "Common",
       product: .framework,

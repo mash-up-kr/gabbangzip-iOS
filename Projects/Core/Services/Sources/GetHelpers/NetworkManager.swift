@@ -21,3 +21,16 @@ public struct NetworkManager {
     )
   )
 }
+
+public struct AppleNetworkManager {
+  private init() {}
+  
+  public static let shared = APIClient(
+    configuration: .init(
+      baseURL: URL(
+        string: "https://appleid.apple.com"
+      ),
+      delegate: GabbangzipAppleAPIClientDelegate()
+    )
+  )
+}
