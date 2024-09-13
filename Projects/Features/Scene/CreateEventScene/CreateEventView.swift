@@ -36,11 +36,6 @@ public struct CreateEventView: View {
         )
         .padding(.top, 16)
         
-        DateView(text: CreateEventViewNameSpace.eventDate)
-        
-        GabbangzipDate(date: store.recentEventDate)
-          .padding(.top, 16)
-        
         EventView(text: CreateEventViewNameSpace.eventPicture)
       }
       .padding(.horizontal, 16)
@@ -64,6 +59,20 @@ public struct CreateEventView: View {
       .padding(.horizontal, 16)
     }
     .navigationBarHidden(true)
+    .overlay {
+      if store.isLoading {
+        ZStack {
+          Color.black
+            .opacity(0.5)
+            .ignoresSafeArea()
+          
+          ProgressView()
+            .progressViewStyle(CircularProgressViewStyle())
+            .controlSize(.large)
+            .tint(.white)
+        }
+      }
+    }
     .toast(isPresented: $store.isErrorPresented, type: .onlyText("다시 시도해주세요."))
     .popup(
       isPresented: $store.isExiting,
