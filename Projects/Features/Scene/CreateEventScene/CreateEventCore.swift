@@ -30,6 +30,7 @@ public struct CreateEventCore {
     public var completeButtonType: ButtonType
     public var selectedPhotosInfo: [PhotoInfo]
     public var imageURL: [String]
+    public var isLoading: Bool
     public var recentEventDate: String {
       return DateFormatter.createEvent.string(from: Date())
     }
@@ -48,7 +49,8 @@ public struct CreateEventCore {
       isTouchedOnce: Bool = false,
       completeButtonType: ButtonType = .inactive,
       selectedPhotosInfo: [PhotoInfo] = [],
-      imageURL: [String] = []
+      imageURL: [String] = [],
+      isLoading: Bool = false
     ) {
       self._userInfo = Shared(wrappedValue: userInfo(), .inMemory("userInfo"))
       self.groupID = groupID
@@ -61,6 +63,7 @@ public struct CreateEventCore {
       self.completeButtonType = completeButtonType
       self.selectedPhotosInfo = selectedPhotosInfo
       self.imageURL = imageURL
+      self.isLoading = isLoading
     }
   }
   
@@ -82,10 +85,9 @@ public struct CreateEventCore {
     case changeIsTouchedOnce(Bool)
     case checkCompleteButtonType
     case setToastPresented(Bool)
-    case getUploadURLResponse(Result<FileUploadInfo, Error>, PhotoInfo)
-    case uploadFileToPresignedURLResponse
     case createEvent(Result<EventInfo, Error>)
     case logError(Error)
+    case setIsLoading(Bool)
     
     // Route Action
     case moveToHome
@@ -130,29 +132,54 @@ public struct CreateEventCore {
         return .none
         
       case .completeButtonTapped:
+        state.isLoading = true
         return .run { [state] send in
           guard state.isPhotoSelected else {
             await send(.setToastPresented(true))
+            await send(.setIsLoading(false))
             return
           }
           
-          await withTaskGroup(of: Void.self) { taskGroup in
-            for photo in state.selectedPhotosInfo {
-              taskGroup.addTask {
-                await send(.getUploadURLResponse(
-                  Result {
-                    let result = try await fileUploadAPIClient.getUploadURL(
-                      state.userInfo.accessToken,
-                      photo.fileExtension
-                    )
-                    return result
-                  },
-                  photo)
+          var selectedImageURLs: [String] = []
+          
+          try await withThrowingTaskGroup(of: String.self) { group in
+            for selectedPhoto in state.selectedPhotosInfo {
+              group.addTask {
+                let fileUploadInfo = try await self.fileUploadAPIClient.getUploadURL(
+                  accessToken: state.userInfo.accessToken,
+                  fileExtension: selectedPhoto.fileExtension
                 )
+                
+                try await self.fileUploadAPIClient.uploadFile(
+                  uploadURL: fileUploadInfo.uploadURL,
+                  data: selectedPhoto.data,
+                  fileExtension: selectedPhoto.fileExtension
+                )
+                
+                return fileUploadInfo.fileID
               }
             }
+            
+            for try await fileID in group {
+              selectedImageURLs.append(fileID)
+            }
           }
+          
+          await send(
+            .createEvent(
+              Result {
+                try await eventAPIClient.createEvent(
+                  accessToken: state.userInfo.accessToken,
+                  groupID: state.groupID,
+                  description: state.text,
+                  date: state.uploadEventDate,
+                  pictures: selectedImageURLs
+                )
+              }
+            )
+          )
         } catch: { error, send in
+          await send(.setIsLoading(false))
           await send(.logError(CreateEventCoreError(code: .failToUploadURL, underlying: error)))
         }
         
@@ -181,62 +208,23 @@ public struct CreateEventCore {
         }
         
       case .checkCompleteButtonType:
-        state.completeButtonType = state.isEventNamed && state.isPhotoSelected && !state.isTouchedOnce 
-                                    ? .active 
-                                    : .inactive
+        state.completeButtonType = state.isEventNamed && state.isPhotoSelected && !state.isTouchedOnce
+        ? .active
+        : .inactive
         return .none
         
       case let .setToastPresented(isPresented):
         state.isErrorPresented = isPresented
         return .none
         
-      case let .getUploadURLResponse(.success(fileUploadInfo), photoInfo):
-        state.imageURL.append(fileUploadInfo.fileID)
-        return .run { [state] send in
-          try await fileUploadAPIClient.uploadFile(
-            uploadURL: fileUploadInfo.uploadURL,
-            data: photoInfo.data,
-            fileExtension: photoInfo.fileExtension
-          )
-          if state.imageURL.count == 4 {
-            await send(.uploadFileToPresignedURLResponse)
-          }
-        } catch: { error, send in
-          await send(.logError(CreateEventCoreError(code: .failTeUploadFileToPresignedURLResponse)))
-        }
-        
-      case .getUploadURLResponse(.failure, _):
-        return .run { send in
-          await send(.logError(CreateEventCoreError(code: .failToGetUploadURLResponse)))
-        }
-        
-      case .uploadFileToPresignedURLResponse:
-        return .run { [state] send in
-          await send(.changeIsTouchedOnce(true))
-          await send(
-            .createEvent(
-              Result {
-                try await eventAPIClient.createEvent(
-                  accessToken: state.userInfo.accessToken,
-                  groupID: state.groupID,
-                  description: state.text,
-                  date: state.uploadEventDate,
-                  pictures: state.imageURL
-                )
-              }
-            )
-          )
-        } catch: { error, send in
-          await send(.changeIsTouchedOnce(false))
-          await send(.logError(CreateEventCoreError(code: .failToUploadEventImage)))
-        }
-        
       case let .createEvent(.success(eventInfo)):
+        state.isLoading = false
         return .run { send in
           await send(.moveToHomeWithEvent)
         }
         
       case .createEvent(.failure):
+        state.isLoading = false
         return .run { send in
           await send(.logError(CreateEventCoreError(code: .failToCheckEvent)))
         }
@@ -246,6 +234,10 @@ public struct CreateEventCore {
         return .run { send in
           logger.error("CreateEvent Error: \(error)")
         }
+        
+      case let .setIsLoading(value):
+        state.isLoading = value
+        return .none
         
       case .moveToHome:
         return .none
@@ -265,8 +257,6 @@ public struct CreateEventCoreError: GabbangzipError {
   
   public enum Code: Int {
     case failToUploadURL
-    case failToGetUploadURLResponse
-    case failTeUploadFileToPresignedURLResponse
     case failToUploadEventImage
     case failToCheckEvent
   }
