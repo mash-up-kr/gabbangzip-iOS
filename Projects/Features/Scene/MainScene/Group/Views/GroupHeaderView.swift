@@ -40,5 +40,5 @@ struct GroupHeaderView: View {
 }
 
 #Preview {
-  GroupHeaderView(title: "이벤트를 만들어 보세요!", isButtonStyle: false)
+  GroupHeaderView(title: "네컷을 만들어 보세요!", isButtonStyle: false)
 }

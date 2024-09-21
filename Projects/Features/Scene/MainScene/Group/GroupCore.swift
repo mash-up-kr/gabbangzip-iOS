@@ -47,7 +47,7 @@ public struct GroupCore {
       return recentEvent.name ?? ""
     }
     var frontTitle: String {
-      return status == .noPastAndCurrentEvent ? "이벤트를 만들어 보세요!" : recentEventDate
+      return status == .noPastAndCurrentEvent ? "네컷을 만들어 보세요!" : recentEventDate
     }
     var isAllPhotoAdded: Bool {
       return selectedPhotosInfo.count == 4

@@ -155,7 +155,7 @@ public enum SmallButtonContentType {
   case changeFrame
   // 쿡 찌르기
   case stabbing
-  // 이벤트 생성하기
+  // 네컷 생성하기
   case generateEvent
   // 투표하기
   case vote
@@ -188,7 +188,7 @@ public enum SmallButtonContentType {
     case .stabbing:
       "쿡 찌르기"
     case .generateEvent:
-      "이벤트 생성하기"
+      "네컷 생성하기"
     case .vote:
       "투표하기"
     }

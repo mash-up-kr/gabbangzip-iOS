@@ -86,7 +86,7 @@ public struct CreateEventView: View {
   }
 }
 
-// MARK: - 이벤트 한줄 요약 뷰
+// MARK: - 네컷 한줄 요약 뷰
 fileprivate struct EventView: View {
   private var text: String
   
@@ -213,9 +213,9 @@ fileprivate struct EventPicturePickerView: View {
 // MARK: - CreateEventViewNameSpace
 extension CreateEventView {
   fileprivate enum CreateEventViewNameSpace {
-    static let navigationTitle = "이벤트 만들기"
-    static let eventTitle = "이벤트 한줄 요약"
-    static let eventTitlePlaceHolder = "이벤트를 한줄로 요약해주세요."
+    static let navigationTitle = "네컷 만들기"
+    static let eventTitle = "네컷 약속 한줄 요약"
+    static let eventTitlePlaceHolder = "어떤 약속인지 요약해 주세요"
     static let eventDate = "날짜"
     static let eventDatePlaceHolder = "YY/MM/DD"
     static let eventPicture = "사진 선택"
@@ -223,7 +223,7 @@ extension CreateEventView {
     static let popupDescription = "페이지를 나가면\n작성중인 내용이 삭제돼요"
     static let popupLeftButtonTitle = "나가기"
     static let popupRightButtonTitle = "계속 작성하기"
-    static let notice = "이벤트 PIC은 2시간 후에 종료돼요."
+    static let notice = "네컷 PIC은 2시간 후에 종료돼요."
     static let complete = "완료"
   }
 }
