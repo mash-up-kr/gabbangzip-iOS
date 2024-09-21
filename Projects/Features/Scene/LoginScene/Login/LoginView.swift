@@ -65,6 +65,7 @@ public struct LoginView: View {
           store.send(.appleSignInCompleted(result))
         }
       )
+      .cornerRadius(12)
       .frame(height: 50)
       .padding(.horizontal, 16)
       .padding(.top, 8)
