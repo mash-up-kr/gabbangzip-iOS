@@ -26,7 +26,6 @@ public struct CreateEventView: View {
         backButtonAction: { store.send(.backButtonTapped) }
       )
       VStack(spacing: 0) {
-        
         EventView(text: CreateEventViewNameSpace.eventTitle)
         
         GabbangzipInput(
@@ -35,6 +34,18 @@ public struct CreateEventView: View {
           maxLength: 10
         )
         .padding(.top, 16)
+        
+        DateView(text: CreateEventViewNameSpace.eventDate)
+        
+        Button(
+          action: {
+            
+          },
+          label: {
+            GabbangzipDate(date: store.recentEventDate)
+              .padding(.top, 16)
+          }
+        )
         
         EventView(text: CreateEventViewNameSpace.eventPicture)
       }
