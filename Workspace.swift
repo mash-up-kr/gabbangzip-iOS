@@ -80,10 +80,22 @@ let workspace = Workspace(
       profileAction: .profileAction(configuration: .debug),
       analyzeAction: .analyzeAction(configuration: .debug)
     ),
-	.scheme(
+    .scheme(
       name: "GroupDetailScene",
       buildAction: .buildAction(targets: [
         .project(path: "./Projects/Features/Scene", target: "GroupDetail")
+      ]),
+      runAction: .runAction(
+        configuration: .debug
+      ),
+      archiveAction: .archiveAction(configuration: .debug),
+      profileAction: .profileAction(configuration: .debug),
+      analyzeAction: .analyzeAction(configuration: .debug)
+    ),
+    .scheme(
+      name: "MyPageScene",
+      buildAction: .buildAction(targets: [
+        .project(path: "./Projects/Features/Scene", target: "MyPage")
       ]),
       runAction: .runAction(
         configuration: .debug
