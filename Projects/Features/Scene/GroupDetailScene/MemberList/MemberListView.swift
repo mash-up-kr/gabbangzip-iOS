@@ -51,10 +51,34 @@ public struct MemberListView: View {
       .padding(.top, 102)
       
       Spacer()
+      
+      
+      Button(
+        action: {
+          store.send(.leaveGroupButtonTapped)
+        },
+        label: {
+          Text("그룹 나가기")
+            .font(.body14)
+            .foregroundStyle(DesignSystem.Colors.gray60)
+            .baselineOffset(4)
+            .underline()
+            .padding(.bottom, 24)
+        }
+      )
     }
     .toast(
       isPresented: $store.toastPresented,
       type: store.toastType.toast
+    )
+    .popup(
+      isPresented: $store.popupPresented,
+      title: "그룹을 나가실건가요?",
+      description: "그룹을 나가면 함께 네컷을 만들 수 없어요.",
+      leftButtonTitle: "그룹 나가기",
+      leftButtonAction: { store.send(.popupLeftButtonTapped) },
+      rightButtonTitle: "닫기",
+      rightButtonAction: { store.send(.popupRightButtonTapped) }
     )
     .onAppear { store.send(.onAppear) }
   }

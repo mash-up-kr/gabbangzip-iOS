@@ -22,6 +22,7 @@ public struct MemberListCore {
     var groupKeyword: GroupData.Keyword
     var toastPresented: Bool
     var toastType: MemberListToastType
+    var popupPresented: Bool
     var isFullCapacity: Bool {
       memberList?.members.count == 6
     }
@@ -36,6 +37,7 @@ public struct MemberListCore {
       groupKeyword: GroupData.Keyword,
       toastPresented: Bool = false,
       toastType: MemberListToastType = .codeCopied,
+      popupPresented: Bool = false,
       userInfo: @autoclosure () -> UserInfo = .defaultValue
     ) {
       self.groupID = groupID
@@ -43,6 +45,7 @@ public struct MemberListCore {
       self.groupKeyword = groupKeyword
       self.toastPresented = toastPresented
       self.toastType = toastType
+      self.popupPresented = popupPresented
       self._userInfo = Shared(wrappedValue: userInfo(), .inMemory("userInfo"))
     }
   }
@@ -51,17 +54,23 @@ public struct MemberListCore {
 
   public enum Action: BindableAction {
     case binding(BindingAction<State>)
+    
     // View Action
     case onAppear
     case copyCodeButtonTapped
     case backButtonTapped
+    case leaveGroupButtonTapped
+    case popupLeftButtonTapped
+    case popupRightButtonTapped
     
     // Internal Action
     case getMemberList(Result<MemberList, Error>)
     case showToast(MemberListToastType)
+    case leaveGroupResponse(Result<GroupID, Error>)
     
     // Route Action
     case backToGroupDetail
+    case backToHome
   }
   
   @Dependency(\.uiPasteBoardClient) var uiPasteBoardClient
@@ -90,6 +99,22 @@ public struct MemberListCore {
       case .backButtonTapped:
         return .send(.backToGroupDetail)
         
+      case .leaveGroupButtonTapped:
+        state.popupPresented = true
+        return .none
+        
+      case .popupLeftButtonTapped:
+        state.popupPresented = false
+        return .run { [state] send in
+          await send(.leaveGroupResponse(Result {
+            try await self.groupAPIClient.leaveGroup(accessToken: state.userInfo.accessToken, groupID: state.groupID)
+          }))
+        }
+        
+      case .popupRightButtonTapped:
+        state.popupPresented = false
+        return .none
+        
       case let .getMemberList(.success(memberList)):
         state.memberList = memberList
         return .none
@@ -104,19 +129,43 @@ public struct MemberListCore {
         state.toastPresented = true
         state.toastType = toastType
         return .none
+        
+      case .leaveGroupResponse(.success):
+        return .send(.backToHome)
+        
+      case let .leaveGroupResponse(.failure(error)):
+        return .run { send in
+          if let error = error as? GroupAPIClientError,
+             let networkManagerError = error.underlying as? NetworkManagerError,
+             let picError = networkManagerError.underlying as? NetworkManagerError,
+             let response = picError.userInfo["message"] as? FailureResponse {
+            await send(.showToast(.custom(response.errorResponse.message)))
+          } else {
+            await send(.showToast(.leaveGroupFailed))
+          }
+        }
+        
+      case .backToHome:
+        return .none
       }
     }
   }
 }
 
 extension MemberListCore {
-  public enum MemberListToastType {
+  public enum MemberListToastType: Equatable {
     case codeCopied
+    case leaveGroupFailed
+    case custom(String)
     
     var toast: ToastType {
       switch self {
       case .codeCopied:
         return .onlyText("그룹원 초대 코드가 복사됐습니다!")
+      case .leaveGroupFailed:
+        return .onlyText("그룹 나가기에 실패했습니다.")
+      case let .custom(message):
+        return .onlyText(message)
       }
     }
   }
