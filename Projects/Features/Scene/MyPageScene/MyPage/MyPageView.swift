@@ -8,7 +8,6 @@
 
 import ComposableArchitecture
 import DesignSystem
-import Login
 import SwiftUI
 
 public struct MyPageView: View {

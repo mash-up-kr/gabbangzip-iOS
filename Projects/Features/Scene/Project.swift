@@ -53,7 +53,6 @@ let project = Project.make(
       dependencies: [
         .project(target: .models, projectPath: .core),
         .project(target: .coreKit, projectPath: .core),
-        .project(target: .login, projectPath: .scene),
         .project(target: .designSystem, projectPath: .designSystem),
         .external(externalDependency: .composableArchitecture)
       ]

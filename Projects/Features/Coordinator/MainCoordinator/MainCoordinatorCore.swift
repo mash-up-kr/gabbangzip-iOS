@@ -83,6 +83,9 @@ public struct MainCoordinatorCore {
       case .router(.routeAction(id: _, action: .groupDetailCoordinator(.router(.routeAction(id: _, action: .groupDetail(.backToHome)))))):
         state.routes.pop()
         
+      case .router(.routeAction(id: _, action: .groupDetailCoordinator(.router(.routeAction(id: _, action: .memberList(.backToHome)))))):
+        state.routes.pop()
+        
       case .router(.routeAction(id: _, action: .createEvent(.moveToHome))):
         state.routes.pop()
         

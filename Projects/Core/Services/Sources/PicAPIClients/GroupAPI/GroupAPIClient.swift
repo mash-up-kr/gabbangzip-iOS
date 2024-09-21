@@ -17,6 +17,7 @@ public struct GroupAPIClient: Sendable {
   public var getGroupDetail: @Sendable (_ accessToken: String, _ groupID: Int) async throws -> GroupDetailInfo
   public var joinGroup: @Sendable (_ accessToken: String, _ code: String) async throws -> GroupID
   public var getMemberList: @Sendable (_ accessToken: String, _ groupID: Int) async throws -> MemberList
+  public var leaveGroup: @Sendable (_ accessToken: String, _ groupID: Int) async throws -> GroupID
 }
 
 extension GroupAPIClient: DependencyKey {
@@ -73,6 +74,19 @@ extension GroupAPIClient: DependencyKey {
             underlying: error
           )
         }
+      },
+      leaveGroup: { accessToken, groupID in
+        let route = GroupAPI.leaveGroup(accessToken: accessToken, groupID: groupID)
+        let request = Request<SuccessResponse<GroupID>>(route: route)
+        do {
+          let response = try await NetworkManager.shared.send(request)
+          return response.value.data
+        } catch {
+          throw GroupAPIClientError(
+            code: .failToGetGroups,
+            underlying: error
+          )
+        }
       }
     )
   }
@@ -90,6 +104,9 @@ extension GroupAPIClient: DependencyKey {
       },
       getMemberList: { _, _ in
         return MemberList.mock
+      },
+      leaveGroup: { _, _ in
+        return GroupID.mock
       }
     )
   }
