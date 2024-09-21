@@ -83,7 +83,14 @@ public struct MemberListCore {
         
       case .copyCodeButtonTapped:
         return .run { [state] send in
-          uiPasteBoardClient.copyTextToClipboard(state.memberList?.invitationCode ?? "")
+          uiPasteBoardClient.copyTextToClipboard(
+            """
+            PIC 앱 다운받기
+            - PlayStore: https://play.google.com/store/apps/details?id=com.mashup.gabbangzip.sharedalbum
+            - AppStore: https://apps.apple.com/kr/app/PIC/id6503334452
+            초대코드: \(state.memberList?.invitationCode ?? "")
+            """
+          )
           await send(.showToast(.codeCopied))
         }
         

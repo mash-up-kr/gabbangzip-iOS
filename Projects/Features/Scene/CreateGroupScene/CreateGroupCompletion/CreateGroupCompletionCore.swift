@@ -72,7 +72,14 @@ public struct CreateGroupCompletionCore {
         state.toastPresented = true
         
         return .run { [state] send in
-          uiPasteBoardClient.copyTextToClipboard(state.createdGroupInfo.invitationCode)
+          uiPasteBoardClient.copyTextToClipboard(
+            """
+            PIC 앱 다운받기
+            - PlayStore: https://play.google.com/store/apps/details?id=com.mashup.gabbangzip.sharedalbum
+            - AppStore: https://apps.apple.com/kr/app/PIC/id6503334452
+            초대코드: \(state.createdGroupInfo.invitationCode)
+            """
+          )
         }
         
       case let .setImageURLString(urlString):
