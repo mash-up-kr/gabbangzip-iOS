@@ -79,7 +79,7 @@ struct HistoryGridView: View {
       DesignSystem.Images.empty
         .padding(.bottom, 16)
       
-      Text("그룹 이벤트를 만들고\n우리끼리 PIC으로 인생 네컷을 모아보세요.")
+      Text("네컷 사진이 만들어지면\n이곳에 추가돼요.")
         .multilineTextAlignment(.center)
         .foregroundStyle(DesignSystem.Colors.gray60)
         .font(.text14)
