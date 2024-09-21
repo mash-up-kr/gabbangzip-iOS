@@ -36,6 +36,8 @@ public struct PhotoWithFrame: View {
             image
               .resizable()
               .aspectRatio(contentMode: .fill)
+          } else {
+            Color.white
           }
         }
       }
@@ -48,12 +50,6 @@ public struct PhotoWithFrame: View {
     PhotoWithFrame(
       frameShape: GroupData.Keyword.company.frame,
       foregroundColor: GroupData.Keyword.company.foregroundColor,
-      imageURLString: "https://24ai.tech/ru/wp-content/uploads/sites/4/2023/10/01_product_1_sdelat-kvadratnym-scaled.jpg"
-    )
-
-    PhotoWithFrame(
-      frameShape: GroupData.Keyword.company.frame,
-      foregroundColor: .white,
       imageURLString: "https://24ai.tech/ru/wp-content/uploads/sites/4/2023/10/01_product_1_sdelat-kvadratnym-scaled.jpg"
     )
   }
