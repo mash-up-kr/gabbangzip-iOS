@@ -72,6 +72,20 @@ public struct SelectGroupPhotoView: View {
       maxSelectionCount: 1,
       matching: .images
     )
+    .overlay {
+      if store.isLoading {
+        ZStack {
+          Color.black
+            .opacity(0.5)
+            .ignoresSafeArea()
+          
+          ProgressView()
+            .progressViewStyle(CircularProgressViewStyle())
+            .controlSize(.large)
+            .tint(.white)
+        }
+      }
+    }
   }
 }
 
