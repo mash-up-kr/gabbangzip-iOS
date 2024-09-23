@@ -25,6 +25,7 @@ public struct SelectGroupPhotoCore {
     var keyword: GroupData.Keyword
     var selectedPhotoInfo: PhotoInfo?
     var isFromGetStarted: Bool
+    var isLoading: Bool
     var photosPickerPresented: Bool
     var selectedPickerItems: [PhotosPickerItem]
     var nextButtonType: ButtonType {
@@ -38,6 +39,7 @@ public struct SelectGroupPhotoCore {
       keyword: GroupData.Keyword,
       selectedPhotoInfo: PhotoInfo? = nil,
       isFromGetStarted: Bool,
+      isLoading: Bool = false,
       photosPickerPresented: Bool = false,
       selectedPickerItems: [PhotosPickerItem] = []
     ) {
@@ -47,6 +49,7 @@ public struct SelectGroupPhotoCore {
       self.keyword = keyword
       self.selectedPhotoInfo = selectedPhotoInfo
       self.isFromGetStarted = isFromGetStarted
+      self.isLoading = isLoading
       self.photosPickerPresented = photosPickerPresented
       self.selectedPickerItems = selectedPickerItems
     }
@@ -65,6 +68,7 @@ public struct SelectGroupPhotoCore {
     case uploadFileToPresignedURLResponse(Result<Void, Error>, FileUploadInfo)
     case createGroupResponse(Result<CreatedGroupInfo, Error>)
     case setSelectedPhotoInfo(PhotoInfo)
+    case setIsLoading(Bool)
     
     // Route Action
     case moveToCreateGroupCompletion(createdGroupInfo: CreatedGroupInfo, isFromGetStarted: Bool)
@@ -78,6 +82,7 @@ public struct SelectGroupPhotoCore {
     Reduce { state, action in
       switch action {
       case .nextButtonTapped:
+        state.isLoading = true
         return .run { [state] send in
           if let photoInfo = state.selectedPhotoInfo {
             await send(
@@ -166,6 +171,7 @@ public struct SelectGroupPhotoCore {
       case let .uploadFileToPresignedURLResponse(.failure(error), _):
         return .run { send in
           logger.error(error.localizedDescription)
+          await send(.setIsLoading(false))
         }
         
       case let .createGroupResponse(.success(createdGroupInfo)):
@@ -175,10 +181,15 @@ public struct SelectGroupPhotoCore {
       case let .createGroupResponse(.failure(error)):
         return .run { send in
           logger.error(error.localizedDescription)
+          await send(.setIsLoading(false))
         }
         
       case let .setSelectedPhotoInfo(photoInfo):
         state.selectedPhotoInfo = photoInfo
+        return .none
+        
+      case let .setIsLoading(value):
+        state.isLoading = value
         return .none
 
       case .moveToCreateGroupCompletion:
