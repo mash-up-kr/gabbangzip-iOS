@@ -224,14 +224,14 @@ public struct CreateEventCore {
         }
         
       case .createEvent(.failure):
-        state.isLoading = false
         return .run { send in
+          await send(.setIsLoading(false))
           await send(.logError(CreateEventCoreError(code: .failToCheckEvent)))
         }
         
       case let .logError(error):
-        state.isErrorPresented = true
         return .run { send in
+          await send(.setIsLoading(true))
           logger.error("CreateEvent Error: \(error)")
         }
         
