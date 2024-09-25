@@ -14,7 +14,7 @@ import SwiftUI
 
 public struct CreateEventView: View {
   @Bindable var store: StoreOf<CreateEventCore>
-  @State private var selectedDate =  Date()
+  @State private var selectedDate: Date =  Date()
   
   public init(store: StoreOf<CreateEventCore>) {
     self.store = store
@@ -85,24 +85,14 @@ public struct CreateEventView: View {
               in: ...Date(),
               displayedComponents: [.date]
             )
-            .datePickerStyle(.graphical)
-            .accentColor(DesignSystem.Colors.gray80)
-            .padding()
-            
-            Button(
-              action: {
+            .onChange(of: selectedDate) {
+              DispatchQueue.main.asyncAfter(deadline: .now() + 0.2) {
                 store.send(.datePickerButtonTapped)
                 store.send(.selectDate(selectedDate))
-              },
-              label: {
-                Text("완료")
-                  .padding(.vertical, 12)
-                  .padding(.horizontal, 20)
-                  .background(DesignSystem.Colors.gray80)
-                  .foregroundColor(DesignSystem.Colors.gray0)
-                  .cornerRadius(12)
               }
-            )
+            }
+            .datePickerStyle(.graphical)
+            .accentColor(DesignSystem.Colors.gray80)
             .padding()
             
           }
