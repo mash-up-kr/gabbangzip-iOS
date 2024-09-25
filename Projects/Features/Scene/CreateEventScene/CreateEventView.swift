@@ -85,15 +85,24 @@ public struct CreateEventView: View {
               in: ...Date(),
               displayedComponents: [.date]
             )
-            .onChange(of: selectedDate) {
-              DispatchQueue.main.asyncAfter(deadline: .now() + 0.2) {
-                store.send(.selectNewDate(selectedDate))
-              }
-            }
             .datePickerStyle(.graphical)
             .accentColor(DesignSystem.Colors.gray80)
             .padding()
             
+            Button(
+              action: {
+                store.send(.selectNewDate(selectedDate))
+              },
+              label: {
+                Text("완료")
+                  .padding(.vertical, 12)
+                  .padding(.horizontal, 20)
+                  .background(DesignSystem.Colors.gray80)
+                  .foregroundStyle(DesignSystem.Colors.gray0)
+                  .cornerRadius(12)
+              }
+            )
+            .padding()
           }
           .background(.white)
           .cornerRadius(12)
