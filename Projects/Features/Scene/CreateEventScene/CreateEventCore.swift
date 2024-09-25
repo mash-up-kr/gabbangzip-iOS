@@ -80,8 +80,7 @@ public struct CreateEventCore {
     case textChanged(String)
     case selectedImagesChanged([PhotoInfo])
     case backButtonTapped
-    case datePickerButtonTapped
-    case selectDate(Date)
+    case selectNewDate(Date)
     case popupLeftButtonTapped
     case popupRightButtonTapped
     case completeButtonTapped
@@ -92,6 +91,8 @@ public struct CreateEventCore {
     case changeIsPhotoSelected
     case changeIsTouchedOnce(Bool)
     case checkCompleteButtonType
+    case changeIsDatePickerVisible
+    case updateSelectDate(Date)
     case setToastPresented(Bool)
     case createEvent(Result<EventInfo, Error>)
     case logError(Error)
@@ -130,13 +131,11 @@ public struct CreateEventCore {
         state.isExiting = true
         return .none
         
-      case .datePickerButtonTapped:
-        state.isDatePickerVisible.toggle()
-        return .none
-        
-      case let .selectDate(date):
-        state.selectedDate = date
-        return .none
+      case let .selectNewDate(date):
+        return .run { send in
+          await send(.changeIsDatePickerVisible)
+          await send(.updateSelectDate(date))
+        }
         
       case .popupLeftButtonTapped:
         return .run { send in
@@ -227,6 +226,14 @@ public struct CreateEventCore {
         state.completeButtonType = state.isEventNamed && state.isPhotoSelected && !state.isTouchedOnce
         ? .active
         : .inactive
+        return .none
+        
+      case .changeIsDatePickerVisible:
+        state.isDatePickerVisible.toggle()
+        return .none
+        
+      case let .updateSelectDate(date):
+        state.selectedDate = date
         return .none
         
       case let .setToastPresented(isPresented):

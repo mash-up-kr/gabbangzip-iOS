@@ -40,7 +40,7 @@ public struct CreateEventView: View {
         
         Button(
           action: {
-            store.send(.datePickerButtonTapped)
+            store.send(.changeIsDatePickerVisible)
           },
           label: {
             GabbangzipDate(date: store.recentEventDate)
@@ -87,8 +87,7 @@ public struct CreateEventView: View {
             )
             .onChange(of: selectedDate) {
               DispatchQueue.main.asyncAfter(deadline: .now() + 0.2) {
-                store.send(.datePickerButtonTapped)
-                store.send(.selectDate(selectedDate))
+                store.send(.selectNewDate(selectedDate))
               }
             }
             .datePickerStyle(.graphical)
