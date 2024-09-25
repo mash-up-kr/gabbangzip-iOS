@@ -74,5 +74,8 @@ public struct GroupListCore {
         return .none
       }
     }
+    .forEach(\.groups, action: \.groups) {
+      GroupCore()
+    }
   }
 }
