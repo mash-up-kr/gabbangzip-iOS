@@ -27,12 +27,37 @@ public struct HomeView: View {
         oneIconAction: { store.send(.myPageButtonTapped) }
       )
       
-      ScrollView {
-        LazyVStack {
-          ForEach(store.scope(state: \.groups, action: \.groups)) { childStore in
-            GroupView(store: childStore)
+      HStack {
+        Spacer()
+        
+        Group {
+          switch store.displayMode {
+          case .list:
+            Button(action: { store.send(.displayModeChanged(.grid)) }) {
+              DesignSystem.Icons.list
+                .resizable()
+                .aspectRatio(contentMode: .fit)
+                .frame(width: 18, height: 18)
+            }
+          case .grid:
+            Button(action: { store.send(.displayModeChanged(.list)) }) {
+              DesignSystem.Icons.grid
+                .resizable()
+                .aspectRatio(contentMode: .fit)
+                .frame(width: 18, height: 18)
+            }
           }
         }
+        .padding(.vertical, 11)
+        .padding(.trailing, 20)
+      }
+      .frame(height: 40)
+      
+      switch store.state.displayMode {
+      case .list:
+        GroupListView(store: store.scope(state: \.groupList, action: \.groupList))
+      case .grid:
+        GroupGridView(store: store.scope(state: \.groupGrid, action: \.groupGrid))
       }
     }
     .background(DesignSystem.Colors.gray0)

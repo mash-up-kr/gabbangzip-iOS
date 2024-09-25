@@ -11,33 +11,44 @@ import DesignSystem
 import Models
 import Services
 
+public enum DisplayMode {
+  case list
+  case grid
+}
+
 @Reducer
 public struct HomeCore {
   public init() {}
   
   @ObservableState
   public struct State: Equatable {
-    var groups: IdentifiedArrayOf<GroupCore.State>
     @Shared var userInfo: UserInfo
     @Shared var isHomeUpdated: Bool
     var floatingButtonExpanded: Bool
     var toastPresented: Bool
     var toastType: ToastType
+    var displayMode: DisplayMode
+    var groupList: GroupListCore.State
+    var groupGrid: GroupGridCore.State
     
     public init(
-      groups: IdentifiedArrayOf<GroupCore.State> = [],
       userInfo: @autoclosure () -> UserInfo = .defaultValue,
       isHomeUpdated: @autoclosure () -> Bool = false,
       floatingButtonExpanded: Bool = false,
       toastPresented: Bool = false,
-      toastType: ToastType = .onlyText("")
+      toastType: ToastType = .onlyText(""),
+      displayMode: DisplayMode = .list,
+      groupList: GroupListCore.State = .init(),
+      groupGrid: GroupGridCore.State = .init()
     ) {
-      self.groups = groups
       self._userInfo = Shared(wrappedValue: userInfo(), .inMemory("userInfo"))
       self._isHomeUpdated = Shared(wrappedValue: isHomeUpdated(), .inMemory("isHomeUpdated"))
       self.floatingButtonExpanded = floatingButtonExpanded
       self.toastPresented = toastPresented
       self.toastType = toastType
+      self.displayMode = displayMode
+      self.groupList = groupList
+      self.groupGrid = groupGrid
     }
   }
 
@@ -49,6 +60,7 @@ public struct HomeCore {
     case createGroupButtonTapped
     case myPageButtonTapped
     case toastPresentedChanged(Bool)
+    case displayModeChanged(DisplayMode)
     
     // Internal Action
     case fetchGroups
@@ -60,7 +72,8 @@ public struct HomeCore {
     case setFloatingButtonExpanded(Bool)
     
     // Child Action
-    case groups(IdentifiedActionOf<GroupCore>)
+    case groupList(GroupListCore.Action)
+    case groupGrid(GroupGridCore.Action)
     
     // Route Action
     case moveToMyPage
@@ -76,6 +89,14 @@ public struct HomeCore {
   @Dependency(\.bundleClient) var bundleClient
 
   public var body: some Reducer<State, Action> {
+    Scope(state: \.groupList, action: \.groupList) {
+      GroupListCore()
+    }
+    
+    Scope(state: \.groupGrid, action: \.groupGrid) {
+      GroupGridCore()
+    }
+    
     Reduce { state, action in
       switch action {
       case .onAppear:
@@ -108,6 +129,10 @@ public struct HomeCore {
         state.toastPresented = value
         return .none
         
+      case let .displayModeChanged(displayMode):
+        state.displayMode = displayMode
+        return .none
+        
       case .fetchGroups:
         state.isHomeUpdated = false
         return .run { [state] send in
@@ -120,7 +145,7 @@ public struct HomeCore {
         }
         
       case let .getGroupsResponse(.success(groupsData)):
-        state.groups = IdentifiedArray(
+        state.groupList.groups = IdentifiedArray(
           uniqueElements: groupsData.groups
             .enumerated()
             .map { index, group in
@@ -138,6 +163,18 @@ public struct HomeCore {
               )
             }
         )
+        
+        state.groupGrid.groupGridItems = IdentifiedArray(
+          uniqueElements: groupsData.groups.map {
+            GroupGridItemCore.State(
+              id: $0.id,
+              name: $0.name,
+              keyword: $0.keyword,
+              statusDescription: $0.statusDescription,
+              cardFrontImageURL: $0.cardFrontImageURL
+            )
+          }
+        )
         return .none
         
       case .getGroupsResponse(.failure):
@@ -146,8 +183,9 @@ public struct HomeCore {
         
       case let .getS3BucketDomain(.success(domain)):
         if let domain {
-          for i in state.groups.indices {
-            state.groups[i].s3BucketDomain = domain
+          for i in state.groupList.groups.indices {
+            state.groupList.groups[i].s3BucketDomain = domain
+            state.groupGrid.groupGridItems[i].s3BucketDomain = domain
           }
         }
         return .none
@@ -175,28 +213,26 @@ public struct HomeCore {
         state.floatingButtonExpanded = value
         return .none
         
-      case let .groups(.element(id: _, action: .delegate(delegate))):
+      case let .groupList(.delegate(action)):
         return .run { send in
-          switch delegate {
-          case let .headerButtonTapped(groupID):
+          switch action {
+          case let .moveToGroupDetail(groupID):
             await send(.moveToGroupDetail(groupID))
-          case let .createEventButtonTapped(groupID):
+          case let .moveToCreateEvent(groupID):
             await send(.moveToCreateEvent(groupID))
-          case .stabbingSuccessed:
-            await send(.showToastMessage(.textWithCheckIcon("쿡찌르기 성공!")))
-          case .stabbingFailed:
-            await send(.showToastMessage(.textWithInfoIcon("쿡찌르기 실패!")))
-          case .imageUploadSuccessed:
-            await send(.showToastMessage(.textWithCheckIcon("이미지 업로드 성공!")))
+          case let .showToastMessage(toastType):
+            await send(.showToastMessage(toastType))
+          case .fetchGroups:
             await send(.fetchGroups)
-          case .imageUploadFailed:
-            await send(.showToastMessage(.textWithInfoIcon("이미지 업로드 실패!")))
-          case let .selectPICButtonTapped(eventID):
+          case let .moveToVote(eventID):
             await send(.moveToVote(eventID))
           }
         }
         
-      case .groups:
+      case .groupList:
+        return .none
+        
+      case .groupGrid:
         return .none
         
       case .moveToMyPage:
@@ -217,9 +253,6 @@ public struct HomeCore {
       case .moveToVote:
         return .none
       }
-    }
-    .forEach(\.groups, action: \.groups) {
-      GroupCore()
     }
   }
 }
