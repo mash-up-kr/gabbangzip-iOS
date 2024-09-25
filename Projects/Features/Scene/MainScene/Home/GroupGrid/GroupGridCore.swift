@@ -35,5 +35,8 @@ public struct GroupGridCore {
         return .none
       }
     }
+    .forEach(\.groupGridItems, action: \.groupGridItems) {
+      GroupGridItemCore()
+    }
   }
 }
