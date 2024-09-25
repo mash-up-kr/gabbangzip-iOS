@@ -14,6 +14,7 @@ import SwiftUI
 
 public struct CreateEventView: View {
   @Bindable var store: StoreOf<CreateEventCore>
+  @State private var selectedDate =  Date()
   
   public init(store: StoreOf<CreateEventCore>) {
     self.store = store
@@ -39,7 +40,7 @@ public struct CreateEventView: View {
         
         Button(
           action: {
-            
+            store.send(.datePickerButtonTapped)
           },
           label: {
             GabbangzipDate(date: store.recentEventDate)
@@ -70,6 +71,47 @@ public struct CreateEventView: View {
       .padding(.horizontal, 16)
     }
     .navigationBarHidden(true)
+    .overlay {
+      if store.isDatePickerVisible {
+        ZStack {
+          Color.black
+            .opacity(0.5)
+            .ignoresSafeArea()
+          
+          VStack {
+            DatePicker(
+              "",
+              selection: $selectedDate,
+              in: ...Date(),
+              displayedComponents: [.date]
+            )
+            .datePickerStyle(.graphical)
+            .accentColor(DesignSystem.Colors.gray80)
+            .padding()
+            
+            Button(
+              action: {
+                store.send(.datePickerButtonTapped)
+                store.send(.selectDate(selectedDate))
+              },
+              label: {
+                Text("완료")
+                  .padding(.vertical, 12)
+                  .padding(.horizontal, 20)
+                  .background(DesignSystem.Colors.gray80)
+                  .foregroundColor(DesignSystem.Colors.gray0)
+                  .cornerRadius(12)
+              }
+            )
+            .padding()
+            
+          }
+          .background(.white)
+          .cornerRadius(12)
+          .padding()
+        }
+      }
+    }
     .overlay {
       if store.isLoading {
         ZStack {
