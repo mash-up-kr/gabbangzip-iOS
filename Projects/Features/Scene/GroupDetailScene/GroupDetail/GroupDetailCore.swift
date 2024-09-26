@@ -221,7 +221,7 @@ public struct GroupDetailCore {
         
       case let .imageCaptured(image):
         state.capturedImage = image
-        return .none
+        return .send(.shareButtonTapped)
         
       case .createEventButtonTapped:
         return .send(.moveToCreateEvent(state.groupID))

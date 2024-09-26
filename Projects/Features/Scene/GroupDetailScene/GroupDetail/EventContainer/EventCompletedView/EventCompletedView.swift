@@ -14,6 +14,7 @@ import Models
 import SwiftUI
 
 public struct EventCompletedView: View {
+  @Environment(\.displayScale) private var scale
   @Bindable var store: StoreOf<GroupDetailCore>
   
   public init(store: StoreOf<GroupDetailCore>) {
@@ -33,12 +34,19 @@ public struct EventCompletedView: View {
       .padding(.vertical, 16)
       
 //      TODO: 공유하기 이미지 캡쳐 추후 확인 필요
-//      ShareButton(action: {
-//        captureView(of: completedImage) { capturedImage in
-//          store.send(.imageCaptured(capturedImage))
-//          store.send(.shareButtonTapped)
-//        }
-//      })
+      ShareButton(
+        action: {
+          DispatchQueue.main.async {
+            captureView(
+              of: completedImage,
+              scale: scale,
+              size: CGSize(width: 310, height: 420)
+            ) { capturedImage in
+              store.send(.imageCaptured(capturedImage))
+            }
+          }
+        }
+      )
       .padding(.bottom, 32)
     }
     .overlay {
