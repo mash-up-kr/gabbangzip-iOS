@@ -38,7 +38,7 @@ public struct EventCompletedView: View {
         action: {
           DispatchQueue.main.async {
             captureView(
-              of: completedImage,
+              of: captureView,
               scale: scale,
               size: CGSize(width: 310, height: 420)
             ) { capturedImage in
@@ -71,6 +71,27 @@ public struct EventCompletedView: View {
           s3BucketDomain: store.s3BucketDomain
         )
       }
+    } else {
+      EmptyView()
+    }
+  }
+  
+  @ViewBuilder
+  private var captureView: some View {
+    if let groupDetail = store.groupDetail {
+      PhotoCard(
+        status: groupDetail.keyword.convertToPhotoCardStatus(),
+        content: {
+          PhotoCardBackView(
+            recentEventDate: store.recentEventDateString,
+            cardBackImages: groupDetail.cardBackImages ?? [],
+            recentEventName: groupDetail.recentEventDetail.name,
+            foregroundColor: groupDetail.keyword.foregroundColor,
+            s3BucketDomain: store.s3BucketDomain
+          )
+        },
+        isForCapture: true
+      )
     } else {
       EmptyView()
     }
