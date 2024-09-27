@@ -31,11 +31,13 @@ public struct CreateEventCore {
     public var selectedPhotosInfo: [PhotoInfo]
     public var imageURL: [String]
     public var isLoading: Bool
+    public var isDatePickerVisible: Bool
+    public var selectedDate: Date
     public var recentEventDate: String {
-      return DateFormatter.createEvent.string(from: Date())
+      return DateFormatter.createEvent.string(from: selectedDate)
     }
     public var uploadEventDate: String {
-      return DateFormatter.iso8601.string(from: Date())
+      return DateFormatter.iso8601.string(from: selectedDate)
     }
     
     public init(
@@ -50,7 +52,9 @@ public struct CreateEventCore {
       completeButtonType: ButtonType = .inactive,
       selectedPhotosInfo: [PhotoInfo] = [],
       imageURL: [String] = [],
-      isLoading: Bool = false
+      isLoading: Bool = false,
+      isDatePickerVisible: Bool = false,
+      selectedDate: Date = Date()
     ) {
       self._userInfo = Shared(wrappedValue: userInfo(), .inMemory("userInfo"))
       self.groupID = groupID
@@ -64,6 +68,8 @@ public struct CreateEventCore {
       self.selectedPhotosInfo = selectedPhotosInfo
       self.imageURL = imageURL
       self.isLoading = isLoading
+      self.isDatePickerVisible = isDatePickerVisible
+      self.selectedDate = selectedDate
     }
   }
   
@@ -74,6 +80,7 @@ public struct CreateEventCore {
     case textChanged(String)
     case selectedImagesChanged([PhotoInfo])
     case backButtonTapped
+    case selectNewDate(Date)
     case popupLeftButtonTapped
     case popupRightButtonTapped
     case completeButtonTapped
@@ -84,6 +91,8 @@ public struct CreateEventCore {
     case changeIsPhotoSelected
     case changeIsTouchedOnce(Bool)
     case checkCompleteButtonType
+    case changeIsDatePickerVisible
+    case updateSelectDate(Date)
     case setToastPresented(Bool)
     case createEvent(Result<EventInfo, Error>)
     case logError(Error)
@@ -121,6 +130,12 @@ public struct CreateEventCore {
       case .backButtonTapped:
         state.isExiting = true
         return .none
+        
+      case let .selectNewDate(date):
+        return .run { send in
+          await send(.changeIsDatePickerVisible)
+          await send(.updateSelectDate(date))
+        }
         
       case .popupLeftButtonTapped:
         return .run { send in
@@ -213,6 +228,14 @@ public struct CreateEventCore {
         : .inactive
         return .none
         
+      case .changeIsDatePickerVisible:
+        state.isDatePickerVisible.toggle()
+        return .none
+        
+      case let .updateSelectDate(date):
+        state.selectedDate = date
+        return .none
+        
       case let .setToastPresented(isPresented):
         state.isErrorPresented = isPresented
         return .none
@@ -224,14 +247,14 @@ public struct CreateEventCore {
         }
         
       case .createEvent(.failure):
-        state.isLoading = false
         return .run { send in
+          await send(.setIsLoading(false))
           await send(.logError(CreateEventCoreError(code: .failToCheckEvent)))
         }
         
       case let .logError(error):
-        state.isErrorPresented = true
         return .run { send in
+          await send(.setIsLoading(true))
           logger.error("CreateEvent Error: \(error)")
         }
         

@@ -14,6 +14,7 @@ import SwiftUI
 
 public struct CreateEventView: View {
   @Bindable var store: StoreOf<CreateEventCore>
+  @State private var selectedDate: Date =  Date()
   
   public init(store: StoreOf<CreateEventCore>) {
     self.store = store
@@ -26,7 +27,6 @@ public struct CreateEventView: View {
         backButtonAction: { store.send(.backButtonTapped) }
       )
       VStack(spacing: 0) {
-        
         EventView(text: CreateEventViewNameSpace.eventTitle)
         
         GabbangzipInput(
@@ -35,6 +35,18 @@ public struct CreateEventView: View {
           maxLength: 10
         )
         .padding(.top, 16)
+        
+        DateView(text: CreateEventViewNameSpace.eventDate)
+        
+        Button(
+          action: {
+            store.send(.changeIsDatePickerVisible)
+          },
+          label: {
+            GabbangzipDate(date: store.recentEventDate)
+              .padding(.top, 16)
+          }
+        )
         
         EventView(text: CreateEventViewNameSpace.eventPicture)
       }
@@ -59,6 +71,45 @@ public struct CreateEventView: View {
       .padding(.horizontal, 16)
     }
     .navigationBarHidden(true)
+    .overlay {
+      if store.isDatePickerVisible {
+        ZStack {
+          Color.black
+            .opacity(0.5)
+            .ignoresSafeArea()
+          
+          VStack {
+            DatePicker(
+              "",
+              selection: $selectedDate,
+              in: ...Date(),
+              displayedComponents: [.date]
+            )
+            .datePickerStyle(.graphical)
+            .accentColor(DesignSystem.Colors.gray80)
+            .padding()
+            
+            Button(
+              action: {
+                store.send(.selectNewDate(selectedDate))
+              },
+              label: {
+                Text("완료")
+                  .padding(.vertical, 12)
+                  .padding(.horizontal, 20)
+                  .background(DesignSystem.Colors.gray80)
+                  .foregroundStyle(DesignSystem.Colors.gray0)
+                  .cornerRadius(12)
+              }
+            )
+            .padding()
+          }
+          .background(.white)
+          .cornerRadius(12)
+          .padding()
+        }
+      }
+    }
     .overlay {
       if store.isLoading {
         ZStack {

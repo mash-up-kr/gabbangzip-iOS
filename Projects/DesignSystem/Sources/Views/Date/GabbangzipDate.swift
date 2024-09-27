@@ -26,12 +26,16 @@ public struct GabbangzipDate: View {
       Text(date)
         .font(.body16)
         .foregroundStyle(DesignSystem.Colors.gray60)
-        .padding(.vertical, 18)
+        .padding(.vertical, 20)
       
       Spacer()
     }
     .background(DesignSystem.Colors.gray40)
     .cornerRadius(10)
+    .overlay{
+      RoundedRectangle(cornerRadius: 10)
+        .stroke(DesignSystem.Colors.gray50, lineWidth: 1)
+    }
   }
 }
 
