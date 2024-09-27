@@ -10,6 +10,7 @@ import ComposableArchitecture
 import Foundation
 import Models
 import UIKit
+import Lovebug
 
 @Reducer
 public struct HistoryDetailCore {
@@ -22,6 +23,7 @@ public struct HistoryDetailCore {
     var s3BucketDomain: String
     var showActivityView: Bool
     var capturedImage: UIImage?
+    var loadedImageModels: [ImageModel]
     
     var eventDate: String {
       history.date.toGroupEventDateString(type: .eventDate) ?? ""
@@ -32,13 +34,15 @@ public struct HistoryDetailCore {
       keyword: GroupData.Keyword?,
       s3BucketDomain: String,
       showActivityView: Bool = false,
-      capturedImage: UIImage? = nil
+      capturedImage: UIImage? = nil,
+      loadedImageModels: [ImageModel] = []
     ) {
       self.history = history
       self.keyword = keyword
       self.s3BucketDomain = s3BucketDomain
       self.showActivityView = showActivityView
       self.capturedImage = capturedImage
+      self.loadedImageModels = loadedImageModels
     }
   }
 
@@ -51,6 +55,7 @@ public struct HistoryDetailCore {
     
     //
     case imageCaptured(UIImage?)
+    case imageAllLoaded([ImageModel])
     
     // Route Action
     case backToGroupDetail
@@ -71,6 +76,10 @@ public struct HistoryDetailCore {
         
       case let .imageCaptured(image):
         state.capturedImage = image
+        return .none
+        
+      case let .imageAllLoaded(model):
+        state.loadedImageModels = model
         return .none
         
       case .backToGroupDetail:

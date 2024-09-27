@@ -68,7 +68,10 @@ public struct EventCompletedView: View {
           cardBackImages: groupDetail.cardBackImages ?? [],
           recentEventName: groupDetail.recentEventDetail.name,
           foregroundColor: groupDetail.keyword.foregroundColor,
-          s3BucketDomain: store.s3BucketDomain
+          s3BucketDomain: store.s3BucketDomain,
+          imageAllLoadedCompletion: { imageModels in
+            store.send(.imageAllLoaded(imageModels))
+          }
         )
       }
     } else {
@@ -82,12 +85,11 @@ public struct EventCompletedView: View {
       PhotoCard(
         status: groupDetail.keyword.convertToPhotoCardStatus(),
         content: {
-          PhotoCardBackView(
+          PhotoCardBackViewForCapture(
             recentEventDate: store.recentEventDateString,
-            cardBackImages: groupDetail.cardBackImages ?? [],
+            cardBackImages: store.loadedImages,
             recentEventName: groupDetail.recentEventDetail.name,
-            foregroundColor: groupDetail.keyword.foregroundColor,
-            s3BucketDomain: store.s3BucketDomain
+            foregroundColor: groupDetail.keyword.foregroundColor
           )
         },
         isForCapture: true

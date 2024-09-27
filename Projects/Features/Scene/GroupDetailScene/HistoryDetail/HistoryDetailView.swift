@@ -75,7 +75,10 @@ public struct HistoryDetailView: View {
           cardBackImages: store.history.images,
           recentEventName: store.history.name,
           foregroundColor: keyword.foregroundColor,
-          s3BucketDomain: store.s3BucketDomain
+          s3BucketDomain: store.s3BucketDomain,
+          imageAllLoadedCompletion: { imageModels in
+            store.send(.imageAllLoaded(imageModels))
+          }
         )
       }
     } else {
@@ -89,12 +92,11 @@ public struct HistoryDetailView: View {
       PhotoCard(
         status: keyword.convertToPhotoCardStatus(),
         content: {
-          PhotoCardBackView(
+          PhotoCardBackViewForCapture(
             recentEventDate: store.eventDate,
-            cardBackImages: store.history.images,
+            cardBackImages: store.loadedImageModels,
             recentEventName: store.history.name,
-            foregroundColor: keyword.foregroundColor,
-            s3BucketDomain: store.s3BucketDomain
+            foregroundColor: keyword.foregroundColor
           )
         },
         isForCapture: true
