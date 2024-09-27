@@ -9,6 +9,7 @@
 import ComposableArchitecture
 import Foundation
 import Models
+import UIKit
 
 @Reducer
 public struct HistoryDetailCore {
@@ -19,6 +20,8 @@ public struct HistoryDetailCore {
     var history: History
     var keyword: GroupData.Keyword?
     var s3BucketDomain: String
+    var showActivityView: Bool
+    var capturedImage: UIImage?
     
     var eventDate: String {
       history.date.toGroupEventDateString(type: .eventDate) ?? ""
@@ -27,17 +30,27 @@ public struct HistoryDetailCore {
     public init(
       history: History,
       keyword: GroupData.Keyword?,
-      s3BucketDomain: String
+      s3BucketDomain: String,
+      showActivityView: Bool = false,
+      capturedImage: UIImage? = nil
     ) {
       self.history = history
       self.keyword = keyword
       self.s3BucketDomain = s3BucketDomain
+      self.showActivityView = showActivityView
+      self.capturedImage = capturedImage
     }
   }
 
-  public enum Action {
+  public enum Action: BindableAction {
+    case binding(BindingAction<State>)
+    
     // View Action
     case backButtonTapped
+    case shareButtonTapped
+    
+    //
+    case imageCaptured(UIImage?)
     
     // Route Action
     case backToGroupDetail
@@ -46,8 +59,19 @@ public struct HistoryDetailCore {
   public var body: some Reducer<State, Action> {
     Reduce { state, action in
       switch action {
+      case .binding:
+        return .none
+        
       case .backButtonTapped:
         return .send(.backToGroupDetail)
+        
+      case .shareButtonTapped:
+        state.showActivityView = true
+        return .none
+        
+      case let .imageCaptured(image):
+        state.capturedImage = image
+        return .none
         
       case .backToGroupDetail:
         return .none

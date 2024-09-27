@@ -6,6 +6,7 @@
 //  Copyright © 2024 com.mashup.gabbangzip. All rights reserved.
 //
 
+import Common
 import ComposableArchitecture
 import DesignSystem
 import Lovebug
@@ -13,7 +14,8 @@ import Models
 import SwiftUI
 
 public struct HistoryDetailView: View {
-  private let store: StoreOf<HistoryDetailCore>
+  @Bindable private var store: StoreOf<HistoryDetailCore>
+  @Environment(\.displayScale) private var scale
   private let background = DesignSystem.Colors.gray100
 
   public init(store: StoreOf<HistoryDetailCore>) {
@@ -35,22 +37,70 @@ public struct HistoryDetailView: View {
         )
         .padding(.bottom, 50)
         
-        if let keyword = store.keyword {
-          PhotoCard(
-            status: keyword.convertToPhotoCardStatus()
-          ) {
-            PhotoCardBackView(
-              recentEventDate: store.eventDate,
-              cardBackImages: store.history.images,
-              recentEventName: store.history.name,
-              foregroundColor: keyword.foregroundColor,
-              s3BucketDomain: store.s3BucketDomain
-            )
+        completedImage
+          .padding(.bottom, 32)
+        
+        ShareButton {
+          DispatchQueue.main.async {
+            captureView(
+              of: captureView,
+              scale: scale,
+              size: CGSize(width: 310, height: 420)
+            ) { capturedImage in
+              store.send(.imageCaptured(capturedImage))
+              store.send(.shareButtonTapped)
+            }
           }
-
-          Spacer()
         }
+        
+        Spacer()
       }
+    }
+    .background(
+      ActivityView(
+        isPresented: $store.showActivityView,
+        activityItems: [store.capturedImage]
+      )
+    )
+  }
+  
+  @ViewBuilder
+  private var completedImage: some View {
+    if let keyword = store.keyword {
+      PhotoCard(
+        status: keyword.convertToPhotoCardStatus()
+      ) {
+        PhotoCardBackView(
+          recentEventDate: store.eventDate,
+          cardBackImages: store.history.images,
+          recentEventName: store.history.name,
+          foregroundColor: keyword.foregroundColor,
+          s3BucketDomain: store.s3BucketDomain
+        )
+      }
+    } else {
+      EmptyView()
+    }
+  }
+  
+  @ViewBuilder
+  private var captureView: some View {
+    if let keyword = store.keyword {
+      PhotoCard(
+        status: keyword.convertToPhotoCardStatus(),
+        content: {
+          PhotoCardBackView(
+            recentEventDate: store.eventDate,
+            cardBackImages: store.history.images,
+            recentEventName: store.history.name,
+            foregroundColor: keyword.foregroundColor,
+            s3BucketDomain: store.s3BucketDomain
+          )
+        },
+        isForCapture: true
+      )
+    } else {
+      EmptyView()
     }
   }
 }
