@@ -217,7 +217,8 @@ struct AppImageView: View {
     DesignSystem.Images.appExplanation7,
     DesignSystem.Images.appExplanation8,
     DesignSystem.Images.appExplanation9,
-    DesignSystem.Images.appExplanation10
+    DesignSystem.Images.appExplanation10,
+    DesignSystem.Images.appExplanation11
   ]
   
   var body: some View {
