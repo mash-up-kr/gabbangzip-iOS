@@ -9,6 +9,7 @@
 import ComposableArchitecture
 import DesignSystem
 import SwiftUI
+import WebKit
 
 public struct MyPageView: View {
   @Bindable public var store: StoreOf<MyPageCore>
@@ -33,7 +34,19 @@ public struct MyPageView: View {
         verticalPadding: 16
       )
       
-      SeparatorView(height: 16, padding: 16)
+      SeparatorView(height: 16, padding: 8)
+      
+      NavigationLink(
+        destination:
+          ExplanationWebView()
+          .navigationTitle(MyPageNameSpace.explanation)
+        ,
+        label: {
+          SettingTitleView(text: MyPageNameSpace.explanation)
+        }
+      )
+      
+      SeparatorView(height: 16, padding: 8)
       
       SettingTitleView(
         text: MyPageNameSpace.alarmSetting,
@@ -175,6 +188,19 @@ fileprivate struct SeparatorView: View {
   }
 }
 
+// MARK: - 앱 설명페이지 웹뷰
+fileprivate struct ExplanationWebView: UIViewRepresentable {
+  private let url: URL = URL(string: "https://saber-bobcat-047.notion.site/PIC-10f1bb10dfcb81248499d8973f5cae9f?pvs=4")!
+  
+  func makeUIView(context: Context) -> WKWebView {
+    return WKWebView()
+  }
+  
+  func updateUIView(_ uiView: WKWebView, context: Context) {
+    uiView.load(URLRequest(url: url))
+  }
+}
+
 // MARK: - MyPageNameSpace
 extension MyPageView {
   private enum MyPageNameSpace {
@@ -185,6 +211,7 @@ extension MyPageView {
     static let version = "현재 버전"
     static let logout = "로그아웃"
     static let withdraw = "회원탈퇴"
+    static let explanation = "앱 사용설명서"
   }
 }
 
