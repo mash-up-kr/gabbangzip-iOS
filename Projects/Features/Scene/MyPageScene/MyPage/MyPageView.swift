@@ -39,6 +39,7 @@ public struct MyPageView: View {
       NavigationLink(
         destination:
           AppExplanationView()
+          .navigationBarHidden(true)
         ,
         label: {
           SettingTitleView(text: "앱 사용설명서")
@@ -193,31 +194,48 @@ fileprivate struct AppExplanationView: View {
   @Environment(\.presentationMode) var presentationMode
   
   var body: some View {
-    ExplanationWebView()
-      .navigationBarBackButtonHidden(true)
-      .toolbar {
-        ToolbarItem(placement: .navigationBarLeading) {
-          NavigationBar(
-            type: .titleWithBackButton("", .center),
-            backButtonAction: {
-              presentationMode.wrappedValue.dismiss()
-            }
-          )
-        }
+    NavigationBar(
+      type: .titleWithBackButton("앱 사용설명서", .center),
+      backButtonAction: {
+        presentationMode.wrappedValue.dismiss()
       }
+    )
+    AppImageView()
   }
 }
 
-// MARK: - 앱 설명페이지 웹뷰
-fileprivate struct ExplanationWebView: UIViewRepresentable {
-  private let url: URL = URL(string: "https://saber-bobcat-047.notion.site/PIC-10f1bb10dfcb81248499d8973f5cae9f?pvs=4")!
+// MARK: - 이미지 좌우 터치 뷰
+struct AppImageView: View {
+  @State private var currentIndex = 0
+  let images = [
+    DesignSystem.Images.appExplanation1,
+    DesignSystem.Images.appExplanation2,
+    DesignSystem.Images.appExplanation3,
+    DesignSystem.Images.appExplanation4,
+    DesignSystem.Images.appExplanation5,
+    DesignSystem.Images.appExplanation6,
+    DesignSystem.Images.appExplanation7,
+    DesignSystem.Images.appExplanation8,
+    DesignSystem.Images.appExplanation9,
+    DesignSystem.Images.appExplanation10
+  ]
   
-  func makeUIView(context: Context) -> WKWebView {
-    return WKWebView()
-  }
-  
-  func updateUIView(_ uiView: WKWebView, context: Context) {
-    uiView.load(URLRequest(url: url))
+  var body: some View {
+    GeometryReader { geo in
+      images[currentIndex]
+        .resizable()
+        .scaledToFit()
+        .frame(width: geo.size.width, height: geo.size.height)
+        .contentShape(Rectangle())
+        .onTapGesture { location in
+          let halfWidth = geo.size.width / 2
+          if location.x < halfWidth && currentIndex > 0 {
+            currentIndex -= 1
+          } else if location.x >= halfWidth && currentIndex < images.count - 1 {
+            currentIndex += 1
+          }
+        }
+    }
   }
 }
 
