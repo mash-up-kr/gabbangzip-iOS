@@ -124,6 +124,7 @@ public struct MyPageCore {
     case binding(BindingAction<State>)
     
     // View Action
+    case backToMyPage
     case checkPushStatus
     case checkCurrentVersion
     case showPopup(Bool, State.MyPagePopup?)
@@ -158,6 +159,9 @@ public struct MyPageCore {
     Reduce { state, action in
       switch action {
       case .binding:
+        return .none
+        
+      case .backToMyPage:
         return .none
         
       case .checkPushStatus:

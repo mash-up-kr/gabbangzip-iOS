@@ -38,11 +38,10 @@ public struct MyPageView: View {
       
       NavigationLink(
         destination:
-          ExplanationWebView()
-          .navigationTitle(MyPageNameSpace.explanation)
+          AppExplanationView()
         ,
         label: {
-          SettingTitleView(text: MyPageNameSpace.explanation)
+          SettingTitleView(text: "앱 사용설명서")
         }
       )
       
@@ -188,6 +187,27 @@ fileprivate struct SeparatorView: View {
   }
 }
 
+// MARK: - 앱 설명페이지
+fileprivate struct AppExplanationView: View {
+  
+  @Environment(\.presentationMode) var presentationMode
+  
+  var body: some View {
+    ExplanationWebView()
+      .navigationBarBackButtonHidden(true)
+      .toolbar {
+        ToolbarItem(placement: .navigationBarLeading) {
+          NavigationBar(
+            type: .titleWithBackButton("", .center),
+            backButtonAction: {
+              presentationMode.wrappedValue.dismiss()
+            }
+          )
+        }
+      }
+  }
+}
+
 // MARK: - 앱 설명페이지 웹뷰
 fileprivate struct ExplanationWebView: UIViewRepresentable {
   private let url: URL = URL(string: "https://saber-bobcat-047.notion.site/PIC-10f1bb10dfcb81248499d8973f5cae9f?pvs=4")!
@@ -211,7 +231,6 @@ extension MyPageView {
     static let version = "현재 버전"
     static let logout = "로그아웃"
     static let withdraw = "회원탈퇴"
-    static let explanation = "앱 사용설명서"
   }
 }
 
