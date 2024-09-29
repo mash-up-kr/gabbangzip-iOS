@@ -9,7 +9,6 @@
 import ComposableArchitecture
 import DesignSystem
 import SwiftUI
-import WebKit
 
 public struct MyPageView: View {
   @Bindable public var store: StoreOf<MyPageCore>
@@ -190,7 +189,6 @@ fileprivate struct SeparatorView: View {
 
 // MARK: - 앱 설명페이지
 fileprivate struct AppExplanationView: View {
-  
   @Environment(\.presentationMode) var presentationMode
   
   var body: some View {
@@ -200,14 +198,15 @@ fileprivate struct AppExplanationView: View {
         presentationMode.wrappedValue.dismiss()
       }
     )
-    AppImageView()
+    
+    AppExplanationImagesView()
   }
 }
 
 // MARK: - 이미지 좌우 터치 뷰
-struct AppImageView: View {
+private struct AppExplanationImagesView: View {
   @State private var currentIndex = 0
-  let images = [
+  private let images = [
     DesignSystem.Images.appExplanation1,
     DesignSystem.Images.appExplanation2,
     DesignSystem.Images.appExplanation3,
