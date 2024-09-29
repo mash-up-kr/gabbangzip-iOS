@@ -11,13 +11,16 @@ import SwiftUI
 public struct PhotoCard<Content>: View where Content: View {
   private var status: Status
   private var content: () -> Content
+  private var isForCapture: Bool
   
   public init(
     status: Status,
-    @ViewBuilder content: @escaping () -> Content
+    @ViewBuilder content: @escaping () -> Content,
+    isForCapture: Bool = false
   ) {
     self.status = status
     self.content = content
+    self.isForCapture = isForCapture
   }
   
   public var body: some View {
@@ -35,7 +38,9 @@ public struct PhotoCard<Content>: View where Content: View {
       RoundedRectangle(cornerRadius: 20)
         .strokeBorder(DesignSystem.Colors.gray0, lineWidth: 2)
     }
-    .shadow(color: DesignSystem.Colors.gray100.opacity(0.06), radius: 20, x: 0, y: 0)
+    .modifier(if: !isForCapture) {
+      $0.shadow(color: DesignSystem.Colors.gray100.opacity(0.06), radius: 20, x: 0, y: 0)
+    }
   }
   
   private var horizontalIconBar: some View {
@@ -205,5 +210,25 @@ extension PhotoCard {
       }
     }
     .padding(.horizontal, 80)
+  }
+}
+
+extension View {
+  
+  /// Applies a modifier to a view conditionally.
+  ///
+  /// - Parameters:
+  ///   - condition: The condition to determine if the content should be applied.
+  ///   - content: The modifier to apply to the view.
+  /// - Returns: The modified view.
+  @ViewBuilder func modifier<T: View>(
+    if condition: @autoclosure () -> Bool,
+    then content: (Self) -> T
+  ) -> some View {
+    if condition() {
+      content(self)
+    } else {
+      self
+    }
   }
 }

@@ -14,6 +14,7 @@ import Services
 import SwiftUI
 import UIKit
 import _PhotosUI_SwiftUI
+import Lovebug
 
 @Reducer
 public struct GroupDetailCore {
@@ -34,6 +35,7 @@ public struct GroupDetailCore {
     var capturedImage: UIImage?
     var photosPickerPresented: Bool
     var selectedPickerItems: [PhotosPickerItem]
+    var loadedImages: [ImageModel]
 
     var smallButtonType: SmallButtonContentType {
       if let groupDetail {
@@ -100,7 +102,8 @@ public struct GroupDetailCore {
       isImageUploaded: Bool = false,
       userInfo: @autoclosure () -> UserInfo = .defaultValue,
       photosPickerPresented: Bool = false,
-      selectedPickerItems: [PhotosPickerItem] = []
+      selectedPickerItems: [PhotosPickerItem] = [],
+      loadedImages: [ImageModel] = []
     ) {
       self.groupID = groupID
       self.groupDetail = groupDetail
@@ -116,6 +119,7 @@ public struct GroupDetailCore {
       self._userInfo = Shared(wrappedValue: userInfo(), .inMemory("userInfo"))
       self.photosPickerPresented = photosPickerPresented
       self.selectedPickerItems = selectedPickerItems
+      self.loadedImages = loadedImages
     }
   }
   
@@ -138,6 +142,7 @@ public struct GroupDetailCore {
     case galleryButtonTapped
     case imageCaptured(UIImage?)
     case createEventButtonTapped
+    case imageAllLoaded([ImageModel])
 
     // Internal Action
     case setS3BucketDomain(String)
@@ -221,10 +226,14 @@ public struct GroupDetailCore {
         
       case let .imageCaptured(image):
         state.capturedImage = image
-        return .none
+        return .send(.shareButtonTapped)
         
       case .createEventButtonTapped:
         return .send(.moveToCreateEvent(state.groupID))
+        
+      case let .imageAllLoaded(images):
+        state.loadedImages = images
+        return .none
         
       case let .setS3BucketDomain(s3BucketDomain):
         state.s3BucketDomain = s3BucketDomain
