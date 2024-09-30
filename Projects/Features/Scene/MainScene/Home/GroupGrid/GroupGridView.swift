@@ -32,6 +32,7 @@ public struct GroupGridView: View {
         }
       )
     }
+    .padding(.horizontal, 18)
   }
 }
 

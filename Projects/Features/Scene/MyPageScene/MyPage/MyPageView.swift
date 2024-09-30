@@ -33,7 +33,19 @@ public struct MyPageView: View {
         verticalPadding: 16
       )
       
-      SeparatorView(height: 16, padding: 16)
+      SeparatorView(height: 16, padding: 8)
+      
+      NavigationLink(
+        destination:
+          AppExplanationView()
+          .navigationBarHidden(true)
+        ,
+        label: {
+          SettingTitleView(text: "앱 사용설명서")
+        }
+      )
+      
+      SeparatorView(height: 16, padding: 8)
       
       SettingTitleView(
         text: MyPageNameSpace.alarmSetting,
@@ -172,6 +184,58 @@ fileprivate struct SeparatorView: View {
     Color(DesignSystem.Colors.gray20)
       .frame(height: height)
       .padding(.vertical, padding)
+  }
+}
+
+// MARK: - 앱 설명페이지
+fileprivate struct AppExplanationView: View {
+  @Environment(\.presentationMode) var presentationMode
+  
+  var body: some View {
+    NavigationBar(
+      type: .titleWithBackButton("앱 사용설명서", .center),
+      backButtonAction: {
+        presentationMode.wrappedValue.dismiss()
+      }
+    )
+    
+    AppExplanationImagesView()
+  }
+}
+
+// MARK: - 이미지 좌우 터치 뷰
+private struct AppExplanationImagesView: View {
+  @State private var currentIndex = 0
+  private let images = [
+    DesignSystem.Images.appExplanation1,
+    DesignSystem.Images.appExplanation2,
+    DesignSystem.Images.appExplanation3,
+    DesignSystem.Images.appExplanation4,
+    DesignSystem.Images.appExplanation5,
+    DesignSystem.Images.appExplanation6,
+    DesignSystem.Images.appExplanation7,
+    DesignSystem.Images.appExplanation8,
+    DesignSystem.Images.appExplanation9,
+    DesignSystem.Images.appExplanation10,
+    DesignSystem.Images.appExplanation11
+  ]
+  
+  var body: some View {
+    GeometryReader { geo in
+      images[currentIndex]
+        .resizable()
+        .scaledToFit()
+        .frame(width: geo.size.width, height: geo.size.height)
+        .contentShape(Rectangle())
+        .onTapGesture { location in
+          let halfWidth = geo.size.width / 2
+          if location.x < halfWidth && currentIndex > 0 {
+            currentIndex -= 1
+          } else if location.x >= halfWidth && currentIndex < images.count - 1 {
+            currentIndex += 1
+          }
+        }
+    }
   }
 }
 
