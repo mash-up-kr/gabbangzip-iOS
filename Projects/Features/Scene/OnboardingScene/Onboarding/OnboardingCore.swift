@@ -25,10 +25,12 @@ public struct OnboardingCore {
     case binding(BindingAction<State>)
     
     // View Action
+    case startButtonTapped
     
     // Internal Action
     
     // Route Action
+    case moveToLogin
   }
   
   public var body: some Reducer<State, Action> {
@@ -37,7 +39,13 @@ public struct OnboardingCore {
       case .binding:
         return .none
         
-      
+      case .startButtonTapped:
+        return .run { send in
+          await send(.moveToLogin)
+        }
+        
+      case .moveToLogin:
+        return .none
       }
     }
   }

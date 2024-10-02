@@ -9,6 +9,7 @@ import ComposableArchitecture
 import DesignSystem
 import Login
 import MainCoordinator
+import Onboarding
 import SwiftUI
 
 struct RootView: View {
@@ -21,6 +22,10 @@ struct RootView: View {
   var body: some View {
     Group {
       switch store.destination {
+      case .onboarding:
+        if let store = store.scope(state: \.destination?.onboarding, action: \.destination.onboarding) {
+          OnboardingView(store: store)
+        }
       case .login:
         if let store = store.scope(state: \.destination?.login, action: \.destination.login) {
           LoginView(store: store)

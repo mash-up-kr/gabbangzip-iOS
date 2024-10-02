@@ -14,6 +14,7 @@ import Login
 import Main
 import MainCoordinator
 import Models
+import Onboarding
 import Services
 
 @Reducer
@@ -21,6 +22,7 @@ public struct RootCore {
   @Reducer
   public enum Destination {
     case mainCoordinator(MainCoordinatorCore)
+    case onboarding(OnboardingCore)
     case login(LoginCore)
   }
   
@@ -47,6 +49,9 @@ public struct RootCore {
     case onOpenURL(URL)
     
     // Internal Action
+    case verifyFirstLaunch(Result<String, Error>)
+    case updateAppVersion(String)
+    case showOnboarding
     case getUserInfoFromKeyChain(Result<UserInfo, Error>)
     case checkAccessToken(Result<TestInfo, Error>, userInfo: UserInfo)
     case refreshToken(Result<TokenInfo, Error>, userInfo: UserInfo)
@@ -56,6 +61,7 @@ public struct RootCore {
   }
   
   @Dependency(\.authAPIClient) private var authAPIClient
+  @Dependency(\.bundleClient) private var bundleClient
   @Dependency(\.kakaoLoginClient) private var kakaoLoginClient
   @Dependency(\.keyChainClient) private var keyChainClient
   @Dependency(\.userDefaultsClient) private var userDefaultsClient
@@ -67,6 +73,10 @@ public struct RootCore {
     Reduce { state, action in
       switch action {
       case .binding:
+        return .none
+        
+      case .destination(.presented(.onboarding(.moveToLogin))):
+        state.destination = .login(LoginCore.State())
         return .none
         
       case .destination(.presented(.mainCoordinator(.router(.routeAction(id: _, action: .myPage(.backToLogin)))))):
@@ -86,7 +96,7 @@ public struct RootCore {
         
       case .onAppear:
         return .run { send in
-          await send(.getUserInfoFromKeyChain(Result { try await self.keyChainClient.readUserInfo() }))
+          await send(.verifyFirstLaunch(Result { try await self.keyChainClient.readAppVersion() }))
         }
         
       case let .onOpenURL(url):
@@ -97,6 +107,35 @@ public struct RootCore {
             await send(.logError(RootCoreError(code: .failToOpenKakao)))
           }
         }
+        
+      case let .verifyFirstLaunch(.success(savedAppVersion)):
+        return .run { send in
+          let currentVersion = try bundleClient.getCurrentVersion()
+          
+          if savedAppVersion == currentVersion {
+            await send(.getUserInfoFromKeyChain(Result { try await self.keyChainClient.readUserInfo() }))
+          } else {
+            await send(.updateAppVersion(currentVersion))
+          }
+        }
+        
+      case .verifyFirstLaunch(.failure):
+        return .run { send in
+          let currentVersion = try bundleClient.getCurrentVersion()
+          
+          try await self.keyChainClient.createAppVersion(currentVersion)
+          await send(.showOnboarding)
+        }
+        
+      case let .updateAppVersion(version):
+        return .run { send in
+          try await self.keyChainClient.updateAppVersion(version)
+          await send(.showOnboarding)
+        }
+        
+      case .showOnboarding:
+        state.destination = .onboarding(OnboardingCore.State())
+        return .none
         
       case let .getUserInfoFromKeyChain(.success(userInfo)):
         return .run { send in
