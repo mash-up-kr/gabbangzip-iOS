@@ -47,8 +47,8 @@ public struct HistoryDetailView: View {
               scale: scale,
               size: CGSize(width: 310, height: 420)
             ) { capturedImage in
-              store.send(.imageCaptured(capturedImage))
               store.send(.shareButtonTapped)
+              store.send(.imageCaptured(capturedImage))
             }
           }
         }
@@ -60,7 +60,9 @@ public struct HistoryDetailView: View {
       ActivityView(
         isPresented: $store.showActivityView,
         activityItems: [store.capturedImage]
-      )
+      ) {
+        store.send(.completeActivity)
+      }
     )
   }
   
