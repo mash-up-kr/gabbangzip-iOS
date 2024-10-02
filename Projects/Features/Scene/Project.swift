@@ -31,6 +31,17 @@ let project = Project.make(
       ]
     ),
     .make(
+      name: "Onboarding",
+      product: .framework,
+      bundleId: "com.mashup.gabbangzip.onboarding.onboarding",
+      sources: ["OnboardingScene/Onboarding/**"],
+      dependencies: [
+        .project(target: .coreKit, projectPath: .core),
+        .project(target: .designSystem, projectPath: .designSystem),
+        .external(externalDependency: .composableArchitecture)
+      ]
+    ),
+    .make(
       name: "GroupDetail",
       product: .framework,
       bundleId: "com.mashup.gabbangzip.groupDetail",

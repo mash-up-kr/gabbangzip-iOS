@@ -40,6 +40,7 @@ public enum TargetName: String {
   case designSystem = "DesignSystem"
   case main = "Main"
   case login = "Login"
+  case onboarding = "Onboarding"
   case groupDetail = "GroupDetail"
   case myPage = "MyPage"
   case createGroup = "CreateGroup"
