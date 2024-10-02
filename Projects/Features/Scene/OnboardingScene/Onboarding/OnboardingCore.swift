@@ -25,6 +25,7 @@ public struct OnboardingCore {
     case binding(BindingAction<State>)
     
     // View Action
+    case changeCurrentIndex(Int)
     case startButtonTapped
     
     // Internal Action
@@ -37,6 +38,10 @@ public struct OnboardingCore {
     Reduce { state, action in
       switch action {
       case .binding:
+        return .none
+        
+      case let .changeCurrentIndex(value):
+        state.currentIndex += value
         return .none
         
       case .startButtonTapped:

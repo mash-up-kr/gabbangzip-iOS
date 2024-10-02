@@ -19,7 +19,7 @@ public struct OnboardingView: View {
   
   public var body: some View {
     ZStack {
-      OnboardingImageView(currentIndex: $store.currentIndex)
+      OnboardingImageView(store: store)
       
       VStack {
         Spacer()
@@ -59,7 +59,7 @@ fileprivate struct PageNationView: View {
 
 // MARK: - 온보딩 이미지 뷰
 fileprivate struct OnboardingImageView: View {
-  @Binding var currentIndex: Int
+  @Bindable public var store: StoreOf<OnboardingCore>
   @State private var dragOffset: CGSize = .zero
   private let images = [
     DesignSystem.Images.onboarding01,
@@ -70,32 +70,33 @@ fileprivate struct OnboardingImageView: View {
   
   var body: some View {
     GeometryReader { geo in
-      images[currentIndex]
+      images[store.currentIndex]
         .resizable()
         .scaledToFit()
         .frame(width: geo.size.width, height: geo.size.height)
         .ignoresSafeArea()
         .contentShape(Rectangle())
+        .offset(x: dragOffset.width)
         .gesture(
           DragGesture()
             .onChanged { value in
               dragOffset = value.translation
             }
             .onEnded { value in
-              if value.translation.width < -50 && currentIndex < images.count - 1 {
-                currentIndex += 1
-              } else if value.translation.width > 50 && currentIndex > 0 {
-                currentIndex -= 1
+              if value.translation.width < -50 && store.currentIndex < images.count - 1 {
+                store.send(.changeCurrentIndex(1))
+              } else if value.translation.width > 50 && store.currentIndex > 0 {
+                store.send(.changeCurrentIndex(-1))
               }
               dragOffset = .zero
             }
         )
         .onTapGesture { location in
           let halfWidth = geo.size.width / 2
-          if location.x < halfWidth && currentIndex > 0 {
-            currentIndex -= 1
-          } else if location.x >= halfWidth && currentIndex < images.count - 1 {
-            currentIndex += 1
+          if location.x < halfWidth && store.currentIndex > 0 {
+            store.send(.changeCurrentIndex(-1))
+          } else if location.x >= halfWidth && store.currentIndex < images.count - 1 {
+            store.send(.changeCurrentIndex(1))
           }
         }
     }
