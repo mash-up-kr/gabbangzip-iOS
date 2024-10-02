@@ -26,12 +26,9 @@ public struct OnboardingCore {
     
     // View Action
     
-    
     // Internal Action
     
-    
     // Route Action
-    
   }
   
   public var body: some Reducer<State, Action> {

@@ -11,7 +11,7 @@ import DesignSystem
 import SwiftUI
 
 struct OnboardingView: View {
-  @Bindable public var store: StoreOf<MyPageCore>
+  @Bindable public var store: StoreOf<OnboardingCore>
   
   public var body: some View {
     ZStack {
@@ -70,6 +70,7 @@ fileprivate struct OnboardingImageView: View {
         .resizable()
         .scaledToFit()
         .frame(width: geo.size.width, height: geo.size.height)
+        .ignoresSafeArea()
         .contentShape(Rectangle())
         .gesture(
           DragGesture()
