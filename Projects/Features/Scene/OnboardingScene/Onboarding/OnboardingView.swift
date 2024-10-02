@@ -10,8 +10,12 @@ import ComposableArchitecture
 import DesignSystem
 import SwiftUI
 
-struct OnboardingView: View {
+public struct OnboardingView: View {
   @Bindable public var store: StoreOf<OnboardingCore>
+  
+  public init(store: StoreOf<OnboardingCore>) {
+    self.store = store
+  }
   
   public var body: some View {
     ZStack {
@@ -26,7 +30,7 @@ struct OnboardingView: View {
           type: .active,
           title: "시작하기",
           action: {
-            
+            store.send(.startButtonTapped)
           }
         )
         .padding(.vertical, 16)
@@ -78,9 +82,9 @@ fileprivate struct OnboardingImageView: View {
               dragOffset = value.translation
             }
             .onEnded { value in
-              if value.translation.width < -100 && currentIndex < images.count - 1 {
+              if value.translation.width < -50 && currentIndex < images.count - 1 {
                 currentIndex += 1
-              } else if value.translation.width > 100 && currentIndex > 0 {
+              } else if value.translation.width > 50 && currentIndex > 0 {
                 currentIndex -= 1
               }
               dragOffset = .zero
