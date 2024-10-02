@@ -1,4 +1,4 @@
-import ProjectDescription
+@preconcurrency import ProjectDescription
 import ProjectDescriptionHelpers
 
 let project = Project.make(
