@@ -10,9 +10,17 @@ import SwiftUI
 
 public struct Tag: View {
   private var type: TagType
+  private var displayMode: DisplayMode
+  private var font: Font
   
-  public init(type: TagType) {
+  public init(
+    type: TagType,
+    displayMode: DisplayMode = .light,
+    font: Font = .body12
+  ) {
     self.type = type
+    self.displayMode = displayMode
+    self.font = font
   }
   
   public var body: some View {
@@ -29,8 +37,28 @@ public struct Tag: View {
         )
       }
     }
-    .background(DesignSystem.Colors.gray40)
+    .font(font)
+    .foregroundStyle(textColor)
+    .background(chipColor)
     .cornerRadius(20)
+  }
+  
+  private var textColor: Color {
+    switch displayMode {
+    case .light:
+      return DesignSystem.Colors.gray80
+    case .dark:
+      return DesignSystem.Colors.gray40
+    }
+  }
+  
+  private var chipColor: Color {
+    switch displayMode {
+    case .light:
+      return DesignSystem.Colors.gray40
+    case .dark:
+      return DesignSystem.Colors.gray100
+    }
   }
 }
 
@@ -49,8 +77,7 @@ fileprivate struct CategoryTag: View {
         .frame(width: 10, height: 10)
       
       Text(type.title)
-        .font(.body12)
-        .foregroundStyle(DesignSystem.Colors.gray80)
+//        .font(.body12)
     }
     .padding(.vertical, 6)
     .padding(.horizontal, 10)
@@ -67,8 +94,7 @@ fileprivate struct EtcTag: View {
   
   fileprivate var body: some View {
     Text(type.title)
-      .font(.body12)
-      .foregroundStyle(DesignSystem.Colors.gray80)
+//      .font(.body12)
       .padding(.vertical, 6)
       .padding(.horizontal, 10)
   }
@@ -78,6 +104,11 @@ fileprivate struct EtcTag: View {
 public enum TagType {
   case category(CategoryType)
   case etc(EtcType)
+}
+
+public enum DisplayMode {
+  case light
+  case dark
 }
 
 #Preview {
@@ -93,8 +124,23 @@ public enum TagType {
     }
     
     VStack {
+      Tag(type: .category(.crew), displayMode: .dark)
+      Tag(type: .category(.network), displayMode: .dark)
+      Tag(type: .category(.company), displayMode: .dark)
+      Tag(type: .category(.exercise), displayMode: .dark)
+      Tag(type: .category(.littleMoim), displayMode: .dark)
+      Tag(type: .category(.hobby), displayMode: .dark)
+      Tag(type: .category(.school), displayMode: .dark)
+    }
+    
+    VStack {
       Tag(type: .etc(.voting))
       Tag(type: .etc(.update(3)))
+    }
+    
+    VStack {
+      Tag(type: .etc(.voting), displayMode: .dark)
+      Tag(type: .etc(.update(3)), displayMode: .dark)
     }
   }
 }
