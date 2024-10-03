@@ -78,7 +78,7 @@ public struct CreateGroupCompletionView: View {
     .onAppear { store.send(.onAppear) }
     .toast(
       isPresented: $store.toastPresented.sending(\.setToastPresented),
-      type: .textWithCheckIcon("링크를 복사했어요.")
+      type: .textWithCheckIcon("코드를 복사했어요.")
     )
   }
 }
