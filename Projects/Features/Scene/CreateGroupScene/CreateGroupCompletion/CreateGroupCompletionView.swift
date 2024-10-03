@@ -59,7 +59,7 @@ public struct CreateGroupCompletionView: View {
         .padding(.top, 16)
       
       SmallButton(
-        type: .active,
+        type: .secondary,
         smallButtonContentType: .copyCode,
         action: { store.send(.copyLinkButtonTapped) }
       )
