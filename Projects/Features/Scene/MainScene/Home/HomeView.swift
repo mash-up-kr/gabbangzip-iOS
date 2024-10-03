@@ -53,6 +53,11 @@ public struct HomeView: View {
       }
       .frame(height: 40)
       
+      Divider()
+        .frame(height: 8)
+        .overlay(DesignSystem.Colors.gray20)
+        .padding(.top, 12)
+      
       switch store.state.displayMode {
       case .list:
         GroupListView(store: store.scope(state: \.groupList, action: \.groupList))
