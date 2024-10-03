@@ -35,7 +35,7 @@ public struct CreateGroupCompletionView: View {
       
       PhotoCard(status: store.createdGroupInfo.keyword.convertToPhotoCardStatus()) {
         VStack(spacing: 0) {
-          Tag(type: store.createdGroupInfo.keyword.tagType)
+          Tag(type: store.createdGroupInfo.keyword.tagType, displayMode: .dark)
           
           PhotoWithFrame(
             frameShape: store.createdGroupInfo.keyword.frame,
