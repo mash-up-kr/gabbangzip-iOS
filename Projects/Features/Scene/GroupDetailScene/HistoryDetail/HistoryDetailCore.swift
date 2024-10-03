@@ -52,8 +52,9 @@ public struct HistoryDetailCore {
     // View Action
     case backButtonTapped
     case shareButtonTapped
+    case completeActivity
     
-    //
+    // Internal Action
     case imageCaptured(UIImage?)
     case imageAllLoaded([ImageModel])
     
@@ -72,6 +73,10 @@ public struct HistoryDetailCore {
         
       case .shareButtonTapped:
         state.showActivityView = true
+        return .none
+        
+      case .completeActivity:
+        state.showActivityView = false
         return .none
         
       case let .imageCaptured(image):
