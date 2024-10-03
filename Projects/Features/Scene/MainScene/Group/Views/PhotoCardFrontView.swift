@@ -34,6 +34,7 @@ struct PhotoCardFrontView: View {
       Text(title)
       .font(.body16)
       .foregroundStyle(DesignSystem.Colors.gray80)
+      .padding(.bottom, 6)
       
       PhotoWithFrame(
         frameShape: keyword.frame,
