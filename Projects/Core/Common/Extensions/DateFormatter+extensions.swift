@@ -16,7 +16,7 @@ public enum DateFormatterType {
 public extension DateFormatter {
   static let iso8601: DateFormatter = {
     let formatter = DateFormatter()
-    formatter.dateFormat = "yyyy-MM-dd'T'HH:mm:ss.SSS"
+    formatter.dateFormat = "yyyy-MM-dd'T'HH:mm:ss"
     //formatter.dateFormat = "yyyy-MM-dd'T'HH:mm:ss.SSS'Z'"
     formatter.calendar = Calendar(identifier: .iso8601)
     formatter.timeZone = TimeZone(abbreviation: "KST")
@@ -32,7 +32,7 @@ public extension DateFormatter {
     
     switch type {
     case .eventDate:
-      formatter.dateFormat = "yyyy-MM-dd'T'HH:mm:ss.SSS"
+      formatter.dateFormat = "yyyy-MM-dd'T'HH:mm:ss"
     case .deadline:
       formatter.dateFormat = "yyyy-MM-dd'T'HH:mm:ss.SSSSSS"
     }
