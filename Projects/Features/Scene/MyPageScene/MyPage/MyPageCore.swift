@@ -209,9 +209,11 @@ public struct MyPageCore {
         
       case .logout:
         return .run(
-          operation: { send in
+          operation: { [state] send in
             try await keyChainClient.deleteUserInfo()
-            try await keyChainClient.deleteRefreshToken()
+            if case .apple = state.userInfo.loginType {
+              try await keyChainClient.deleteRefreshToken()
+            }
             await send(.backToLogin)
           },
           catch: { error, send in

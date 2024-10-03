@@ -31,11 +31,12 @@ public struct CreateGroupCompletionView: View {
         .font(.head18)
         .foregroundStyle(DesignSystem.Colors.gray80)
         .padding(.horizontal, 16)
-        .padding(.vertical, 32)
+        .padding(.top, 32)
+        .padding(.bottom, 16)
       
       PhotoCard(status: store.createdGroupInfo.keyword.convertToPhotoCardStatus()) {
         VStack(spacing: 0) {
-          Tag(type: store.createdGroupInfo.keyword.tagType)
+          Tag(type: store.createdGroupInfo.keyword.tagType, displayMode: .dark)
           
           PhotoWithFrame(
             frameShape: store.createdGroupInfo.keyword.frame,
@@ -59,7 +60,7 @@ public struct CreateGroupCompletionView: View {
         .padding(.top, 16)
       
       SmallButton(
-        type: .active,
+        type: .secondary,
         smallButtonContentType: .copyCode,
         action: { store.send(.copyLinkButtonTapped) }
       )
@@ -72,13 +73,16 @@ public struct CreateGroupCompletionView: View {
         title: "완료",
         action: { store.send(.completeButtonTapped) }
       )
-      .padding(.horizontal, 16)
+      .frame(height: 57)
+      .clipped()
+      .cornerRadius(16)
+      .padding(.horizontal, 22)
       .padding(.bottom, 12)
     }
     .onAppear { store.send(.onAppear) }
     .toast(
       isPresented: $store.toastPresented.sending(\.setToastPresented),
-      type: .textWithCheckIcon("링크를 복사했어요.")
+      type: .textWithCheckIcon("코드를 복사했어요.")
     )
   }
 }

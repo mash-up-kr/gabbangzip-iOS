@@ -34,14 +34,14 @@ public struct HomeView: View {
           switch store.displayMode {
           case .list:
             Button(action: { store.send(.displayModeChanged(.grid)) }) {
-              DesignSystem.Icons.list
+              DesignSystem.Icons.grid
                 .resizable()
                 .aspectRatio(contentMode: .fit)
                 .frame(width: 18, height: 18)
             }
           case .grid:
             Button(action: { store.send(.displayModeChanged(.list)) }) {
-              DesignSystem.Icons.grid
+              DesignSystem.Icons.list
                 .resizable()
                 .aspectRatio(contentMode: .fit)
                 .frame(width: 18, height: 18)
@@ -52,6 +52,11 @@ public struct HomeView: View {
         .padding(.trailing, 20)
       }
       .frame(height: 40)
+      
+      Divider()
+        .frame(height: 8)
+        .overlay(DesignSystem.Colors.gray20)
+        .padding(.top, 12)
       
       switch store.state.displayMode {
       case .list:

@@ -34,9 +34,9 @@ public struct GroupGridItemView: View {
         .foregroundStyle(DesignSystem.Colors.gray80)
       
       HStack {
-        Tag(type: store.keyword.tagType)
+        Tag(type: store.keyword.tagType, font: .body10)
         
-        Tag(type: .etc(.custom(store.statusDescription)))
+        Tag(type: .etc(.custom(store.statusDescription)), font: .body10)
         
         Spacer(minLength: 0)
       }
