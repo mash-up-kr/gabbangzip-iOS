@@ -31,7 +31,8 @@ public struct CreateGroupCompletionView: View {
         .font(.head18)
         .foregroundStyle(DesignSystem.Colors.gray80)
         .padding(.horizontal, 16)
-        .padding(.vertical, 32)
+        .padding(.top, 32)
+        .padding(.bottom, 16)
       
       PhotoCard(status: store.createdGroupInfo.keyword.convertToPhotoCardStatus()) {
         VStack(spacing: 0) {
@@ -72,7 +73,10 @@ public struct CreateGroupCompletionView: View {
         title: "완료",
         action: { store.send(.completeButtonTapped) }
       )
-      .padding(.horizontal, 16)
+      .frame(height: 57)
+      .clipped()
+      .cornerRadius(16)
+      .padding(.horizontal, 22)
       .padding(.bottom, 12)
     }
     .onAppear { store.send(.onAppear) }
