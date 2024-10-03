@@ -23,6 +23,7 @@ let project = Project.make(
         .project(target: .main, projectPath: .scene),
         .project(target: .myPage, projectPath: .scene),
         .project(target: .login, projectPath: .scene),
+        .project(target: .onboarding, projectPath: .scene),
         .project(target: .createEvent, projectPath: .scene),
         .target(name: .createGroupCoordinator),
         .target(name: .groupDetailCoordinator),

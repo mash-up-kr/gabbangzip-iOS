@@ -19,6 +19,9 @@ public struct KeyChainClient: Sendable {
   public var createRefreshToken: @Sendable (_ refreshToken: String) async throws -> Void
   public var readRefreshToken: @Sendable () async throws -> String
   public var deleteRefreshToken: @Sendable () async throws -> Void
+  public var createAppVersion: @Sendable (_ appVersion: String) async throws -> Void
+  public var readAppVersion: @Sendable () async throws -> String
+  public var updateAppVersion: @Sendable (_ appVersion: String) async throws -> Void
 }
 
 extension KeyChainClient: DependencyKey {
@@ -29,21 +32,7 @@ extension KeyChainClient: DependencyKey {
           throw KeyChainClientError(code: .failToEncode)
         }
         
-        let query: NSDictionary = [
-          kSecClass: kSecClassGenericPassword,
-          kSecAttrAccount: Key.userInfo.rawValue,
-          kSecValueData: encodedData
-        ]
-        let status = SecItemAdd(query, nil)
-        
-        switch status {
-        case errSecSuccess:
-          break
-        case errSecDuplicateItem:
-          try updateKey(.userInfo, encodedData)
-        default:
-          throw KeyChainClientError(code: .failToCreate)
-        }
+        try create(.userInfo, encodedData)
       },
       readUserInfo: {
         let query: NSDictionary = [
@@ -72,47 +61,17 @@ extension KeyChainClient: DependencyKey {
           throw KeyChainClientError(code: .failToEncode)
         }
         
-        try updateKey(.userInfo, encodedData)
+        try update(.userInfo, encodedData)
       },
       deleteUserInfo: {
-        let query: NSDictionary = [
-          kSecClass: kSecClassGenericPassword,
-          kSecAttrAccount: Key.userInfo.rawValue
-        ]
-        
-        let status = SecItemDelete(query)
-        
-        switch status {
-        case errSecNoSuchKeychain:
-          throw KeyChainClientError(code: .failToDelete)
-        case errSecItemNotFound:
-          throw KeyChainClientError(code: .failToDelete)
-        case noErr:
-          break
-        default:
-          throw KeyChainClientError(code: .failToDelete)
-        }
+        try delete(.userInfo)
       },
       createRefreshToken: { refreshToken in
         guard let encodedData = try? JSONEncoder().encode(refreshToken) else {
           throw KeyChainClientError(code: .failToEncode)
         }
         
-        let query: NSDictionary = [
-          kSecClass: kSecClassGenericPassword,
-          kSecAttrAccount: Key.refreshToken.rawValue,
-          kSecValueData: encodedData
-        ]
-        let status = SecItemAdd(query, nil)
-        
-        switch status {
-        case errSecSuccess:
-          break
-        case errSecDuplicateItem:
-          try updateKey(.refreshToken, encodedData)
-        default:
-          throw KeyChainClientError(code: .failToCreate)
-        }
+        try create(.refreshToken, encodedData)
       },
       readRefreshToken: {
         let query: NSDictionary = [
@@ -137,26 +96,68 @@ extension KeyChainClient: DependencyKey {
         }
       },
       deleteRefreshToken: {
+        try delete(.refreshToken)
+      },
+      createAppVersion: { appVersion in
+        guard let encodedData = try? JSONEncoder().encode(appVersion) else {
+          throw KeyChainClientError(code: .failToEncode)
+        }
+        
+        try create(.appVersion, encodedData)
+      },
+      readAppVersion: {
         let query: NSDictionary = [
           kSecClass: kSecClassGenericPassword,
-          kSecAttrAccount: Key.refreshToken.rawValue
+          kSecAttrAccount: Key.appVersion.rawValue,
+          kSecReturnData: kCFBooleanTrue as Any,
+          kSecMatchLimit: kSecMatchLimitOne
         ]
-        
-        let status = SecItemDelete(query)
+        var dataTypeReference: AnyObject?
+        let status = SecItemCopyMatching(query, &dataTypeReference)
         
         switch status {
-        case errSecNoSuchKeychain, errSecItemNotFound, noErr:
-          break
+        case errSecSuccess:
+          if let retrieveData = dataTypeReference as? Data,
+             let decodedData = try? JSONDecoder().decode(String.self, from: retrieveData) {
+            return decodedData
+          } else {
+            throw KeyChainClientError(code: .failToGetData)
+          }
         default:
-          throw KeyChainClientError(code: .failToDelete)
+          throw KeyChainClientError(userInfo: ["status": status], code: .failToRead)
         }
+      },
+      updateAppVersion: { appVersion in
+        guard let encodedData = try? JSONEncoder().encode(appVersion) else {
+          throw KeyChainClientError(code: .failToEncode)
+        }
+        
+        try update(.appVersion, encodedData)
       }
     )
   }
 }
 
 extension KeyChainClient {
-  private static func updateKey(_ key: Key, _ data: Data) throws {
+  private static func create(_ key: Key, _ data: Data) throws {
+    let query: NSDictionary = [
+      kSecClass: kSecClassGenericPassword,
+      kSecAttrAccount: key.rawValue,
+      kSecValueData: data
+    ]
+    let status = SecItemAdd(query, nil)
+    
+    switch status {
+    case errSecSuccess:
+      break
+    case errSecDuplicateItem:
+      try update(key, data)
+    default:
+      throw KeyChainClientError(code: .failToCreate)
+    }
+  }
+  
+  private static func update(_ key: Key, _ data: Data) throws {
     let previousQuery: NSDictionary = [
       kSecClass: kSecClassGenericPassword,
       kSecAttrAccount: key.rawValue,
@@ -173,6 +174,26 @@ extension KeyChainClient {
       throw KeyChainClientError(code: .failToUpdate)
     }
   }
+  
+  private static func delete(_ key: Key) throws {
+    let query: NSDictionary = [
+      kSecClass: kSecClassGenericPassword,
+      kSecAttrAccount: key.rawValue
+    ]
+    
+    let status = SecItemDelete(query)
+    
+    switch status {
+    case errSecNoSuchKeychain:
+      throw KeyChainClientError(code: .failToDelete)
+    case errSecItemNotFound:
+      throw KeyChainClientError(code: .failToDelete)
+    case noErr:
+      break
+    default:
+      throw KeyChainClientError(code: .failToDelete)
+    }
+  }
 }
 
 // MARK: - Keys NameSpace
@@ -180,6 +201,7 @@ extension KeyChainClient {
   public enum Key: String {
     case userInfo
     case refreshToken
+    case appVersion
   }
 }
 
