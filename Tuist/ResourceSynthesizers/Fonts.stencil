@@ -87,6 +87,12 @@ import SwiftUI
     }
     return Font(uiFont: font)
   }
+  {{accessModifier}} var _10: Font {
+    guard let font = UIFont(font: self, size: 10) else {
+      fatalError("Unable to initialize font name: '\(name)', family: \(family), size: 10")
+    }
+    return Font(uiFont: font)
+  }
 
   {{accessModifier}} func font(size: CGFloat) -> Font {
     guard let font = UIFont(font: self, size: size) else {
@@ -144,6 +150,9 @@ import SwiftUI
   }
   static var body12: Font {
     {{param.name}}FontFamily.{{family.name|swiftIdentifier:"pretty"|escapeReservedKeywords}}.medium._12
+  }
+  static var body10: Font {
+    {{param.name}}FontFamily.{{family.name|swiftIdentifier:"pretty"|escapeReservedKeywords}}.medium._10
   }
   static var text14: Font {
     {{param.name}}FontFamily.{{family.name|swiftIdentifier:"pretty"|escapeReservedKeywords}}.regular._14
