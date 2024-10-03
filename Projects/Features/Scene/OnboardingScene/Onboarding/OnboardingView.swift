@@ -60,7 +60,6 @@ fileprivate struct PageNationView: View {
 // MARK: - 온보딩 이미지 뷰
 fileprivate struct OnboardingImageView: View {
   @Bindable public var store: StoreOf<OnboardingCore>
-  @State private var dragOffset: CGSize = .zero
   private let images = [
     DesignSystem.Images.onboarding01,
     DesignSystem.Images.onboarding02,
@@ -69,37 +68,24 @@ fileprivate struct OnboardingImageView: View {
   ]
   
   var body: some View {
-    GeometryReader { geo in
-      images[store.currentIndex]
-        .resizable()
-        .scaledToFit()
-        .frame(width: geo.size.width, height: geo.size.height)
-        .ignoresSafeArea()
-        .contentShape(Rectangle())
-        .offset(x: dragOffset.width)
-        .gesture(
-          DragGesture()
-            .onChanged { value in
-              dragOffset = value.translation
-            }
-            .onEnded { value in
-              if value.translation.width < -50 && store.currentIndex < images.count - 1 {
-                store.send(.changeCurrentIndex(1))
-              } else if value.translation.width > 50 && store.currentIndex > 0 {
-                store.send(.changeCurrentIndex(-1))
-              }
-              dragOffset = .zero
-            }
-        )
-        .onTapGesture { location in
-          let halfWidth = geo.size.width / 2
-          if location.x < halfWidth && store.currentIndex > 0 {
-            store.send(.changeCurrentIndex(-1))
-          } else if location.x >= halfWidth && store.currentIndex < images.count - 1 {
-            store.send(.changeCurrentIndex(1))
+    TabView(
+      selection:
+        Binding(
+          get: { store.currentIndex },
+          set: { newIndex, transaction in
+            store.send(.changeCurrentIndex(newIndex - store.currentIndex))
           }
-        }
+        )
+    ) {
+      ForEach(0..<images.count, id: \.self) { index in
+        images[index]
+          .resizable()
+          .scaledToFit()
+          .ignoresSafeArea()
+          .tag(index)
+      }
     }
+    .tabViewStyle(PageTabViewStyle(indexDisplayMode: .always))
   }
 }
 

@@ -28,8 +28,6 @@ public struct OnboardingCore {
     case changeCurrentIndex(Int)
     case startButtonTapped
     
-    // Internal Action
-    
     // Route Action
     case moveToLogin
   }
