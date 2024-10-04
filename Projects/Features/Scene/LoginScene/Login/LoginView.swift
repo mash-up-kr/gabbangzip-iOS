@@ -40,7 +40,7 @@ public struct LoginView: View {
         type: .login,
         loopMode: .repeat(1)
       )
-      .padding(.horizontal, 40)
+      .padding(.horizontal, 80)
       
       Spacer()
       
